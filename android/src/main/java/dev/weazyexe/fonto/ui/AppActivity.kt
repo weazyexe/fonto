@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto
+package dev.weazyexe.fonto.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import dev.weazyexe.fonto.platform
 import dev.weazyexe.fonto.ui.theme.FontoTheme
 
 class AppActivity : ComponentActivity() {
