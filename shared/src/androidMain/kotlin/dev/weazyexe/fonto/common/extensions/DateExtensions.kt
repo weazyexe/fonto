@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.extensions
+package dev.weazyexe.fonto.common.extensions
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime

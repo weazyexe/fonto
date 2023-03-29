@@ -3,6 +3,7 @@ applicationId = "dev.weazyexe.fonto"
 
 kotlin = "1.8.10"
 gradlePlugin = "7.4.2"
+ksp = "1.8.10-1.0.9"
 
 compileSdk = "33"
 targetSdk = "33"
@@ -10,6 +11,8 @@ minSdk = "28"
 
 compose = "2023.03.00"
 composeCompiler = "1.4.2"
+
+composeDestinations = "1.8.38-beta"
 
 androidxCore = "1.9.0"
 androidxLifecycleRuntime = "2.6.1"
@@ -45,6 +48,9 @@ compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"
 compose-icons = { module = "androidx.compose.material:material-icons-extended" }
 compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
+compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "composeDestinations" }
+compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "composeDestinations" }
+
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
@@ -71,6 +77,7 @@ android-application = { id = "com.android.application", version.ref = "gradlePlu
 android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }

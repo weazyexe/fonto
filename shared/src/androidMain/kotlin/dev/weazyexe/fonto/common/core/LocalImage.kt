@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.core
+package dev.weazyexe.fonto.common.core
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

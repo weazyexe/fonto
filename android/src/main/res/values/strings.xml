@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">fonto</string>
+    <string name="app_name">Fonto</string>
+
+    <string name="home_bottom_label_feed">Feed</string>
+    <string name="home_bottom_label_bookmarks">Bookmarks</string>
+    <string name="home_bottom_label_settings">Settings</string>
 </resources>

@@ -1,5 +1,5 @@
 @file:JvmName("DateExtensionsCommon")
-package dev.weazyexe.fonto.extensions
+package dev.weazyexe.fonto.common.extensions
 
 import kotlinx.datetime.LocalDateTime
 

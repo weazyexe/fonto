@@ -1,8 +1,9 @@
 plugins {
-    alias(libs.plugins.kotlin.multiplatform) version libs.versions.kotlin apply false
-    alias(libs.plugins.kotlin.serialization) version libs.versions.kotlin apply false
-    alias(libs.plugins.android.library) version libs.versions.gradlePlugin apply false
-    alias(libs.plugins.android.application) version libs.versions.gradlePlugin apply false
-    alias(libs.plugins.sqldelight) version libs.versions.sqlDelight apply false
-    alias(libs.plugins.kotlin.android) version libs.versions.kotlin apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.sqldelight) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.ksp) apply false
 }

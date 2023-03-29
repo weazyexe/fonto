@@ -4,27 +4,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.weazyexe.fonto.platform
+import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
+import com.ramcosta.composedestinations.DestinationsNavHost
+import dev.weazyexe.fonto.ui.screens.NavGraphs
 import dev.weazyexe.fonto.ui.theme.FontoTheme
 
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             FontoTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
+                val homeNavController = rememberNavController()
+                DestinationsNavHost(
+                    navGraph = NavGraphs.home,
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting(platform)
-                }
+                    navController = homeNavController
+                )
             }
         }
     }

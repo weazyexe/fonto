@@ -1,6 +1,6 @@
-package dev.weazyexe.fonto.domain
+package dev.weazyexe.fonto.common.domain
 
-import dev.weazyexe.fonto.core.LocalImage
+import dev.weazyexe.fonto.common.core.LocalImage
 
 data class RssSource(
     val id: String,
