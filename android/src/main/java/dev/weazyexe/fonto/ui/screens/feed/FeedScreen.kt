@@ -1,22 +1,36 @@
 package dev.weazyexe.fonto.ui.screens.feed
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.weazyexe.fonto.ui.screens.BottomBarNavGraph
+import dev.weazyexe.fonto.ui.screens.feed.components.PostViewStates
+import dev.weazyexe.fonto.ui.screens.feed.viewstates.FeedViewState
 
 @BottomBarNavGraph(start = true)
 @Destination
 @Composable
-fun FeedScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Feed")
-    }
+fun FeedScreen(rootPaddingValues: PaddingValues) {
+    FeedBody(
+        feedViewState = FeedViewState(
+            posts = listOf(
+                PostViewStates.default,
+                PostViewStates.noPictures,
+                PostViewStates.saved,
+                PostViewStates.default,
+                PostViewStates.noPictures,
+                PostViewStates.saved,
+                PostViewStates.default,
+                PostViewStates.noPictures,
+                PostViewStates.saved,
+                PostViewStates.default,
+                PostViewStates.noPictures,
+                PostViewStates.saved,
+                PostViewStates.default,
+                PostViewStates.noPictures,
+                PostViewStates.saved
+            )
+        ),
+        rootPaddingValues = rootPaddingValues
+    )
 }
