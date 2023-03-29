@@ -1,0 +1,76 @@
+[versions]
+applicationId = "dev.weazyexe.fonto"
+
+kotlin = "1.8.10"
+gradlePlugin = "7.4.2"
+
+compileSdk = "33"
+targetSdk = "33"
+minSdk = "28"
+
+compose = "2023.03.00"
+composeCompiler = "1.4.2"
+
+androidxCore = "1.9.0"
+androidxLifecycleRuntime = "2.6.1"
+androidxActivityCompose = "1.7.0"
+
+kotlinxCoroutines = "1.6.4"
+kotlinxSerialization = "1.4.1"
+kotlinxDatetime = "0.4.0"
+
+ktor = "2.2.4"
+
+sqlDelight = "1.5.5"
+
+kermit = "1.2.2"
+napier = "2.6.1"
+
+coil = "2.3.0"
+
+junit = "4.13.2"
+junitAndroid = "1.1.5"
+espresso = "3.5.1"
+
+[libraries]
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycleRuntime" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
+
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-icons = { module = "androidx.compose.material:material-icons-extended" }
+compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+
+coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-android = { module = "androidx.test.ext:junit", version.ref = "junitAndroid" }
+espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+
+ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
+
+sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-native = { module = "com.squareup.sqldelight:native-driver", version.ref = "sqlDelight" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }

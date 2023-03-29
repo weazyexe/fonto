@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.android.library")
-    id("com.squareup.sqldelight")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -15,19 +15,18 @@ kotlin {
         /* Main source sets */
         val commonMain by getting {
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.touchlab.kermit)
-                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.coroutines)
+                implementation(libs.kermit)
                 implementation(libs.kotlinx.datetime)
-                implementation(libs.aakira.napier)
-                implementation(libs.ktor.client.core)
+                implementation(libs.napier)
+                implementation(libs.ktor)
                 implementation(libs.sqldelight.coroutines)
             }
         }
         val androidMain by getting {
             dependencies {
-                implementation(libs.ktor.client.okhttp)
-                implementation(libs.sqldelight.driver.android)
+                implementation(libs.ktor.okhttp)
+                implementation(libs.sqldelight.android)
             }
         }
         /*val iosMain by creating {
@@ -69,10 +68,10 @@ kotlin {
 }
 
 android {
-    namespace = "dev.weazyexe.fonto"
-    compileSdk = 33
+    namespace = libs.versions.applicationId.get()
+    compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = 28
+        minSdk = libs.versions.minSdk.get().toInt()
     }
 
     compileOptions {
