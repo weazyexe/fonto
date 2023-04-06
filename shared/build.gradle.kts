@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(libs.ktor.okhttp)
                 implementation(libs.sqldelight.android)
+                implementation(libs.rss.parser)
             }
         }
         /*val iosMain by creating {
