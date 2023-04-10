@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.domain
+package dev.weazyexe.fonto.common.model.rss
 
 import kotlinx.datetime.LocalDateTime
 

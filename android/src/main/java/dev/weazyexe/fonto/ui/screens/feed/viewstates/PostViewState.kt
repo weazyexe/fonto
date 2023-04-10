@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import dev.weazyexe.fonto.common.core.asBitmap
-import dev.weazyexe.fonto.common.domain.Post
 import dev.weazyexe.fonto.common.extensions.format
+import dev.weazyexe.fonto.common.model.rss.Post
 
 @Immutable
 data class PostViewState(

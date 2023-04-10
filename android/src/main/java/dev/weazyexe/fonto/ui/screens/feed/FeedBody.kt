@@ -11,18 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.ui.screens.feed.components.PostItem
-import dev.weazyexe.fonto.ui.screens.feed.viewstates.FeedViewState
+import dev.weazyexe.fonto.ui.screens.feed.viewstates.PostsViewState
 
 @Composable
 fun FeedBody(
-    feedViewState: FeedViewState,
+    postsViewState: PostsViewState,
     rootPaddingValues: PaddingValues,
 ) {
     LazyColumn(
         modifier = Modifier.padding(bottom = rootPaddingValues.calculateBottomPadding()),
         contentPadding = WindowInsets.statusBars.asPaddingValues()
     ) {
-        items(items = feedViewState.posts) {
+        items(items = postsViewState.posts) {
             PostItem(
                 post = it,
                 onPostClick = { /*TODO*/ },

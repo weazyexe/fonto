@@ -76,6 +76,10 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.kotlinx.datetime)
 
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.compose)
+
     implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
 

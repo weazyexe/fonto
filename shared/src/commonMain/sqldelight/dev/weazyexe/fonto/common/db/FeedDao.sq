@@ -1,0 +1,23 @@
+CREATE TABLE FeedDao (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    link TEXT NOT NULL,
+    icon BLOB
+);
+
+getAll:
+SELECT * FROM FeedDao;
+
+insert:
+INSERT INTO FeedDao(title, link, icon)
+VALUES (?, ?, ?);
+
+update:
+INSERT OR REPLACE INTO FeedDao
+VALUES ?;
+
+delete:
+DELETE FROM FeedDao WHERE id = :id;
+
+deleteAll:
+DELETE FROM FeedDao;

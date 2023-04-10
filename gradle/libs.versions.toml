@@ -24,12 +24,14 @@ kotlinxDatetime = "0.4.0"
 
 ktor = "2.2.4"
 
-sqlDelight = "1.5.5"
+sqlDelight = "2.0.0-alpha05"
 
 kermit = "1.2.2"
 napier = "2.6.1"
 
 coil = "2.3.0"
+
+koin = "3.2.0"
 
 rssParser = "5.0.2"
 
@@ -58,6 +60,10 @@ napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+
 rss-parser = { module = "com.prof18.rssparser:rssparser", version.ref = "rssParser" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -72,9 +78,10 @@ ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
 
-sqldelight-coroutines = { module = "com.squareup.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
-sqldelight-android = { module = "com.squareup.sqldelight:android-driver", version.ref = "sqlDelight" }
-sqldelight-native = { module = "com.squareup.sqldelight:native-driver", version.ref = "sqlDelight" }
+#sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
+sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
@@ -84,4 +91,4 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }

@@ -20,6 +20,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.napier)
                 implementation(libs.ktor)
+                implementation(libs.koin.core)
                 implementation(libs.sqldelight.coroutines)
             }
         }
@@ -28,6 +29,7 @@ kotlin {
                 implementation(libs.ktor.okhttp)
                 implementation(libs.sqldelight.android)
                 implementation(libs.rss.parser)
+                implementation(libs.koin.android)
             }
         }
         /*val iosMain by creating {
@@ -78,5 +80,14 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+sqldelight {
+    databases {
+        create("FontoDatabase") {
+            packageName.set("${libs.versions.applicationId.get()}.db")
+//            sourceFolders.set(listOf("src/commonMain/sqldelight"))
+        }
     }
 }
