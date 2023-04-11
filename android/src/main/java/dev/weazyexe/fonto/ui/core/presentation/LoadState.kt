@@ -22,7 +22,7 @@ class LoadState<T> private constructor(
         /**
          * Create empty [LoadState]
          */
-        fun <T> empty() = LoadState<T>()
+        fun <T> initial() = LoadState<T>()
 
         /**
          * Create loading [LoadState]
@@ -76,4 +76,9 @@ class LoadState<T> private constructor(
                 isSwipeRefresh = false
             )
     }
+}
+
+fun <T, VS> LoadState<T>.asViewState(mapper: (T) -> VS): LoadState<VS> {
+    val errorToThrow = LoadState.error<VS>(error ?: ResponseError.UnknownError())
+    return LoadState.data(mapper(data ?: return errorToThrow))
 }

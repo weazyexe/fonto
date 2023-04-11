@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.ui.core.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.utils.asResponseError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Base [ViewModel] for all the screens in the app
@@ -45,6 +47,17 @@ abstract class CoreViewModel<S : State, E : Effect>() : ViewModel() {
     protected fun setState(stateBuilder: S.() -> S) {
         _uiState.value = stateBuilder(uiState.value)
     }
+
+    protected suspend fun <T> request(request: suspend () -> T): LoadState<T> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val response = request()
+                LoadState.data(response)
+            } catch (e: Exception) {
+                val mappedError = e.asResponseError()
+                LoadState.error(mappedError)
+            }
+        }
 
     /**
      * Triggers side-effect

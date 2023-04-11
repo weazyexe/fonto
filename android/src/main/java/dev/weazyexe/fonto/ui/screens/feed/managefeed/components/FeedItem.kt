@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.screens.feed.managefeed.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -13,8 +14,16 @@ import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.ui.screens.feed.managefeed.viewstates.FeedViewState
 
 @Composable
-fun FeedItem(feed: FeedViewState) {
-    Column {
+fun FeedItem(
+    feed: FeedViewState,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .padding(16.dp)
+    ) {
         Row {
             Text(text = feed.title)
 
@@ -28,5 +37,7 @@ fun FeedItem(feed: FeedViewState) {
                 )
             }
         }
+
+        Text(text = feed.link)
     }
 }
