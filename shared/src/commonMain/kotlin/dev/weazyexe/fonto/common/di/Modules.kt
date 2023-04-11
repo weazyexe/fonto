@@ -7,10 +7,14 @@ import dev.weazyexe.fonto.common.db.createDatabase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal val feedModule = module {
+internal val coreModule = module {
     includes(androidModule)
-
     single { createDatabase(get()) }
+}
+
+internal val feedModule = module {
+    includes(coreModule)
+
     single { FeedDataSource(get()) }
     single { FeedRepository(get()) }
     single { GetFeedUseCase(get()) }
