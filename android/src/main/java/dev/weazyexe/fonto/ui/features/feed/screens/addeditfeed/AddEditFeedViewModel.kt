@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.core.asBitmap
@@ -11,15 +12,24 @@ import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.ui.core.presentation.CoreViewModel
 import dev.weazyexe.fonto.ui.core.presentation.LoadState
 import dev.weazyexe.fonto.ui.core.presentation.ResponseError
+import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import kotlinx.coroutines.launch
 
 class AddEditFeedViewModel(
+    savedStateHandle: SavedStateHandle,
     private val createFeed: CreateFeedUseCase,
     private val getIconByRssUrl: GetIconByRssUrlUseCase,
     private val isNewslineValid: IsNewslineValidUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
-    override val initialState: AddEditFeedState = AddEditFeedState()
+    private val args = AddEditFeedScreenDestination.argsFrom(savedStateHandle)
+
+    override val initialState: AddEditFeedState = AddEditFeedState(
+        id = args.feed?.id,
+        title = args.feed?.title.orEmpty(),
+        link = args.feed?.link.orEmpty(),
+        iconLoadState = args.feed?.icon?.asBitmap()?.let { LoadState.data(it) } ?: LoadState.initial()
+    )
 
     fun updateTitle(title: String) {
         setState { copy(title = title) }

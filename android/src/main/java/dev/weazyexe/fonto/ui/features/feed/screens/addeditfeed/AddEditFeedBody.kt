@@ -44,6 +44,7 @@ import dev.weazyexe.fonto.ui.core.presentation.ResponseError
 fun AddEditFeedBody(
     title: String,
     link: String,
+    isEditMode: Boolean = false,
     iconLoadState: LoadState<Bitmap>,
     finishLoadState: LoadState<Boolean>,
     onTitleChange: (String) -> Unit,
@@ -70,7 +71,17 @@ fun AddEditFeedBody(
         modifier = Modifier.imePadding(),
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.add_edit_feed_create_feed)) },
+                title = {
+                    Text(
+                        text = stringResource(
+                            id = if (isEditMode) {
+                                R.string.add_edit_feed_edit_feed
+                            } else {
+                                R.string.add_edit_feed_create_feed
+                            }
+                        )
+                    )
+                },
                 navigationIcon = { ArrowBack(onBackClick) }
             )
         },
@@ -158,6 +169,7 @@ private fun AddEditFeedBodyPreview() {
     AddEditFeedBody(
         title = "Rozetked",
         link = "https://rozetked.me/turbo",
+        isEditMode = true,
         iconLoadState = icon?.let { LoadState.data(it) }
             ?: LoadState.error(ResponseError.UnknownError()),
         finishLoadState = LoadState.initial(),

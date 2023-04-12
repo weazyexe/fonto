@@ -18,6 +18,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines)
                 implementation(libs.kermit)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.serialization)
                 implementation(libs.napier)
                 implementation(libs.ktor)
                 implementation(libs.ktor.logging)

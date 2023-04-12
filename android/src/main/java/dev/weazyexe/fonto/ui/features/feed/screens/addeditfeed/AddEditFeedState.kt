@@ -6,6 +6,7 @@ import dev.weazyexe.fonto.ui.core.presentation.LoadState
 import dev.weazyexe.fonto.ui.core.presentation.State
 
 data class AddEditFeedState(
+    val id: Long? = null,
     val title: String = "",
     val link: String = "",
     val iconLoadState: LoadState<Bitmap> = LoadState.initial(),

@@ -30,6 +30,7 @@ fun ManageFeedBody(
     feedsLoadState: LoadState<List<FeedViewState>>,
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
+    onClick: (FeedViewState) -> Unit,
     onDeleteClick: (FeedViewState) -> Unit,
     onSelectClick: (FeedViewState) -> Unit
 ) {
@@ -61,6 +62,7 @@ fun ManageFeedBody(
             feedsLoadState.data != null -> FeedList(
                 list = feedsLoadState.data,
                 padding = padding,
+                onClick = onClick,
                 onDeleteClick = onDeleteClick,
                 onSelectClick = onSelectClick,
             )
@@ -72,6 +74,7 @@ fun ManageFeedBody(
 private fun FeedList(
     list: List<FeedViewState>,
     padding: PaddingValues,
+    onClick: (FeedViewState) -> Unit,
     onDeleteClick: (FeedViewState) -> Unit,
     onSelectClick: (FeedViewState) -> Unit,
 ) {
@@ -83,7 +86,7 @@ private fun FeedList(
             ) {
                 FeedItem(
                     feed = it,
-                    onClick = { },
+                    onClick = { onClick(it) },
                     onDeleteClick = { onDeleteClick(it) },
                     onSelectClick = { onSelectClick(it) },
                     modifier = Modifier.fillMaxWidth()

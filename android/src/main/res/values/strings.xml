@@ -20,6 +20,7 @@
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>
 
     <string name="add_edit_feed_create_feed">Create feed</string>
+    <string name="add_edit_feed_edit_feed">Edit feed</string>
     <string name="add_edit_feed_title">Title</string>
     <string name="add_edit_feed_title_hint">The source you trust</string>
     <string name="add_edit_feed_link">Link to RSS feed</string>

@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.feed.viewstates.asFeed
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
@@ -19,8 +20,9 @@ fun ManageFeedScreen(
 
     ManageFeedBody(
         feedsLoadState = state.feedLoadState,
-        onAddClick = { navController.navigate(AddEditFeedScreenDestination) },
+        onAddClick = { navController.navigate(AddEditFeedScreenDestination()) },
         onBackClick = { navController.navigateUp() },
+        onClick = { navController.navigate(AddEditFeedScreenDestination(feed = it.asFeed())) },
         onDeleteClick = { },
         onSelectClick = { }
     )

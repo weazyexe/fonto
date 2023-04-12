@@ -5,13 +5,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.utils.ReceiveEffect
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
 @Composable
 fun AddEditFeedScreen(
-    navController: NavController
+    navController: NavController,
+    feed: Feed? = null
 ) {
     val viewModel = koinViewModel<AddEditFeedViewModel>()
     val state by viewModel.uiState.collectAsState()
@@ -25,6 +27,7 @@ fun AddEditFeedScreen(
     AddEditFeedBody(
         title = state.title,
         link = state.link,
+        isEditMode = state.id != null,
         iconLoadState = state.iconLoadState,
         finishLoadState = state.finishLoadState,
         onTitleChange = viewModel::updateTitle,
