@@ -20,6 +20,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.napier)
                 implementation(libs.ktor)
+                implementation(libs.ktor.logging)
                 implementation(libs.koin.core)
                 implementation(libs.sqldelight.coroutines)
             }

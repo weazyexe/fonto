@@ -78,6 +78,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
+ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 
 #sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }

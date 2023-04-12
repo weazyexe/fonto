@@ -26,13 +26,14 @@ import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 @Composable
 fun ManageFeedBody(
     feedsLoadState: LoadState<List<FeedViewState>>,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.manage_feed_title)) },
-                navigationIcon = { ArrowBack() }
+                navigationIcon = { ArrowBack(onBackClick) }
             )
         },
         floatingActionButton = {

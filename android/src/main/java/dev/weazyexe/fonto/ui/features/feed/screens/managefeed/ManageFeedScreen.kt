@@ -19,6 +19,7 @@ fun ManageFeedScreen(
 
     ManageFeedBody(
         feedsLoadState = state.feedLoadState,
-        onAddClick = { navController.navigate(AddEditFeedScreenDestination) }
+        onAddClick = { navController.navigate(AddEditFeedScreenDestination) },
+        onBackClick = { navController.navigateUp() }
     )
 }

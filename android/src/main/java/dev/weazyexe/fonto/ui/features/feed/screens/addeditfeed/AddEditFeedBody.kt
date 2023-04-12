@@ -44,6 +44,7 @@ fun AddEditFeedBody(
     iconLoadState: LoadState<Bitmap>,
     onTitleChange: (String) -> Unit,
     onLinkChange: (String) -> Unit,
+    onBackClick: () -> Unit,
     onFinishClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -60,7 +61,7 @@ fun AddEditFeedBody(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.add_edit_feed_create_feed)) },
-                navigationIcon = { ArrowBack() }
+                navigationIcon = { ArrowBack(onBackClick) }
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -133,6 +134,7 @@ private fun AddEditFeedBodyPreview() {
             ?: LoadState.error(ResponseError.UnknownError()),
         onTitleChange = {},
         onLinkChange = {},
-        onFinishClick = {}
+        onFinishClick = {},
+        onBackClick = {}
     )
 }
