@@ -18,5 +18,7 @@
 
     <string name="add_edit_feed_create_feed">Create feed</string>
     <string name="add_edit_feed_title">Title</string>
+    <string name="add_edit_feed_title_hint">The source you trust</string>
     <string name="add_edit_feed_link">Link to RSS feed</string>
+    <string name="add_edit_feed_link_hint">https://example.com</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
@@ -87,7 +90,15 @@ fun AddEditFeedBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                label = { Text(text = stringResource(id = R.string.add_edit_feed_title)) }
+                label = { Text(text = stringResource(id = R.string.add_edit_feed_title)) },
+                placeholder = { Text(text = stringResource(id = R.string.add_edit_feed_title_hint)) },
+                maxLines = 1,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Words
+                )
             )
 
             Spacer(modifier = Modifier.size(16.dp))
@@ -99,7 +110,14 @@ fun AddEditFeedBody(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 label = { Text(text = stringResource(id = R.string.add_edit_feed_link)) },
-                trailingIcon = { FeedIcon(iconLoadState = iconLoadState) }
+                placeholder = { Text(text = stringResource(id = R.string.add_edit_feed_link_hint)) },
+                trailingIcon = { FeedIcon(iconLoadState = iconLoadState) },
+                maxLines = 1,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Uri
+                )
             )
         }
     }
@@ -110,7 +128,10 @@ private fun FeedIcon(
     iconLoadState: LoadState<Bitmap>
 ) {
     when {
-        iconLoadState.isLoading -> CircularProgressIndicator(modifier = Modifier.size(16.dp))
+        iconLoadState.isLoading -> CircularProgressIndicator(
+            modifier = Modifier.size(16.dp),
+            strokeWidth = 2.dp
+        )
         iconLoadState.data != null -> {
             Image(
                 bitmap = iconLoadState.data.asImageBitmap(),
