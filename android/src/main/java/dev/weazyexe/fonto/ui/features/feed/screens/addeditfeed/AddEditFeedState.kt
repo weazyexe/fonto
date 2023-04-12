@@ -8,7 +8,11 @@ import dev.weazyexe.fonto.ui.core.presentation.State
 data class AddEditFeedState(
     val title: String = "",
     val link: String = "",
-    val iconLoadState: LoadState<Bitmap> = LoadState.initial()
+    val iconLoadState: LoadState<Bitmap> = LoadState.initial(),
+    val finishLoadState: LoadState<Boolean> = LoadState.initial(),
 ) : State
 
-sealed interface AddEditFeedEffect : Effect
+sealed interface AddEditFeedEffect : Effect {
+
+    object NavigateUp : AddEditFeedEffect
+}

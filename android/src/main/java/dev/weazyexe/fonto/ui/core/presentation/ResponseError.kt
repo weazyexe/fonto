@@ -33,6 +33,14 @@ sealed class ResponseError(
         override val errorMessage: Int = R.string.error_feed_icon_error
     ) : ResponseError(errorMessage, emptyList())
 
+    data class InvalidRssFeed(
+        override val errorMessage: Int = R.string.error_invalid_rss_feed
+    ) : ResponseError(errorMessage, emptyList())
+
+    data class FeedValidationError(
+        override val errorMessage: Int
+    ) : ResponseError(errorMessage, emptyList())
+
     fun asLocalizedMessage(context: Context): String {
         return context.getString(errorMessage, *arguments.toTypedArray())
     }

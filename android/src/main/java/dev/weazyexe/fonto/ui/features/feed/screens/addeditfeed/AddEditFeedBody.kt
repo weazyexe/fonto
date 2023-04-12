@@ -45,6 +45,7 @@ fun AddEditFeedBody(
     title: String,
     link: String,
     iconLoadState: LoadState<Bitmap>,
+    finishLoadState: LoadState<Boolean>,
     onTitleChange: (String) -> Unit,
     onLinkChange: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -53,8 +54,14 @@ fun AddEditFeedBody(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(iconLoadState.error) {
+    LaunchedEffect(iconLoadState) {
         iconLoadState.error?.let {
+            snackbarHostState.showSnackbar(it.asLocalizedMessage(context))
+        }
+    }
+
+    LaunchedEffect(finishLoadState) {
+        finishLoadState.error?.let {
             snackbarHostState.showSnackbar(it.asLocalizedMessage(context))
         }
     }
@@ -153,6 +160,7 @@ private fun AddEditFeedBodyPreview() {
         link = "https://rozetked.me/turbo",
         iconLoadState = icon?.let { LoadState.data(it) }
             ?: LoadState.error(ResponseError.UnknownError()),
+        finishLoadState = LoadState.initial(),
         onTitleChange = {},
         onLinkChange = {},
         onFinishClick = {},

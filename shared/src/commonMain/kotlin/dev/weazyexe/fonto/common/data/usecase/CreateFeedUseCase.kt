@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.common.data.usecase
 
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
+import dev.weazyexe.fonto.common.model.base.LocalImage
 
 class CreateFeedUseCase(
     private val feedRepository: FeedRepository
@@ -8,11 +9,9 @@ class CreateFeedUseCase(
 
     operator fun invoke(
         title: String,
-        link: String
+        link: String,
+        image: LocalImage?
     ) {
-        // TODO
-        //  1. Load favicon by link hostname
-        //  2. Pass all the data to database
-        feedRepository.insert(title, link, null)
+        feedRepository.insert(title, link, image)
     }
 }

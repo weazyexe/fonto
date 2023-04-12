@@ -1,33 +1,21 @@
 package dev.weazyexe.fonto.ui.features.feed.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BookmarkAdd
-import androidx.compose.material.icons.filled.BookmarkAdded
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.theme.ThemedPreview
 import java.util.*
@@ -87,7 +74,7 @@ fun PostItem(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Row(
+            /*Row(
                 modifier = Modifier.padding(start = 8.dp, top = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -123,7 +110,7 @@ fun PostItem(
                         contentDescription = null
                     )
                 }
-            }
+            }*/
         }
     }
 }
@@ -190,9 +177,8 @@ object PostViewStates {
             description = "Поддержка прекратится 1 января 2024 года. В Valve рекомендуют обновиться на более свежую версию OC.",
             imageUrl = "https://rozetked.me/images/uploads/webp/Oe98tb9q9Ek5.webp?1679993179",
             publishedAt = "12:57, 28 Mar 2023",
-            sourceTitle = "Rozetked",
-            sourceIcon = ImageBitmap.imageResource(id = R.drawable.preview_favicon).asAndroidBitmap(),
-            isSaved = false,
+            /*sourceTitle = "Rozetked",
+            sourceIcon = ImageBitmap.imageResource(id = R.drawable.preview_favicon).asAndroidBitmap(),*/            isSaved = false,
             content = null
         )
 
@@ -205,8 +191,8 @@ object PostViewStates {
                     "Героиня нового дневника трат живет с сыном и дочерью, сдает две квартиры и копит на летний отпуск в Турции. Вот как проходит ее неделя:",
             imageUrl = null,
             publishedAt = "12:57, 28 Mar 2023",
-            sourceTitle = "Tinkoff Journal",
-            sourceIcon = null,
+            /*sourceTitle = "Tinkoff Journal",
+            sourceIcon = null,*/
             isSaved = false,
             content = null
         )
@@ -220,8 +206,8 @@ object PostViewStates {
                     "Короче, собрали список стран, где вы сможете, имея российские права, управлять бибикой:",
             imageUrl = "https://cdn4.telegram-cdn.org/file/flZogY_p55kA2Xd7RV_UykABn6DzblOJql15NmjTF688nWstLIbVi0EcUmeHZOc_8jHwdXDwNuqgUvXOPCAB5BXa0l79XqhFn_ho5jg1DMcULXNq6IIPIJAFTE_VflgY1A1H8Z9MrKlwEdDRRLz1NDH8kxm_lSD8qD9EOk3EZLr-TFKtzjt7piTNDd9Mf-L9v3e6UNNMi6nlEw4EX7WS1BFFJuB761mTf8G1r-BkzZHdlSVF2XiY8KDQjqH06TPpMICvZZpeKc2q_AlueRqowI86uWrifFdgf-yQOYLp13Q7xq3bhi_fs41nmBh5H_YxXNFZJTQ6FQusLYLzGQZGew.jpg",
             publishedAt = null,
-            sourceTitle = "Aviasales",
-            sourceIcon = null,
+            /*sourceTitle = "Aviasales",
+            sourceIcon = null,*/
             isSaved = true,
             content = null
         )

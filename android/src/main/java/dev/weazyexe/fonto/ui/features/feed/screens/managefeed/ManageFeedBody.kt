@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -12,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import dev.weazyexe.fonto.R
@@ -19,7 +21,7 @@ import dev.weazyexe.fonto.ui.core.components.ArrowBack
 import dev.weazyexe.fonto.ui.core.components.ErrorPane
 import dev.weazyexe.fonto.ui.core.components.LoadingPane
 import dev.weazyexe.fonto.ui.core.presentation.LoadState
-import dev.weazyexe.fonto.ui.features.feed.screens.managefeed.components.FeedItem
+import dev.weazyexe.fonto.ui.features.feed.components.FeedItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,7 +29,9 @@ import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 fun ManageFeedBody(
     feedsLoadState: LoadState<List<FeedViewState>>,
     onAddClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onDeleteClick: (FeedViewState) -> Unit,
+    onSelectClick: (FeedViewState) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -54,7 +58,12 @@ fun ManageFeedBody(
                     LocalContext.current
                 )
             )
-            feedsLoadState.data != null -> FeedList(list = feedsLoadState.data, padding = padding)
+            feedsLoadState.data != null -> FeedList(
+                list = feedsLoadState.data,
+                padding = padding,
+                onDeleteClick = onDeleteClick,
+                onSelectClick = onSelectClick,
+            )
         }
     }
 }
@@ -62,7 +71,9 @@ fun ManageFeedBody(
 @Composable
 private fun FeedList(
     list: List<FeedViewState>,
-    padding: PaddingValues
+    padding: PaddingValues,
+    onDeleteClick: (FeedViewState) -> Unit,
+    onSelectClick: (FeedViewState) -> Unit,
 ) {
     if (list.isNotEmpty()) {
         LazyColumn(contentPadding = padding) {
@@ -72,7 +83,10 @@ private fun FeedList(
             ) {
                 FeedItem(
                     feed = it,
-                    onClick = { }
+                    onClick = { },
+                    onDeleteClick = { onDeleteClick(it) },
+                    onSelectClick = { onSelectClick(it) },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.parser
 
-internal data class RssFeed(
+data class RssFeed(
     val title: String,
     val link: String,
     val description: String,

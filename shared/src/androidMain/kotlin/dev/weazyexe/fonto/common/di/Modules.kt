@@ -1,4 +1,3 @@
-@file:JvmName("AndroidModules")
 package dev.weazyexe.fonto.common.di
 
 import dev.weazyexe.fonto.common.db.DriverFactory

@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.parser
 
-internal expect class RssParser {
+expect class RssParser {
 
     suspend fun parse(url: String): RssFeed
 }

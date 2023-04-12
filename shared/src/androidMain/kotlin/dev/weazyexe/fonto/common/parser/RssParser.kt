@@ -2,9 +2,9 @@ package dev.weazyexe.fonto.common.parser
 
 import com.prof.rssparser.Parser
 import dev.weazyexe.fonto.common.error.RssParseException
-import kotlinx.datetime.LocalDateTime
+import dev.weazyexe.fonto.common.utils.parseDateTime
 
-internal actual class RssParser {
+actual class RssParser {
 
     private val parser = Parser.Builder()
         .charset(Charsets.UTF_8)
@@ -23,7 +23,7 @@ internal actual class RssParser {
                         link = article.link.orEmpty(),
                         description = article.description.orEmpty(),
                         content = article.content,
-                        pubDate = article.pubDate?.let { LocalDateTime.parse(it) },
+                        pubDate = article.pubDate?.parseDateTime(),
                         imageUrl = article.image
                     )
                 }

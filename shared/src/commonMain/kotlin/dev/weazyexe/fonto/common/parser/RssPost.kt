@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.common.parser
 
 import kotlinx.datetime.LocalDateTime
 
-internal data class RssPost(
+data class RssPost(
     val title: String,
     val link: String,
     val description: String,

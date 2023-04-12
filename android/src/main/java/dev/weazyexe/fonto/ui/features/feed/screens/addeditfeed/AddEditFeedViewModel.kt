@@ -1,9 +1,12 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.core.asBitmap
+import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.data.usecase.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
+import dev.weazyexe.fonto.common.data.usecase.IsNewslineValidUseCase
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.ui.core.presentation.CoreViewModel
 import dev.weazyexe.fonto.ui.core.presentation.LoadState
@@ -12,7 +15,8 @@ import kotlinx.coroutines.launch
 
 class AddEditFeedViewModel(
     private val createFeed: CreateFeedUseCase,
-    private val getIconByRssUrl: GetIconByRssUrlUseCase
+    private val getIconByRssUrl: GetIconByRssUrlUseCase,
+    private val isNewslineValid: IsNewslineValidUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
     override val initialState: AddEditFeedState = AddEditFeedState()
@@ -39,7 +43,47 @@ class AddEditFeedViewModel(
         }
     }
 
-    fun finish() {
+    fun finish() = viewModelScope.launch {
+        if (state.title.isEmpty()) {
+            setState { copy(finishLoadState = LoadState.error(ResponseError.FeedValidationError(R.string.error_feed_invalid_title))) }
+            return@launch
+        }
 
+        if (state.link.isEmpty()) {
+            setState { copy(finishLoadState = LoadState.error(ResponseError.FeedValidationError(R.string.error_feed_invalid_link))) }
+            return@launch
+        }
+
+        setState { copy(finishLoadState = LoadState.loading()) }
+        val isNewslineValid = request { isNewslineValid(state.link) }
+
+        if (isNewslineValid.error != null) {
+            setState { copy(finishLoadState = isNewslineValid) }
+            return@launch
+        }
+
+        if (isNewslineValid.data == null) {
+            setState { copy(finishLoadState = LoadState.error(ResponseError.UnknownError())) }
+            return@launch
+        }
+
+        if (!isNewslineValid.data) {
+            setState { copy(finishLoadState = LoadState.error(ResponseError.InvalidRssFeed())) }
+            return@launch
+        }
+
+        createFeed()
+    }
+
+    private fun createFeed() = viewModelScope.launch {
+        val image = state.iconLoadState.data?.asLocalImage()
+        val feedCreationResponse = request { createFeed(state.title, state.link, image) }
+
+        if (feedCreationResponse.error != null) {
+            setState { copy(finishLoadState = LoadState.error(feedCreationResponse.error)) }
+            return@launch
+        }
+
+        AddEditFeedEffect.NavigateUp.emit()
     }
 }
