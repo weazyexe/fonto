@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -57,9 +56,7 @@ fun AddEditFeedBody(
     }
 
     Scaffold(
-        modifier = Modifier
-            .navigationBarsPadding()
-            .imePadding(),
+        modifier = Modifier.imePadding(),
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.add_edit_feed_create_feed)) },
