@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
-import dev.weazyexe.fonto.ui.screens.NavGraphs
+import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.theme.FontoTheme
 
 class AppActivity : ComponentActivity() {

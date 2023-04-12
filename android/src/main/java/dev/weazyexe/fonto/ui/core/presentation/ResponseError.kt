@@ -29,6 +29,10 @@ sealed class ResponseError(
         override val arguments: Collection<Any>
     ) : ResponseError(errorMessage, arguments)
 
+    data class FeedIconError(
+        override val errorMessage: Int = R.string.error_feed_icon_error
+    ) : ResponseError(errorMessage, emptyList())
+
     fun asLocalizedMessage(context: Context): String {
         return context.getString(errorMessage, *arguments.toTypedArray())
     }

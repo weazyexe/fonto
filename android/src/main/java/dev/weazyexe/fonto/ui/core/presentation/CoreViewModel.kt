@@ -53,6 +53,8 @@ abstract class CoreViewModel<S : State, E : Effect>() : ViewModel() {
             return@withContext try {
                 val response = request()
                 LoadState.data(response)
+            } catch (e: ResponseError) {
+                LoadState.error(e)
             } catch (e: Exception) {
                 val mappedError = e.asResponseError()
                 LoadState.error(mappedError)

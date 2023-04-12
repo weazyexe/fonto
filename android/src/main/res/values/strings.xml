@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Fonto</string>
 
+    <string name="accessibility_go_back">Go to previous screen</string>
+
     <string name="error_no_internet">There is no Internet connection, please try again</string>
     <string name="error_timed_out">Request was timed out, please try again</string>
     <string name="error_http">Bad request: %s</string>
+    <string name="error_feed_icon_error">Error while getting icon for the RSS feed</string>
     <string name="error_unknown">Something went wrong, please try again</string>
 
     <string name="home_bottom_label_feed">Feed</string>
@@ -12,4 +15,8 @@
 
     <string name="manage_feed_title">Manage feed</string>
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>
+
+    <string name="add_edit_feed_create_feed">Create feed</string>
+    <string name="add_edit_feed_title">Title</string>
+    <string name="add_edit_feed_link">Link to RSS feed</string>
 </resources>
