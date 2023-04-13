@@ -7,10 +7,11 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.ui.core.navigation.animation.FullScreenDialogAnimationStyle
 import dev.weazyexe.fonto.utils.ReceiveEffect
 import org.koin.androidx.compose.koinViewModel
 
-@Destination
+@Destination(style = FullScreenDialogAnimationStyle::class)
 @Composable
 fun AddEditFeedScreen(
     navController: NavController,

@@ -78,7 +78,7 @@ fun AddEditFeedBody(
                             id = if (isEditMode) {
                                 R.string.add_edit_feed_edit_feed
                             } else {
-                                R.string.add_edit_feed_create_feed
+                                R.string.add_edit_feed_new_feed
                             }
                         )
                     )

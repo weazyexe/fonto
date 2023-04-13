@@ -18,6 +18,8 @@ androidxCore = "1.9.0"
 androidxLifecycleRuntime = "2.6.1"
 androidxActivityCompose = "1.7.0"
 
+material = "1.8.0"
+
 kotlinxCoroutines = "1.6.4"
 kotlinxSerialization = "1.4.1"
 kotlinxDatetime = "0.4.0"
@@ -43,6 +45,8 @@ espresso = "3.5.1"
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycleRuntime" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
+
+material = { module = "com.google.android.material:material", version.ref = "material" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3" }

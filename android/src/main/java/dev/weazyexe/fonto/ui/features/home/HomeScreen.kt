@@ -13,6 +13,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
+import dev.weazyexe.fonto.ui.core.components.AnimatedAppearing
 import dev.weazyexe.fonto.ui.features.HomeNavGraph
 import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
@@ -28,13 +29,15 @@ fun HomeScreen(
     val bottomBarNavController = rememberNavController()
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigate(ManageFeedScreenDestination) }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null
-                )
+            AnimatedAppearing {
+                FloatingActionButton(
+                    onClick = { navController.navigate(ManageFeedScreenDestination) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                }
             }
         },
         bottomBar = {

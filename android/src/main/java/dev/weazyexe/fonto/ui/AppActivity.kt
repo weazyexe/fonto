@@ -10,7 +10,9 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
+import dev.weazyexe.fonto.ui.core.navigation.animation.SlideAnimations
 import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.theme.FontoTheme
 
@@ -22,7 +24,14 @@ class AppActivity : ComponentActivity() {
         setContent {
             FontoTheme {
                 val homeNavController = rememberAnimatedNavController()
-                val animatedNavHostEngine = rememberAnimatedNavHostEngine()
+                val animatedNavHostEngine = rememberAnimatedNavHostEngine(
+                    rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                        enterTransition = { SlideAnimations.enter },
+                        exitTransition = { SlideAnimations.exit },
+                        popEnterTransition = { SlideAnimations.popEnter },
+                        popExitTransition = { SlideAnimations.popExit }
+                    )
+                )
                 DestinationsNavHost(
                     navGraph = NavGraphs.home,
                     modifier = Modifier.fillMaxSize(),

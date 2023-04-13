@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.ui.core.components.AnimatedAppearing
 import dev.weazyexe.fonto.ui.core.components.ArrowBack
 import dev.weazyexe.fonto.ui.core.components.ErrorPane
 import dev.weazyexe.fonto.ui.core.components.LoadingPane
@@ -41,7 +43,7 @@ import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 import dev.weazyexe.fonto.ui.theme.ThemedPreview
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun ManageFeedBody(
     feedsLoadState: LoadState<List<FeedViewState>>,
@@ -74,13 +76,15 @@ fun ManageFeedBody(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddClick
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null
-                )
+            AnimatedAppearing {
+                FloatingActionButton(
+                    onClick = onAddClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                }
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }

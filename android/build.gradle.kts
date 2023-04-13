@@ -70,6 +70,8 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.test.manifest)
 
+    implementation(libs.material)
+
     implementation(libs.kotlinx.serialization)
 
     implementation(libs.androidx.core)
