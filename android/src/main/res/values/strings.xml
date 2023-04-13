@@ -2,6 +2,7 @@
     <string name="app_name">Fonto</string>
 
     <string name="accessibility_go_back">Go to previous screen</string>
+    <string name="accessibility_close_dialog">Close dialog</string>
 
     <string name="error_no_internet">There is no Internet connection, please try again</string>
     <string name="error_timed_out">Request was timed out, please try again</string>
@@ -28,4 +29,6 @@
     <string name="add_edit_feed_link_hint">https://example.com</string>
     <string name="add_edit_feed_select">Select</string>
     <string name="add_edit_feed_delete">Delete</string>
+    <string name="add_edit_feed_save">Save</string>
+    <string name="add_edit_feed_create">Create</string>
 </resources>

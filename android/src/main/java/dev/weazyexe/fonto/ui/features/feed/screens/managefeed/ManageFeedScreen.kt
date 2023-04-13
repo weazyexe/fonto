@@ -32,8 +32,10 @@ fun ManageFeedScreen(
                 // Do nothing
             }
             is NavResult.Value -> {
-                viewModel.loadFeed()
-                viewModel.showSavedMessage()
+                if (result.value) {
+                    viewModel.loadFeed()
+                    viewModel.showSavedMessage()
+                }
             }
         }
     }
