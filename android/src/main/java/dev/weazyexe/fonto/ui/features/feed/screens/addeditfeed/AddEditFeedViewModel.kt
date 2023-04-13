@@ -8,6 +8,8 @@ import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.data.usecase.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.IsNewslineValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.UpdateFeedUseCase
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.ui.core.presentation.CoreViewModel
 import dev.weazyexe.fonto.ui.core.presentation.LoadState
@@ -18,6 +20,7 @@ import kotlinx.coroutines.launch
 class AddEditFeedViewModel(
     savedStateHandle: SavedStateHandle,
     private val createFeed: CreateFeedUseCase,
+    private val updateFeed: UpdateFeedUseCase,
     private val getIconByRssUrl: GetIconByRssUrlUseCase,
     private val isNewslineValid: IsNewslineValidUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
@@ -82,18 +85,25 @@ class AddEditFeedViewModel(
             return@launch
         }
 
-        createFeed()
+        saveChanges()
     }
 
-    private fun createFeed() = viewModelScope.launch {
+    private fun saveChanges() = viewModelScope.launch {
         val image = state.iconLoadState.data?.asLocalImage()
-        val feedCreationResponse = request { createFeed(state.title, state.link, image) }
+        val response = request {
+            val editFeedId = state.id
+            if (editFeedId != null) {
+                updateFeed(Feed(editFeedId, state.title, state.link, image))
+            } else {
+                createFeed(state.title, state.link, image)
+            }
+        }
 
-        if (feedCreationResponse.error != null) {
-            setState { copy(finishLoadState = LoadState.error(feedCreationResponse.error)) }
+        if (response.error != null) {
+            setState { copy(finishLoadState = LoadState.error(response.error)) }
             return@launch
         }
 
-        AddEditFeedEffect.NavigateUp.emit()
+        AddEditFeedEffect.NavigateUp(isSuccessful = true).emit()
     }
 }

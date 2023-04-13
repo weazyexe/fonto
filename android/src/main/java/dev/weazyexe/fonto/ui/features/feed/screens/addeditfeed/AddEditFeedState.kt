@@ -15,5 +15,5 @@ data class AddEditFeedState(
 
 sealed interface AddEditFeedEffect : Effect {
 
-    object NavigateUp : AddEditFeedEffect
+    data class NavigateUp(val isSuccessful: Boolean) : AddEditFeedEffect
 }

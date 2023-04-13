@@ -18,6 +18,7 @@
 
     <string name="manage_feed_title">Manage feed</string>
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>
+    <string name="manage_feed_changes_saved">Saved</string>
 
     <string name="add_edit_feed_create_feed">Create feed</string>
     <string name="add_edit_feed_edit_feed">Edit feed</string>

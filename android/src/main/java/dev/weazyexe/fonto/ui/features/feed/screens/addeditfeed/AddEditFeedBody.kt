@@ -38,6 +38,7 @@ import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.ui.core.components.ArrowBack
 import dev.weazyexe.fonto.ui.core.presentation.LoadState
 import dev.weazyexe.fonto.ui.core.presentation.ResponseError
+import dev.weazyexe.fonto.ui.theme.ThemedPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,7 +163,7 @@ private fun FeedIcon(
 
 @Preview
 @Composable
-private fun AddEditFeedBodyPreview() {
+private fun AddEditFeedBodyPreview() = ThemedPreview {
     val context = LocalContext.current
     val icon = AppCompatResources.getDrawable(context, R.drawable.preview_favicon)?.toBitmap()
 

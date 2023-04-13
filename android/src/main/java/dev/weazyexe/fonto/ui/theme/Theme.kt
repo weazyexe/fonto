@@ -100,7 +100,7 @@ fun FontoTheme(
 
     val view = LocalView.current
     SideEffect {
-        val activity = view.context as Activity
+        val activity = view.context as? Activity ?: return@SideEffect
         val insetsController = WindowCompat.getInsetsController(activity.window, view)
         activity.window.statusBarColor = Color.Transparent.toArgb()
         activity.window.navigationBarColor = Color.Transparent.toArgb()
