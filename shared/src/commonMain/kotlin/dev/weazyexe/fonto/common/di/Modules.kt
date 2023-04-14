@@ -8,11 +8,12 @@ import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.IconRepository
 import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
-import dev.weazyexe.fonto.common.data.usecase.IsNewslineValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.IsNewslineValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.network.createHttpClient
 import org.koin.core.module.Module
@@ -49,6 +50,7 @@ internal val newslineModule = module {
     single { NewslineDataSource() }
     single { NewslineRepository(get()) }
     single { IsNewslineValidUseCase(get()) }
+    single { GetNewslineUseCase(get()) }
 }
 
 fun appModules(): List<Module> = listOf(feedModule, iconModule, newslineModule)

@@ -33,6 +33,14 @@ sealed class ResponseError(
         override val errorMessage: Int = R.string.error_feed_icon_error
     ) : ResponseError(errorMessage, emptyList())
 
+    data class FetchFeedError(
+        override val errorMessage: Int = R.string.error_feed_fetching_feeds
+    ) : ResponseError(errorMessage, emptyList())
+
+    data class FetchNewslineError(
+        override val errorMessage: Int = R.string.error_feed_fetching_newsline
+    ) : ResponseError(errorMessage, emptyList())
+
     data class InvalidRssFeed(
         override val errorMessage: Int = R.string.error_invalid_rss_feed
     ) : ResponseError(errorMessage, emptyList())

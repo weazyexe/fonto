@@ -8,6 +8,8 @@
     <string name="error_timed_out">Request was timed out, please try again</string>
     <string name="error_http">Bad request: %s</string>
     <string name="error_feed_icon_error">Error while getting icon for the RSS feed</string>
+    <string name="error_feed_fetching_feeds">Something get wrong while getting your feeds. Please try again later</string>
+    <string name="error_feed_fetching_newsline">Something get wrong while getting your news line. Please try again later</string>
     <string name="error_invalid_rss_feed">Invalid RSS feed, please check the link you pasted</string>
     <string name="error_feed_invalid_title">Title can\'t be empty</string>
     <string name="error_feed_invalid_link">Link can\'t be empty</string>

@@ -17,6 +17,8 @@ class LoadState<T> private constructor(
     val isTransparent: Boolean = false
 ) {
 
+    fun hasError(): Boolean = error != null || data == null
+
     companion object {
 
         /**

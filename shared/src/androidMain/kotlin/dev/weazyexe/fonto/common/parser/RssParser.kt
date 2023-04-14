@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.common.parser
 
 import com.prof.rssparser.Parser
 import dev.weazyexe.fonto.common.error.RssParseException
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.parseDateTime
 
 actual class RssParser {
@@ -10,11 +11,12 @@ actual class RssParser {
         .charset(Charsets.UTF_8)
         .build()
 
-    actual suspend fun parse(url: String): RssFeed {
+    actual suspend fun parse(feed: Feed): RssFeed {
         try {
-            val channel = parser.getChannel(url)
+            val channel = parser.getChannel(feed.link)
             return RssFeed(
-                title = channel.title.orEmpty(),
+                id = feed.id,
+                title = feed.title,
                 link = channel.link.orEmpty(),
                 description = channel.link.orEmpty(),
                 posts = channel.articles.map { article ->
@@ -26,7 +28,8 @@ actual class RssParser {
                         pubDate = article.pubDate?.parseDateTime(),
                         imageUrl = article.image
                     )
-                }
+                },
+                icon = feed.icon
             )
         } catch (e: Exception) {
             throw RssParseException(e)
