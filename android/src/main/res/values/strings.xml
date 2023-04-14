@@ -31,4 +31,10 @@
     <string name="add_edit_feed_delete">Delete</string>
     <string name="add_edit_feed_save">Save</string>
     <string name="add_edit_feed_create">Create</string>
+
+    <string name="feed_delete_confirmation_title">Delete the feed?</string>
+    <string name="feed_delete_confirmation_description_first">You are about to delete</string>
+    <string name="feed_delete_confirmation_description_second">feed. Are you sure about it? You can\'t revert this operation</string>
+    <string name="feed_delete_confirmation_delete">Yes, delete the feed</string>
+    <string name="feed_delete_confirmation_cancel">Cancel</string>
 </resources>

@@ -36,7 +36,7 @@ fun AddEditFeedScreen(
         onTitleChange = viewModel::updateTitle,
         onLinkChange = viewModel::updateLink,
         onFinishClick = viewModel::finish,
-        onDeleteClick = {},
+        onDeleteClick = { },
         onBackClick = { resultBackNavigator.navigateBack(result = false) }
     )
 }

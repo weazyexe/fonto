@@ -12,6 +12,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.destinations.DeleteConfirmationDialogDestination
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asFeed
 import dev.weazyexe.fonto.utils.ReceiveEffect
 import org.koin.androidx.compose.koinViewModel
@@ -54,7 +55,7 @@ fun ManageFeedScreen(
         onAddClick = { navController.navigate(AddEditFeedScreenDestination()) },
         onBackClick = { navController.navigateUp() },
         onClick = { navController.navigate(AddEditFeedScreenDestination(feed = it.asFeed())) },
-        onDeleteClick = { },
+        onDeleteClick = { navController.navigate(DeleteConfirmationDialogDestination(feed = it.asFeed())) },
         onSelectClick = { }
     )
 }

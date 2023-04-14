@@ -93,7 +93,7 @@ class AddEditFeedViewModel(
         val response = request {
             val editFeedId = state.id
             if (editFeedId != null) {
-                updateFeed(Feed(editFeedId, state.title, state.link, image))
+                updateFeed(Feed(editFeedId, state.title.trim(), state.link.trim(), image))
             } else {
                 createFeed(state.title, state.link, image)
             }
