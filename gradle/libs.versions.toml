@@ -2,7 +2,7 @@
 applicationId = "dev.weazyexe.fonto"
 
 kotlin = "1.8.10"
-gradlePlugin = "7.4.2"
+gradlePlugin = "8.0.0"
 ksp = "1.8.10-1.0.9"
 
 compileSdk = "33"
