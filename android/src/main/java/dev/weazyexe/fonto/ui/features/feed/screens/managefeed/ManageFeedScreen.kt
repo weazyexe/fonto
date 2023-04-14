@@ -21,13 +21,14 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ManageFeedScreen(
     navController: NavController,
-    resultRecipient: ResultRecipient<AddEditFeedScreenDestination, Boolean>
+    addEditFeedRecipient: ResultRecipient<AddEditFeedScreenDestination, Boolean>,
+    feedDeleteRecipient: ResultRecipient<DeleteConfirmationDialogDestination, Long?>
 ) {
     val viewModel = koinViewModel<ManageFeedViewModel>()
     val state by viewModel.uiState.collectAsState()
     var message: Int? by remember { mutableStateOf(null) }
 
-    resultRecipient.onNavResult { result ->
+    addEditFeedRecipient.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {
                 // Do nothing
@@ -37,6 +38,17 @@ fun ManageFeedScreen(
                     viewModel.loadFeed()
                     viewModel.showSavedMessage()
                 }
+            }
+        }
+    }
+
+    feedDeleteRecipient.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+            is NavResult.Value -> {
+                result.value?.let { viewModel.deleteFeedById(it) }
             }
         }
     }

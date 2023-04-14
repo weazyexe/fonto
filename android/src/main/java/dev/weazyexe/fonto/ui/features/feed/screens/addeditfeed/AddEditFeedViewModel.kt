@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
-import dev.weazyexe.fonto.common.data.usecase.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.IsNewslineValidUseCase
-import dev.weazyexe.fonto.common.data.usecase.UpdateFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.ui.core.presentation.CoreViewModel

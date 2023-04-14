@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.data.usecase
+package dev.weazyexe.fonto.common.data.usecase.feed
 
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.model.base.LocalImage

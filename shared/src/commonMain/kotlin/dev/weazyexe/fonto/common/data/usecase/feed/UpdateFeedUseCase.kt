@@ -1,11 +1,13 @@
-package dev.weazyexe.fonto.common.data.usecase
+package dev.weazyexe.fonto.common.data.usecase.feed
 
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.model.feed.Feed
 
-class GetFeedUseCase(
+class UpdateFeedUseCase(
     private val feedRepository: FeedRepository
 ) {
 
-    suspend operator fun invoke(): List<Feed> = feedRepository.getAll()
+    operator fun invoke(feed: Feed) {
+        feedRepository.update(feed)
+    }
 }

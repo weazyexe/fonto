@@ -11,6 +11,8 @@
     <string name="error_invalid_rss_feed">Invalid RSS feed, please check the link you pasted</string>
     <string name="error_feed_invalid_title">Title can\'t be empty</string>
     <string name="error_feed_invalid_link">Link can\'t be empty</string>
+    <string name="error_feed_can_not_delete_feed">Error while deletion the feed. Please try again</string>
+    <string name="error_feed_deleted_successfully">Feed has been deleted successfully</string>
     <string name="error_unknown">Something went wrong, please try again</string>
 
     <string name="home_bottom_label_feed">Feed</string>

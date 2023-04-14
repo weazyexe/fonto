@@ -25,15 +25,15 @@ import dev.weazyexe.fonto.ui.core.components.AnimatedAppearing
 @Destination(style = DestinationStyle.Dialog::class)
 @Composable
 fun DeleteConfirmationDialog(
-    resultBackNavigator: ResultBackNavigator<Boolean>,
+    resultBackNavigator: ResultBackNavigator<Long?>,
     feed: Feed,
 ) {
     AnimatedAppearing {
         AlertDialog(
-            onDismissRequest = { resultBackNavigator.navigateBack(result = false) },
+            onDismissRequest = { resultBackNavigator.navigateBack(result = null) },
             confirmButton = {
                 FilledTonalButton(
-                    onClick = { resultBackNavigator.navigateBack(result = true) },
+                    onClick = { resultBackNavigator.navigateBack(result = feed.id) },
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError
@@ -43,7 +43,7 @@ fun DeleteConfirmationDialog(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { resultBackNavigator.navigateBack(result = false) }) {
+                TextButton(onClick = { resultBackNavigator.navigateBack(result = null) }) {
                     Text(text = stringResource(id = R.string.feed_delete_confirmation_cancel))
                 }
             },
