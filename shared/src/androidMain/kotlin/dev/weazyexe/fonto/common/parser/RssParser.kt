@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.common.parser
 import com.prof.rssparser.Parser
 import dev.weazyexe.fonto.common.error.RssParseException
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.common.utils.filterHtmlTags
 import dev.weazyexe.fonto.common.utils.parseDateTime
 
 actual class RssParser {
@@ -23,7 +24,7 @@ actual class RssParser {
                     RssPost(
                         title = article.title.orEmpty(),
                         link = article.link.orEmpty(),
-                        description = article.description.orEmpty(),
+                        description = article.description.orEmpty().filterHtmlTags().trim(),
                         content = article.content,
                         pubDate = article.pubDate?.parseDateTime(),
                         imageUrl = article.image
