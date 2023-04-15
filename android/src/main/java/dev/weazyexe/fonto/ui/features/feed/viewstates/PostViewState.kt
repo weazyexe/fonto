@@ -4,8 +4,9 @@ import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import dev.weazyexe.fonto.common.core.asBitmap
-import dev.weazyexe.fonto.common.extensions.format
 import dev.weazyexe.fonto.common.model.feed.Post
+import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DATE_TIME_FORMAT
+import dev.weazyexe.fonto.common.utils.format
 
 @Immutable
 data class PostViewState(
@@ -27,7 +28,7 @@ fun Post.asViewState() = PostViewState(
     description = description,
     content = content,
     imageUrl = imageUrl,
-    publishedAt = publishedAt?.format(),
+    publishedAt = publishedAt?.format(HUMAN_READABLE_DATE_TIME_FORMAT),
     sourceTitle = source,
     sourceIcon = sourceIcon?.asBitmap(),
     isSaved = isSaved

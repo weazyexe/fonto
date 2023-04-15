@@ -1,7 +1,7 @@
 package dev.weazyexe.fonto.common.data.datasource
 
 import dev.weazyexe.fonto.common.db.FeedDao
-import dev.weazyexe.fonto.common.extensions.flowList
+import dev.weazyexe.fonto.common.utils.flowList
 import dev.weazyexe.fonto.db.FontoDatabase
 import kotlinx.coroutines.flow.Flow
 

@@ -74,6 +74,8 @@ dependencies {
 
     implementation(libs.kotlinx.serialization)
 
+    implementation(libs.napier)
+
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)

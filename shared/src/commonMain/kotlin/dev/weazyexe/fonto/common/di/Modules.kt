@@ -4,18 +4,22 @@ package dev.weazyexe.fonto.common.di
 import dev.weazyexe.fonto.common.data.datasource.FeedDataSource
 import dev.weazyexe.fonto.common.data.datasource.IconDataSource
 import dev.weazyexe.fonto.common.data.datasource.NewslineDataSource
+import dev.weazyexe.fonto.common.data.datasource.RssDataSource
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.IconRepository
 import dev.weazyexe.fonto.common.data.repository.NewslineRepository
+import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.GetCachedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.IsNewslineValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.network.createHttpClient
+import dev.weazyexe.fonto.common.parser.RssParser
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -44,13 +48,23 @@ internal val iconModule = module {
     single { GetIconByRssUrlUseCase(get()) }
 }
 
-internal val newslineModule = module {
+internal val rssModule = module {
     includes(coreModule)
 
-    single { NewslineDataSource() }
-    single { NewslineRepository(get()) }
-    single { IsNewslineValidUseCase(get()) }
-    single { GetNewslineUseCase(get()) }
+    single { RssParser() }
+    single { RssDataSource(get()) }
+    single { RssRepository(get()) }
+    single { IsRssValidUseCase(get()) }
 }
 
-fun appModules(): List<Module> = listOf(feedModule, iconModule, newslineModule)
+internal val newslineModule = module {
+    includes(coreModule)
+    includes(rssModule)
+
+    single { NewslineDataSource(get()) }
+    single { NewslineRepository(get()) }
+    single { GetNewslineUseCase(get(), get()) }
+    single { GetCachedNewslineUseCase(get()) }
+}
+
+fun appModules(): List<Module> = listOf(feedModule, iconModule, rssModule, newslineModule)

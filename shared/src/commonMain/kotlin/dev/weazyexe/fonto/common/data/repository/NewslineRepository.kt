@@ -1,23 +1,18 @@
 package dev.weazyexe.fonto.common.data.repository
 
 import dev.weazyexe.fonto.common.data.datasource.NewslineDataSource
-import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.parser.RssFeed
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import dev.weazyexe.fonto.common.data.mapper.toDao
+import dev.weazyexe.fonto.common.data.mapper.toPostList
+import dev.weazyexe.fonto.common.model.feed.Post
+import kotlinx.coroutines.flow.first
 
 class NewslineRepository(private val newslineDataSource: NewslineDataSource) {
 
-    suspend fun getNewsline(feed: Feed): RssFeed {
-        return newslineDataSource.getNewsline(feed)
-    }
+    suspend fun getAll(): List<Post> = newslineDataSource.getAll().first().toPostList()
 
-    suspend fun getNewslines(feeds: Collection<Feed>): List<RssFeed> {
-        return coroutineScope {
-            feeds.map {
-                async { newslineDataSource.getNewsline(it) }
-            }.awaitAll()
-        }
-    }
+    fun insertOrUpdate(post: Post) = newslineDataSource.insertOrUpdate(post.toDao())
+
+    fun delete(id: String) = newslineDataSource.delete(id)
+
+    fun deleteAll() = newslineDataSource.deleteAll()
 }

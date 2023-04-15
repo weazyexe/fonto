@@ -8,7 +8,7 @@ import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.IsNewslineValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.ui.core.presentation.CoreViewModel
@@ -22,7 +22,7 @@ class AddEditFeedViewModel(
     private val createFeed: CreateFeedUseCase,
     private val updateFeed: UpdateFeedUseCase,
     private val getIconByRssUrl: GetIconByRssUrlUseCase,
-    private val isNewslineValid: IsNewslineValidUseCase
+    private val isRssValid: IsRssValidUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
     private val args = AddEditFeedScreenDestination.argsFrom(savedStateHandle)
@@ -68,7 +68,7 @@ class AddEditFeedViewModel(
         }
 
         setState { copy(finishLoadState = LoadState.loading()) }
-        val isNewslineValid = request { isNewslineValid(state.link) }
+        val isNewslineValid = request { isRssValid(state.link) }
 
         if (isNewslineValid.error != null) {
             setState { copy(finishLoadState = isNewslineValid) }

@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.extensions
+package dev.weazyexe.fonto.common.utils
 
 import app.cash.sqldelight.Query
 import app.cash.sqldelight.coroutines.asFlow

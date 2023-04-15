@@ -1,23 +1,17 @@
 package dev.weazyexe.fonto.common.utils
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toKotlinInstant
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
-actual fun String.parseDateTime(format: String): LocalDateTime? {
-    val formatter = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
+actual fun String.parseDateTime(format: String): Instant? {
+    val formatter = SimpleDateFormat(format)
     val date = formatter.parse(this)
+    return date.toInstant().toKotlinInstant()
+}
 
-    val calendar = Calendar.getInstance()
-    calendar.time = date ?: return null
-
-    return LocalDateTime(
-        year = calendar.get(Calendar.YEAR),
-        month = Month(calendar.get(Calendar.MONTH)),
-        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH),
-        hour = calendar.get(Calendar.HOUR),
-        minute = calendar.get(Calendar.MINUTE),
-        second = calendar.get(Calendar.SECOND)
-    )
+actual fun Instant.format(pattern: String): String {
+    val date = Date(this.toEpochMilliseconds())
+    return SimpleDateFormat(pattern).format(date)
 }
