@@ -26,6 +26,6 @@ class GetNewslineUseCase(
             .flatten()
             .forEach { newslineRepository.insertOrUpdate(it) }
 
-        return Newsline(posts = newslineRepository.getAll())
+        return Newsline(posts = newslineRepository.getAll(feeds))
     }
 }

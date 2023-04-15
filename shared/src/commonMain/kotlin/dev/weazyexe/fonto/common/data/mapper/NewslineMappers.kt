@@ -1,9 +1,9 @@
 package dev.weazyexe.fonto.common.data.mapper
 
 import dev.weazyexe.fonto.common.db.PostDao
-import dev.weazyexe.fonto.common.model.base.LocalImage
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.common.parser.RssFeed
+import dev.weazyexe.fonto.common.model.rss.RssFeed
 import kotlinx.datetime.toInstant
 
 fun RssFeed.toPosts(): List<Post> =
@@ -15,8 +15,7 @@ fun RssFeed.toPosts(): List<Post> =
             content = it.content,
             imageUrl = it.imageUrl,
             publishedAt = it.pubDate,
-            source = title,
-            sourceIcon = icon,
+            feed = it.feed,
             isSaved = false
         )
     }
@@ -29,14 +28,11 @@ fun Post.toDao(): PostDao =
         content = content,
         imageUrl = imageUrl,
         publishedAt = publishedAt?.toString(),
-        source = source,
-        sourceIcon = sourceIcon?.bytes,
+        feedId = feed.id,
         isSaved = isSaved.toString()
     )
 
-fun List<PostDao>.toPostList(): List<Post> = map { it.toPost() }
-
-fun PostDao.toPost(): Post =
+fun PostDao.toPost(feed: Feed): Post =
     Post(
         id = id,
         title = title,
@@ -44,8 +40,7 @@ fun PostDao.toPost(): Post =
         content = content,
         imageUrl = imageUrl,
         publishedAt = publishedAt?.toInstant(),
-        source = source,
-        sourceIcon = sourceIcon?.let { LocalImage(it) },
+        feed = feed,
         isSaved = isSaved.toBooleanStrict()
     )
 

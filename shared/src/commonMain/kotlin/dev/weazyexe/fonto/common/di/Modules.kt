@@ -37,7 +37,7 @@ internal val feedModule = module {
     single { GetFeedUseCase(get()) }
     single { CreateFeedUseCase(get()) }
     single { UpdateFeedUseCase(get()) }
-    single { DeleteFeedUseCase(get()) }
+    single { DeleteFeedUseCase(get(), get()) }
 }
 
 internal val iconModule = module {

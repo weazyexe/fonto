@@ -5,13 +5,12 @@ CREATE TABLE PostDao (
     content TEXT,
     imageUrl TEXT,
     publishedAt TEXT,
-    source TEXT NOT NULL,
-    sourceIcon BLOB,
+    feedId INTEGER NOT NULL,
     isSaved TEXT NOT NULL
 );
 
-getAll:
-SELECT * FROM PostDao;
+getByFeedId:
+SELECT * FROM PostDao WHERE feedId IN ?;
 
 insertOrUpdate:
 INSERT OR REPLACE INTO PostDao
@@ -20,5 +19,5 @@ VALUES ?;
 delete:
 DELETE FROM PostDao WHERE id = :id;
 
-deleteAll:
-DELETE FROM PostDao;
+deletePostsFromFeed:
+DELETE FROM PostDao WHERE feedId = :feedId;

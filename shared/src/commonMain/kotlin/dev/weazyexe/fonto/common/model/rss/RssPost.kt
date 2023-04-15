@@ -1,5 +1,6 @@
-package dev.weazyexe.fonto.common.parser
+package dev.weazyexe.fonto.common.model.rss
 
+import dev.weazyexe.fonto.common.model.feed.Feed
 import kotlinx.datetime.Instant
 
 data class RssPost(
@@ -8,5 +9,6 @@ data class RssPost(
     val description: String,
     val content: String?,
     val pubDate: Instant?,
-    val imageUrl: String?
+    val imageUrl: String?,
+    val feed: Feed,
 )

@@ -29,7 +29,7 @@ fun Post.asViewState() = PostViewState(
     content = content,
     imageUrl = imageUrl,
     publishedAt = publishedAt?.format(HUMAN_READABLE_DATE_TIME_FORMAT),
-    sourceTitle = source,
-    sourceIcon = sourceIcon?.asBitmap(),
+    sourceTitle = feed.title,
+    sourceIcon = feed.icon?.asBitmap(),
     isSaved = isSaved
 )

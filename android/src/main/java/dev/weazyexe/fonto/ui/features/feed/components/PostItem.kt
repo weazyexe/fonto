@@ -62,7 +62,7 @@ fun PostItem(
                         .heightIn(max = 256.dp)
                         .fillMaxWidth()
                         .padding(bottom = 4.dp),
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Crop
                 )
             } else {
                 Spacer(modifier = Modifier.size(4.dp))
