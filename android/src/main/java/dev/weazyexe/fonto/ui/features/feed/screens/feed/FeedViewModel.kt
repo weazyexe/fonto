@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
+import dev.weazyexe.fonto.ui.core.ScrollState
 import dev.weazyexe.fonto.ui.core.presentation.CoreViewModel
 import dev.weazyexe.fonto.ui.core.presentation.LoadState
 import dev.weazyexe.fonto.ui.core.presentation.ResponseError
@@ -52,5 +53,9 @@ class FeedViewModel(
         }
 
         setState { copy(newslineLoadState = newsline) }
+    }
+
+    fun onScroll(state: ScrollState) {
+        setState { copy(scrollState = state) }
     }
 }

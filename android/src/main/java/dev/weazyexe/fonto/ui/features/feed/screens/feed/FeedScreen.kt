@@ -6,17 +6,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
-import org.koin.androidx.compose.koinViewModel
 
 @BottomBarNavGraph(start = true)
 @Destination
 @Composable
-fun FeedScreen(rootPaddingValues: PaddingValues) {
-    val viewModel = koinViewModel<FeedViewModel>()
+fun FeedScreen(
+    rootPaddingValues: PaddingValues,
+    viewModel: FeedViewModel
+) {
     val state by viewModel.uiState.collectAsState()
 
     FeedBody(
         newslineLoadState = state.newslineLoadState,
-        rootPaddingValues = rootPaddingValues
+        scrollState = state.scrollState,
+        rootPaddingValues = rootPaddingValues,
+        onScroll = viewModel::onScroll
     )
 }

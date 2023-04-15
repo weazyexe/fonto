@@ -17,7 +17,9 @@ import dev.weazyexe.fonto.ui.core.components.AnimatedAppearing
 import dev.weazyexe.fonto.ui.features.HomeNavGraph
 import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.ui.features.home.bottombar.BottomBar
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @HomeNavGraph(start = true)
@@ -26,7 +28,9 @@ import dev.weazyexe.fonto.ui.features.home.bottombar.BottomBar
 fun HomeScreen(
     navController: NavController
 ) {
+    val feedViewModel = koinViewModel<FeedViewModel>()
     val bottomBarNavController = rememberNavController()
+
     Scaffold(
         floatingActionButton = {
             AnimatedAppearing {
@@ -47,7 +51,10 @@ fun HomeScreen(
         DestinationsNavHost(
             navGraph = NavGraphs.bottomBar,
             navController = bottomBarNavController,
-            dependenciesContainerBuilder = { dependency(padding) }
+            dependenciesContainerBuilder = {
+                dependency(padding)
+                dependency(feedViewModel)
+            }
         )
     }
 }
