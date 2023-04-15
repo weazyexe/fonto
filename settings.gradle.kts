@@ -1,7 +1,9 @@
 rootProject.name = "fonto"
 
 include(":shared")
-include(":android")
+include(":android:app")
+include(":android:debug")
+include(":android:core:ui")
 
 pluginManagement {
     repositories {
