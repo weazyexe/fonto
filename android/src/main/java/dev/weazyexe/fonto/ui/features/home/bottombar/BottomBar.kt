@@ -5,6 +5,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import dev.weazyexe.fonto.ui.features.NavGraphs
@@ -26,7 +27,12 @@ fun BottomBar(navController: NavController) {
                         launchSingleTop = true
                     }
                 },
-                icon = { Icon(destination.icon, contentDescription = stringResource(destination.label))},
+                icon = {
+                    Icon(
+                        painter = painterResource(id = destination.icon),
+                        contentDescription = stringResource(destination.label)
+                    )
+                },
                 label = { Text(stringResource(destination.label)) },
             )
         }

@@ -1,7 +1,5 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.deleteconfirmation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -10,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -58,7 +57,12 @@ fun DeleteConfirmationDialog(
                 }
                 Text(text = text)
             },
-            icon = { Icon(imageVector = Icons.Default.DeleteForever, contentDescription = null) }
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete_forever_24),
+                    contentDescription = null
+                )
+            }
         )
     }
 }

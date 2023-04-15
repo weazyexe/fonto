@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -28,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,7 +78,7 @@ fun ManageFeedBody(
                     onClick = onAddClick
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        painter = painterResource(id = R.drawable.ic_add_24),
                         contentDescription = null
                     )
                 }
@@ -94,6 +93,7 @@ fun ManageFeedBody(
                     LocalContext.current
                 )
             )
+
             feedsLoadState.data != null -> FeedList(
                 list = feedsLoadState.data,
                 padding = padding,

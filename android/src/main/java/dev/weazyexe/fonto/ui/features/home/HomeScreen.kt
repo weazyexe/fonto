@@ -1,18 +1,18 @@
 package dev.weazyexe.fonto.ui.features.home
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
+import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.ui.core.components.AnimatedAppearing
 import dev.weazyexe.fonto.ui.features.HomeNavGraph
 import dev.weazyexe.fonto.ui.features.NavGraphs
@@ -34,7 +34,7 @@ fun HomeScreen(
                     onClick = { navController.navigate(ManageFeedScreenDestination) }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        painter = painterResource(id = R.drawable.ic_add_24),
                         contentDescription = null
                     )
                 }
