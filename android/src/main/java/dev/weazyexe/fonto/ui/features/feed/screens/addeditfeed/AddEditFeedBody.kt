@@ -55,7 +55,6 @@ fun AddEditFeedBody(
     onTitleChange: (String) -> Unit,
     onLinkChange: (String) -> Unit,
     onBackClick: () -> Unit,
-    onDeleteClick: () -> Unit,
     onFinishClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -200,7 +199,6 @@ private fun AddEditFeedBodyPreview() = ThemedPreview {
         onTitleChange = {},
         onLinkChange = {},
         onFinishClick = {},
-        onDeleteClick = {},
         onBackClick = {}
     )
 }

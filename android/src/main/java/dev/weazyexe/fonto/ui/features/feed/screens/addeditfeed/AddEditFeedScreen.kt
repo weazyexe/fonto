@@ -3,20 +3,19 @@ package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.ui.core.navigation.animation.FullScreenDialogAnimationStyle
 import dev.weazyexe.fonto.utils.ReceiveEffect
 import org.koin.androidx.compose.koinViewModel
 
-@Destination(style = FullScreenDialogAnimationStyle::class)
+@Destination(
+    style = FullScreenDialogAnimationStyle::class,
+    navArgsDelegate = AddEditFeedScreenArgs::class
+)
 @Composable
 fun AddEditFeedScreen(
-    navController: NavController,
-    resultBackNavigator: ResultBackNavigator<Boolean>,
-    feed: Feed? = null
+    resultBackNavigator: ResultBackNavigator<Boolean>
 ) {
     val viewModel = koinViewModel<AddEditFeedViewModel>()
     val state by viewModel.uiState.collectAsState()
@@ -36,7 +35,6 @@ fun AddEditFeedScreen(
         onTitleChange = viewModel::updateTitle,
         onLinkChange = viewModel::updateLink,
         onFinishClick = viewModel::finish,
-        onDeleteClick = { },
         onBackClick = { resultBackNavigator.navigateBack(result = false) }
     )
 }

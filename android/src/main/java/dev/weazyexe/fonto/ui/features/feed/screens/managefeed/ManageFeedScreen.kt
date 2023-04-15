@@ -67,7 +67,6 @@ fun ManageFeedScreen(
         onAddClick = { navController.navigate(AddEditFeedScreenDestination()) },
         onBackClick = { navController.navigateUp() },
         onClick = { navController.navigate(AddEditFeedScreenDestination(feed = it.asFeed())) },
-        onDeleteClick = { navController.navigate(DeleteConfirmationDialogDestination(feed = it.asFeed())) },
-        onSelectClick = { }
+        onDeleteClick = { navController.navigate(DeleteConfirmationDialogDestination(feed = it.asFeed())) }
     )
 }

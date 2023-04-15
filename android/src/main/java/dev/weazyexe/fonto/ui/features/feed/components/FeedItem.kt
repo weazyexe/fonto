@@ -46,7 +46,6 @@ fun FeedItem(
     feed: FeedViewState,
     onClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onSelectClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
@@ -130,7 +129,6 @@ private fun FeedItemPreview() = ThemedPreview {
         feed = FeedViewStatePreview.default,
         onClick = { },
         onDeleteClick = { },
-        onSelectClick = { },
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -142,7 +140,6 @@ private fun FeedItemNoIconPreview() = ThemedPreview {
         feed = FeedViewStatePreview.noIcon,
         onClick = { },
         onDeleteClick = { },
-        onSelectClick = { },
         modifier = Modifier.fillMaxWidth()
     )
 }

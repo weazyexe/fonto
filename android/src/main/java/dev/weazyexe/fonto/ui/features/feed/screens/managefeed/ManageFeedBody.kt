@@ -1,7 +1,6 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -43,7 +42,7 @@ import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 import dev.weazyexe.fonto.ui.theme.ThemedPreview
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageFeedBody(
     feedsLoadState: LoadState<List<FeedViewState>>,
@@ -51,8 +50,7 @@ fun ManageFeedBody(
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
     onClick: (FeedViewState) -> Unit,
-    onDeleteClick: (FeedViewState) -> Unit,
-    onSelectClick: (FeedViewState) -> Unit
+    onDeleteClick: (FeedViewState) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val message = messageRes?.let { stringResource(it) }
@@ -100,8 +98,7 @@ fun ManageFeedBody(
                 list = feedsLoadState.data,
                 padding = padding,
                 onClick = onClick,
-                onDeleteClick = onDeleteClick,
-                onSelectClick = onSelectClick,
+                onDeleteClick = onDeleteClick
             )
         }
     }
@@ -112,8 +109,7 @@ private fun FeedList(
     list: List<FeedViewState>,
     padding: PaddingValues,
     onClick: (FeedViewState) -> Unit,
-    onDeleteClick: (FeedViewState) -> Unit,
-    onSelectClick: (FeedViewState) -> Unit,
+    onDeleteClick: (FeedViewState) -> Unit
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val calculatedPaddings = PaddingValues(
@@ -133,7 +129,6 @@ private fun FeedList(
                     feed = item,
                     onClick = { onClick(item) },
                     onDeleteClick = { onDeleteClick(item) },
-                    onSelectClick = { onSelectClick(item) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -161,7 +156,6 @@ private fun ManageFeedBodyPreview() = ThemedPreview {
         onAddClick = {},
         onBackClick = {},
         onClick = {},
-        onDeleteClick = {},
-        onSelectClick = {}
+        onDeleteClick = {}
     )
 }
