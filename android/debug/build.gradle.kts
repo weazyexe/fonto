@@ -55,6 +55,7 @@ android {
 dependencies {
 
     implementation(project(":android:core:ui"))
+    implementation(project(":shared"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
@@ -65,6 +66,9 @@ dependencies {
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)
+
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.compose)
 
     implementation(libs.compose.destinations.core)
     implementation(libs.compose.destinations.animations)

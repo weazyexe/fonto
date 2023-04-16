@@ -26,4 +26,6 @@ class NewslineRepository(
     fun delete(id: String) = newslineDataSource.delete(id)
 
     fun deletePostsFromFeed(feedId: Long) = newslineDataSource.deletePostsFromFeed(feedId)
+
+    fun deleteAll() = newslineDataSource.deleteAll()
 }

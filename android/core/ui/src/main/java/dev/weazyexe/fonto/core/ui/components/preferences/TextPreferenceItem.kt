@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.settings.components
+package dev.weazyexe.fonto.core.ui.components.preferences
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.core.ui.R
 
 @Composable
 fun TextPreferenceItem(
@@ -65,7 +65,7 @@ fun TextPreferenceItem(
 private fun TextPreferenceItemPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
     TextPreferenceItem(
         title = "Debug menu",
-        description = "Magic inside",
+        description = "Settings for more efficient development",
         icon = R.drawable.ic_bug_24,
         onClick = {},
         modifier = Modifier.fillMaxWidth()

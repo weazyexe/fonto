@@ -21,3 +21,6 @@ DELETE FROM PostDao WHERE id = :id;
 
 deletePostsFromFeed:
 DELETE FROM PostDao WHERE feedId = :feedId;
+
+deleteAll:
+DELETE FROM PostDao;

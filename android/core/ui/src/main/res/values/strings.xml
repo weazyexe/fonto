@@ -41,4 +41,11 @@
     <string name="feed_delete_confirmation_description_second">feed. Are you sure about it? You can\'t revert this operation</string>
     <string name="feed_delete_confirmation_delete">Yes, delete the feed</string>
     <string name="feed_delete_confirmation_cancel">Cancel</string>
+
+    <string name="settings_debug_menu_title">Debug menu</string>
+    <string name="settings_debug_menu_description">Settings for more efficient development</string>
+
+    <string name="debug_title">Debug screen</string>
+    <string name="debug_add_mock_feeds_title">Add mock feeds</string>
+    <string name="debug_add_mock_feeds_description">Deletes current feeds and adds new mock ones</string>
 </resources>

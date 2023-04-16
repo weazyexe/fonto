@@ -20,4 +20,6 @@ class NewslineDataSource(database: FontoDatabase) {
     fun delete(id: String) = queries.delete(id)
 
     fun deletePostsFromFeed(feedId: Long) = queries.deletePostsFromFeed(feedId)
+
+    fun deleteAll() = queries.deleteAll()
 }

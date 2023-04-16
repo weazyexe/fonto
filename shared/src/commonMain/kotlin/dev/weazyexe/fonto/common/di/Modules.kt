@@ -11,6 +11,7 @@ import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
@@ -34,10 +35,12 @@ internal val feedModule = module {
 
     single { FeedDataSource(get()) }
     single { FeedRepository(get()) }
+
     single { GetFeedUseCase(get()) }
     single { CreateFeedUseCase(get()) }
     single { UpdateFeedUseCase(get()) }
     single { DeleteFeedUseCase(get(), get()) }
+    single { DeleteAllFeedsUseCase(get(), get()) }
 }
 
 internal val iconModule = module {

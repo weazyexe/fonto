@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.app
 
 import android.app.Application
 import dev.weazyexe.fonto.common.di.appModules
+import dev.weazyexe.fonto.debug.di.debugModule
 import dev.weazyexe.fonto.ui.features.feed.di.feedModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -18,7 +19,10 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             modules(appModules())
-            modules(feedModule)
+            modules(
+                feedModule,
+                debugModule
+            )
         }
     }
 }
