@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.debug
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -37,7 +38,8 @@ fun DebugBody(
                 title = stringResource(id = R.string.debug_add_mock_feeds_title),
                 description = stringResource(id = R.string.debug_add_mock_feeds_description),
                 icon = R.drawable.ic_feed_24,
-                onClick = onMockFeedClick
+                onClick = onMockFeedClick,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

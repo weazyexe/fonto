@@ -17,11 +17,18 @@ class GetNewslineUseCase(
     suspend operator fun invoke(feeds: List<Feed>): Newsline {
         val rssFeeds = coroutineScope {
             feeds.map {
-                async { rssRepository.getRssFeed(it) }
+                async {
+                    try {
+                        rssRepository.getRssFeed(it)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
             }.awaitAll()
         }
 
         rssFeeds
+            .filterNotNull()
             .map { it.toPosts() }
             .flatten()
             .forEach { newslineRepository.insertOrUpdate(it) }
