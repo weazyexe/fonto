@@ -12,11 +12,11 @@ object AppNavGraph : NavGraphSpec {
 
     override val route: String = "app"
 
-    override val startRoute: Route = NavGraphs.home
+    override val startRoute: Route = NavGraphs.root
 
     override val nestedNavGraphs: List<NavGraphSpec> =
         listOf(
-            NavGraphs.home,
+            NavGraphs.root,
             DebugNavGraph
         )
 }
