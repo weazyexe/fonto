@@ -10,3 +10,7 @@ sealed interface LoadState<T> {
 
     data class Error<T>(val error: ResponseError) : LoadState<T>, HasResult<T>
 }
+
+fun <T, VS> LoadState.Data<T>.asViewState(mapper: (T) -> VS): LoadState.Data<VS> {
+    return LoadState.Data(mapper(data))
+}

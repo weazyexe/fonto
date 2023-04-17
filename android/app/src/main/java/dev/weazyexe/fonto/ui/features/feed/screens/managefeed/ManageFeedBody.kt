@@ -34,6 +34,7 @@ import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.ErrorPane
+import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.FeedItem
@@ -85,28 +86,25 @@ fun ManageFeedBody(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        when (feedsLoadState) {
-            is LoadState.Loading -> {
-                LoadingPane()
-            }
-
-            is LoadState.Error -> {
-                ErrorPane(
-                    message = feedsLoadState.error.asLocalizedMessage(
-                        LocalContext.current
-                    )
-                )
-            }
-
-            is LoadState.Data -> {
+        LoadStateComponent(
+            loadState = feedsLoadState,
+            onSuccess = {
                 FeedList(
-                    list = feedsLoadState.data,
+                    list = it.data,
                     padding = padding,
                     onClick = onClick,
                     onDeleteClick = onDeleteClick
                 )
-            }
-        }
+            },
+            onError = {
+                ErrorPane(
+                    message = it.error.asLocalizedMessage(
+                        LocalContext.current
+                    )
+                )
+            },
+            onLoading = { LoadingPane() }
+        )
     }
 }
 

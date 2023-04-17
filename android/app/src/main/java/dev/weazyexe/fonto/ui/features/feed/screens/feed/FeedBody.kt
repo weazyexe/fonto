@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.ErrorPane
+import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.PostItem
@@ -50,24 +51,19 @@ fun FeedBody(
             )
         }
     ) { padding ->
-        when (newslineLoadState) {
-            is LoadState.Loading -> {
-                LoadingPane()
-            }
-
-            is LoadState.Error -> {
-                ErrorPane(newslineLoadState.error.asLocalizedMessage(context))
-            }
-
-            is LoadState.Data -> {
+        LoadStateComponent(
+            loadState = newslineLoadState,
+            onSuccess = {
                 NewslineList(
-                    newsline = newslineLoadState.data,
+                    newsline = it.data,
                     scrollState = scrollState,
                     paddingValues = PaddingValues(top = padding.calculateTopPadding()),
                     onScroll = onScroll
                 )
-            }
-        }
+            },
+            onError = { ErrorPane(it.error.asLocalizedMessage(context)) },
+            onLoading = { LoadingPane() }
+        )
     }
 }
 

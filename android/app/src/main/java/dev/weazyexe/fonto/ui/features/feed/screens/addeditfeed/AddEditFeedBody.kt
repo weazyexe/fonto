@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.core.ui.components.CloseDialogButton
+import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -166,15 +167,10 @@ fun AddEditFeedBody(
 private fun FeedIcon(
     iconLoadState: LoadState<Bitmap?>
 ) {
-    when (iconLoadState) {
-        is LoadState.Loading -> {
-            CircularProgressIndicator(
-                modifier = Modifier.size(16.dp),
-                strokeWidth = 2.dp
-            )
-        }
-        is LoadState.Data -> {
-            val icon = iconLoadState.data
+    LoadStateComponent(
+        loadState = iconLoadState,
+        onSuccess = {
+            val icon = it.data
             if (icon != null) {
                 Image(
                     bitmap = icon.asImageBitmap(),
@@ -182,11 +178,17 @@ private fun FeedIcon(
                     modifier = Modifier.size(16.dp)
                 )
             }
-        }
-        else -> {
+        },
+        onError = {
             // Do nothing
+        },
+        onLoading = {
+            CircularProgressIndicator(
+                modifier = Modifier.size(16.dp),
+                strokeWidth = 2.dp
+            )
         }
-    }
+    )
 }
 
 @Preview
