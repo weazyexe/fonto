@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.core.ui.components.CloseDialogButton
-import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
+import dev.weazyexe.fonto.core.ui.presentation.LoadState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,8 +48,8 @@ fun AddEditFeedBody(
     title: String,
     link: String,
     isEditMode: Boolean = false,
-    iconLoadState: NewLoadState<Bitmap?>,
-    finishLoadState: NewLoadState<Unit>,
+    iconLoadState: LoadState<Bitmap?>,
+    finishLoadState: LoadState<Unit>,
     onTitleChange: (String) -> Unit,
     onLinkChange: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -60,13 +60,13 @@ fun AddEditFeedBody(
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(iconLoadState) {
-        (iconLoadState as? NewLoadState.Error)?.let {
+        (iconLoadState as? LoadState.Error)?.let {
             snackbarHostState.showSnackbar(it.error.asLocalizedMessage(context))
         }
     }
 
     LaunchedEffect(finishLoadState) {
-        (finishLoadState as? NewLoadState.Error)?.let {
+        (finishLoadState as? LoadState.Error)?.let {
             snackbarHostState.showSnackbar(it.error.asLocalizedMessage(context))
         }
     }
@@ -164,16 +164,16 @@ fun AddEditFeedBody(
 
 @Composable
 private fun FeedIcon(
-    iconLoadState: NewLoadState<Bitmap?>
+    iconLoadState: LoadState<Bitmap?>
 ) {
     when (iconLoadState) {
-        is NewLoadState.Loading -> {
+        is LoadState.Loading -> {
             CircularProgressIndicator(
                 modifier = Modifier.size(16.dp),
                 strokeWidth = 2.dp
             )
         }
-        is NewLoadState.Data -> {
+        is LoadState.Data -> {
             val icon = iconLoadState.data
             if (icon != null) {
                 Image(
@@ -199,8 +199,8 @@ private fun AddEditFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPr
         title = "Rozetked",
         link = "https://rozetked.me/turbo",
         isEditMode = true,
-        iconLoadState = NewLoadState.Data(icon),
-        finishLoadState = NewLoadState.Data(Unit),
+        iconLoadState = LoadState.Data(icon),
+        finishLoadState = LoadState.Data(Unit),
         onTitleChange = {},
         onLinkChange = {},
         onFinishClick = {},

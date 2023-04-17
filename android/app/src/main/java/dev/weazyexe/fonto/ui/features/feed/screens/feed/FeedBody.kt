@@ -22,7 +22,7 @@ import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
-import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
+import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.PostItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import kotlinx.coroutines.flow.collect
@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedBody(
-    newslineLoadState: NewLoadState<NewslineViewState>,
+    newslineLoadState: LoadState<NewslineViewState>,
     scrollState: ScrollState,
     rootPaddingValues: PaddingValues,
     onScroll: (ScrollState) -> Unit
@@ -51,15 +51,15 @@ fun FeedBody(
         }
     ) { padding ->
         when (newslineLoadState) {
-            is NewLoadState.Loading -> {
+            is LoadState.Loading -> {
                 LoadingPane()
             }
 
-            is NewLoadState.Error -> {
+            is LoadState.Error -> {
                 ErrorPane(newslineLoadState.error.asLocalizedMessage(context))
             }
 
-            is NewLoadState.Data -> {
+            is LoadState.Data -> {
                 NewslineList(
                     newsline = newslineLoadState.data,
                     scrollState = scrollState,

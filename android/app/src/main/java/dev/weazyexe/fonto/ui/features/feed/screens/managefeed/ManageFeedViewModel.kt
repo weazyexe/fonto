@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
+import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
 import kotlinx.coroutines.launch
@@ -22,10 +22,10 @@ class ManageFeedViewModel(
     }
 
     fun loadFeed() = viewModelScope.launch {
-        setState { copy(feedLoadState = NewLoadState.Loading()) }
+        setState { copy(feedLoadState = LoadState.Loading()) }
         val feedResponse = request { getFeed() }
             .withErrorHandling {
-                setState { copy(feedLoadState = NewLoadState.Error(it)) }
+                setState { copy(feedLoadState = LoadState.Error(it)) }
             } ?: return@launch
 
         val preparedViewState = feedResponse.asViewState { data ->
