@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
 import kotlinx.coroutines.launch
@@ -22,8 +22,12 @@ class ManageFeedViewModel(
     }
 
     fun loadFeed() = viewModelScope.launch {
-        setState { copy(feedLoadState = LoadState.loading()) }
+        setState { copy(feedLoadState = NewLoadState.Loading()) }
         val feedResponse = request { getFeed() }
+            .withErrorHandling {
+                setState { copy(feedLoadState = NewLoadState.Error(it)) }
+            } ?: return@launch
+
         val preparedViewState = feedResponse.asViewState { data ->
             data.map { it.asViewState() }
         }
@@ -31,12 +35,10 @@ class ManageFeedViewModel(
     }
 
     fun deleteFeedById(id: Long) = viewModelScope.launch {
-        val response = request { deleteFeed(id) }
-
-        if (response.error != null || response.data == null) {
-            ManageFeedEffect.ShowMessage(R.string.error_feed_can_not_delete_feed).emit()
-            return@launch
-        }
+        request { deleteFeed(id) }
+            .withErrorHandling {
+                ManageFeedEffect.ShowMessage(R.string.error_feed_can_not_delete_feed).emit()
+            } ?: return@launch
 
         ManageFeedEffect.ShowMessage(R.string.error_feed_deleted_successfully).emit()
         loadFeed()

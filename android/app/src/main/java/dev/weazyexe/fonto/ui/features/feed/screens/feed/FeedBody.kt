@@ -22,7 +22,7 @@ import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
 import dev.weazyexe.fonto.ui.features.feed.components.PostItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import kotlinx.coroutines.flow.collect
@@ -31,13 +31,12 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedBody(
-    newslineLoadState: LoadState<NewslineViewState>,
+    newslineLoadState: NewLoadState<NewslineViewState>,
     scrollState: ScrollState,
     rootPaddingValues: PaddingValues,
     onScroll: (ScrollState) -> Unit
 ) {
     val context = LocalContext.current
-    val newsline = newslineLoadState.data
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -51,20 +50,23 @@ fun FeedBody(
             )
         }
     ) { padding ->
-        when {
-            newslineLoadState.isLoading -> LoadingPane()
-            newslineLoadState.hasError() -> ErrorPane(
-                newslineLoadState.error?.asLocalizedMessage(
-                    context
-                )
-            )
+        when (newslineLoadState) {
+            is NewLoadState.Loading -> {
+                LoadingPane()
+            }
 
-            newsline != null -> NewslineList(
-                newsline = newsline,
-                scrollState = scrollState,
-                paddingValues = PaddingValues(top = padding.calculateTopPadding()),
-                onScroll = onScroll
-            )
+            is NewLoadState.Error -> {
+                ErrorPane(newslineLoadState.error.asLocalizedMessage(context))
+            }
+
+            is NewLoadState.Data -> {
+                NewslineList(
+                    newsline = newslineLoadState.data,
+                    scrollState = scrollState,
+                    paddingValues = PaddingValues(top = padding.calculateTopPadding()),
+                    onScroll = onScroll
+                )
+            }
         }
     }
 }

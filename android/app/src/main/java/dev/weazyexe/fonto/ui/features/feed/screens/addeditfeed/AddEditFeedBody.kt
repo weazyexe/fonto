@@ -40,8 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.core.ui.components.CloseDialogButton
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
+import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,8 +48,8 @@ fun AddEditFeedBody(
     title: String,
     link: String,
     isEditMode: Boolean = false,
-    iconLoadState: LoadState<Bitmap>,
-    finishLoadState: LoadState<Boolean>,
+    iconLoadState: NewLoadState<Bitmap?>,
+    finishLoadState: NewLoadState<Unit>,
     onTitleChange: (String) -> Unit,
     onLinkChange: (String) -> Unit,
     onBackClick: () -> Unit,
@@ -61,14 +60,14 @@ fun AddEditFeedBody(
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(iconLoadState) {
-        iconLoadState.error?.let {
-            snackbarHostState.showSnackbar(it.asLocalizedMessage(context))
+        (iconLoadState as? NewLoadState.Error)?.let {
+            snackbarHostState.showSnackbar(it.error.asLocalizedMessage(context))
         }
     }
 
     LaunchedEffect(finishLoadState) {
-        finishLoadState.error?.let {
-            snackbarHostState.showSnackbar(it.asLocalizedMessage(context))
+        (finishLoadState as? NewLoadState.Error)?.let {
+            snackbarHostState.showSnackbar(it.error.asLocalizedMessage(context))
         }
     }
 
@@ -165,20 +164,27 @@ fun AddEditFeedBody(
 
 @Composable
 private fun FeedIcon(
-    iconLoadState: LoadState<Bitmap>
+    iconLoadState: NewLoadState<Bitmap?>
 ) {
-    val icon = iconLoadState.data
-    when {
-        iconLoadState.isLoading -> CircularProgressIndicator(
-            modifier = Modifier.size(16.dp),
-            strokeWidth = 2.dp
-        )
-        icon != null -> {
-            Image(
-                bitmap = icon.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp)
+    when (iconLoadState) {
+        is NewLoadState.Loading -> {
+            CircularProgressIndicator(
+                modifier = Modifier.size(16.dp),
+                strokeWidth = 2.dp
             )
+        }
+        is NewLoadState.Data -> {
+            val icon = iconLoadState.data
+            if (icon != null) {
+                Image(
+                    bitmap = icon.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
+        else -> {
+            // Do nothing
         }
     }
 }
@@ -193,9 +199,8 @@ private fun AddEditFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPr
         title = "Rozetked",
         link = "https://rozetked.me/turbo",
         isEditMode = true,
-        iconLoadState = icon?.let { LoadState.data(it) }
-            ?: LoadState.error(ResponseError.UnknownError()),
-        finishLoadState = LoadState.initial(),
+        iconLoadState = NewLoadState.Data(icon),
+        finishLoadState = NewLoadState.Data(Unit),
         onTitleChange = {},
         onLinkChange = {},
         onFinishClick = {},

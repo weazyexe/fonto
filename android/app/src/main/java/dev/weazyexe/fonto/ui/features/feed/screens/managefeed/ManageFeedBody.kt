@@ -35,7 +35,7 @@ import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
 import dev.weazyexe.fonto.ui.features.feed.components.FeedItem
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
@@ -43,7 +43,7 @@ import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageFeedBody(
-    feedsLoadState: LoadState<List<FeedViewState>>,
+    feedsLoadState: NewLoadState<List<FeedViewState>>,
     @StringRes messageRes: Int?,
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
@@ -85,22 +85,27 @@ fun ManageFeedBody(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        val error = feedsLoadState.error
-        val data = feedsLoadState.data
-        when {
-            feedsLoadState.isLoading -> LoadingPane()
-            error != null -> ErrorPane(
-                message = error.asLocalizedMessage(
-                    LocalContext.current
-                )
-            )
+        when (feedsLoadState) {
+            is NewLoadState.Loading -> {
+                LoadingPane()
+            }
 
-            data != null -> FeedList(
-                list = data,
-                padding = padding,
-                onClick = onClick,
-                onDeleteClick = onDeleteClick
-            )
+            is NewLoadState.Error -> {
+                ErrorPane(
+                    message = feedsLoadState.error.asLocalizedMessage(
+                        LocalContext.current
+                    )
+                )
+            }
+
+            is NewLoadState.Data -> {
+                FeedList(
+                    list = feedsLoadState.data,
+                    padding = padding,
+                    onClick = onClick,
+                    onDeleteClick = onDeleteClick
+                )
+            }
         }
     }
 }
@@ -147,7 +152,7 @@ private fun FeedList(
 @Composable
 private fun ManageFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
     ManageFeedBody(
-        feedsLoadState = LoadState.data(
+        feedsLoadState = NewLoadState.Data(
             listOf(
                 FeedViewStatePreview.default,
                 FeedViewStatePreview.noIcon,

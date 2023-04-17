@@ -84,3 +84,7 @@ fun <T, VS> LoadState<T>.asViewState(mapper: (T) -> VS): LoadState<VS> {
     val errorToThrow = LoadState.error<VS>(error ?: ResponseError.UnknownError())
     return LoadState.data(mapper(data ?: return errorToThrow))
 }
+
+fun <T, VS> NewLoadState.Data<T>.asViewState(mapper: (T) -> VS): NewLoadState.Data<VS> {
+    return NewLoadState.Data(mapper(data))
+}

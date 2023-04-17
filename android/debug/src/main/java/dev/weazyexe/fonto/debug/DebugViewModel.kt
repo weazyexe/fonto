@@ -23,8 +23,8 @@ class DebugViewModel(
         ),
         Feed(
             id = 2,
-            title = "The Verge",
-            link = "https://www.theverge.com/rss/index.xml",
+            title = "Habr",
+            link = "https://habr.ru/rss/all/all?fl=ru",
             icon = null
         ),
         Feed(
@@ -59,8 +59,8 @@ class DebugViewModel(
         ),
         Feed(
             id = 8,
-            title = "BBC News",
-            link = "http://feeds.bbci.co.uk/news/rss.xml",
+            title = "DTF",
+            link = "https://dtf.ru/rss/all",
             icon = null
         ),
         Feed(
@@ -71,10 +71,10 @@ class DebugViewModel(
         ),
         Feed(
             id = 10,
-            title = "CNN",
-            link = "http://rss.cnn.com/rss/edition.rss",
+            title = "VC.ru",
+            link = "https://vc.ru/rss/all",
             icon = null
-        )
+        ),
     )
 
     fun addMockFeeds() = viewModelScope.launch {

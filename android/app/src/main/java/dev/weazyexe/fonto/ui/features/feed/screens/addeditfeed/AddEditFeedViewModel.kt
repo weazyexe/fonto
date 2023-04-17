@@ -12,7 +12,7 @@ import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.presentation.NewLoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import kotlinx.coroutines.launch
@@ -31,8 +31,7 @@ class AddEditFeedViewModel(
         id = args.feed?.id,
         title = args.feed?.title.orEmpty(),
         link = args.feed?.link.orEmpty(),
-        iconLoadState = args.feed?.icon?.asBitmap()?.let { LoadState.data(it) }
-            ?: LoadState.initial()
+        iconLoadState = NewLoadState.Data(args.feed?.icon?.asBitmap())
     )
 
     fun updateTitle(title: String) {
@@ -43,47 +42,37 @@ class AddEditFeedViewModel(
         setState { copy(link = link) }
 
         if (link.isUrlValid()) {
-            setState { copy(iconLoadState = LoadState.loading()) }
+            setState { copy(iconLoadState = NewLoadState.Loading()) }
             val icon = request {
                 val rawBytesImage = getIconByRssUrl(link)
-                val bitmap = rawBytesImage.asBitmap()
-                if (bitmap != null) {
-                    return@request bitmap
-                } else {
-                    throw ResponseError.FeedIconError()
-                }
-            }
+                rawBytesImage.asBitmap()
+            }.withErrorHandling {
+                setState { copy(iconLoadState = NewLoadState.Error(it)) }
+            } ?: return@launch
+
             setState { copy(iconLoadState = icon) }
         }
     }
 
     fun finish() = viewModelScope.launch {
         if (state.title.isEmpty()) {
-            setState { copy(finishLoadState = LoadState.error(ResponseError.FeedValidationError(R.string.error_feed_invalid_title))) }
+            setState { copy(finishLoadState = NewLoadState.Error(ResponseError.FeedValidationError(R.string.error_feed_invalid_title))) }
             return@launch
         }
 
         if (state.link.isEmpty()) {
-            setState { copy(finishLoadState = LoadState.error(ResponseError.FeedValidationError(R.string.error_feed_invalid_link))) }
+            setState { copy(finishLoadState = NewLoadState.Error(ResponseError.FeedValidationError(R.string.error_feed_invalid_link))) }
             return@launch
         }
 
-        setState { copy(finishLoadState = LoadState.loading()) }
+        setState { copy(finishLoadState = NewLoadState.Loading()) }
         val isNewslineValid = request { isRssValid(state.link) }
+            .withErrorHandling {
+                setState { copy(finishLoadState = NewLoadState.Error(it)) }
+            } ?: return@launch
 
-        if (isNewslineValid.error != null) {
-            setState { copy(finishLoadState = isNewslineValid) }
-            return@launch
-        }
-
-        val data = isNewslineValid.data
-        if (data == null) {
-            setState { copy(finishLoadState = LoadState.error(ResponseError.UnknownError())) }
-            return@launch
-        }
-
-        if (!data) {
-            setState { copy(finishLoadState = LoadState.error(ResponseError.InvalidRssFeed())) }
+        if (!isNewslineValid.data) {
+            setState { copy(finishLoadState = NewLoadState.Error(ResponseError.InvalidRssFeed())) }
             return@launch
         }
 
@@ -91,21 +80,18 @@ class AddEditFeedViewModel(
     }
 
     private fun saveChanges() = viewModelScope.launch {
-        val image = state.iconLoadState.data?.asLocalImage()
-        val response = request {
+        val image = (state.iconLoadState as? NewLoadState.Data)?.data?.asLocalImage()
+
+        request {
             val editFeedId = state.id
             if (editFeedId != null) {
                 updateFeed(Feed(editFeedId, state.title.trim(), state.link.trim(), image))
             } else {
                 createFeed(state.title, state.link, image)
             }
-        }
-
-        val error = response.error
-        if (error != null) {
-            setState { copy(finishLoadState = LoadState.error(error)) }
-            return@launch
-        }
+        }.withErrorHandling {
+            setState { copy(finishLoadState = NewLoadState.Error(it)) }
+        } ?: return@launch
 
         AddEditFeedEffect.NavigateUp(isSuccessful = true).emit()
     }

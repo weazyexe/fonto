@@ -48,18 +48,27 @@ abstract class CoreViewModel<S : State, E : Effect>() : ViewModel() {
         _uiState.value = stateBuilder(uiState.value)
     }
 
-    protected suspend fun <T> request(request: suspend () -> T): LoadState<T> =
+    protected suspend fun <T> request(request: suspend () -> T): NewLoadState.HasResult<T> =
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val response = request()
-                LoadState.data(response)
+                NewLoadState.Data(response)
             } catch (e: ResponseError) {
-                LoadState.error(e)
+                NewLoadState.Error(e)
             } catch (e: Throwable) {
                 val mappedError = e.asResponseError()
-                LoadState.error(mappedError)
+                NewLoadState.Error(mappedError)
             }
         }
+
+    protected inline fun <T> NewLoadState.HasResult<T>.withErrorHandling(crossinline handling: (ResponseError) -> Unit): NewLoadState.Data<T>? {
+        return if (this is NewLoadState.Error) {
+            handling(error)
+            null
+        } else {
+            this as NewLoadState.Data
+        }
+    }
 
     /**
      * Triggers side-effect
