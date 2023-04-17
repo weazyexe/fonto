@@ -11,6 +11,8 @@ class FeedDataSource(database: FontoDatabase) {
 
     fun getAll(): Flow<List<FeedDao>> = queries.getAll().flowList()
 
+    fun getById(id: Long): FeedDao = queries.getById(id).executeAsOne()
+
     fun insert(title: String, link: String, icon: ByteArray?) = queries.insert(title, link, icon)
 
     fun update(feed: FeedDao) = queries.update(feed)

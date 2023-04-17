@@ -33,6 +33,7 @@ fun ManageFeedScreen(
             is NavResult.Canceled -> {
                 // Do nothing
             }
+
             is NavResult.Value -> {
                 if (result.value) {
                     viewModel.loadFeed()
@@ -47,6 +48,7 @@ fun ManageFeedScreen(
             is NavResult.Canceled -> {
                 // Do nothing
             }
+
             is NavResult.Value -> {
                 result.value?.let { viewModel.deleteFeedById(it) }
             }
@@ -64,9 +66,19 @@ fun ManageFeedScreen(
     ManageFeedBody(
         feedsLoadState = state.feedLoadState,
         messageRes = message,
-        onAddClick = { navController.navigate(AddEditFeedScreenDestination()) },
+        onAddClick = {
+            navController.navigate(AddEditFeedScreenDestination())
+        },
         onBackClick = { navController.navigateUp() },
-        onClick = { navController.navigate(AddEditFeedScreenDestination(feed = it.asFeed())) },
+        onClick = {
+            navController.navigate(
+                AddEditFeedScreenDestination(
+                    feedId = it.id,
+                    feedTitle = it.title,
+                    feedLink = it.link
+                )
+            )
+        },
         onDeleteClick = { navController.navigate(DeleteConfirmationDialogDestination(feed = it.asFeed())) }
     )
 }

@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedIconUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -14,6 +15,7 @@ import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
+import dev.weazyexe.fonto.core.ui.presentation.asViewState
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import kotlinx.coroutines.launch
 
@@ -22,17 +24,21 @@ class AddEditFeedViewModel(
     private val createFeed: CreateFeedUseCase,
     private val updateFeed: UpdateFeedUseCase,
     private val getIconByRssUrl: GetIconByRssUrlUseCase,
-    private val isRssValid: IsRssValidUseCase
+    private val isRssValid: IsRssValidUseCase,
+    private val getFeedIcon: GetFeedIconUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
     private val args = AddEditFeedScreenDestination.argsFrom(savedStateHandle)
 
     override val initialState: AddEditFeedState = AddEditFeedState(
-        id = args.feed?.id,
-        title = args.feed?.title.orEmpty(),
-        link = args.feed?.link.orEmpty(),
-        iconLoadState = LoadState.Data(args.feed?.icon?.asBitmap())
+        id = args.feedId,
+        title = args.feedTitle,
+        link = args.feedLink
     )
+
+    init {
+        args.feedId?.let { fetchFeedIcon(it) }
+    }
 
     fun updateTitle(title: String) {
         setState { copy(title = title) }
@@ -94,5 +100,14 @@ class AddEditFeedViewModel(
         } ?: return@launch
 
         AddEditFeedEffect.NavigateUp(isSuccessful = true).emit()
+    }
+
+    private fun fetchFeedIcon(id: Long) = viewModelScope.launch {
+        val icon = request { getFeedIcon(id) }
+            .withErrorHandling {  }
+
+        if (icon is LoadState.Data) {
+            setState { copy(iconLoadState = icon.asViewState { it?.asBitmap() }) }
+        }
     }
 }

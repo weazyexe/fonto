@@ -8,6 +8,9 @@ CREATE TABLE FeedDao (
 getAll:
 SELECT * FROM FeedDao;
 
+getById:
+SELECT * FROM FeedDao WHERE id = :id;
+
 insert:
 INSERT INTO FeedDao(title, link, icon)
 VALUES (?, ?, ?);

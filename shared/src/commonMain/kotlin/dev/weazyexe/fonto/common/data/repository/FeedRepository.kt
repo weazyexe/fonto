@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.common.data.repository
 
 import dev.weazyexe.fonto.common.data.datasource.FeedDataSource
 import dev.weazyexe.fonto.common.data.mapper.toDao
+import dev.weazyexe.fonto.common.data.mapper.toFeed
 import dev.weazyexe.fonto.common.data.mapper.toFeedList
 import dev.weazyexe.fonto.common.model.base.LocalImage
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -13,6 +14,10 @@ class FeedRepository(
 
     suspend fun getAll(): List<Feed> {
         return feedDataSource.getAll().first().toFeedList()
+    }
+
+    fun getById(id: Long): Feed {
+        return feedDataSource.getById(id).toFeed()
     }
 
     fun insert(title: String, link: String, icon: LocalImage?) {
