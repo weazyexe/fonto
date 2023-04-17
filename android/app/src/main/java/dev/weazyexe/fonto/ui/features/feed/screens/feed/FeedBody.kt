@@ -1,10 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -46,7 +43,7 @@ fun FeedBody(
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .padding(rootPaddingValues),
+            .padding(bottom = rootPaddingValues.calculateBottomPadding()),
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.home_bottom_label_feed)) },
@@ -65,7 +62,7 @@ fun FeedBody(
             newsline != null -> NewslineList(
                 newsline = newsline,
                 scrollState = scrollState,
-                paddingValues = padding,
+                paddingValues = PaddingValues(top = padding.calculateTopPadding()),
                 onScroll = onScroll
             )
         }
@@ -99,8 +96,7 @@ private fun NewslineList(
     }
 
     LazyColumn(
-        modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
-        contentPadding = WindowInsets.statusBars.asPaddingValues(),
+        modifier = Modifier.padding(paddingValues),
         state = lazyListState
     ) {
         items(items = newsline.posts) {
