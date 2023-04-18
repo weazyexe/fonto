@@ -13,11 +13,11 @@ sealed class ResponseError(
 ) : Throwable() {
 
     data class UnknownError(
-        override val errorMessage: Int = R.string.error_unknown
+        override val errorMessage: Int = R.string.error_unknown_message
     ) : ResponseError(errorMessage, emptyList())
 
     data class NoInternetError(
-        override val errorMessage: Int = R.string.error_no_internet
+        override val errorMessage: Int = R.string.error_no_internet_message
     ) : ResponseError(errorMessage, emptyList())
 
     data class TimeoutError(

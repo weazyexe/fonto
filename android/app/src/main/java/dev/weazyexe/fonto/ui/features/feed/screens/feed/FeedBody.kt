@@ -15,14 +15,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
-import dev.weazyexe.fonto.core.ui.components.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
+import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
+import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.PostItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
@@ -35,9 +36,10 @@ fun FeedBody(
     newslineLoadState: LoadState<NewslineViewState>,
     scrollState: ScrollState,
     rootPaddingValues: PaddingValues,
-    onScroll: (ScrollState) -> Unit
+    onScroll: (ScrollState) -> Unit,
+    onManageFeed: () -> Unit,
+    onRefreshClick: () -> Unit
 ) {
-    val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -58,10 +60,20 @@ fun FeedBody(
                     newsline = it.data,
                     scrollState = scrollState,
                     paddingValues = PaddingValues(top = padding.calculateTopPadding()),
-                    onScroll = onScroll
+                    onScroll = onScroll,
+                    onManageFeed = onManageFeed
                 )
             },
-            onError = { ErrorPane(it.error.asLocalizedMessage(context)) },
+            onError = {
+                ErrorPane(
+                    it.error.asErrorPaneParams(
+                        action = ErrorPaneParams.Action(
+                            title = R.string.error_pane_refresh,
+                            onClick = onRefreshClick
+                        )
+                    )
+                )
+            },
             onLoading = { LoadingPane() }
         )
     }
@@ -72,7 +84,8 @@ private fun NewslineList(
     newsline: NewslineViewState,
     scrollState: ScrollState,
     paddingValues: PaddingValues,
-    onScroll: (ScrollState) -> Unit
+    onScroll: (ScrollState) -> Unit,
+    onManageFeed: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -93,17 +106,29 @@ private fun NewslineList(
         lazyListState.scrollToItem(scrollState.item, scrollState.offset)
     }
 
-    LazyColumn(
-        modifier = Modifier.padding(paddingValues),
-        state = lazyListState
-    ) {
-        items(items = newsline.posts) {
-            PostItem(
-                post = it,
-                onPostClick = { /*TODO*/ },
-                onSaveClick = { /*TODO*/ },
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-            )
+    if (newsline.posts.isNotEmpty()) {
+        LazyColumn(
+            modifier = Modifier.padding(paddingValues),
+            state = lazyListState
+        ) {
+            items(items = newsline.posts) {
+                PostItem(
+                    post = it,
+                    onPostClick = { /*TODO*/ },
+                    onSaveClick = { /*TODO*/ },
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
         }
+    } else {
+        ErrorPane(
+            params = ErrorPaneParams.empty(
+                message = R.string.feed_empty_newsline,
+                action = ErrorPaneParams.Action(
+                    title = R.string.feed_empty_newsline_manage_feed,
+                    onClick = onManageFeed
+                )
+            )
+        )
     }
 }

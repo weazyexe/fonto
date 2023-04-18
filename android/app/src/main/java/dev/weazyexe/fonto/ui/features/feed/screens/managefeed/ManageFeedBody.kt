@@ -24,7 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,9 +32,11 @@ import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
-import dev.weazyexe.fonto.core.ui.components.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
+import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
+import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.FeedItem
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
@@ -97,11 +98,7 @@ fun ManageFeedBody(
                 )
             },
             onError = {
-                ErrorPane(
-                    message = it.error.asLocalizedMessage(
-                        LocalContext.current
-                    )
-                )
+                ErrorPane(it.error.asErrorPaneParams())
             },
             onLoading = { LoadingPane() }
         )
@@ -142,7 +139,7 @@ private fun FeedList(
             }
         }
     } else {
-        ErrorPane(message = stringResource(id = R.string.manage_feed_empty_feed))
+        ErrorPane(params = ErrorPaneParams.empty())
     }
 }
 
