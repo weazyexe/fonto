@@ -41,7 +41,12 @@ class ManageFeedViewModel(
             } ?: return@launch
 
         ManageFeedEffect.ShowMessage(R.string.error_feed_deleted_successfully).emit()
+        updateChangesStatus()
         loadFeed()
+    }
+
+    fun updateChangesStatus() {
+        setState { copy(hasChanges = true) }
     }
 
     fun showSavedMessage() {

@@ -13,6 +13,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
+import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
@@ -27,7 +28,8 @@ import org.koin.androidx.compose.koinViewModel
 @Destination
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    manageFeedResultRecipient: ResultRecipient<ManageFeedScreenDestination, Boolean>
 ) {
     val feedViewModel = koinViewModel<FeedViewModel>()
     val bottomBarNavController = rememberNavController()
@@ -55,6 +57,11 @@ fun HomeScreen(
             dependenciesContainerBuilder = {
                 dependency(padding)
                 dependency(feedViewModel)
+                dependency(
+                    fun(): ResultRecipient<ManageFeedScreenDestination, Boolean> {
+                        return manageFeedResultRecipient
+                    }
+                )
                 dependency(
                     fun(destination: DirectionDestinationSpec) {
                         navController.navigate(destination)

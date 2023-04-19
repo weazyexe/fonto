@@ -22,7 +22,12 @@ class FeedViewModel(
     }
 
     fun loadNewsline() = viewModelScope.launch {
-        setState { copy(newslineLoadState = LoadState.Loading()) }
+        setState {
+            copy(
+                newslineLoadState = LoadState.Loading(),
+                scrollState = ScrollState()
+            )
+        }
 
         val feeds = request { getFeed() }
             .withErrorHandling {
