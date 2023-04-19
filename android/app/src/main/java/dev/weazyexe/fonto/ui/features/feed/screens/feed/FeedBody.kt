@@ -42,7 +42,6 @@ import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.PostItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 
@@ -146,9 +145,7 @@ private fun NewslineList(
     }
 
     LaunchedEffect(shouldStartPaginate) {
-        Napier.d { "KEKEK Should paginate updated" }
         if (shouldStartPaginate) {
-            Napier.d { "KEKEK Should paginate. ACTION!" }
             fetchNextBatch()
         }
     }

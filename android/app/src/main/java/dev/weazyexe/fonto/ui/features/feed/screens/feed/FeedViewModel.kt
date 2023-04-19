@@ -16,8 +16,6 @@ import dev.weazyexe.fonto.core.ui.utils.asResponseError
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
-import io.github.aakira.napier.Napier
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
@@ -79,8 +77,6 @@ class FeedViewModel(
     fun getNextPostsBatch() = viewModelScope.launch {
         setState { copy(newslinePaginationState = PaginationState.LOADING) }
 
-        Napier.d { "KEKEK Asking for new batch ${state.limit} ${state.offset}" }
-        delay(5000L) // FIXME
         val newslineBatch = request { getPaginatedNewsline(state.feeds, state.limit, state.offset) }
             .withErrorHandling {
                 setState { copy(newslinePaginationState = PaginationState.PAGINATION_EXHAUST) }
@@ -93,7 +89,6 @@ class FeedViewModel(
         val updatedNewsline = LoadState.Data(currentPosts + newPosts)
             .asViewState { NewslineViewState(it) }
 
-        Napier.d { "KEKEK Got new batch" }
         setState {
             copy(
                 newslineLoadState = updatedNewsline,
@@ -101,7 +96,6 @@ class FeedViewModel(
                 offset = state.offset + DEFAULT_LIMIT
             )
         }
-        Napier.d { "KEKEK Updated" }
     }
 
     private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {
