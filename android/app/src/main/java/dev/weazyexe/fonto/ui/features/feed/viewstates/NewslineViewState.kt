@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.common.model.feed.Newsline
 
 @Immutable
 data class NewslineViewState(
-    val posts: List<PostViewState>
+    val posts: List<PostViewState> = emptyList()
 )
 
 fun Newsline.asNewslineViewState(): NewslineViewState =

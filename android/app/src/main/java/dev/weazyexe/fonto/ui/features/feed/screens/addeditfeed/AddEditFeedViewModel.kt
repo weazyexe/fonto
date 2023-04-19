@@ -48,7 +48,7 @@ class AddEditFeedViewModel(
         setState { copy(link = link) }
 
         if (link.isUrlValid()) {
-            setState { copy(iconLoadState = LoadState.Loading()) }
+            setState { copy(iconLoadState = LoadState.Loading.Default()) }
             val icon = request {
                 val rawBytesImage = getIconByRssUrl(link)
                 rawBytesImage.asBitmap()
@@ -71,7 +71,7 @@ class AddEditFeedViewModel(
             return@launch
         }
 
-        setState { copy(finishLoadState = LoadState.Loading()) }
+        setState { copy(finishLoadState = LoadState.Loading.Default()) }
         val isNewslineValid = request { isRssValid(state.link) }
             .withErrorHandling {
                 setState { copy(finishLoadState = LoadState.Error(it)) }

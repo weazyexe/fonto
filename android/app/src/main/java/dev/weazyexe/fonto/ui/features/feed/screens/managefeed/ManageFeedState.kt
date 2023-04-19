@@ -7,7 +7,7 @@ import dev.weazyexe.fonto.core.ui.presentation.State
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 
 data class ManageFeedState(
-    val feedLoadState: LoadState<List<FeedViewState>> = LoadState.Loading(),
+    val feedLoadState: LoadState<List<FeedViewState>> = LoadState.Loading.Default(),
     val hasChanges: Boolean = false
 ): State
 

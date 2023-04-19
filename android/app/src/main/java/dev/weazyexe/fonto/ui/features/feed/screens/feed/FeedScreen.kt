@@ -42,6 +42,6 @@ fun FeedScreen(
         rootPaddingValues = rootPaddingValues,
         onScroll = viewModel::onScroll,
         onManageFeed = { navigateTo(ManageFeedScreenDestination) },
-        onRefreshClick = viewModel::loadNewsline
+        onRefresh = viewModel::loadNewsline
     )
 }

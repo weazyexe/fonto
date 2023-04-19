@@ -7,7 +7,7 @@ import dev.weazyexe.fonto.core.ui.presentation.State
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 
 data class FeedState(
-    val newslineLoadState: LoadState<NewslineViewState> = LoadState.Loading(),
+    val newslineLoadState: LoadState<NewslineViewState> = LoadState.Loading.Default(),
     val scrollState: ScrollState = ScrollState()
 ) : State
 

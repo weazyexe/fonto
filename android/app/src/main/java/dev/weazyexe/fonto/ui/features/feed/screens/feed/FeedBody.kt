@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,7 @@ import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
+import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
@@ -38,13 +40,12 @@ fun FeedBody(
     rootPaddingValues: PaddingValues,
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
-    onRefreshClick: () -> Unit
+    onRefresh: (isSwipeRefreshed: Boolean) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
             .padding(bottom = rootPaddingValues.calculateBottomPadding()),
         topBar = {
             TopAppBar(
@@ -53,29 +54,45 @@ fun FeedBody(
             )
         }
     ) { padding ->
-        LoadStateComponent(
-            loadState = newslineLoadState,
-            onSuccess = {
-                NewslineList(
-                    newsline = it.data,
-                    scrollState = scrollState,
-                    paddingValues = PaddingValues(top = padding.calculateTopPadding()),
-                    onScroll = onScroll,
-                    onManageFeed = onManageFeed
-                )
-            },
-            onError = {
-                ErrorPane(
-                    it.error.asErrorPaneParams(
-                        action = ErrorPaneParams.Action(
-                            title = R.string.error_pane_refresh,
-                            onClick = onRefreshClick
+        SwipeToRefresh(
+            isRefreshing = newslineLoadState is LoadState.Loading.SwipeRefresh,
+            onRefresh = { onRefresh(true) },
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .padding(PaddingValues(top = padding.calculateTopPadding()))
+        ) {
+            LoadStateComponent(
+                loadState = newslineLoadState,
+                onSuccess = {
+                    NewslineList(
+                        newsline = it.data,
+                        scrollState = scrollState,
+                        onScroll = onScroll,
+                        onManageFeed = onManageFeed
+                    )
+                },
+                onError = {
+                    ErrorPane(
+                        it.error.asErrorPaneParams(
+                            action = ErrorPaneParams.Action(
+                                title = R.string.error_pane_refresh,
+                                onClick = { onRefresh(false) }
+                            )
                         )
                     )
-                )
-            },
-            onLoading = { LoadingPane() }
-        )
+                },
+                onLoading = { LoadingPane() },
+                onSwipeRefresh = {
+                    NewslineList(
+                        newsline = it ?: NewslineViewState(),
+                        scrollState = scrollState,
+                        onScroll = onScroll,
+                        onManageFeed = onManageFeed
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -83,7 +100,6 @@ fun FeedBody(
 private fun NewslineList(
     newsline: NewslineViewState,
     scrollState: ScrollState,
-    paddingValues: PaddingValues,
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit
 ) {
@@ -108,7 +124,6 @@ private fun NewslineList(
 
     if (newsline.posts.isNotEmpty()) {
         LazyColumn(
-            modifier = Modifier.padding(paddingValues),
             state = lazyListState
         ) {
             items(items = newsline.posts) {

@@ -21,10 +21,16 @@ class FeedViewModel(
         loadNewsline()
     }
 
-    fun loadNewsline() = viewModelScope.launch {
+    fun loadNewsline(isSwipeRefreshed: Boolean = false) = viewModelScope.launch {
         setState {
             copy(
-                newslineLoadState = LoadState.Loading(),
+                newslineLoadState = if (isSwipeRefreshed) {
+                    LoadState.Loading.SwipeRefresh(
+                        data = (newslineLoadState as? LoadState.Data)?.data
+                    )
+                } else {
+                    LoadState.Loading.Default()
+                },
                 scrollState = ScrollState()
             )
         }

@@ -22,7 +22,7 @@ class ManageFeedViewModel(
     }
 
     fun loadFeed() = viewModelScope.launch {
-        setState { copy(feedLoadState = LoadState.Loading()) }
+        setState { copy(feedLoadState = LoadState.Loading.Default()) }
         val feedResponse = request { getFeed() }
             .withErrorHandling {
                 setState { copy(feedLoadState = LoadState.Error(it)) }
