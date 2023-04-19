@@ -8,7 +8,7 @@ data class Post(
     val description: String,
     val content: String?,
     val imageUrl: String?,
-    val publishedAt: Instant?,
+    val publishedAt: Instant,
     val feed: Feed,
     val isSaved: Boolean
 )

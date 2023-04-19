@@ -6,6 +6,7 @@ import dev.weazyexe.fonto.common.model.rss.RssFeed
 import dev.weazyexe.fonto.common.model.rss.RssPost
 import dev.weazyexe.fonto.common.utils.cleanUpText
 import dev.weazyexe.fonto.common.utils.parseDateTime
+import kotlinx.datetime.Clock
 
 actual class RssParser {
 
@@ -27,7 +28,7 @@ actual class RssParser {
                         link = article.link.orEmpty(),
                         description = article.description.orEmpty().cleanUpText().trim(),
                         content = article.content,
-                        pubDate = article.pubDate?.parseDateTime(),
+                        pubDate = article.pubDate?.parseDateTime() ?: Clock.System.now(),
                         imageUrl = article.image,
                         feed = feed
                     )

@@ -10,9 +10,15 @@ class NewslineDataSource(database: FontoDatabase) {
 
     private val queries = database.postDaoQueries
 
-    fun getAll(feeds: List<Feed>): Flow<List<PostDao>> =
+    fun getAll(
+        feeds: List<Feed>,
+        limit: Long,
+        offset: Long
+    ): Flow<List<PostDao>> =
         queries.getByFeedId(
-            feedId = feeds.map { it.id }
+            feedId = feeds.map { it.id },
+            limit = limit,
+            offset = offset
         ).flowList()
 
     fun insertOrUpdate(postDao: PostDao) = queries.insertOrUpdate(postDao)

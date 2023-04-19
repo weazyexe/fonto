@@ -8,7 +8,7 @@ data class RssPost(
     val link: String,
     val description: String,
     val content: String?,
-    val pubDate: Instant?,
+    val pubDate: Instant,
     val imageUrl: String?,
     val feed: Feed,
 )

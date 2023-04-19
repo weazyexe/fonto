@@ -37,7 +37,7 @@ class GetNewslineUseCase(
             .forEach { newslineRepository.insertOrUpdate(it) }
 
         return Newsline(
-            posts = newslineRepository.getAll(feeds),
+            posts = newslineRepository.getAll(feeds = feeds, limit = 20, offset = 0),
             loadedWithError = problematicFeedList
         )
     }

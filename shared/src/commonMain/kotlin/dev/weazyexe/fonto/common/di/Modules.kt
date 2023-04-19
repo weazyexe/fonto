@@ -18,6 +18,7 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetCachedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.network.createHttpClient
@@ -70,6 +71,7 @@ internal val newslineModule = module {
     single { NewslineRepository(get()) }
     single { GetNewslineUseCase(get(), get()) }
     single { GetCachedNewslineUseCase(get()) }
+    single { GetPaginatedNewslineUseCase(get()) }
 }
 
 fun appModules(): List<Module> = listOf(feedModule, iconModule, rssModule, newslineModule)

@@ -11,8 +11,12 @@ class NewslineRepository(
     private val newslineDataSource: NewslineDataSource
 ) {
 
-    suspend fun getAll(feeds: List<Feed>): List<Post> {
-        val postDaos = newslineDataSource.getAll(feeds).first()
+    suspend fun getAll(
+        feeds: List<Feed>,
+        limit: Int,
+        offset: Int
+    ): List<Post> {
+        val postDaos = newslineDataSource.getAll(feeds, limit.toLong(), offset.toLong()).first()
 
         return feeds.flatMap { feed ->
             postDaos

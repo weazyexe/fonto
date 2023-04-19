@@ -55,8 +55,10 @@ fun FeedScreen(
         scrollState = state.scrollState,
         rootPaddingValues = rootPaddingValues,
         snackbarHostState = snackbarHostState,
+        paginationState = state.newslinePaginationState,
         onScroll = viewModel::onScroll,
         onManageFeed = { navigateTo(ManageFeedScreenDestination) },
-        onRefresh = viewModel::loadNewsline
+        onRefresh = viewModel::loadNewsline,
+        fetchNextBatch = viewModel::getNextPostsBatch
     )
 }

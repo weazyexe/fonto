@@ -4,7 +4,7 @@ import dev.weazyexe.fonto.common.db.PostDao
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.rss.RssFeed
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.Instant
 
 fun RssFeed.Success.toPosts(): List<Post> =
     posts.map {
@@ -27,7 +27,7 @@ fun Post.toDao(): PostDao =
         description = description,
         content = content,
         imageUrl = imageUrl,
-        publishedAt = publishedAt?.toString(),
+        publishedAt = publishedAt.epochSeconds,
         feedId = feed.id,
         isSaved = isSaved.toString()
     )
@@ -39,7 +39,7 @@ fun PostDao.toPost(feed: Feed): Post =
         description = description,
         content = content,
         imageUrl = imageUrl,
-        publishedAt = publishedAt?.toInstant(),
+        publishedAt = Instant.fromEpochSeconds(publishedAt),
         feed = feed,
         isSaved = isSaved.toBooleanStrict()
     )
