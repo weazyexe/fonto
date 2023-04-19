@@ -1,7 +1,6 @@
 package dev.weazyexe.fonto.common.parser
 
 import com.prof.rssparser.Parser
-import dev.weazyexe.fonto.common.error.RssParseException
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.rss.RssFeed
 import dev.weazyexe.fonto.common.model.rss.RssPost
@@ -17,7 +16,7 @@ actual class RssParser {
     actual suspend fun parse(feed: Feed): RssFeed {
         try {
             val channel = parser.getChannel(feed.link)
-            return RssFeed(
+            return RssFeed.Success(
                 id = feed.id,
                 title = feed.title,
                 link = channel.link.orEmpty(),
@@ -36,7 +35,7 @@ actual class RssParser {
                 icon = feed.icon
             )
         } catch (e: Exception) {
-            throw RssParseException(e)
+            return RssFeed.Error(feed, e)
         }
     }
 }

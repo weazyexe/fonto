@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.onEach
  * Receive side effects from [effects] flow
  */
 @Composable
-fun <E : Effect> ReceiveEffect(effects: Flow<E>, block: E.() -> Unit) {
+fun <E : Effect> ReceiveEffect(effects: Flow<E>, block: suspend E.() -> Unit) {
     LaunchedEffect(Unit) {
         effects.onEach { block(it) }.collect()
     }

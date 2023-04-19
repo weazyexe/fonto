@@ -10,6 +10,7 @@ class GetCachedNewslineUseCase(
 
     suspend operator fun invoke(feeds: List<Feed>): Newsline =
         Newsline(
-            posts = newslineRepository.getAll(feeds)
+            posts = newslineRepository.getAll(feeds),
+            loadedWithError = emptyList()
         )
 }

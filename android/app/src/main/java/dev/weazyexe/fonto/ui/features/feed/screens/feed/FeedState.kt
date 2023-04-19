@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
+import androidx.annotation.StringRes
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.presentation.Effect
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
@@ -11,4 +12,7 @@ data class FeedState(
     val scrollState: ScrollState = ScrollState()
 ) : State
 
-sealed interface FeedEffect : Effect
+sealed interface FeedEffect : Effect {
+
+    class ShowMessage(@StringRes val message: Int, vararg val args: Any) : FeedEffect
+}

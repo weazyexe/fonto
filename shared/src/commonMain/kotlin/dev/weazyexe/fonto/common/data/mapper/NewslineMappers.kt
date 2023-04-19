@@ -6,7 +6,7 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.rss.RssFeed
 import kotlinx.datetime.toInstant
 
-fun RssFeed.toPosts(): List<Post> =
+fun RssFeed.Success.toPosts(): List<Post> =
     posts.map {
         Post(
             id = generateId(id, it.link),

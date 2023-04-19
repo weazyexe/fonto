@@ -29,6 +29,7 @@
 
     <string name="feed_empty_newsline">Your feed is empty. You probably want to add feed sources</string>
     <string name="feed_empty_newsline_manage_feed">Manage feed</string>
+    <string name="feed_error_sources">Failed to load news from the following sources: %s</string>
 
     <string name="manage_feed_title">Manage feed</string>
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>
@@ -55,6 +56,11 @@
     <string name="settings_debug_menu_description">Settings for more efficient development</string>
 
     <string name="debug_title">Debug screen</string>
+    <string name="debug_feed_group">Feed</string>
     <string name="debug_add_mock_feeds_title">Add mock feeds</string>
     <string name="debug_add_mock_feeds_description">Deletes current feeds and adds new mock ones</string>
+    <string name="debug_add_mock_partially_valid_feeds_title">Add partially valid mock feeds</string>
+    <string name="debug_add_mock_partially_valid_feeds_description">Some of them are invalid RSS links</string>
+    <string name="debug_add_mock_invalid_feeds_title">Add invalid mock feeds</string>
+    <string name="debug_add_mock_invalid_feeds_description">No way to successful loading result</string>
 </resources>
