@@ -63,4 +63,5 @@
     <string name="debug_add_mock_partially_valid_feeds_description">Some of them are invalid RSS links</string>
     <string name="debug_add_mock_invalid_feeds_title">Add invalid mock feeds</string>
     <string name="debug_add_mock_invalid_feeds_description">No way to successful loading result</string>
+    <string name="debug_feed_storage_updated">Feed storage updated successfully</string>
 </resources>

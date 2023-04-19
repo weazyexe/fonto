@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import kotlinx.coroutines.launch
 
@@ -20,5 +21,7 @@ class DebugViewModel(
         feed.forEach {
             createFeed(it.title, it.link, it.icon)
         }
+
+        DebugEffect.ShowMessage(R.string.debug_feed_storage_updated).emit()
     }
 }

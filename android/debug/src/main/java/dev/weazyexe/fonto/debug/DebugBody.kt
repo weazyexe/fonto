@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -23,6 +25,7 @@ import dev.weazyexe.fonto.debug.mock.VALID_FEED
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DebugBody(
+    snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
     onMockFeedClick: (List<Feed>) -> Unit,
 ) {
@@ -35,7 +38,8 @@ fun DebugBody(
                 navigationIcon = { ArrowBack(onBackClick) },
                 scrollBehavior = scrollBehavior
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         PreferencesGroup(
             title = stringResource(id = R.string.debug_feed_group),
