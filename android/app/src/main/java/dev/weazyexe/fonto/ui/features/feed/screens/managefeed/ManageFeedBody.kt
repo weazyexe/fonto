@@ -91,7 +91,7 @@ fun ManageFeedBody(
             loadState = feedsLoadState,
             onSuccess = {
                 FeedList(
-                    list = it.data,
+                    list = it,
                     padding = padding,
                     onClick = onClick,
                     onDeleteClick = onDeleteClick

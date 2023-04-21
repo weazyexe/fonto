@@ -170,7 +170,7 @@ private fun FeedIcon(
     LoadStateComponent(
         loadState = iconLoadState,
         onSuccess = {
-            val icon = it.data
+            val icon = it
             if (icon != null) {
                 Image(
                     bitmap = icon.asImageBitmap(),

@@ -11,9 +11,10 @@ import dev.weazyexe.fonto.core.ui.presentation.State
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 
 data class FeedState(
-    val newslineLoadState: LoadState<NewslineViewState> = LoadState.Loading.Default(),
+    val newslineLoadState: LoadState<NewslineViewState> = LoadState.Loading(),
     val newslinePaginationState: PaginationState = PaginationState.IDLE,
     val scrollState: ScrollState = ScrollState(),
+    val isSwipeRefreshing: Boolean = false,
     val feeds: List<Feed> = emptyList(),
     val limit: Int = DEFAULT_LIMIT,
     val offset: Int = 0,

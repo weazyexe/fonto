@@ -30,18 +30,17 @@ class FeedViewModel(
         loadNewsline()
     }
 
-    fun loadNewsline(isSwipeRefreshed: Boolean = false) = viewModelScope.launch {
+    fun loadNewsline(isSwipeRefreshing: Boolean = false) = viewModelScope.launch {
         setState {
             copy(
-                newslineLoadState = if (isSwipeRefreshed) {
-                    LoadState.Loading.SwipeRefresh(
-                        data = (newslineLoadState as? LoadState.Data)?.data
-                    )
+                newslineLoadState = if (isSwipeRefreshing) {
+                    newslineLoadState
                 } else {
-                    LoadState.Loading.Default()
+                    LoadState.Loading()
                 },
                 scrollState = ScrollState(),
-                offset = 0
+                offset = 0,
+                isSwipeRefreshing = isSwipeRefreshing
             )
         }
 
@@ -58,12 +57,18 @@ class FeedViewModel(
 
         if (newsline.data.loadedWithError.isNotEmpty() && newsline.data.loadedWithError.size == feeds.data.size) {
             val error = newsline.data.loadedWithError.first().throwable.asResponseError()
-            setState { copy(newslineLoadState = LoadState.Error(error)) }
+            setState {
+                copy(
+                    newslineLoadState = LoadState.Error(error),
+                    isSwipeRefreshing = false
+                )
+            }
         } else {
             setState {
                 copy(
                     newslineLoadState = newsline.asViewState { it.asNewslineViewState() },
-                    offset = state.offset + DEFAULT_LIMIT
+                    offset = state.offset + DEFAULT_LIMIT,
+                    isSwipeRefreshing = false
                 )
             }
             showNotLoadedSourcesError(newsline.data.loadedWithError.map { it.feed })

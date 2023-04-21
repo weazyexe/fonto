@@ -53,6 +53,7 @@ fun FeedBody(
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
     paginationState: PaginationState,
+    isSwipeRefreshing: Boolean,
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
     onRefresh: (isSwipeRefreshed: Boolean) -> Unit,
@@ -80,7 +81,7 @@ fun FeedBody(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         SwipeToRefresh(
-            isRefreshing = newslineLoadState is LoadState.Loading.SwipeRefresh,
+            isRefreshing = isSwipeRefreshing,
             onRefresh = { onRefresh(true) },
             modifier = Modifier
                 .fillMaxSize()
@@ -91,7 +92,7 @@ fun FeedBody(
                 loadState = newslineLoadState,
                 onSuccess = {
                     NewslineList(
-                        newsline = it.data,
+                        newsline = it,
                         scrollState = scrollState,
                         paginationState = paginationState,
                         onScroll = onScroll,
@@ -109,17 +110,7 @@ fun FeedBody(
                         )
                     )
                 },
-                onLoading = { LoadingPane() },
-                onSwipeRefresh = {
-                    NewslineList(
-                        newsline = it ?: NewslineViewState(),
-                        scrollState = scrollState,
-                        paginationState = paginationState,
-                        onScroll = onScroll,
-                        onManageFeed = onManageFeed,
-                        fetchNextBatch = fetchNextBatch
-                    )
-                }
+                onLoading = { LoadingPane() }
             )
         }
     }

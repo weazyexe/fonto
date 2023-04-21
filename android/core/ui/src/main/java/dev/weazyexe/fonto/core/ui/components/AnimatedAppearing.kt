@@ -20,8 +20,8 @@ private const val ANIMATION_DURATION_MS = 300
 fun AnimatedAppearing(content: @Composable () -> Unit) {
     var isVisible by remember { mutableStateOf(false) }
 
-    LaunchedEffect(null) {
-        delay(100L)
+    LaunchedEffect(Unit) {
+        delay(200L)
         isVisible = true
     }
 

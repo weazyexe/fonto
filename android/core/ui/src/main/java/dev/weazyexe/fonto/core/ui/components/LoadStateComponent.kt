@@ -7,17 +7,24 @@ import dev.weazyexe.fonto.core.ui.presentation.LoadState
 @Composable
 fun <T> LoadStateComponent(
     loadState: LoadState<T>,
-    onSuccess: @Composable (LoadState.Data<T>) -> Unit,
+    onSuccess: @Composable (T) -> Unit,
     onError: @Composable (LoadState.Error<T>) -> Unit,
-    onLoading: @Composable (LoadState.Loading<T>) -> Unit,
-    onSwipeRefresh: @Composable (T?) -> Unit = {}
+    onLoading: @Composable () -> Unit
 ) {
-    Crossfade(loadState) {
-        when (it) {
-            is LoadState.Loading.SwipeRefresh -> onSwipeRefresh(it.data)
-            is LoadState.Loading -> onLoading(it)
-            is LoadState.Error -> onError(it)
-            is LoadState.Data -> onSuccess(it)
+    Crossfade(loadState::class) { clazz ->
+        when (clazz) {
+            LoadState.Loading::class -> {
+                (loadState as? LoadState.Loading)?.also { onLoading() }
+            }
+
+            LoadState.Error::class -> {
+                (loadState as? LoadState.Error)?.also { onError(it) }
+            }
+
+            LoadState.Data::class -> {
+                val data = (loadState as? LoadState.Data)?.data ?: return@Crossfade
+                onSuccess(data)
+            }
         }
     }
 }
