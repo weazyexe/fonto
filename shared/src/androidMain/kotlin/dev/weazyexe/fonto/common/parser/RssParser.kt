@@ -18,7 +18,7 @@ actual class RssParser {
         try {
             val channel = parser.getChannel(feed.link)
             return RssFeed.Success(
-                id = feed.id,
+                id = feed.id.origin,
                 title = feed.title,
                 link = channel.link.orEmpty(),
                 description = channel.link.orEmpty(),

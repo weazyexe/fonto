@@ -81,6 +81,8 @@ dependencies {
 
     implementation(libs.napier)
 
+    implementation(libs.accompanist.webview)
+
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)

@@ -1,20 +1,22 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.post
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
+import org.koin.androidx.compose.koinViewModel
 
-@Destination
+@Destination(navArgsDelegate = PostScreenArgs::class)
 @Composable
-fun PostScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Post")
-    }
+fun PostScreen(
+    navController: NavController
+) {
+    val viewModel = koinViewModel<PostViewModel>()
+    val state by viewModel.uiState.collectAsState()
+
+    PostBody(
+        postLoadState = state.post,
+        onBackClick = { navController.navigateUp() }
+    )
 }

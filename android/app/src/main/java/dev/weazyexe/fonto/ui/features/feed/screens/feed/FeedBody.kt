@@ -43,6 +43,7 @@ import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.PostItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
+import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -56,6 +57,7 @@ fun FeedBody(
     snackbarHostState: SnackbarHostState,
     paginationState: PaginationState,
     isSwipeRefreshing: Boolean,
+    onPostClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
     onRefresh: (isSwipeRefreshed: Boolean) -> Unit,
@@ -106,6 +108,7 @@ fun FeedBody(
                         scrollState = scrollState,
                         lazyListState = lazyListState,
                         paginationState = paginationState,
+                        onPostClick = onPostClick,
                         onScroll = onScroll,
                         onManageFeed = onManageFeed,
                         fetchNextBatch = fetchNextBatch,
@@ -134,6 +137,7 @@ private fun NewslineList(
     lazyListState: LazyListState,
     scrollState: ScrollState,
     paginationState: PaginationState,
+    onPostClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
     fetchNextBatch: () -> Unit,
@@ -179,7 +183,7 @@ private fun NewslineList(
             items(items = newsline.posts) {
                 PostItem(
                     post = it,
-                    onPostClick = { /*TODO*/ },
+                    onPostClick = { onPostClick(it) },
                     onSaveClick = { /*TODO*/ },
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 )

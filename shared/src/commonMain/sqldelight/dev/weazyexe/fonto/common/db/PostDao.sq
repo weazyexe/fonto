@@ -6,7 +6,8 @@ CREATE TABLE PostDao (
     imageUrl TEXT,
     publishedAt INTEGER NOT NULL,
     feedId INTEGER NOT NULL,
-    isSaved TEXT NOT NULL
+    isSaved TEXT NOT NULL,
+    link TEXT NOT NULL
 );
 
 getByFeedId:
@@ -14,6 +15,10 @@ SELECT * FROM PostDao
 WHERE feedId IN ?
 ORDER BY publishedAt DESC
 LIMIT :limit OFFSET :offset;
+
+getPostById:
+SELECT * FROM PostDao
+WHERE id = :id;
 
 insertOrUpdate:
 INSERT OR REPLACE INTO PostDao

@@ -124,7 +124,7 @@ private fun FeedList(
         LazyColumn(contentPadding = calculatedPaddings) {
             itemsIndexed(
                 items = list,
-                key = { _, item -> item.id }
+                key = { _, item -> item.id.origin }
             ) { index, item ->
                 FeedItem(
                     feed = item,

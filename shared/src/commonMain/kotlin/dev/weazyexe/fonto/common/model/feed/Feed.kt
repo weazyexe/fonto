@@ -5,8 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Feed(
-    val id: Long,
+    val id: Id,
     val title: String,
     val link: String,
     val icon: LocalImage?
-)
+) {
+
+    @Serializable
+    @JvmInline
+    value class Id(val origin: Long)
+}

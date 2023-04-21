@@ -11,7 +11,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultRecipient
-import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
+import com.ramcosta.composedestinations.spec.Direction
 import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.FeedViewModel
@@ -46,8 +46,8 @@ fun HomeScreen(
                     }
                 )
                 dependency(
-                    fun(destination: DirectionDestinationSpec) {
-                        navController.navigate(destination)
+                    fun(direction: Direction) {
+                        navController.navigate(direction)
                     }
                 )
             }

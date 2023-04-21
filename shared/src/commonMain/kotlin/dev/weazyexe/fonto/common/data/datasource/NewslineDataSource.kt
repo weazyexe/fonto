@@ -16,10 +16,12 @@ class NewslineDataSource(database: FontoDatabase) {
         offset: Long
     ): Flow<List<PostDao>> =
         queries.getByFeedId(
-            feedId = feeds.map { it.id },
+            feedId = feeds.map { it.id.origin },
             limit = limit,
             offset = offset
         ).flowList()
+
+    fun getPostById(id: String): PostDao = queries.getPostById(id).executeAsOne()
 
     fun insertOrUpdate(postDao: PostDao) = queries.insertOrUpdate(postDao)
 

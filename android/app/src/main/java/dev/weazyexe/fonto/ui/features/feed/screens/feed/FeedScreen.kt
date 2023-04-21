@@ -10,10 +10,11 @@ import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
-import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
+import com.ramcosta.composedestinations.spec.Direction
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.destinations.PostScreenDestination
 
 @BottomBarNavGraph(start = true)
 @Destination
@@ -21,7 +22,7 @@ import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 fun FeedScreen(
     rootPaddingValues: PaddingValues,
     viewModel: FeedViewModel,
-    navigateTo: (DirectionDestinationSpec) -> Unit,
+    navigateTo: (Direction) -> Unit,
     manageFeedResultRecipientProvider: () -> ResultRecipient<ManageFeedScreenDestination, Boolean>
 ) {
     val context = LocalContext.current
@@ -57,8 +58,9 @@ fun FeedScreen(
         snackbarHostState = snackbarHostState,
         paginationState = state.newslinePaginationState,
         isSwipeRefreshing = state.isSwipeRefreshing,
+        onPostClick = { navigateTo(PostScreenDestination(it.id, it.sourceId)) },
         onScroll = viewModel::onScroll,
-        onManageFeed = { navigateTo(ManageFeedScreenDestination) },
+        onManageFeed = { navigateTo(ManageFeedScreenDestination()) },
         onRefresh = viewModel::loadNewsline,
         fetchNextBatch = viewModel::getNextPostsBatch
     )

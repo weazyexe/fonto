@@ -32,7 +32,7 @@ fun DeleteConfirmationDialog(
             onDismissRequest = { resultBackNavigator.navigateBack(result = null) },
             confirmButton = {
                 FilledTonalButton(
-                    onClick = { resultBackNavigator.navigateBack(result = feed.id) },
+                    onClick = { resultBackNavigator.navigateBack(result = feed.id.origin) },
                     colors = ButtonDefaults.filledTonalButtonColors(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError

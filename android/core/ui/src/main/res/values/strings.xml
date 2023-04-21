@@ -54,6 +54,8 @@
     <string name="feed_delete_confirmation_delete">Yes, delete the feed</string>
     <string name="feed_delete_confirmation_cancel">Cancel</string>
 
+    <string name="post_title">Post</string>
+
     <string name="settings_debug_menu_title">Debug menu</string>
     <string name="settings_debug_menu_description">Settings for more efficient development</string>
 

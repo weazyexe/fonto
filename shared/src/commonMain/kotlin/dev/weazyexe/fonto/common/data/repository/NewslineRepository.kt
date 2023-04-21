@@ -20,10 +20,12 @@ class NewslineRepository(
 
         return feeds.flatMap { feed ->
             postDaos
-                .filter { it.feedId == feed.id }
+                .filter { it.feedId == feed.id.origin }
                 .map { it.toPost(feed) }
         }
     }
+
+    fun getPostById(id: Post.Id, feed: Feed): Post = newslineDataSource.getPostById(id.origin).toPost(feed)
 
     fun insertOrUpdate(post: Post) = newslineDataSource.insertOrUpdate(post.toDao())
 

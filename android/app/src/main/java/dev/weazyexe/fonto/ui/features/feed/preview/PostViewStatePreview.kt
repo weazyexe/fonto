@@ -5,13 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import java.util.UUID
 
 object PostViewStatePreview {
     val default: PostViewState
         @Composable get() = PostViewState(
-            id = UUID.randomUUID().toString(),
+            id = Post.Id(UUID.randomUUID().toString()),
             title = "Steam перестанет работать на ПК с Windows 7, 8 и 8.1",
             description = "Поддержка прекратится 1 января 2024 года. В Valve рекомендуют обновиться на более свежую версию OC.",
             imageUrl = "https://rozetked.me/images/uploads/webp/Oe98tb9q9Ek5.webp?1679993179",
@@ -19,12 +21,13 @@ object PostViewStatePreview {
             sourceTitle = "Rozetked",
             sourceIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap(),
             isSaved = false,
-            content = null
+            content = null,
+            sourceId = Feed.Id(0)
         )
 
     val noPictures: PostViewState
         @Composable get() = PostViewState(
-            id = UUID.randomUUID().toString(),
+            id = Post.Id(UUID.randomUUID().toString()),
             title = "Как живет пенсионерка и библиотекарь в Подмосковье с доходом 145 000 ₽",
             description = "«У меня нет особого стимула готовить: дети многое не едят. Сын вообще, как правило, не голоден. Питается чаем, попкорном, пиццей, семечками и прочим. Но ему 26 — воспитывать уже поздно. На завтрак он вообще ест шарики „Несквик“! Карбонара — это подойдет! Жаль, что от таких ужинов я набираю вес. Другие члены семьи стройны необыкновенно»\n" +
                     "\n" +
@@ -34,12 +37,13 @@ object PostViewStatePreview {
             sourceTitle = "Rozetked",
             sourceIcon = null,
             isSaved = false,
-            content = null
+            content = null,
+            sourceId = Feed.Id(0)
         )
 
     val saved: PostViewState
         @Composable get() = PostViewState(
-            id = UUID.randomUUID().toString(),
+            id = Post.Id(UUID.randomUUID().toString()),
             title = "Российские права действуют!",
             description = "Когда они водительские, конечно же. Не зря же вы в поте лица наворачивали круги с уставшим от жизни инструктором, чтобы потом не пользоваться водительской корочкой где-нибудь на Кипре или в Хорватии.\n" +
                     "\n" +
@@ -49,6 +53,7 @@ object PostViewStatePreview {
             sourceTitle = "Rozetked",
             sourceIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap(),
             isSaved = true,
-            content = null
+            content = null,
+            sourceId = Feed.Id(0)
         )
 }

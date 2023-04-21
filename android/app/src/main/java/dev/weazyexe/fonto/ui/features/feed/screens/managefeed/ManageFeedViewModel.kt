@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
@@ -34,7 +35,7 @@ class ManageFeedViewModel(
         setState { copy(feedLoadState = preparedViewState) }
     }
 
-    fun deleteFeedById(id: Long) = viewModelScope.launch {
+    fun deleteFeedById(id: Feed.Id) = viewModelScope.launch {
         request { deleteFeed(id) }
             .withErrorHandling {
                 ManageFeedEffect.ShowMessage(R.string.error_feed_can_not_delete_feed).emit()

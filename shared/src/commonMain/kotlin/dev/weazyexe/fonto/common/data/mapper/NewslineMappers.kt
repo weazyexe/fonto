@@ -16,33 +16,36 @@ fun RssFeed.Success.toPosts(): List<Post> =
             imageUrl = it.imageUrl,
             publishedAt = it.pubDate,
             feed = it.feed,
-            isSaved = false
+            isSaved = false,
+            link = it.link
         )
     }
 
 fun Post.toDao(): PostDao =
     PostDao(
-        id = id,
+        id = id.origin,
         title = title,
         description = description,
         content = content,
         imageUrl = imageUrl,
         publishedAt = publishedAt.epochSeconds,
-        feedId = feed.id,
-        isSaved = isSaved.toString()
+        feedId = feed.id.origin,
+        isSaved = isSaved.toString(),
+        link = link
     )
 
 fun PostDao.toPost(feed: Feed): Post =
     Post(
-        id = id,
+        id = Post.Id(id),
         title = title,
         description = description,
         content = content,
         imageUrl = imageUrl,
         publishedAt = Instant.fromEpochSeconds(publishedAt),
         feed = feed,
-        isSaved = isSaved.toBooleanStrict()
+        isSaved = isSaved.toBooleanStrict(),
+        link = link
     )
 
-private fun generateId(feedId: Long, postId: String): String =
-    "SOURCE:$feedId|LINK:$postId"
+private fun generateId(feedId: Long, postId: String): Post.Id =
+    Post.Id("SOURCE:$feedId|LINK:$postId")

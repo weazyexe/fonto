@@ -102,7 +102,7 @@ class AddEditFeedViewModel(
         AddEditFeedEffect.NavigateUp(isSuccessful = true).emit()
     }
 
-    private fun fetchFeedIcon(id: Long) = viewModelScope.launch {
+    private fun fetchFeedIcon(id: Feed.Id) = viewModelScope.launch {
         val icon = request { getFeedIcon(id) }
             .withErrorHandling {  }
 

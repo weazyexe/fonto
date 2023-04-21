@@ -16,8 +16,8 @@ class FeedRepository(
         return feedDataSource.getAll().first().toFeedList()
     }
 
-    fun getById(id: Long): Feed {
-        return feedDataSource.getById(id).toFeed()
+    fun getById(id: Feed.Id): Feed {
+        return feedDataSource.getById(id.origin).toFeed()
     }
 
     fun insert(title: String, link: String, icon: LocalImage?) {
@@ -28,8 +28,8 @@ class FeedRepository(
         feedDataSource.update(feed.toDao())
     }
 
-    fun delete(id: Long) {
-        feedDataSource.delete(id)
+    fun delete(id: Feed.Id) {
+        feedDataSource.delete(id.origin)
     }
 
     fun deleteAll() {

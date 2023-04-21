@@ -13,6 +13,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.DeleteConfirmationDialogDestination
@@ -54,7 +55,7 @@ fun ManageFeedScreen(
             }
 
             is NavResult.Value -> {
-                result.value?.let { viewModel.deleteFeedById(it) }
+                result.value?.let { viewModel.deleteFeedById(Feed.Id(it)) }
             }
         }
     }

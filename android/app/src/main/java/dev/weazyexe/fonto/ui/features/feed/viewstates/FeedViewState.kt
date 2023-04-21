@@ -8,7 +8,7 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 
 @Immutable
 data class FeedViewState(
-    val id: Long,
+    val id: Feed.Id,
     val title: String,
     val link: String,
     val icon: Bitmap?

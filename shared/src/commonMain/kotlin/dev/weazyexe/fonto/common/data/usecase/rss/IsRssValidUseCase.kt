@@ -7,7 +7,7 @@ import dev.weazyexe.fonto.common.model.rss.RssFeed
 class IsRssValidUseCase(private val rssRepository: RssRepository) {
 
     suspend operator fun invoke(url: String): Boolean {
-        val feed = Feed(id = 0, title = "", link = url, icon = null)
+        val feed = Feed(id = Feed.Id(0), title = "", link = url, icon = null)
         return rssRepository.getRssFeed(feed) is RssFeed.Success
     }
 }

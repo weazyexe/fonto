@@ -7,14 +7,14 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 internal fun List<FeedDao>.toFeedList() = map { it.toFeed() }
 
 internal fun FeedDao.toFeed(): Feed = Feed(
-    id = id,
+    id = Feed.Id(id),
     title = title,
     link = link,
     icon = icon?.let { LocalImage(it) }
 )
 
 internal fun Feed.toDao(): FeedDao = FeedDao(
-    id = id,
+    id = id.origin,
     title = title,
     link = link,
     icon = icon?.bytes
