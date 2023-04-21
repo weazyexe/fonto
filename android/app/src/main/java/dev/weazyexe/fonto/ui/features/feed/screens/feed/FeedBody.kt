@@ -1,9 +1,12 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -41,6 +45,7 @@ import dev.weazyexe.fonto.ui.features.feed.components.PostItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +61,9 @@ fun FeedBody(
     onRefresh: (isSwipeRefreshed: Boolean) -> Unit,
     fetchNextBatch: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val lazyListState = rememberLazyListState()
 
     Scaffold(
         modifier = Modifier
@@ -64,6 +71,13 @@ fun FeedBody(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.home_bottom_label_feed)) },
+                modifier = Modifier.clickable(
+                    onClick = {
+                        scope.launch { lazyListState.animateScrollToItem(0) }
+                    },
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
                 actions = {
                     IconButton(onClick = onManageFeed) {
                         Icon(
@@ -90,6 +104,7 @@ fun FeedBody(
                     NewslineList(
                         newsline = it,
                         scrollState = scrollState,
+                        lazyListState = lazyListState,
                         paginationState = paginationState,
                         onScroll = onScroll,
                         onManageFeed = onManageFeed,
@@ -116,6 +131,7 @@ fun FeedBody(
 @Composable
 private fun NewslineList(
     newsline: NewslineViewState,
+    lazyListState: LazyListState,
     scrollState: ScrollState,
     paginationState: PaginationState,
     onScroll: (ScrollState) -> Unit,
@@ -123,7 +139,6 @@ private fun NewslineList(
     fetchNextBatch: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val lazyListState = rememberLazyListState()
     val shouldStartPaginate by remember {
         derivedStateOf {
             val lastVisibleItemIndex =
