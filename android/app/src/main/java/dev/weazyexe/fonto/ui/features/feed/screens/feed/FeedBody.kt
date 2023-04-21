@@ -1,14 +1,11 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +21,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
@@ -34,6 +30,7 @@ import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.LoadingPane
+import dev.weazyexe.fonto.core.ui.components.PaginationFooter
 import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
@@ -85,7 +82,6 @@ fun FeedBody(
             onRefresh = { onRefresh(true) },
             modifier = Modifier
                 .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(PaddingValues(top = padding.calculateTopPadding()))
         ) {
             LoadStateComponent(
@@ -97,7 +93,8 @@ fun FeedBody(
                         paginationState = paginationState,
                         onScroll = onScroll,
                         onManageFeed = onManageFeed,
-                        fetchNextBatch = fetchNextBatch
+                        fetchNextBatch = fetchNextBatch,
+                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                     )
                 },
                 onError = {
@@ -123,7 +120,8 @@ private fun NewslineList(
     paginationState: PaginationState,
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
-    fetchNextBatch: () -> Unit
+    fetchNextBatch: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
     val shouldStartPaginate by remember {
@@ -160,7 +158,8 @@ private fun NewslineList(
 
     if (newsline.posts.isNotEmpty()) {
         LazyColumn(
-            state = lazyListState
+            state = lazyListState,
+            modifier = modifier
         ) {
             items(items = newsline.posts) {
                 PostItem(
@@ -171,20 +170,10 @@ private fun NewslineList(
                 )
             }
             item {
-                when (paginationState) {
-                    PaginationState.LOADING ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    else -> {
-
-                    }
-                }
+                PaginationFooter(
+                    state = paginationState,
+                    onRefresh = fetchNextBatch
+                )
             }
         }
     } else {
