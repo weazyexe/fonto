@@ -16,7 +16,6 @@ import dev.weazyexe.fonto.core.ui.utils.asResponseError
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
@@ -84,8 +83,6 @@ class FeedViewModel(
         setState { copy(newslinePaginationState = PaginationState.LOADING) }
 
         val newslineBatch = request {
-            delay(3000L)
-            throw Exception()
             getPaginatedNewsline(state.feeds, state.limit, state.offset)
         }
             .withErrorHandling {
