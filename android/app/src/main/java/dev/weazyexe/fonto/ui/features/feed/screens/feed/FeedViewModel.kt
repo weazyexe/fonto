@@ -16,6 +16,7 @@ import dev.weazyexe.fonto.core.ui.utils.asResponseError
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
@@ -82,9 +83,13 @@ class FeedViewModel(
     fun getNextPostsBatch() = viewModelScope.launch {
         setState { copy(newslinePaginationState = PaginationState.LOADING) }
 
-        val newslineBatch = request { getPaginatedNewsline(state.feeds, state.limit, state.offset) }
+        val newslineBatch = request {
+            delay(3000L)
+            throw Exception()
+            getPaginatedNewsline(state.feeds, state.limit, state.offset)
+        }
             .withErrorHandling {
-                setState { copy(newslinePaginationState = PaginationState.PAGINATION_EXHAUST) }
+                setState { copy(newslinePaginationState = PaginationState.ERROR) }
             } ?: return@launch
 
         val currentPosts =
@@ -97,7 +102,11 @@ class FeedViewModel(
         setState {
             copy(
                 newslineLoadState = updatedNewsline,
-                newslinePaginationState = PaginationState.IDLE,
+                newslinePaginationState = if (newPosts.isNotEmpty()) {
+                    PaginationState.IDLE
+                } else {
+                    PaginationState.PAGINATION_EXHAUST
+                },
                 offset = state.offset + DEFAULT_LIMIT
             )
         }
