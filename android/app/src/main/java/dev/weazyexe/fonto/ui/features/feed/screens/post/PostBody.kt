@@ -22,6 +22,7 @@ import dev.weazyexe.fonto.core.ui.components.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.utils.withAlgorithmicDarkening
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,5 +61,8 @@ fun PostBody(
 @Composable
 private fun PostView(post: Post) {
     val state = rememberWebViewState(post.link)
-    WebView(state)
+    WebView(
+        state = state,
+        onCreated = { it.withAlgorithmicDarkening() }
+    )
 }
