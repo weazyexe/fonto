@@ -11,4 +11,9 @@ data class PostState(
     val post: LoadState<Post> = LoadState.Loading()
 ) : State
 
-sealed interface PostEffect : Effect
+sealed interface PostEffect : Effect {
+
+    data class OpenShareDialog(
+        val text: String
+    ) : PostEffect
+}

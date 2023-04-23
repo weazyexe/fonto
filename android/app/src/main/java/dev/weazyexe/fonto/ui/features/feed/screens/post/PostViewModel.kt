@@ -31,4 +31,12 @@ class PostViewModel(
 
         setState { copy(post = post) }
     }
+
+    fun openShareDialog() = viewModelScope.launch {
+        val post = (state.post as? LoadState.Data)?.data ?: return@launch
+
+        PostEffect.OpenShareDialog(
+            text = post.title + "\n\n" + post.link
+        ).emit()
+    }
 }
