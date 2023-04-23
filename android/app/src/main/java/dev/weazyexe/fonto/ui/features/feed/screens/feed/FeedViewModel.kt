@@ -13,7 +13,10 @@ import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
 import dev.weazyexe.fonto.core.ui.utils.asResponseError
+import dev.weazyexe.fonto.data.SettingsStorage
+import dev.weazyexe.fonto.domain.OpenPostPreference
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
+import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
 import kotlinx.coroutines.launch
@@ -21,7 +24,8 @@ import kotlinx.coroutines.launch
 class FeedViewModel(
     private val getFeed: GetFeedUseCase,
     private val getNewsline: GetNewslineUseCase,
-    private val getPaginatedNewsline: GetPaginatedNewslineUseCase
+    private val getPaginatedNewsline: GetPaginatedNewslineUseCase,
+    private val settingsStorage: SettingsStorage
 ) : CoreViewModel<FeedState, FeedEffect>() {
 
     override val initialState: FeedState = FeedState()
@@ -106,6 +110,13 @@ class FeedViewModel(
                 },
                 offset = state.offset + DEFAULT_LIMIT
             )
+        }
+    }
+
+    fun openPost(post: PostViewState) = viewModelScope.launch {
+        when (settingsStorage.getOpenPostPreference()) {
+            OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(post.id, post.sourceId).emit()
+            OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
         }
     }
 

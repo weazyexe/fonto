@@ -1,5 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -48,6 +50,13 @@ fun FeedScreen(
             is FeedEffect.ShowMessage -> {
                 snackbarHostState.showSnackbar(context.getString(message, *args))
             }
+            is FeedEffect.OpenPostInApp -> {
+                navigateTo(PostScreenDestination(postId, feedId))
+            }
+            is FeedEffect.OpenPostInBrowser -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                context.startActivity(intent)
+            }
         }
     }
 
@@ -58,7 +67,7 @@ fun FeedScreen(
         snackbarHostState = snackbarHostState,
         paginationState = state.newslinePaginationState,
         isSwipeRefreshing = state.isSwipeRefreshing,
-        onPostClick = { navigateTo(PostScreenDestination(it.id, it.sourceId)) },
+        onPostClick = viewModel::openPost,
         onScroll = viewModel::onScroll,
         onManageFeed = { navigateTo(ManageFeedScreenDestination()) },
         onRefresh = viewModel::loadNewsline,
