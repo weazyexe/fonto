@@ -1,8 +1,9 @@
 package dev.weazyexe.fonto.ui.features.settings
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,14 +17,15 @@ import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.PreferencesGroup
 import dev.weazyexe.fonto.core.ui.components.preferences.SwitchPreferenceItem
 import dev.weazyexe.fonto.core.ui.components.preferences.TextPreferenceItem
+import dev.weazyexe.fonto.ui.features.settings.model.Group
+import dev.weazyexe.fonto.ui.features.settings.model.Preference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBody(
-    openPostPreferenceValue: Boolean,
-    onDebugClick: () -> Unit,
-    onManageFeedClick: () -> Unit,
-    onOpenPostPreferenceCheck: (Boolean) -> Unit
+    settings: List<Group>,
+    onTextPreferenceClick: (Preference.Text) -> Unit,
+    onSwitchPreferenceClick: (Preference.Switch, Boolean) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
@@ -35,31 +37,35 @@ fun SettingsBody(
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
-            PreferencesGroup(title = stringResource(id = R.string.settings_feed_group)) {
-                TextPreferenceItem(
-                    title = stringResource(id = R.string.settings_feed_manage_title),
-                    description = stringResource(id = R.string.settings_feed_manage_description),
-                    icon = R.drawable.ic_feed_24,
-                    onClick = onManageFeedClick,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                SwitchPreferenceItem(
-                    title = stringResource(id = R.string.settings_feed_open_post_title),
-                    description = stringResource(id = R.string.settings_feed_open_post_description),
-                    value = openPostPreferenceValue,
-                    icon = R.drawable.ic_language_24,
-                    onValueChange = onOpenPostPreferenceCheck
-                )
-            }
-            PreferencesGroup(title = stringResource(id = R.string.settings_debug_group)) {
-                TextPreferenceItem(
-                    title = stringResource(id = R.string.settings_debug_menu_title),
-                    description = stringResource(id = R.string.settings_debug_menu_description),
-                    icon = R.drawable.ic_bug_24,
-                    onClick = onDebugClick,
-                    modifier = Modifier.fillMaxWidth()
-                )
+        LazyColumn(modifier = Modifier.padding(padding)) {
+            items(settings) { group ->
+                PreferencesGroup(title = stringResource(group.title)) {
+                    group.preferences.forEach { pref ->
+                        when (pref) {
+                            is Preference.Text ->
+                                TextPreferenceItem(
+                                    title = stringResource(id = pref.title),
+                                    description = stringResource(id = pref.subtitle),
+                                    icon = pref.icon,
+                                    onClick = { onTextPreferenceClick(pref) },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+
+                            is Preference.Switch ->
+                                SwitchPreferenceItem(
+                                    title = stringResource(id = pref.title),
+                                    description = stringResource(id = pref.subtitle),
+                                    value = pref.value,
+                                    icon = pref.icon,
+                                    onValueChange = { onSwitchPreferenceClick(pref, it) }
+                                )
+
+                            is Preference.CustomValue<*> -> {
+                                // Do nothing for now
+                            }
+                        }
+                    }
+                }
             }
         }
     }

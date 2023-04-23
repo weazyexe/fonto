@@ -5,8 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
-import dev.weazyexe.fonto.domain.OpenPostPreference
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import org.koin.androidx.compose.koinViewModel
@@ -20,10 +20,16 @@ fun SettingsScreen(
     val viewModel = koinViewModel<SettingsViewModel>()
     val state by viewModel.uiState.collectAsState()
 
+    ReceiveEffect(viewModel.effects) {
+        when (this) {
+            is SettingsEffect.OpenManageFeedScreen -> navigateTo(ManageFeedScreenDestination)
+            is SettingsEffect.OpenDebugScreen -> navigateTo(DebugScreenDestination)
+        }
+    }
+
     SettingsBody(
-        openPostPreferenceValue = state.openPostPreference == OpenPostPreference.INTERNAL,
-        onDebugClick = { navigateTo(DebugScreenDestination) },
-        onManageFeedClick = { navigateTo(ManageFeedScreenDestination) },
-        onOpenPostPreferenceCheck = viewModel::onOpenPostPreferenceChange
+        settings = state.preferences,
+        onTextPreferenceClick = viewModel::onTextPreferenceClick,
+        onSwitchPreferenceClick = viewModel::onSwitchPreferenceClick
     )
 }
