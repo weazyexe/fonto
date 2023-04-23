@@ -9,24 +9,24 @@ compileSdk = "33"
 targetSdk = "33"
 minSdk = "28"
 
-compose = "2023.03.00"
+compose = "2023.04.01"
 composeCompiler = "1.4.4"
 
 composeDestinations = "1.8.38-beta"
 
 accompanist = "0.30.1"
 
-androidxCore = "1.9.0"
+androidxCore = "1.10.0"
 androidxLifecycleRuntime = "2.6.1"
-androidxActivityCompose = "1.7.0"
-androidxAppcompat = "1.4.1"
+androidxActivityCompose = "1.7.1"
+androidxAppcompat = "1.6.1"
 androidxWebkit = "1.6.1"
 androidxDatastore = "1.0.0"
 
 material = "1.8.0"
 
 kotlinxCoroutines = "1.6.4"
-kotlinxSerialization = "1.4.1"
+kotlinxSerialization = "1.5.0"
 kotlinxDatetime = "0.4.0"
 
 ktor = "2.2.4"
