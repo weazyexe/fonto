@@ -6,6 +6,8 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.common.settings.SettingsStorage
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
@@ -13,8 +15,6 @@ import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
 import dev.weazyexe.fonto.core.ui.utils.asResponseError
-import dev.weazyexe.fonto.data.SettingsStorage
-import dev.weazyexe.fonto.domain.OpenPostPreference
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState

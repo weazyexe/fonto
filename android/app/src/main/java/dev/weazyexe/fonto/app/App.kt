@@ -1,7 +1,6 @@
 package dev.weazyexe.fonto.app
 
 import android.app.Application
-import dev.weazyexe.fonto.app.di.appModule
 import dev.weazyexe.fonto.common.di.appModules
 import dev.weazyexe.fonto.debug.di.debugModule
 import dev.weazyexe.fonto.ui.features.feed.di.feedModule
@@ -22,7 +21,6 @@ class App : Application() {
             androidContext(this@App)
             modules(appModules())
             modules(
-                appModule,
                 feedModule,
                 settingsModule,
                 debugModule

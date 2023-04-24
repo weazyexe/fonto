@@ -32,6 +32,7 @@ kotlin {
                 implementation(libs.sqldelight.android)
                 implementation(libs.rss.parser)
                 implementation(libs.koin.android)
+                implementation(libs.androidx.datastore)
             }
         }
         /*val iosMain by creating {

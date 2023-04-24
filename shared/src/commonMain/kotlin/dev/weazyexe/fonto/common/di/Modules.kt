@@ -24,13 +24,18 @@ import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.network.createHttpClient
 import dev.weazyexe.fonto.common.parser.RssParser
+import dev.weazyexe.fonto.common.settings.createSettingsStorage
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
+expect fun platformModule(): Module
+
 internal val coreModule = module {
-    includes(androidModule)
+    includes(platformModule())
+
     single { createDatabase(get()) }
     single { createHttpClient() }
+    single { createSettingsStorage(get()) }
 }
 
 internal val feedModule = module {

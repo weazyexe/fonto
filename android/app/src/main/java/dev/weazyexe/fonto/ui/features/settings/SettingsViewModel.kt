@@ -1,9 +1,9 @@
 package dev.weazyexe.fonto.ui.features.settings
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.common.settings.SettingsStorage
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.data.SettingsStorage
-import dev.weazyexe.fonto.domain.OpenPostPreference
 import dev.weazyexe.fonto.ui.features.settings.model.Group
 import dev.weazyexe.fonto.ui.features.settings.model.Preference
 import kotlinx.coroutines.launch
@@ -72,7 +72,7 @@ class SettingsViewModel(
         } else {
             OpenPostPreference.DEFAULT_BROWSER
         }
-        settingsStorage.setOpenPostPreference(newValue)
+        settingsStorage.saveOpenPostPreference(newValue)
         update(preference.copy(value = value))
     }
 

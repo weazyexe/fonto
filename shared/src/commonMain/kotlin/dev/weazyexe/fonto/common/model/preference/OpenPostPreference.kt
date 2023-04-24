@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.domain
+package dev.weazyexe.fonto.common.model.preference
 
 enum class OpenPostPreference(val key: String) {
     DEFAULT_BROWSER("DEFAULT_BROWSER"),
