@@ -1,6 +1,8 @@
 package dev.weazyexe.fonto.debug
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.common.data.bus.AppEvent
+import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -10,7 +12,8 @@ import kotlinx.coroutines.launch
 
 class DebugViewModel(
     private val deleteAllFeeds: DeleteAllFeedsUseCase,
-    private val createFeed: CreateFeedUseCase
+    private val createFeed: CreateFeedUseCase,
+    private val eventBus: EventBus
 ) : CoreViewModel<DebugState, DebugEffect>() {
 
     override val initialState: DebugState = DebugState()
@@ -23,5 +26,6 @@ class DebugViewModel(
         }
 
         DebugEffect.ShowMessage(R.string.debug_feed_storage_updated).emit()
+        eventBus.emit(AppEvent.RefreshFeed)
     }
 }

@@ -1,6 +1,7 @@
 @file:JvmName("CommonModules")
 package dev.weazyexe.fonto.common.di
 
+import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.FeedDataSource
 import dev.weazyexe.fonto.common.data.datasource.IconDataSource
 import dev.weazyexe.fonto.common.data.datasource.NewslineDataSource
@@ -36,6 +37,8 @@ internal val coreModule = module {
     single { createDatabase(get()) }
     single { createHttpClient() }
     single { createSettingsStorage(get()) }
+
+    single { EventBus() }
 }
 
 internal val feedModule = module {

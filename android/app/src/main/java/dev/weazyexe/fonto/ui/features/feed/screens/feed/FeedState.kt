@@ -18,8 +18,7 @@ data class FeedState(
     val isSwipeRefreshing: Boolean = false,
     val feeds: List<Feed> = emptyList(),
     val limit: Int = DEFAULT_LIMIT,
-    val offset: Int = 0,
-    val canPaginate: Boolean = true
+    val offset: Int = 0
 ) : State
 
 sealed interface FeedEffect : Effect {

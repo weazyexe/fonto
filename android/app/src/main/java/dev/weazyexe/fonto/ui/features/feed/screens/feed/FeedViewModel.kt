@@ -2,6 +2,8 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
+import dev.weazyexe.fonto.common.data.bus.AppEvent
+import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
@@ -19,19 +21,23 @@ import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
     private val getFeed: GetFeedUseCase,
     private val getNewsline: GetNewslineUseCase,
     private val getPaginatedNewsline: GetPaginatedNewslineUseCase,
-    private val settingsStorage: SettingsStorage
+    private val settingsStorage: SettingsStorage,
+    private val eventBus: EventBus
 ) : CoreViewModel<FeedState, FeedEffect>() {
 
     override val initialState: FeedState = FeedState()
 
     init {
         loadNewsline()
+        listenEventBus()
     }
 
     fun loadNewsline(isSwipeRefreshing: Boolean = false) = viewModelScope.launch {
@@ -44,7 +50,8 @@ class FeedViewModel(
                 },
                 scrollState = ScrollState(),
                 offset = 0,
-                isSwipeRefreshing = isSwipeRefreshing
+                isSwipeRefreshing = isSwipeRefreshing,
+                newslinePaginationState = PaginationState.IDLE
             )
         }
 
@@ -125,5 +132,12 @@ class FeedViewModel(
             val feedListString = problematicFeedList.joinToString { it.title }
             FeedEffect.ShowMessage(R.string.feed_error_sources, feedListString).emit()
         }
+    }
+
+    private fun listenEventBus() {
+        eventBus.observe()
+            .filter { it is AppEvent.RefreshFeed }
+            .onEach { loadNewsline() }
+            .launchInViewModelScope()
     }
 }
