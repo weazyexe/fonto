@@ -23,6 +23,28 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
+            resValue("string", "app_name", "@string/app_name_debug")
+        }
+
+        create("qa") {
+            applicationIdSuffix = ".qa"
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            resValue("string", "app_name", "@string/app_name_qa")
+        }
+
+        release {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            resValue("string", "app_name", "@string/app_name")
+        }
+
+    }
+
+    buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(

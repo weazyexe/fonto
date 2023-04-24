@@ -37,7 +37,7 @@ class FeedViewModel(
 
     init {
         loadNewsline()
-        listenEventBus()
+        listenToEventBus()
     }
 
     fun loadNewsline(isSwipeRefreshing: Boolean = false) = viewModelScope.launch {
@@ -134,7 +134,7 @@ class FeedViewModel(
         }
     }
 
-    private fun listenEventBus() {
+    private fun listenToEventBus() {
         eventBus.observe()
             .filter { it is AppEvent.RefreshFeed }
             .onEach { loadNewsline() }
