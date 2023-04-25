@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.settings.model
+package dev.weazyexe.fonto.core.ui.components.preferences.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -46,8 +46,8 @@ sealed interface Preference {
         override val title: Int,
         override val subtitle: Int,
         override val icon: Int,
-        val value: T,
-        val possibleValues: Collection<T>
+        val value: Value<T>,
+        val possibleValues: List<Value<T>>
     ) : Preference
 
     @Serializable
@@ -55,6 +55,9 @@ sealed interface Preference {
         // Feed group
         MANAGE_FEED,
         OPEN_POST,
+
+        // Display group
+        THEME,
 
         // Debug group
         DEBUG_MENU

@@ -1,15 +1,23 @@
-package dev.weazyexe.fonto.ui.features.settings
+package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.common.data.bus.AppEvent
+import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.common.settings.SettingsStorage
+import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
+import dev.weazyexe.fonto.core.ui.components.preferences.model.findPreference
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.ui.features.settings.model.Group
-import dev.weazyexe.fonto.ui.features.settings.model.Preference
+import dev.weazyexe.fonto.util.stringRes
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val settingsStorage: SettingsStorage
+    private val settingsStorage: SettingsStorage,
+    private val eventBus: EventBus
 ) : CoreViewModel<SettingsState, SettingsEffect>() {
 
     override val initialState: SettingsState = SettingsState()
@@ -20,6 +28,8 @@ class SettingsViewModel(
 
     fun loadSettings() = viewModelScope.launch {
         val openPostPreference = settingsStorage.getOpenPostPreference()
+        val themePreference = settingsStorage.getTheme()
+
         val updatedPreferences = state.preferences
             .map { group ->
                 Group(
@@ -33,6 +43,17 @@ class SettingsViewModel(
                                     subtitle = preference.title,
                                     icon = preference.icon,
                                     value = openPostPreference == OpenPostPreference.INTERNAL
+                                )
+                            }
+
+                            Preference.Identifier.THEME -> {
+                                Preference.CustomValue(
+                                    id = Preference.Identifier.THEME,
+                                    title = R.string.settings_display_theme_title,
+                                    subtitle = R.string.settings_display_theme_description,
+                                    icon = R.drawable.ic_lightbulb_24,
+                                    value = Value(themePreference, themePreference.stringRes),
+                                    possibleValues = Theme.values().map { Value(it, it.stringRes) }
                                 )
                             }
 
@@ -65,6 +86,37 @@ class SettingsViewModel(
                 }
             }
         }
+
+    @Suppress("UNCHECKED_CAST")
+    fun saveTheme(theme: Theme) = viewModelScope.launch {
+        settingsStorage.saveTheme(theme)
+        eventBus.emit(AppEvent.ThemeChanged(theme))
+
+        val preference = state.preferences
+            .findPreference(Preference.Identifier.THEME) as? Preference.CustomValue<Theme>
+            ?: return@launch
+
+        update(preference.copy(value = Value(theme, theme.stringRes)))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> onCustomPreferenceClick(preference: Preference.CustomValue<T>) {
+        when (preference.id) {
+            Preference.Identifier.THEME -> {
+                SettingsEffect.OpenThemePickerDialog(
+                    id = preference.id,
+                    title = R.string.settings_display_theme_title,
+                    icon = R.drawable.ic_lightbulb_24,
+                    value = preference.value as Value<Theme>,
+                    possibleValues = preference.possibleValues as List<Value<Theme>>
+                ).emit()
+            }
+
+            else -> {
+                // Do nothing
+            }
+        }
+    }
 
     private suspend fun onOpenPostChanged(preference: Preference.Switch, value: Boolean) {
         val newValue = if (value) {

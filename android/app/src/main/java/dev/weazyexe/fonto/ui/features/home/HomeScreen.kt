@@ -12,10 +12,14 @@ import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.spec.Direction
+import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.ui.features.home.bottombar.BottomBar
+import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
+import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,7 +28,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     navController: NavController,
-    manageFeedResultRecipient: ResultRecipient<ManageFeedScreenDestination, Boolean>
+    manageFeedResultRecipient: ResultRecipient<ManageFeedScreenDestination, Boolean>,
+    themePickerResultRecepient: ResultRecipient<ThemePickerDialogDestination, Theme?>
 ) {
     val feedViewModel = koinViewModel<FeedViewModel>()
     val bottomBarNavController = rememberNavController()
@@ -46,8 +51,22 @@ fun HomeScreen(
                     }
                 )
                 dependency(
-                    fun(direction: Direction) {
-                        navController.navigate(direction)
+                    fun(): ResultRecipient<ThemePickerDialogDestination, Theme?> {
+                        return themePickerResultRecepient
+                    }
+                )
+                dependency(
+                    object : NavigateTo {
+                        override fun invoke(direction: Direction) {
+                            navController.navigate(direction)
+                        }
+                    }
+                )
+                dependency(
+                    object : NavigateWithResult {
+                        override fun invoke(direction: Direction) {
+                            navController.navigate(direction)
+                        }
                     }
                 )
             }

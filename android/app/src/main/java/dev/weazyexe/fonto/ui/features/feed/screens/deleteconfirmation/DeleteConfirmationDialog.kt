@@ -19,7 +19,6 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 
 @Destination(style = DestinationStyle.Dialog::class)
 @Composable
@@ -27,42 +26,40 @@ fun DeleteConfirmationDialog(
     resultBackNavigator: ResultBackNavigator<Long?>,
     feed: Feed,
 ) {
-    AnimatedAppearing {
-        AlertDialog(
-            onDismissRequest = { resultBackNavigator.navigateBack(result = null) },
-            confirmButton = {
-                FilledTonalButton(
-                    onClick = { resultBackNavigator.navigateBack(result = feed.id.origin) },
-                    colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    )
-                ) {
-                    Text(text = stringResource(id = R.string.feed_delete_confirmation_delete))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { resultBackNavigator.navigateBack(result = null) }) {
-                    Text(text = stringResource(id = R.string.feed_delete_confirmation_cancel))
-                }
-            },
-            title = { Text(text = stringResource(id = R.string.feed_delete_confirmation_title)) },
-            text = {
-                val text = buildAnnotatedString {
-                    append(stringResource(id = R.string.feed_delete_confirmation_description_first))
-                    append(" ")
-                    append(AnnotatedString(feed.title, SpanStyle(fontWeight = FontWeight.Bold)))
-                    append(" ")
-                    append(stringResource(id = R.string.feed_delete_confirmation_description_second))
-                }
-                Text(text = text)
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete_forever_24),
-                    contentDescription = null
+    AlertDialog(
+        onDismissRequest = { resultBackNavigator.navigateBack(result = null) },
+        confirmButton = {
+            FilledTonalButton(
+                onClick = { resultBackNavigator.navigateBack(result = feed.id.origin) },
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
                 )
+            ) {
+                Text(text = stringResource(id = R.string.feed_delete_confirmation_delete))
             }
-        )
-    }
+        },
+        dismissButton = {
+            TextButton(onClick = { resultBackNavigator.navigateBack(result = null) }) {
+                Text(text = stringResource(id = R.string.feed_delete_confirmation_cancel))
+            }
+        },
+        title = { Text(text = stringResource(id = R.string.feed_delete_confirmation_title)) },
+        text = {
+            val text = buildAnnotatedString {
+                append(stringResource(id = R.string.feed_delete_confirmation_description_first))
+                append(" ")
+                append(AnnotatedString(feed.title, SpanStyle(fontWeight = FontWeight.Bold)))
+                append(" ")
+                append(stringResource(id = R.string.feed_delete_confirmation_description_second))
+            }
+            Text(text = text)
+        },
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_delete_forever_24),
+                contentDescription = null
+            )
+        }
+    )
 }

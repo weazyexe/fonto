@@ -63,9 +63,18 @@
     <string name="settings_feed_manage_description">Edit the sources you read</string>
     <string name="settings_feed_open_post_title">Open posts with in-app browser</string>
     <string name="settings_feed_open_post_description">If unchecked, use system default browser</string>
+    <string name="settings_display_group">Display</string>
+    <string name="settings_display_theme_title">Theme</string>
+    <string name="settings_display_theme_description">Color scheme of the app</string>
+    <string name="settings_display_theme_value_light">Light</string>
+    <string name="settings_display_theme_value_dark">Dark</string>
+    <string name="settings_display_theme_value_system">System</string>
     <string name="settings_debug_group">Debug</string>
     <string name="settings_debug_menu_title">Debug menu</string>
     <string name="settings_debug_menu_description">Settings for more efficient development</string>
+
+    <string name="value_picker_save">Save</string>
+    <string name="value_picker_cancel">Cancel</string>
 
     <string name="debug_title">Debug screen</string>
     <string name="debug_feed_group">Feed</string>

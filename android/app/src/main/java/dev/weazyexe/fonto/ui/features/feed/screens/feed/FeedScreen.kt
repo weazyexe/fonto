@@ -12,11 +12,11 @@ import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
-import com.ramcosta.composedestinations.spec.Direction
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.PostScreenDestination
+import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 
 @BottomBarNavGraph(start = true)
 @Destination
@@ -24,7 +24,7 @@ import dev.weazyexe.fonto.ui.features.destinations.PostScreenDestination
 fun FeedScreen(
     rootPaddingValues: PaddingValues,
     viewModel: FeedViewModel,
-    navigateTo: (Direction) -> Unit,
+    navigateTo: NavigateTo,
     manageFeedResultRecipientProvider: () -> ResultRecipient<ManageFeedScreenDestination, Boolean>
 ) {
     val context = LocalContext.current

@@ -1,11 +1,16 @@
-package dev.weazyexe.fonto.ui.features.settings
+package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.presentation.Effect
 import dev.weazyexe.fonto.core.ui.presentation.State
-import dev.weazyexe.fonto.ui.features.settings.model.Group
-import dev.weazyexe.fonto.ui.features.settings.model.Preference
+import dev.weazyexe.fonto.util.stringRes
 
 data class SettingsState(
     val preferences: List<Group> = PREFERENCES,
@@ -17,6 +22,14 @@ sealed interface SettingsEffect : Effect {
     object OpenManageFeedScreen : SettingsEffect
 
     object OpenDebugScreen : SettingsEffect
+
+    data class OpenThemePickerDialog(
+        val id: Preference.Identifier,
+        @StringRes val title: Int,
+        @DrawableRes val icon: Int,
+        val value: Value<Theme>,
+        val possibleValues: List<Value<Theme>>
+    ) : SettingsEffect
 }
 
 private val PREFERENCES = listOf(
@@ -35,6 +48,19 @@ private val PREFERENCES = listOf(
                 subtitle = R.string.settings_feed_open_post_description,
                 icon = R.drawable.ic_language_24,
                 value = true
+            )
+        )
+    ),
+    Group(
+        title = R.string.settings_display_group,
+        preferences = listOf(
+            Preference.CustomValue(
+                id = Preference.Identifier.THEME,
+                title = R.string.settings_display_theme_title,
+                subtitle = R.string.settings_display_theme_description,
+                icon = R.drawable.ic_lightbulb_24,
+                value = Value(Theme.SYSTEM, Theme.SYSTEM.stringRes),
+                possibleValues = Theme.values().map { Value(it, it.stringRes) }
             )
         )
     ),

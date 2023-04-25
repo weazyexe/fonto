@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.settings.model
+package dev.weazyexe.fonto.core.ui.components.preferences.model
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
@@ -10,3 +10,6 @@ data class Group(
     @StringRes val title: Int,
     val preferences: Collection<Preference>
 )
+
+fun List<Group>.findPreference(id: Preference.Identifier): Preference? =
+    this.flatMap { it.preferences }.firstOrNull { it.id == id }

@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.settings
+package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,18 +14,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.components.preferences.CustomValuePreferenceItem
 import dev.weazyexe.fonto.core.ui.components.preferences.PreferencesGroup
 import dev.weazyexe.fonto.core.ui.components.preferences.SwitchPreferenceItem
 import dev.weazyexe.fonto.core.ui.components.preferences.TextPreferenceItem
-import dev.weazyexe.fonto.ui.features.settings.model.Group
-import dev.weazyexe.fonto.ui.features.settings.model.Preference
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
+import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBody(
     settings: List<Group>,
     onTextPreferenceClick: (Preference.Text) -> Unit,
-    onSwitchPreferenceClick: (Preference.Switch, Boolean) -> Unit
+    onSwitchPreferenceClick: (Preference.Switch, Boolean) -> Unit,
+    onCustomPreferenceClick: (Preference.CustomValue<Value<*>>) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
@@ -61,7 +65,13 @@ fun SettingsBody(
                                 )
 
                             is Preference.CustomValue<*> -> {
-                                // Do nothing for now
+                                CustomValuePreferenceItem(
+                                    title = stringResource(id = pref.title),
+                                    description = stringResource(id = pref.subtitle),
+                                    value = pref.value,
+                                    icon = pref.icon,
+                                    onClick = { onCustomPreferenceClick(pref as Preference.CustomValue<Value<*>>) },
+                                )
                             }
                         }
                     }
