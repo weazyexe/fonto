@@ -12,4 +12,8 @@ interface SettingsStorage {
     suspend fun getTheme(): Theme
 
     suspend fun saveTheme(theme: Theme)
+
+    suspend fun isDynamicColorsEnabled(): Boolean
+
+    suspend fun saveDynamicColorsEnabled(isEnabled: Boolean)
 }

@@ -58,6 +58,7 @@ sealed interface Preference {
 
         // Display group
         THEME,
+        DYNAMIC_COLORS,
 
         // Debug group
         DEBUG_MENU

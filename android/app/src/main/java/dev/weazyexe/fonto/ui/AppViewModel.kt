@@ -6,7 +6,6 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.settings.SettingsStorage
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -18,19 +17,27 @@ class AppViewModel(
     override val initialState: AppState = AppState()
 
     init {
-        fetchTheme()
+        fetchSettings()
         listenToTheme()
     }
 
-    private fun fetchTheme() = viewModelScope.launch {
+    private fun fetchSettings() = viewModelScope.launch {
         val theme = settingsStorage.getTheme()
-        setState { copy(theme = theme) }
+        val dynamicColor = settingsStorage.isDynamicColorsEnabled()
+        setState { copy(theme = theme, isDynamicColorsEnabled = dynamicColor) }
     }
 
     private fun listenToTheme() = viewModelScope.launch {
         eventBus.observe()
-            .filterIsInstance<AppEvent.ThemeChanged>()
-            .onEach { setState { copy(theme = it.theme) } }
+            .onEach {
+                when (it) {
+                    is AppEvent.ThemeChanged -> setState { copy(theme = it.theme) }
+                    is AppEvent.DynamicColorsChanged -> setState { copy(isDynamicColorsEnabled = it.isEnabled) }
+                    else -> {
+                        // Do nothing
+                    }
+                }
+            }
             .collect()
     }
 }

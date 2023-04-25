@@ -36,7 +36,8 @@ class AppActivity : ComponentActivity() {
                     Theme.LIGHT -> false
                     Theme.DARK -> true
                     else -> isSystemInDarkTheme()
-                }
+                },
+                dynamicColor = state.isDynamicColorsEnabled
             ) {
                 val homeNavController = rememberAnimatedNavController()
                 val animatedNavHostEngine = rememberAnimatedNavHostEngine(

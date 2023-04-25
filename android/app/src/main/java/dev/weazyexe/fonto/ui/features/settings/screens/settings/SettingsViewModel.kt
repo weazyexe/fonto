@@ -29,6 +29,7 @@ class SettingsViewModel(
     fun loadSettings() = viewModelScope.launch {
         val openPostPreference = settingsStorage.getOpenPostPreference()
         val themePreference = settingsStorage.getTheme()
+        val isDynamicColorsEnabled = settingsStorage.isDynamicColorsEnabled()
 
         val updatedPreferences = state.preferences
             .map { group ->
@@ -48,12 +49,22 @@ class SettingsViewModel(
 
                             Preference.Identifier.THEME -> {
                                 Preference.CustomValue(
-                                    id = Preference.Identifier.THEME,
-                                    title = R.string.settings_display_theme_title,
-                                    subtitle = R.string.settings_display_theme_description,
-                                    icon = R.drawable.ic_lightbulb_24,
+                                    id = preference.id,
+                                    title = preference.title,
+                                    subtitle = preference.subtitle,
+                                    icon = preference.icon,
                                     value = Value(themePreference, themePreference.stringRes),
                                     possibleValues = Theme.values().map { Value(it, it.stringRes) }
+                                )
+                            }
+
+                            Preference.Identifier.DYNAMIC_COLORS -> {
+                                Preference.Switch(
+                                    id = preference.id,
+                                    title = preference.title,
+                                    subtitle = preference.subtitle,
+                                    icon = preference.icon,
+                                    value = isDynamicColorsEnabled
                                 )
                             }
 
@@ -81,6 +92,7 @@ class SettingsViewModel(
         viewModelScope.launch {
             when (preference.id) {
                 Preference.Identifier.OPEN_POST -> onOpenPostChanged(preference, value)
+                Preference.Identifier.DYNAMIC_COLORS -> onDynamicColorsEnabledChanged(preference, value)
                 else -> {
                     // Do nothing
                 }
@@ -125,6 +137,12 @@ class SettingsViewModel(
             OpenPostPreference.DEFAULT_BROWSER
         }
         settingsStorage.saveOpenPostPreference(newValue)
+        update(preference.copy(value = value))
+    }
+
+    private suspend fun onDynamicColorsEnabledChanged(preference: Preference.Switch, value: Boolean) {
+        settingsStorage.saveDynamicColorsEnabled(value)
+        eventBus.emit(AppEvent.DynamicColorsChanged(value))
         update(preference.copy(value = value))
     }
 

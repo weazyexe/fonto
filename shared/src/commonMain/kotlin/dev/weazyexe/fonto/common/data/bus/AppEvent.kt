@@ -7,4 +7,6 @@ sealed interface AppEvent {
     object RefreshFeed : AppEvent
 
     data class ThemeChanged(val theme: Theme) : AppEvent
+
+    data class DynamicColorsChanged(val isEnabled: Boolean) : AppEvent
 }
