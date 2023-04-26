@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.settings.screens.valuepicker
+package dev.weazyexe.fonto.ui.features.settings.screens.themepicker
 
 import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination

@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
@@ -20,6 +21,7 @@ class AndroidSettingsStorage(
     private val openPostPreferenceKey = stringPreferencesKey(OPEN_POST_PREFERENCE)
     private val themePreferenceKey = stringPreferencesKey(THEME_PREFERENCE)
     private val dynamicColorsPreferenceKey = booleanPreferencesKey(DYNAMIC_COLORS_PREFERENCE)
+    private val accentColorPreferenceKey = longPreferencesKey(ACCENT_COLOR_PREFERENCE)
 
     override suspend fun getOpenPostPreference(): OpenPostPreference {
         val key = get(key = openPostPreferenceKey, default = OpenPostPreference.INTERNAL.key)
@@ -47,6 +49,16 @@ class AndroidSettingsStorage(
         save(key = dynamicColorsPreferenceKey, value = isEnabled)
     }
 
+    override suspend fun getAccentColor(): Long? {
+        val color = get(key = accentColorPreferenceKey, default = -1L)
+        if (color == -1L) return null
+        return color
+    }
+
+    override suspend fun saveAccentColor(color: Long) {
+        save(key = accentColorPreferenceKey, value = color)
+    }
+
     private suspend fun <T> get(key: Preferences.Key<T>, default: T): T =
         context.dataStore.data
             .map { it[key] }
@@ -64,5 +76,6 @@ class AndroidSettingsStorage(
         const val OPEN_POST_PREFERENCE = "OPEN_POST_PREFERENCE"
         const val THEME_PREFERENCE = "THEME_PREFERENCE"
         const val DYNAMIC_COLORS_PREFERENCE = "DYNAMIC_COLORS_PREFERENCE"
+        const val ACCENT_COLOR_PREFERENCE = "ACCENT_COLOR_PREFERENCE"
     }
 }

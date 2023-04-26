@@ -9,4 +9,6 @@ sealed interface AppEvent {
     data class ThemeChanged(val theme: Theme) : AppEvent
 
     data class DynamicColorsChanged(val isEnabled: Boolean) : AppEvent
+
+    data class AccentColorChanged(val color: Long) : AppEvent
 }

@@ -10,11 +10,14 @@ import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
+import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
-import dev.weazyexe.fonto.ui.features.settings.screens.valuepicker.ThemePickerArgs
+import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
+import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
+import io.github.aakira.napier.Napier
 import org.koin.androidx.compose.koinViewModel
 
 @BottomBarNavGraph
@@ -53,6 +56,14 @@ fun SettingsScreen(
                             icon = icon,
                             title = title
                         )
+                    )
+                )
+            }
+            is SettingsEffect.OpenColorPickerDialog -> {
+                Napier.d { possibleValues.toString() }
+                navigateWithResult(
+                    ColorPickerDialogDestination(
+                        args = ColorPickerArgs(colors = possibleValues)
                     )
                 )
             }

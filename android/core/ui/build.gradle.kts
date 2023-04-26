@@ -71,6 +71,8 @@ dependencies {
 
     implementation(libs.napier)
 
+    implementation(libs.material)
+
     implementation(libs.compose.destinations.core)
     implementation(libs.compose.destinations.animations)
     ksp(libs.compose.destinations.ksp)

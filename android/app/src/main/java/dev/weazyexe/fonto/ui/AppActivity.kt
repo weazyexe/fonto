@@ -6,17 +6,23 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.animation.SlideAnimations
+import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
 import dev.weazyexe.fonto.core.ui.theme.FontoTheme
 import dev.weazyexe.fonto.ui.navigation.AppNavGraph
 import org.koin.androidx.compose.koinViewModel
@@ -32,6 +38,11 @@ class AppActivity : ComponentActivity() {
             val state by viewModel.uiState.collectAsState()
 
             FontoTheme(
+                accentColor = if (state.accentColor != -1L) {
+                    Color(state.accentColor)
+                } else {
+                    Color(DEFAULT_COLOR.data)
+                },
                 darkTheme = when (state.theme) {
                     Theme.LIGHT -> false
                     Theme.DARK -> true
@@ -39,7 +50,8 @@ class AppActivity : ComponentActivity() {
                 },
                 dynamicColor = state.isDynamicColorsEnabled
             ) {
-                val homeNavController = rememberAnimatedNavController()
+                val bottomSheetNavigator = rememberBottomSheetNavigator()
+                val homeNavController = rememberAnimatedNavController(bottomSheetNavigator)
                 val animatedNavHostEngine = rememberAnimatedNavHostEngine(
                     rootDefaultAnimations = RootNavGraphDefaultAnimations(
                         enterTransition = { SlideAnimations.enter },
@@ -49,12 +61,20 @@ class AppActivity : ComponentActivity() {
                     )
                 )
 
-                DestinationsNavHost(
-                    navGraph = AppNavGraph,
-                    modifier = Modifier.fillMaxSize(),
-                    navController = homeNavController,
-                    engine = animatedNavHostEngine
-                )
+                Surface {
+                    ModalBottomSheetLayout(
+                        bottomSheetNavigator = bottomSheetNavigator,
+                        sheetShape = MaterialTheme.shapes.extraLarge,
+                        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+                    ) {
+                        DestinationsNavHost(
+                            navGraph = AppNavGraph,
+                            modifier = Modifier.fillMaxSize(),
+                            navController = homeNavController,
+                            engine = animatedNavHostEngine
+                        )
+                    }
+                }
             }
         }
     }

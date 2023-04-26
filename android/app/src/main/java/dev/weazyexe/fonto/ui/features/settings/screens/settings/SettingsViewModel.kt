@@ -12,7 +12,11 @@ import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.components.preferences.model.findPreference
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
+import dev.weazyexe.fonto.core.ui.theme.COLORS
+import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
+import dev.weazyexe.fonto.core.ui.theme.asColorValue
 import dev.weazyexe.fonto.util.stringRes
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
@@ -30,6 +34,7 @@ class SettingsViewModel(
         val openPostPreference = settingsStorage.getOpenPostPreference()
         val themePreference = settingsStorage.getTheme()
         val isDynamicColorsEnabled = settingsStorage.isDynamicColorsEnabled()
+        val accentColor = settingsStorage.getAccentColor()?.asColorValue() ?: DEFAULT_COLOR
 
         val updatedPreferences = state.preferences
             .map { group ->
@@ -68,6 +73,17 @@ class SettingsViewModel(
                                 )
                             }
 
+                            Preference.Identifier.COLOR_SCHEME -> {
+                                Preference.CustomValue(
+                                    id = preference.id,
+                                    title = preference.title,
+                                    subtitle = preference.subtitle,
+                                    icon = preference.icon,
+                                    value = Value(accentColor.data, accentColor.title),
+                                    possibleValues = COLORS
+                                )
+                            }
+
                             Preference.Identifier.MANAGE_FEED,
                             Preference.Identifier.DEBUG_MENU -> preference
                         }
@@ -100,18 +116,6 @@ class SettingsViewModel(
         }
 
     @Suppress("UNCHECKED_CAST")
-    fun saveTheme(theme: Theme) = viewModelScope.launch {
-        settingsStorage.saveTheme(theme)
-        eventBus.emit(AppEvent.ThemeChanged(theme))
-
-        val preference = state.preferences
-            .findPreference(Preference.Identifier.THEME) as? Preference.CustomValue<Theme>
-            ?: return@launch
-
-        update(preference.copy(value = Value(theme, theme.stringRes)))
-    }
-
-    @Suppress("UNCHECKED_CAST")
     fun <T> onCustomPreferenceClick(preference: Preference.CustomValue<T>) {
         when (preference.id) {
             Preference.Identifier.THEME -> {
@@ -123,11 +127,31 @@ class SettingsViewModel(
                     possibleValues = preference.possibleValues as List<Value<Theme>>
                 ).emit()
             }
+            Preference.Identifier.COLOR_SCHEME -> {
+                Napier.d { preference.toString() }
+                SettingsEffect.OpenColorPickerDialog(
+                    id = preference.id,
+                    value = preference.value as Value<Long>,
+                    possibleValues = preference.possibleValues as List<Value<Long>>
+                ).emit()
+            }
 
             else -> {
                 // Do nothing
             }
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun saveTheme(theme: Theme) = viewModelScope.launch {
+        settingsStorage.saveTheme(theme)
+        eventBus.emit(AppEvent.ThemeChanged(theme))
+
+        val preference = state.preferences
+            .findPreference(Preference.Identifier.THEME) as? Preference.CustomValue<Theme>
+            ?: return@launch
+
+        update(preference.copy(value = Value(theme, theme.stringRes)))
     }
 
     private suspend fun onOpenPostChanged(preference: Preference.Switch, value: Boolean) {

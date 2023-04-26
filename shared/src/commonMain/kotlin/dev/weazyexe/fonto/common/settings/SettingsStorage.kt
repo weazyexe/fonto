@@ -16,4 +16,8 @@ interface SettingsStorage {
     suspend fun isDynamicColorsEnabled(): Boolean
 
     suspend fun saveDynamicColorsEnabled(isEnabled: Boolean)
+
+    suspend fun getAccentColor(): Long?
+
+    suspend fun saveAccentColor(color: Long)
 }

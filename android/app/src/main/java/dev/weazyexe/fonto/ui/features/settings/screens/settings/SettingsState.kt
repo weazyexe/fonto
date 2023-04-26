@@ -11,6 +11,8 @@ import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.presentation.Effect
 import dev.weazyexe.fonto.core.ui.presentation.State
+import dev.weazyexe.fonto.core.ui.theme.COLORS
+import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
 import dev.weazyexe.fonto.util.stringRes
 
 data class SettingsState(
@@ -30,6 +32,12 @@ sealed interface SettingsEffect : Effect {
         @DrawableRes val icon: Int,
         val value: Value<Theme>,
         val possibleValues: List<Value<Theme>>
+    ) : SettingsEffect
+
+    data class OpenColorPickerDialog(
+        val id: Preference.Identifier,
+        val value: Value<Long>,
+        val possibleValues: List<Value<Long>>
     ) : SettingsEffect
 }
 
@@ -71,7 +79,15 @@ private val PREFERENCES = listOf(
                     icon = R.drawable.ic_palette_24,
                     value = true
                 )
-            } else null
+            } else null,
+            Preference.CustomValue(
+                id = Preference.Identifier.COLOR_SCHEME,
+                title = R.string.settings_display_color_scheme_title,
+                subtitle = R.string.settings_display_color_scheme_description,
+                icon = R.drawable.ic_format_paint_24,
+                value = DEFAULT_COLOR,
+                possibleValues = COLORS
+            ),
         )
     ),
     Group(
