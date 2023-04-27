@@ -86,7 +86,7 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun FontoTheme(
-    accentColor: Color,
+    accentColor: Long,
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
@@ -97,8 +97,8 @@ fun FontoTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> ThemeGenerator.generate(accentColor, isDark = true)
-        else -> ThemeGenerator.generate(accentColor, isDark = false)
+        darkTheme -> ThemeGenerator.generate(accentColor.toInt(), isDark = true)
+        else -> ThemeGenerator.generate(accentColor.toInt(), isDark = false)
     }
 
     val view = LocalView.current
@@ -119,16 +119,11 @@ fun FontoTheme(
 }
 
 val COLORS = listOf(
-    Value(data = 0xff0a8dff, title = R.string.settings_display_color_scheme_value_blue),
-    Value(data = 0xff00ffff, title = R.string.settings_display_color_scheme_value_cyan),
-    Value(data = 0xff32a852, title = R.string.settings_display_color_scheme_value_green),
-    Value(data = 0xff27d507, title = R.string.settings_display_color_scheme_value_lime),
-    Value(data = 0xfffcf93f, title = R.string.settings_display_color_scheme_value_yellow),
-    Value(data = 0xffff841f, title = R.string.settings_display_color_scheme_value_red),
-    Value(data = 0xffff0000, title = R.string.settings_display_color_scheme_value_red),
-    Value(data = 0xffff00ff, title = R.string.settings_display_color_scheme_value_magenta),
-    Value(data = 0xfffca2ea, title = R.string.settings_display_color_scheme_value_pink),
-    Value(data = 0xff888888, title = R.string.settings_display_color_scheme_value_gray),
+    Value(data = 0xFF6383F8, title = R.string.settings_display_color_scheme_value_blue),
+    Value(data = 0xFF88CF9B, title = R.string.settings_display_color_scheme_value_green),
+    Value(data = 0xFFDFA576, title = R.string.settings_display_color_scheme_value_orange),
+    Value(data = 0xFFCE6E6E, title = R.string.settings_display_color_scheme_value_red),
+    Value(data = 0xFFFF96EA, title = R.string.settings_display_color_scheme_value_pink),
 )
 val DEFAULT_COLOR = COLORS[0]
 

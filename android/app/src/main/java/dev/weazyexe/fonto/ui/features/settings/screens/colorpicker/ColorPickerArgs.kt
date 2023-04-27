@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ColorPickerArgs(
+    val selectedColor: Value<Long>,
     val colors: List<Value<Long>>
 )

@@ -17,7 +17,8 @@ import dev.weazyexe.fonto.util.stringRes
 
 data class SettingsState(
     val preferences: List<Group> = PREFERENCES,
-    val openPostPreference: OpenPostPreference = OpenPostPreference.INTERNAL
+    val openPostPreference: OpenPostPreference = OpenPostPreference.INTERNAL,
+    val hiddenPreferences: List<Preference.Identifier> = emptyList()
 ) : State
 
 sealed interface SettingsEffect : Effect {

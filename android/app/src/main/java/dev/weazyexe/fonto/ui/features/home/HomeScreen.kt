@@ -14,12 +14,16 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.spec.Direction
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.ui.features.NavGraphs
+import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.ui.features.home.bottombar.BottomBar
+import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
+import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
+import dev.weazyexe.fonto.ui.features.settings.screens.settings.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,9 +33,11 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     navController: NavController,
     manageFeedResultRecipient: ResultRecipient<ManageFeedScreenDestination, Boolean>,
-    themePickerResultRecepient: ResultRecipient<ThemePickerDialogDestination, Theme?>
+    themePickerResultRecepient: ResultRecipient<ThemePickerDialogDestination, Theme?>,
+    colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, Long>
 ) {
     val feedViewModel = koinViewModel<FeedViewModel>()
+    val settingsViewModel = koinViewModel<SettingsViewModel>()
     val bottomBarNavController = rememberNavController()
 
     Scaffold(
@@ -45,14 +51,24 @@ fun HomeScreen(
             dependenciesContainerBuilder = {
                 dependency(padding)
                 dependency(feedViewModel)
+                dependency(settingsViewModel)
                 dependency(
                     fun(): ResultRecipient<ManageFeedScreenDestination, Boolean> {
                         return manageFeedResultRecipient
                     }
                 )
                 dependency(
-                    fun(): ResultRecipient<ThemePickerDialogDestination, Theme?> {
-                        return themePickerResultRecepient
+                    object : ThemePickerResults {
+                        override fun invoke(): ResultRecipient<ThemePickerDialogDestination, Theme?> {
+                            return themePickerResultRecepient
+                        }
+                    }
+                )
+                dependency(
+                    object : ColorPickerResults {
+                        override fun invoke(): ResultRecipient<ColorPickerDialogDestination, Long> {
+                            return colorPickerResultRecipient
+                        }
                     }
                 )
                 dependency(

@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
+import android.os.Build
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
@@ -91,7 +92,12 @@ class SettingsViewModel(
                 )
             }
 
-        setState { copy(preferences = updatedPreferences) }
+        setState {
+            copy(
+                preferences = updatedPreferences,
+                hiddenPreferences = buildHiddenPreferences(updatedPreferences)
+            )
+        }
     }
 
     fun onTextPreferenceClick(preference: Preference.Text) {
@@ -108,7 +114,11 @@ class SettingsViewModel(
         viewModelScope.launch {
             when (preference.id) {
                 Preference.Identifier.OPEN_POST -> onOpenPostChanged(preference, value)
-                Preference.Identifier.DYNAMIC_COLORS -> onDynamicColorsEnabledChanged(preference, value)
+                Preference.Identifier.DYNAMIC_COLORS -> onDynamicColorsEnabledChanged(
+                    preference,
+                    value
+                )
+
                 else -> {
                     // Do nothing
                 }
@@ -127,6 +137,7 @@ class SettingsViewModel(
                     possibleValues = preference.possibleValues as List<Value<Theme>>
                 ).emit()
             }
+
             Preference.Identifier.COLOR_SCHEME -> {
                 Napier.d { preference.toString() }
                 SettingsEffect.OpenColorPickerDialog(
@@ -154,6 +165,18 @@ class SettingsViewModel(
         update(preference.copy(value = Value(theme, theme.stringRes)))
     }
 
+    fun saveColor(color: Long) = viewModelScope.launch {
+        settingsStorage.saveAccentColor(color)
+        eventBus.emit(AppEvent.AccentColorChanged(color))
+
+        val preference = state.preferences
+            .findPreference(Preference.Identifier.COLOR_SCHEME) as? Preference.CustomValue<Long>
+            ?: return@launch
+
+        val colorValue = color.asColorValue() ?: return@launch
+        update(preference.copy(value = colorValue))
+    }
+
     private suspend fun onOpenPostChanged(preference: Preference.Switch, value: Boolean) {
         val newValue = if (value) {
             OpenPostPreference.INTERNAL
@@ -164,7 +187,10 @@ class SettingsViewModel(
         update(preference.copy(value = value))
     }
 
-    private suspend fun onDynamicColorsEnabledChanged(preference: Preference.Switch, value: Boolean) {
+    private suspend fun onDynamicColorsEnabledChanged(
+        preference: Preference.Switch,
+        value: Boolean
+    ) {
         settingsStorage.saveDynamicColorsEnabled(value)
         eventBus.emit(AppEvent.DynamicColorsChanged(value))
         update(preference.copy(value = value))
@@ -184,6 +210,29 @@ class SettingsViewModel(
                     }
                 )
             }
-        setState { copy(preferences = updatedPreferences) }
+
+        setState {
+            copy(
+                preferences = updatedPreferences,
+                hiddenPreferences = buildHiddenPreferences(updatedPreferences)
+            )
+        }
+    }
+
+    private fun buildHiddenPreferences(preferences: List<Group>): List<Preference.Identifier> {
+        val isDynamicColorEnabled = (preferences
+            .findPreference(Preference.Identifier.DYNAMIC_COLORS) as Preference.Switch)
+            .value
+
+        val isAndroid12OrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+        return buildList {
+            if (!isAndroid12OrAbove) {
+                add(Preference.Identifier.DYNAMIC_COLORS)
+            }
+            if (isDynamicColorEnabled && isAndroid12OrAbove) {
+                add(Preference.Identifier.COLOR_SCHEME)
+            }
+        }
     }
 }

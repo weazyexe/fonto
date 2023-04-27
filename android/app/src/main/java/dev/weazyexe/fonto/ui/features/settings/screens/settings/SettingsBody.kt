@@ -27,6 +27,7 @@ import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 @Composable
 fun SettingsBody(
     settings: List<Group>,
+    hiddenPreferences: List<Preference.Identifier>,
     onTextPreferenceClick: (Preference.Text) -> Unit,
     onSwitchPreferenceClick: (Preference.Switch, Boolean) -> Unit,
     onCustomPreferenceClick: (Preference.CustomValue<Value<*>>) -> Unit,
@@ -44,37 +45,39 @@ fun SettingsBody(
         LazyColumn(modifier = Modifier.padding(padding)) {
             items(settings) { group ->
                 PreferencesGroup(title = stringResource(group.title)) {
-                    group.preferences.forEach { pref ->
-                        when (pref) {
-                            is Preference.Text ->
-                                TextPreferenceItem(
-                                    title = stringResource(id = pref.title),
-                                    description = stringResource(id = pref.subtitle),
-                                    icon = pref.icon,
-                                    onClick = { onTextPreferenceClick(pref) },
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                    group.preferences
+                        .filter { it.id !in hiddenPreferences }
+                        .forEach { pref ->
+                            when (pref) {
+                                is Preference.Text ->
+                                    TextPreferenceItem(
+                                        title = stringResource(id = pref.title),
+                                        description = stringResource(id = pref.subtitle),
+                                        icon = pref.icon,
+                                        onClick = { onTextPreferenceClick(pref) },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
 
-                            is Preference.Switch ->
-                                SwitchPreferenceItem(
-                                    title = stringResource(id = pref.title),
-                                    description = stringResource(id = pref.subtitle),
-                                    value = pref.value,
-                                    icon = pref.icon,
-                                    onValueChange = { onSwitchPreferenceClick(pref, it) }
-                                )
+                                is Preference.Switch ->
+                                    SwitchPreferenceItem(
+                                        title = stringResource(id = pref.title),
+                                        description = stringResource(id = pref.subtitle),
+                                        value = pref.value,
+                                        icon = pref.icon,
+                                        onValueChange = { onSwitchPreferenceClick(pref, it) }
+                                    )
 
-                            is Preference.CustomValue<*> -> {
-                                CustomValuePreferenceItem(
-                                    title = stringResource(id = pref.title),
-                                    description = stringResource(id = pref.subtitle),
-                                    value = pref.value,
-                                    icon = pref.icon,
-                                    onClick = { onCustomPreferenceClick(pref as Preference.CustomValue<Value<*>>) },
-                                )
+                                is Preference.CustomValue<*> -> {
+                                    CustomValuePreferenceItem(
+                                        title = stringResource(id = pref.title),
+                                        description = stringResource(id = pref.subtitle),
+                                        value = pref.value,
+                                        icon = pref.icon,
+                                        onClick = { onCustomPreferenceClick(pref as Preference.CustomValue<Value<*>>) },
+                                    )
+                                }
                             }
                         }
-                    }
                 }
             }
         }

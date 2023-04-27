@@ -5,33 +5,33 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
-import com.ramcosta.composedestinations.result.ResultRecipient
-import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
+import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
+import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
 import io.github.aakira.napier.Napier
-import org.koin.androidx.compose.koinViewModel
 
 @BottomBarNavGraph
 @Destination
 @Composable
 fun SettingsScreen(
+    viewModel: SettingsViewModel,
     navigateTo: NavigateTo,
     navigateWithResult: NavigateWithResult,
-    themePickerResultRecipientProvider: () -> ResultRecipient<ThemePickerDialogDestination, Theme?>
+    themePickerResults: ThemePickerResults,
+    colorPickerResults: ColorPickerResults
 ) {
-    val viewModel = koinViewModel<SettingsViewModel>()
     val state by viewModel.uiState.collectAsState()
 
-    themePickerResultRecipientProvider().onNavResult { result ->
+    themePickerResults.invoke().onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {
                 // Do nothing
@@ -39,6 +39,18 @@ fun SettingsScreen(
 
             is NavResult.Value -> {
                 result.value?.let { viewModel.saveTheme(it) }
+            }
+        }
+    }
+
+    colorPickerResults.invoke().onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                viewModel.saveColor(result.value)
             }
         }
     }
@@ -63,7 +75,10 @@ fun SettingsScreen(
                 Napier.d { possibleValues.toString() }
                 navigateWithResult(
                     ColorPickerDialogDestination(
-                        args = ColorPickerArgs(colors = possibleValues)
+                        args = ColorPickerArgs(
+                            selectedColor = value,
+                            colors = possibleValues
+                        )
                     )
                 )
             }
@@ -72,6 +87,7 @@ fun SettingsScreen(
 
     SettingsBody(
         settings = state.preferences,
+        hiddenPreferences = state.hiddenPreferences,
         onTextPreferenceClick = viewModel::onTextPreferenceClick,
         onSwitchPreferenceClick = viewModel::onSwitchPreferenceClick,
         onCustomPreferenceClick = viewModel::onCustomPreferenceClick

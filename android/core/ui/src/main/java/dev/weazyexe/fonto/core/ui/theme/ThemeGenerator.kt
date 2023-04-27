@@ -8,11 +8,11 @@ import com.google.android.material.color.utilities.Scheme
 object ThemeGenerator {
 
     @SuppressLint("RestrictedApi")
-    fun generate(color: Color, isDark: Boolean): ColorScheme {
+    fun generate(color: Int, isDark: Boolean): ColorScheme {
         val scheme = if (isDark) {
-            Scheme.dark(color.value.toInt())
+            Scheme.dark(color)
         } else {
-            Scheme.light(color.value.toInt())
+            Scheme.light(color)
         }
 
         return ColorScheme(

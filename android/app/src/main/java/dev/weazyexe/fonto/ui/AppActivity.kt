@@ -11,7 +11,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -39,9 +38,9 @@ class AppActivity : ComponentActivity() {
 
             FontoTheme(
                 accentColor = if (state.accentColor != -1L) {
-                    Color(state.accentColor)
+                    state.accentColor
                 } else {
-                    Color(DEFAULT_COLOR.data)
+                    DEFAULT_COLOR.data
                 },
                 darkTheme = when (state.theme) {
                     Theme.LIGHT -> false
