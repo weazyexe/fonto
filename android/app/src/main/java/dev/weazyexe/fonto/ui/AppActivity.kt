@@ -6,11 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -63,7 +65,7 @@ class AppActivity : ComponentActivity() {
                 Surface {
                     ModalBottomSheetLayout(
                         bottomSheetNavigator = bottomSheetNavigator,
-                        sheetShape = MaterialTheme.shapes.extraLarge,
+                        sheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
                         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
                     ) {
                         DestinationsNavHost(
