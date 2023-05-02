@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.model.jsonfeed
+package dev.weazyexe.fonto.common.parser.jsonfeed
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

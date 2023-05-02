@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.common.data.usecase.rss
 
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.model.rss.RssFeed
+import dev.weazyexe.fonto.common.parser.rss.RssFeed
 
 class IsRssValidUseCase(private val rssRepository: RssRepository) {
 

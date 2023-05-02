@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Newsline
-import dev.weazyexe.fonto.common.model.rss.RssFeed
+import dev.weazyexe.fonto.common.parser.rss.RssFeed
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

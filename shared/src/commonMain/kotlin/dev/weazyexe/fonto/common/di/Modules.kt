@@ -24,7 +24,8 @@ import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.network.createHttpClient
-import dev.weazyexe.fonto.common.parser.RssParser
+import dev.weazyexe.fonto.common.parser.atom.AtomParser
+import dev.weazyexe.fonto.common.parser.rss.RssParser
 import dev.weazyexe.fonto.common.settings.createSettingsStorage
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -70,6 +71,12 @@ internal val rssModule = module {
     single { RssDataSource(get()) }
     single { RssRepository(get()) }
     single { IsRssValidUseCase(get()) }
+}
+
+internal val atomModule = module {
+    includes(coreModule)
+
+    single { AtomParser() }
 }
 
 internal val newslineModule = module {

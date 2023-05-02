@@ -33,6 +33,7 @@ kotlin {
                 implementation(libs.rss.parser)
                 implementation(libs.koin.android)
                 implementation(libs.androidx.datastore)
+                implementation(libs.syndication)
             }
         }
         /*val iosMain by creating {

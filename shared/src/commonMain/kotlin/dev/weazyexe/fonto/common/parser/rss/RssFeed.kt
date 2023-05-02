@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.model.rss
+package dev.weazyexe.fonto.common.parser.rss
 
 import dev.weazyexe.fonto.common.model.base.LocalImage
 import dev.weazyexe.fonto.common.model.feed.Feed

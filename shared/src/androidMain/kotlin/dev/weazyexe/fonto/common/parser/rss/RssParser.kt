@@ -1,9 +1,7 @@
-package dev.weazyexe.fonto.common.parser
+package dev.weazyexe.fonto.common.parser.rss
 
 import com.prof.rssparser.Parser
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.model.rss.RssFeed
-import dev.weazyexe.fonto.common.model.rss.RssPost
 import dev.weazyexe.fonto.common.utils.cleanUpText
 import dev.weazyexe.fonto.common.utils.parseDateTime
 import kotlinx.datetime.Clock
