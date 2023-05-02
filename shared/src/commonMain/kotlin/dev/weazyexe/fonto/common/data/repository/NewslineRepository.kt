@@ -18,14 +18,17 @@ class NewslineRepository(
     ): List<Post> {
         val postDaos = newslineDataSource.getAll(feeds, limit.toLong(), offset.toLong()).first()
 
-        return feeds.flatMap { feed ->
-            postDaos
-                .filter { it.feedId == feed.id.origin }
-                .map { it.toPost(feed) }
-        }
+        return feeds
+            .flatMap { feed ->
+                postDaos
+                    .filter { it.feedId == feed.id.origin }
+                    .map { it.toPost(feed) }
+            }
+            .sortedByDescending { it.publishedAt }
     }
 
-    fun getPostById(id: Post.Id, feed: Feed): Post = newslineDataSource.getPostById(id.origin).toPost(feed)
+    fun getPostById(id: Post.Id, feed: Feed): Post =
+        newslineDataSource.getPostById(id.origin).toPost(feed)
 
     fun insertOrUpdate(post: Post) = newslineDataSource.insertOrUpdate(post.toDao())
 
