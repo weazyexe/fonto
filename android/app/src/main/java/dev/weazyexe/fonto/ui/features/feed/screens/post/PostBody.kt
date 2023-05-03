@@ -30,6 +30,7 @@ import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.withAlgorithmicDarkening
+import java.net.URL
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,9 +90,17 @@ private fun PostView(post: Post) {
                     view: WebView,
                     request: WebResourceRequest
                 ): Boolean {
-                    val intent = Intent(Intent.ACTION_VIEW, request.url)
-                    view.context.startActivity(intent)
-                    return true
+                    val pageHostname = URL(view.url).host
+                    val openingLinkHostname = request.url.host
+
+                    // redirect workaround
+                    return if (pageHostname == openingLinkHostname) {
+                        false
+                    } else {
+                        val intent = Intent(Intent.ACTION_VIEW, request.url)
+                        view.context.startActivity(intent)
+                        true
+                    }
                 }
             }
         )
