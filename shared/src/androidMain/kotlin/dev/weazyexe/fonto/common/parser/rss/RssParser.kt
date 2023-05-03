@@ -23,7 +23,7 @@ actual class RssParser {
                 posts = channel.articles.map { article ->
                     RssPost(
                         title = article.title.orEmpty(),
-                        link = article.link.orEmpty(),
+                        link = article.link.orEmpty().replace("http://", "https://"),
                         description = article.description.orEmpty().cleanUpText().trim(),
                         content = article.content,
                         pubDate = article.pubDate?.parseDateTime() ?: Clock.System.now(),
