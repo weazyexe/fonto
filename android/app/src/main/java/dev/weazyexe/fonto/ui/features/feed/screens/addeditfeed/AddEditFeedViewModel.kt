@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
-import dev.weazyexe.fonto.common.data.usecase.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedIconUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
@@ -24,7 +24,7 @@ class AddEditFeedViewModel(
     private val createFeed: CreateFeedUseCase,
     private val updateFeed: UpdateFeedUseCase,
     private val getIconByRssUrl: GetIconByRssUrlUseCase,
-    private val isRssValid: IsRssValidUseCase,
+    private val getFeedType: GetFeedTypeUseCase,
     private val getFeedIcon: GetFeedIconUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
@@ -72,28 +72,29 @@ class AddEditFeedViewModel(
         }
 
         setState { copy(finishLoadState = LoadState.Loading()) }
-        val isNewslineValid = request { isRssValid(state.link) }
+        val feedType = request { getFeedType(state.link) }
             .withErrorHandling {
                 setState { copy(finishLoadState = LoadState.Error(it)) }
             } ?: return@launch
 
-        if (!isNewslineValid.data) {
+        val data = feedType.data
+        if (data == null) {
             setState { copy(finishLoadState = LoadState.Error(ResponseError.InvalidRssFeed())) }
             return@launch
         }
 
-        saveChanges()
+        saveChanges(data)
     }
 
-    private fun saveChanges() = viewModelScope.launch {
+    private fun saveChanges(type: Feed.Type) = viewModelScope.launch {
         val image = (state.iconLoadState as? LoadState.Data)?.data?.asLocalImage()
 
         request {
             val editFeedId = state.id
             if (editFeedId != null) {
-                updateFeed(Feed(editFeedId, state.title.trim(), state.link.trim(), image))
+                updateFeed(Feed(editFeedId, state.title.trim(), state.link.trim(), image, type))
             } else {
-                createFeed(state.title, state.link, image)
+                createFeed(state.title, state.link, image, type)
             }
         }.withErrorHandling {
             setState { copy(finishLoadState = LoadState.Error(it)) }

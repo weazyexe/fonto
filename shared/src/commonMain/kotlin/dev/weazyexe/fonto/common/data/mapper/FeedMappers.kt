@@ -10,12 +10,14 @@ internal fun FeedDao.toFeed(): Feed = Feed(
     id = Feed.Id(id),
     title = title,
     link = link,
-    icon = icon?.let { LocalImage(it) }
+    icon = icon?.let { LocalImage(it) },
+    type = Feed.Type.byId(type)
 )
 
 internal fun Feed.toDao(): FeedDao = FeedDao(
     id = id.origin,
     title = title,
     link = link,
-    icon = icon?.bytes
+    icon = icon?.bytes,
+    type = type.id
 )

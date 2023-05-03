@@ -3,10 +3,10 @@ package dev.weazyexe.fonto.common.data.mapper
 import dev.weazyexe.fonto.common.db.PostDao
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.common.parser.rss.RssFeed
+import dev.weazyexe.fonto.common.parser.ParsedFeed
 import kotlinx.datetime.Instant
 
-fun RssFeed.Success.toPosts(): List<Post> =
+fun ParsedFeed.Success.toPosts(): List<Post> =
     posts.map {
         Post(
             id = generateId(id, it.link),

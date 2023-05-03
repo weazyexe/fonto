@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.data.usecase
+package dev.weazyexe.fonto.common.data.usecase.icon
 
 import dev.weazyexe.fonto.common.data.repository.IconRepository
 import dev.weazyexe.fonto.common.model.base.LocalImage

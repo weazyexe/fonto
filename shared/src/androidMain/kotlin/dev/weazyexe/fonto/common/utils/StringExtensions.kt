@@ -6,6 +6,7 @@ import androidx.core.text.HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_DIV
 import androidx.core.text.HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH
 import java.net.URI
 
+
 actual fun String.getHostnameWithScheme(): String {
     val uri = URI(this)
     return uri.scheme + "://" + uri.host

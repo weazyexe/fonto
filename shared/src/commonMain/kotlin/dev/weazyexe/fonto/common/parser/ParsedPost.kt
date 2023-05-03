@@ -1,9 +1,9 @@
-package dev.weazyexe.fonto.common.parser.atom
+package dev.weazyexe.fonto.common.parser
 
 import dev.weazyexe.fonto.common.model.feed.Feed
 import kotlinx.datetime.Instant
 
-data class AtomPost(
+data class ParsedPost(
     val title: String,
     val link: String,
     val description: String,

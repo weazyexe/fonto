@@ -8,10 +8,21 @@ data class Feed(
     val id: Id,
     val title: String,
     val link: String,
-    val icon: LocalImage?
+    val icon: LocalImage?,
+    val type: Type
 ) {
 
     @Serializable
     @JvmInline
     value class Id(val origin: Long)
+
+    enum class Type(val id: Long) {
+        RSS(0),
+        ATOM(1);
+
+        companion object {
+
+            fun byId(id: Long): Type = values().first { it.id == id }
+        }
+    }
 }

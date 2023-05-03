@@ -19,7 +19,8 @@ object FeedViewStatePreview {
                 id = Feed.Id(0L),
                 title = "Rozetked",
                 link = "https://rozetked.me/turbo",
-                icon = icon
+                icon = icon,
+                type = Feed.Type.RSS
             )
         }
 
@@ -30,7 +31,8 @@ object FeedViewStatePreview {
                 id = Feed.Id(1L),
                 title = "DTF",
                 link = "https://dtf.ru/rss/all",
-                icon = null
+                icon = null,
+                type = Feed.Type.RSS
             )
 
 }

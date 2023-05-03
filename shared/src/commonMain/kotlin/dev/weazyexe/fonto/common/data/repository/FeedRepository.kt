@@ -20,8 +20,8 @@ class FeedRepository(
         return feedDataSource.getById(id.origin).toFeed()
     }
 
-    fun insert(title: String, link: String, icon: LocalImage?) {
-        feedDataSource.insert(title, link, icon?.bytes)
+    fun insert(title: String, link: String, icon: LocalImage?, type: Feed.Type) {
+        feedDataSource.insert(title, link, icon?.bytes, type.id)
     }
 
     fun update(feed: Feed) {

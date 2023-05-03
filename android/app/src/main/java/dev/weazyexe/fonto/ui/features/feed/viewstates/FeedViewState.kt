@@ -11,19 +11,22 @@ data class FeedViewState(
     val id: Feed.Id,
     val title: String,
     val link: String,
-    val icon: Bitmap?
+    val icon: Bitmap?,
+    val type: Feed.Type
 )
 
 fun Feed.asViewState() = FeedViewState(
     id = id,
     title = title,
     link = link,
-    icon = icon?.asBitmap()
+    icon = icon?.asBitmap(),
+    type = type
 )
 
 fun FeedViewState.asFeed() = Feed(
     id = id,
     title = title,
     link = link,
-    icon = icon?.asLocalImage()
+    icon = icon?.asLocalImage(),
+    type = type
 )

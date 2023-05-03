@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.common.data.usecase.feed
 
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.model.base.LocalImage
+import dev.weazyexe.fonto.common.model.feed.Feed
 
 class CreateFeedUseCase(
     private val feedRepository: FeedRepository
@@ -10,8 +11,9 @@ class CreateFeedUseCase(
     operator fun invoke(
         title: String,
         link: String,
-        image: LocalImage?
+        image: LocalImage?,
+        type: Feed.Type
     ) {
-        feedRepository.insert(title, link, image)
+        feedRepository.insert(title, link, image, type)
     }
 }

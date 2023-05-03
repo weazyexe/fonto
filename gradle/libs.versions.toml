@@ -84,6 +84,7 @@ koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", versio
 
 rss-parser = { module = "com.prof18.rssparser:rssparser", version.ref = "rssParser" }
 syndication = { module = "com.ouattararomuald:syndication", version.ref = "syndication" }
+syndication-coroutines = { module = "com.ouattararomuald:syndication-kotlin-coroutines-adapter", version.ref = "syndication" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 junit-android = { module = "androidx.test.ext:junit", version.ref = "junitAndroid" }

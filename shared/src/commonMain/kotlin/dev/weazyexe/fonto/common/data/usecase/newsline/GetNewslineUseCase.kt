@@ -1,11 +1,12 @@
 package dev.weazyexe.fonto.common.data.usecase.newsline
 
 import dev.weazyexe.fonto.common.data.mapper.toPosts
+import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Newsline
-import dev.weazyexe.fonto.common.parser.rss.RssFeed
+import dev.weazyexe.fonto.common.parser.ParsedFeed
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -13,21 +14,27 @@ import kotlinx.coroutines.coroutineScope
 class GetNewslineUseCase(
     private val newslineRepository: NewslineRepository,
     private val rssRepository: RssRepository,
+    private val atomRepository: AtomRepository
 ) {
 
     suspend operator fun invoke(feeds: List<Feed>): Newsline {
-        val rssFeeds = coroutineScope {
+        val parsedFeed = coroutineScope {
             feeds.map {
-                async { rssRepository.getRssFeed(it) }
+                async {
+                    when (it.type) {
+                        Feed.Type.RSS -> rssRepository.getRssFeed(it)
+                        Feed.Type.ATOM -> atomRepository.getAtomFeed(it)
+                    }
+                }
             }.awaitAll()
         }
 
-        val problematicFeedList = mutableListOf<RssFeed.Error>()
-        rssFeeds
+        val problematicFeedList = mutableListOf<ParsedFeed.Error>()
+        parsedFeed
             .map {
                 when (it) {
-                    is RssFeed.Success -> it.toPosts()
-                    is RssFeed.Error -> {
+                    is ParsedFeed.Success -> it.toPosts()
+                    is ParsedFeed.Error -> {
                         problematicFeedList.add(it)
                         emptyList()
                     }

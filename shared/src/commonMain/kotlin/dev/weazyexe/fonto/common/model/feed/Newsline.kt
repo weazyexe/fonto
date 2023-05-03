@@ -1,8 +1,8 @@
 package dev.weazyexe.fonto.common.model.feed
 
-import dev.weazyexe.fonto.common.parser.rss.RssFeed
+import dev.weazyexe.fonto.common.parser.ParsedFeed
 
 data class Newsline(
     val posts: List<Post>,
-    val loadedWithError: List<RssFeed.Error>
+    val loadedWithError: List<ParsedFeed.Error>
 )
