@@ -92,7 +92,6 @@ sqldelight {
     databases {
         create("FontoDatabase") {
             packageName.set("${libs.versions.applicationId.get()}.db")
-//            sourceFolders.set(listOf("src/commonMain/sqldelight"))
         }
     }
 }

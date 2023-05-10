@@ -32,27 +32,19 @@ android {
         create("qa") {
             applicationIdSuffix = ".qa"
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             resValue("string", "app_name", "@string/app_name_qa")
         }
 
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            resValue("string", "app_name", "@string/app_name")
         }
 
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -86,9 +78,11 @@ android {
 
 dependencies {
 
-    implementation(project(":shared"))
+    implementation(project(":shared")) {
+        exclude("pull-parser", "pull-parser")
+    }
     implementation(project(":android:core:ui"))
-    debugImplementation(project(":android:debug"))
+    implementation(project(":android:debug")) // FIXME use debugImplementation
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
