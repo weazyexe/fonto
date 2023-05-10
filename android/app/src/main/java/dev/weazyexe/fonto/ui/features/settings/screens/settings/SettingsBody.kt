@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -33,6 +34,19 @@ fun SettingsBody(
     onCustomPreferenceClick: (Preference.CustomValue<Value<*>>) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val groups = remember(settings) {
+        settings
+            .filter { group ->
+                group.preferences.any { it.id !in hiddenPreferences }
+            }
+            .map { group ->
+                group.copy(
+                    preferences = group.preferences
+                        .filter { it.id !in hiddenPreferences }
+                )
+            }
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -43,41 +57,39 @@ fun SettingsBody(
         }
     ) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {
-            items(settings) { group ->
+            items(groups) { group ->
                 PreferencesGroup(title = stringResource(group.title)) {
-                    group.preferences
-                        .filter { it.id !in hiddenPreferences }
-                        .forEach { pref ->
-                            when (pref) {
-                                is Preference.Text ->
-                                    TextPreferenceItem(
-                                        title = stringResource(id = pref.title),
-                                        description = stringResource(id = pref.subtitle),
-                                        icon = pref.icon,
-                                        onClick = { onTextPreferenceClick(pref) },
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
+                    group.preferences.forEach { pref ->
+                        when (pref) {
+                            is Preference.Text ->
+                                TextPreferenceItem(
+                                    title = stringResource(id = pref.title),
+                                    description = stringResource(id = pref.subtitle),
+                                    icon = pref.icon,
+                                    onClick = { onTextPreferenceClick(pref) },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
 
-                                is Preference.Switch ->
-                                    SwitchPreferenceItem(
-                                        title = stringResource(id = pref.title),
-                                        description = stringResource(id = pref.subtitle),
-                                        value = pref.value,
-                                        icon = pref.icon,
-                                        onValueChange = { onSwitchPreferenceClick(pref, it) }
-                                    )
+                            is Preference.Switch ->
+                                SwitchPreferenceItem(
+                                    title = stringResource(id = pref.title),
+                                    description = stringResource(id = pref.subtitle),
+                                    value = pref.value,
+                                    icon = pref.icon,
+                                    onValueChange = { onSwitchPreferenceClick(pref, it) }
+                                )
 
-                                is Preference.CustomValue<*> -> {
-                                    CustomValuePreferenceItem(
-                                        title = stringResource(id = pref.title),
-                                        description = stringResource(id = pref.subtitle),
-                                        value = pref.value,
-                                        icon = pref.icon,
-                                        onClick = { onCustomPreferenceClick(pref as Preference.CustomValue<Value<*>>) },
-                                    )
-                                }
+                            is Preference.CustomValue<*> -> {
+                                CustomValuePreferenceItem(
+                                    title = stringResource(id = pref.title),
+                                    description = stringResource(id = pref.subtitle),
+                                    value = pref.value,
+                                    icon = pref.icon,
+                                    onClick = { onCustomPreferenceClick(pref as Preference.CustomValue<Value<*>>) },
+                                )
                             }
                         }
+                    }
                 }
             }
         }

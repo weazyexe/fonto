@@ -16,6 +16,7 @@ import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.theme.COLORS
 import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
 import dev.weazyexe.fonto.core.ui.theme.asColorValue
+import dev.weazyexe.fonto.util.AppHelper
 import dev.weazyexe.fonto.util.stringRes
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
@@ -226,12 +227,17 @@ class SettingsViewModel(
 
         val isAndroid12OrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
+        val isReleaseBuild = AppHelper.isReleaseBuild()
+
         return buildList {
             if (!isAndroid12OrAbove) {
                 add(Preference.Identifier.DYNAMIC_COLORS)
             }
             if (isDynamicColorEnabled && isAndroid12OrAbove) {
                 add(Preference.Identifier.COLOR_SCHEME)
+            }
+            if (isReleaseBuild) {
+                add(Preference.Identifier.DEBUG_MENU)
             }
         }
     }
