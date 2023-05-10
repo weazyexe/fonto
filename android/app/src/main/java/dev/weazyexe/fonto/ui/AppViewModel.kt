@@ -30,7 +30,8 @@ class AppViewModel(
             copy(
                 theme = theme,
                 isDynamicColorsEnabled = dynamicColor,
-                accentColor = accentColor
+                accentColor = accentColor,
+                isInitialized = true
             )
         }
     }

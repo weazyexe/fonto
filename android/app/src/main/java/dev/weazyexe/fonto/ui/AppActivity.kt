@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -26,16 +27,24 @@ import dev.weazyexe.fonto.core.ui.animation.SlideAnimations
 import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
 import dev.weazyexe.fonto.core.ui.theme.FontoTheme
 import dev.weazyexe.fonto.ui.navigation.AppNavGraph
-import org.koin.androidx.compose.koinViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AppActivity : ComponentActivity() {
 
+    private val viewModel by viewModel<AppViewModel>()
+
     @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            !viewModel.uiState.value.isInitialized
+        }
+
         super.onCreate(savedInstanceState)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
-            val viewModel = koinViewModel<AppViewModel>()
             val state by viewModel.uiState.collectAsState()
 
             FontoTheme(

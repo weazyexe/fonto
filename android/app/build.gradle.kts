@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.splashscreen)
 
     implementation(libs.coil)
     implementation(libs.kotlinx.datetime)

@@ -4,9 +4,10 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 actual fun String.parseDateTime(format: String): Instant? {
-    val formatter = SimpleDateFormat(format)
+    val formatter = SimpleDateFormat(format, Locale.ENGLISH)
     val date = formatter.parse(this)
     return date.toInstant().toKotlinInstant()
 }

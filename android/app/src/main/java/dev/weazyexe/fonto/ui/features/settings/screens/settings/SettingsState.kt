@@ -1,6 +1,5 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
-import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
@@ -63,7 +62,7 @@ private val PREFERENCES = listOf(
     ),
     Group(
         title = R.string.settings_display_group,
-        preferences = listOfNotNull(
+        preferences = listOf(
             Preference.CustomValue(
                 id = Preference.Identifier.THEME,
                 title = R.string.settings_display_theme_title,
@@ -72,15 +71,13 @@ private val PREFERENCES = listOf(
                 value = Value(Theme.SYSTEM, Theme.SYSTEM.stringRes),
                 possibleValues = Theme.values().map { Value(it, it.stringRes) }
             ),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Preference.Switch(
-                    id = Preference.Identifier.DYNAMIC_COLORS,
-                    title = R.string.settings_display_dynamic_colors_title,
-                    subtitle = R.string.settings_display_dynamic_colors_description,
-                    icon = R.drawable.ic_palette_24,
-                    value = true
-                )
-            } else null,
+            Preference.Switch(
+                id = Preference.Identifier.DYNAMIC_COLORS,
+                title = R.string.settings_display_dynamic_colors_title,
+                subtitle = R.string.settings_display_dynamic_colors_description,
+                icon = R.drawable.ic_palette_24,
+                value = true
+            ),
             Preference.CustomValue(
                 id = Preference.Identifier.COLOR_SCHEME,
                 title = R.string.settings_display_color_scheme_title,
