@@ -122,7 +122,7 @@ class FeedViewModel(
 
     fun openPost(post: PostViewState) = viewModelScope.launch {
         when (settingsStorage.getOpenPostPreference()) {
-            OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(post.id, post.sourceId).emit()
+            OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(post.link, settingsStorage.getTheme()).emit()
             OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
         }
     }

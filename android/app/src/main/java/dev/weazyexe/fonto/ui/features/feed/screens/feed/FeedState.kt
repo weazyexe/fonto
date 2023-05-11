@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed
 import androidx.annotation.StringRes
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.model.feed.Post
+import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.Effect
@@ -25,7 +25,10 @@ sealed interface FeedEffect : Effect {
 
     class ShowMessage(@StringRes val message: Int, vararg val args: Any) : FeedEffect
 
-    data class OpenPostInApp(val postId: Post.Id, val feedId: Feed.Id) : FeedEffect
+    data class OpenPostInApp(
+        val link: String,
+        val theme: Theme
+    ) : FeedEffect
 
     data class OpenPostInBrowser(val link: String) : FeedEffect
 }

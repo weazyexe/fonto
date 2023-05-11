@@ -15,7 +15,7 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
-import dev.weazyexe.fonto.ui.features.destinations.PostScreenDestination
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 
 @BottomBarNavGraph(start = true)
@@ -51,7 +51,7 @@ fun FeedScreen(
                 snackbarHostState.showSnackbar(context.getString(message, *args))
             }
             is FeedEffect.OpenPostInApp -> {
-                navigateTo(PostScreenDestination(postId, feedId))
+                InAppBrowser.openPost(context, link, theme)
             }
             is FeedEffect.OpenPostInBrowser -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))

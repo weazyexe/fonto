@@ -1,32 +1,33 @@
 [versions]
 applicationId = "dev.weazyexe.fonto"
 
-kotlin = "1.8.10"
+kotlin = "1.8.21"
 gradlePlugin = "8.0.0"
-ksp = "1.8.10-1.0.9"
+ksp = "1.8.21-1.0.11"
 
 compileSdk = "33"
 targetSdk = "33"
 minSdk = "28"
 
-compose = "2023.04.01"
-composeCompiler = "1.4.4"
+compose = "2023.05.01"
+composeCompiler = "1.4.7"
 
 composeDestinations = "1.8.41-beta"
 
 accompanist = "0.30.1"
 
-androidxCore = "1.10.0"
+androidxCore = "1.10.1"
 androidxLifecycleRuntime = "2.6.1"
 androidxActivityCompose = "1.7.1"
 androidxAppcompat = "1.6.1"
 androidxWebkit = "1.6.1"
 androidxDatastore = "1.0.0"
-androidxSplashscreen = "1.0.0"
+androidxSplashscreen = "1.0.1"
 androidxUiAautomator = "2.2.0"
 androidxBenchmark = "1.1.1"
+androidxBrowser = "1.5.0"
 
-material = "1.8.0"
+material = "1.9.0"
 
 kotlinxCoroutines = "1.6.4"
 kotlinxSerialization = "1.5.0"
@@ -60,6 +61,7 @@ androidx-datastore = { module = "androidx.datastore:datastore-preferences", vers
 androidx-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidxSplashscreen" }
 androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "androidxUiAautomator" }
 androidx-benchmark = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxBenchmark" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
