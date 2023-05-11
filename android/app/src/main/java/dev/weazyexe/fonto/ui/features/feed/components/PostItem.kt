@@ -1,41 +1,40 @@
 package dev.weazyexe.fonto.ui.features.feed.components
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
-import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostItem(
     post: PostViewState,
@@ -43,101 +42,132 @@ fun PostItem(
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier,
-        shape = ShapeDefaults.Medium,
-        onClick = onPostClick
+    Column(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
+            .clickable(onClick = onPostClick)
     ) {
-        Column {
-            if (post.imageUrl != null) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(post.imageUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .heightIn(max = 256.dp)
-                        .fillMaxWidth()
-                        .padding(bottom = 4.dp),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Spacer(modifier = Modifier.size(4.dp))
-            }
+        PostTitle(
+            title = post.sourceTitle,
+            publishedAt = post.publishedAt.formatHumanFriendly(),
+            icon = post.sourceIcon?.asImageBitmap(),
+            isSaved = post.isSaved,
+            onSaveClick = onSaveClick,
+            modifier = Modifier
+                .padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 8.dp)
+                .fillMaxWidth()
+        )
 
+        PostBody(
+            title = post.title,
+            content = post.description
+        )
+
+        PostImage(imageUrl = post.imageUrl)
+    }
+}
+
+@Composable
+private fun ColumnScope.PostTitle(
+    title: String,
+    publishedAt: String,
+    icon: ImageBitmap?,
+    isSaved: Boolean,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        FeedIcon(
+            icon = icon,
+            modifier = Modifier.padding(end = 16.dp)
+        )
+
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = post.title,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
-                text = post.description,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 15,
-                overflow = TextOverflow.Ellipsis
+                text = publishedAt,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface
             )
+        }
 
-            Row(
-                modifier = Modifier.padding(start = 8.dp, top = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (post.sourceIcon != null) {
-                    Image(
-                        bitmap = post.sourceIcon.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .padding(end = 4.dp)
-                    )
-                }
-                Text(
-                    text = buildBottomLabel(post.sourceTitle, post.publishedAt),
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .weight(1f),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline,
-                    maxLines = 1
-                )
-
-                IconButton(
-                    onClick = onSaveClick,
-                    modifier = Modifier.size(48.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            id = if (post.isSaved) {
-                                R.drawable.ic_bookmark_added_24
-                            } else {
-                                R.drawable.ic_bookmark_24
-                            }
-                        ),
-                        contentDescription = null
-                    )
-                }
-            }
+        IconButton(
+            onClick = onSaveClick,
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                painter = painterResource(
+                    id = if (isSaved) {
+                        R.drawable.ic_bookmark_added_24
+                    } else {
+                        R.drawable.ic_bookmark_24
+                    }
+                ),
+                contentDescription = null
+            )
         }
     }
 }
 
-@Stable
-private fun buildBottomLabel(sourceTitle: String, publishedAt: String?): AnnotatedString =
-    buildAnnotatedString {
-        append(sourceTitle)
-        if (publishedAt != null) {
-            append(" • $publishedAt")
-        }
+@Composable
+private fun ColumnScope.PostBody(
+    title: String,
+    content: String
+) {
+    if (title.isNotBlank()) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
+
+    Text(
+        text = content,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        maxLines = 15,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+@Composable
+fun ColumnScope.PostImage(imageUrl: String?) {
+    if (imageUrl != null) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            modifier = Modifier
+                .heightIn(max = 384.dp)
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            contentScale = ContentScale.FillWidth
+        )
+    } else {
+        Spacer(modifier = Modifier.size(16.dp))
+    }
+}
 
 @Preview
 @Composable
 private fun PostItemDefaultPreview() {
-    dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
+    ThemedPreview {
         PostItem(
             post = PostViewStatePreview.default,
             onPostClick = {},
@@ -152,7 +182,7 @@ private fun PostItemDefaultPreview() {
 @Preview
 @Composable
 private fun PostItemNoPicturesPreview() {
-    dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
+    ThemedPreview {
         PostItem(
             post = PostViewStatePreview.noPictures,
             onPostClick = {},
@@ -167,7 +197,7 @@ private fun PostItemNoPicturesPreview() {
 @Preview
 @Composable
 private fun PostItemSavedPreview() {
-    dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
+    ThemedPreview {
         PostItem(
             post = PostViewStatePreview.saved,
             onPostClick = {},

@@ -69,8 +69,9 @@ fun FeedScreen(
         isSwipeRefreshing = state.isSwipeRefreshing,
         onPostClick = viewModel::openPost,
         onScroll = viewModel::onScroll,
-        onManageFeed = { navigateTo(ManageFeedScreenDestination()) },
-        onRefresh = viewModel::loadNewsline,
+        onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
+        onSearchClick = {},
+        onRefreshClick = viewModel::loadNewsline,
         fetchNextBatch = viewModel::getNextPostsBatch
     )
 }

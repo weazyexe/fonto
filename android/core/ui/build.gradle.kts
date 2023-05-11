@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":shared"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
@@ -55,6 +56,7 @@ dependencies {
     debugImplementation(libs.compose.test.manifest)
 
     implementation(libs.kotlinx.serialization)
+    implementation(libs.kotlinx.datetime)
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)

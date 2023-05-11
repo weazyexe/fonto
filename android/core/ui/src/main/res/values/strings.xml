@@ -6,6 +6,21 @@
     <string name="accessibility_go_back">Go to previous screen</string>
     <string name="accessibility_close_dialog">Close dialog</string>
 
+    <string name="datetime_less_than_minute">less than minute</string>
+    <plurals name="datetime_minutes_ago">
+        <item quantity="zero">%d minutes ago</item>
+        <item quantity="one">%d minute ago</item>
+        <item quantity="many">%d minutes ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+    <plurals name="datetime_hours_ago">
+        <item quantity="zero">%d hours ago</item>
+        <item quantity="one">%d hour ago</item>
+        <item quantity="many">%d hours ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
+    <string name="datetime_yesterday">yesterday at %s</string>
+
     <string name="error_no_internet_title">No Internet</string>
     <string name="error_no_internet_message">There is no Internet connection, please try again</string>
     <string name="error_timed_out">Request was timed out, please try again</string>

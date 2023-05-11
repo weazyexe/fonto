@@ -12,11 +12,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,19 +59,20 @@ fun FeedBody(
     isSwipeRefreshing: Boolean,
     onPostClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
-    onManageFeed: () -> Unit,
-    onRefresh: (isSwipeRefreshed: Boolean) -> Unit,
+    onManageFeedClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
     fetchNextBatch: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val lazyListState = rememberLazyListState()
 
     Scaffold(
         modifier = Modifier
             .padding(bottom = rootPaddingValues.calculateBottomPadding()),
         topBar = {
-            TopAppBar(
+            LargeTopAppBar(
                 title = { Text(text = stringResource(id = R.string.home_bottom_label_feed)) },
                 modifier = Modifier.clickable(
                     onClick = {
@@ -81,7 +82,13 @@ fun FeedBody(
                     interactionSource = remember { MutableInteractionSource() }
                 ),
                 actions = {
-                    IconButton(onClick = onManageFeed) {
+                    IconButton(onClick = onSearchClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_search_24),
+                            contentDescription = null
+                        )
+                    }
+                    IconButton(onClick = onManageFeedClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_controls_24),
                             contentDescription = null
@@ -95,7 +102,7 @@ fun FeedBody(
     ) { padding ->
         SwipeToRefresh(
             isRefreshing = isSwipeRefreshing,
-            onRefresh = { onRefresh(true) },
+            onRefresh = { onRefreshClick(true) },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(PaddingValues(top = padding.calculateTopPadding()))
@@ -110,7 +117,7 @@ fun FeedBody(
                         paginationState = paginationState,
                         onPostClick = onPostClick,
                         onScroll = onScroll,
-                        onManageFeed = onManageFeed,
+                        onManageFeed = onManageFeedClick,
                         fetchNextBatch = fetchNextBatch,
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                     )
@@ -120,7 +127,7 @@ fun FeedBody(
                         it.error.asErrorPaneParams(
                             action = ErrorPaneParams.Action(
                                 title = R.string.error_pane_refresh,
-                                onClick = { onRefresh(false) }
+                                onClick = { onRefreshClick(false) }
                             )
                         )
                     )
@@ -185,7 +192,7 @@ private fun NewslineList(
                     post = it,
                     onPostClick = { onPostClick(it) },
                     onSaveClick = { /*TODO*/ },
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
             item {

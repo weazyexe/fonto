@@ -6,8 +6,7 @@ import androidx.compose.runtime.Stable
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DATE_TIME_FORMAT
-import dev.weazyexe.fonto.common.utils.format
+import kotlinx.datetime.Instant
 
 @Immutable
 data class PostViewState(
@@ -17,7 +16,7 @@ data class PostViewState(
     val link: String,
     val content: String?,
     val imageUrl: String?,
-    val publishedAt: String?,
+    val publishedAt: Instant,
     val sourceId: Feed.Id,
     val sourceTitle: String,
     val sourceIcon: Bitmap?,
@@ -32,7 +31,7 @@ fun Post.asViewState() = PostViewState(
     link = link,
     content = content,
     imageUrl = imageUrl,
-    publishedAt = publishedAt.format(HUMAN_READABLE_DATE_TIME_FORMAT),
+    publishedAt = publishedAt,
     sourceId = feed.id,
     sourceTitle = feed.title,
     sourceIcon = feed.icon?.asBitmap(),
