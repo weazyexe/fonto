@@ -7,9 +7,9 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
+import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
-import dev.weazyexe.fonto.common.settings.SettingsStorage
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState

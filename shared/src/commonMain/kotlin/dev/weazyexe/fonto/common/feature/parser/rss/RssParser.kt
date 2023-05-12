@@ -1,7 +1,7 @@
-package dev.weazyexe.fonto.common.parser.rss
+package dev.weazyexe.fonto.common.feature.parser.rss
 
+import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.parser.ParsedFeed
 
 expect class RssParser {
 

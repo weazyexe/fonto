@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.parser.jsonfeed
+package dev.weazyexe.fonto.common.feature.parser.jsonfeed
 
 import io.ktor.client.HttpClient
 

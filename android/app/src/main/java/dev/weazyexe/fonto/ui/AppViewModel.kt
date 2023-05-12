@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.ui
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.settings.SettingsStorage
+import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
 import kotlinx.coroutines.flow.collect

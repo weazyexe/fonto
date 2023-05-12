@@ -4,9 +4,9 @@ import android.os.Build
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
+import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
-import dev.weazyexe.fonto.common.settings.SettingsStorage
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference

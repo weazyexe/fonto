@@ -1,11 +1,11 @@
-package dev.weazyexe.fonto.common.parser.atom
+package dev.weazyexe.fonto.common.feature.parser.atom
 
 import com.ouattararomuald.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.ouattararomuald.syndication.Syndication
 import com.ouattararomuald.syndication.atom.AtomFeed
+import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
+import dev.weazyexe.fonto.common.feature.parser.ParsedPost
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.parser.ParsedFeed
-import dev.weazyexe.fonto.common.parser.ParsedPost
 import dev.weazyexe.fonto.common.utils.DATE_TIME_FORMAT_RFC_3339
 import dev.weazyexe.fonto.common.utils.cleanUpText
 import dev.weazyexe.fonto.common.utils.getFirstImageUrlFromHtml

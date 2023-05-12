@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.parser
+package dev.weazyexe.fonto.common.feature.parser
 
 import dev.weazyexe.fonto.common.model.feed.Feed
 import kotlinx.datetime.Instant

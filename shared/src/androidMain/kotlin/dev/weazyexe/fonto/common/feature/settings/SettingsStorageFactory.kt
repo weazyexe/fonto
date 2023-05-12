@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.settings
+package dev.weazyexe.fonto.common.feature.settings
 
 import android.content.Context
 

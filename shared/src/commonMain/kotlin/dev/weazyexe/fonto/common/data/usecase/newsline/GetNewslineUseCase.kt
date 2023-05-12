@@ -4,9 +4,9 @@ import dev.weazyexe.fonto.common.data.mapper.toPosts
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
+import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Newsline
-import dev.weazyexe.fonto.common.parser.ParsedFeed
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

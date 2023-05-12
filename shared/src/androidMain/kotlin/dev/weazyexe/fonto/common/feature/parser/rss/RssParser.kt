@@ -1,9 +1,9 @@
-package dev.weazyexe.fonto.common.parser.rss
+package dev.weazyexe.fonto.common.feature.parser.rss
 
 import com.prof.rssparser.Parser
+import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
+import dev.weazyexe.fonto.common.feature.parser.ParsedPost
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.parser.ParsedFeed
-import dev.weazyexe.fonto.common.parser.ParsedPost
 import dev.weazyexe.fonto.common.utils.cleanUpText
 import dev.weazyexe.fonto.common.utils.getFirstImageUrlFromHtml
 import dev.weazyexe.fonto.common.utils.parseDateTime

@@ -28,10 +28,10 @@ import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCa
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
+import dev.weazyexe.fonto.common.feature.parser.atom.AtomParser
+import dev.weazyexe.fonto.common.feature.parser.rss.RssParser
+import dev.weazyexe.fonto.common.feature.settings.createSettingsStorage
 import dev.weazyexe.fonto.common.network.createHttpClient
-import dev.weazyexe.fonto.common.parser.atom.AtomParser
-import dev.weazyexe.fonto.common.parser.rss.RssParser
-import dev.weazyexe.fonto.common.settings.createSettingsStorage
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
