@@ -49,6 +49,7 @@
     <string name="feed_empty_newsline">Your feed is empty. You probably want to add feed sources</string>
     <string name="feed_empty_newsline_manage_feed">Manage feed</string>
     <string name="feed_error_sources">Failed to load news from the following sources: %s</string>
+    <string name="feed_filters_bookmarks">Bookmarks</string>
 
     <string name="manage_feed_title">Manage feed</string>
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>

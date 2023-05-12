@@ -1,7 +1,9 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,10 +28,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
@@ -39,11 +43,13 @@ import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.filters.FiltersRow
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.PostItem
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
+import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewStates
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -52,6 +58,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FeedBody(
     newslineLoadState: LoadState<NewslineViewState>,
+    filters: List<NewslineFilter>?,
     scrollState: ScrollState,
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
@@ -62,7 +69,8 @@ fun FeedBody(
     onManageFeedClick: () -> Unit,
     onSearchClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
-    fetchNextBatch: () -> Unit
+    fetchNextBatch: () -> Unit,
+    onFilterChange: (NewslineFilter) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -107,33 +115,48 @@ fun FeedBody(
                 .fillMaxSize()
                 .padding(PaddingValues(top = padding.calculateTopPadding()))
         ) {
-            LoadStateComponent(
-                loadState = newslineLoadState,
-                onSuccess = {
-                    NewslineList(
-                        newsline = it,
-                        scrollState = scrollState,
-                        lazyListState = lazyListState,
-                        paginationState = paginationState,
-                        onPostClick = onPostClick,
-                        onScroll = onScroll,
-                        onManageFeed = onManageFeedClick,
-                        fetchNextBatch = fetchNextBatch,
-                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                    )
-                },
-                onError = {
-                    ErrorPane(
-                        it.error.asErrorPaneParams(
-                            action = ErrorPaneParams.Action(
-                                title = R.string.error_pane_refresh,
-                                onClick = { onRefreshClick(false) }
+            Column {
+                filters?.let {
+                    val filtersBarAlpha = 1f - scrollBehavior.state.collapsedFraction
+                    AnimatedVisibility(visible = filtersBarAlpha != 0f) {
+                        FiltersRow(
+                            filters = filters.asViewStates(),
+                            onBoolFilterChange = {
+                                onFilterChange(it as NewslineFilter)
+                            },
+                            modifier = Modifier.alpha(filtersBarAlpha)
+                        )
+                    }
+                }
+
+                LoadStateComponent(
+                    loadState = newslineLoadState,
+                    onSuccess = {
+                        NewslineList(
+                            newsline = it,
+                            scrollState = scrollState,
+                            lazyListState = lazyListState,
+                            paginationState = paginationState,
+                            onPostClick = onPostClick,
+                            onScroll = onScroll,
+                            onManageFeed = onManageFeedClick,
+                            fetchNextBatch = fetchNextBatch,
+                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        )
+                    },
+                    onError = {
+                        ErrorPane(
+                            it.error.asErrorPaneParams(
+                                action = ErrorPaneParams.Action(
+                                    title = R.string.error_pane_refresh,
+                                    onClick = { onRefreshClick(false) }
+                                )
                             )
                         )
-                    )
-                },
-                onLoading = { LoadingPane() }
-            )
+                    },
+                    onLoading = { LoadingPane() }
+                )
+            }
         }
     }
 }
@@ -182,11 +205,23 @@ private fun NewslineList(
         lazyListState.scrollToItem(scrollState.item, scrollState.offset)
     }
 
-    if (newsline.posts.isNotEmpty()) {
-        LazyColumn(
-            state = lazyListState,
-            modifier = modifier
-        ) {
+    LazyColumn(
+        state = lazyListState,
+        modifier = modifier
+    ) {
+        if (newsline.posts.isEmpty()) {
+            item {
+                ErrorPane(
+                    params = ErrorPaneParams.empty(
+                        message = R.string.feed_empty_newsline,
+                        action = ErrorPaneParams.Action(
+                            title = R.string.feed_empty_newsline_manage_feed,
+                            onClick = onManageFeed
+                        )
+                    )
+                )
+            }
+        } else {
             items(items = newsline.posts) {
                 PostItem(
                     post = it,
@@ -195,6 +230,7 @@ private fun NewslineList(
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
+
             item {
                 PaginationFooter(
                     state = paginationState,
@@ -202,15 +238,5 @@ private fun NewslineList(
                 )
             }
         }
-    } else {
-        ErrorPane(
-            params = ErrorPaneParams.empty(
-                message = R.string.feed_empty_newsline,
-                action = ErrorPaneParams.Action(
-                    title = R.string.feed_empty_newsline_manage_feed,
-                    onClick = onManageFeed
-                )
-            )
-        )
     }
 }

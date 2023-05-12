@@ -62,6 +62,7 @@ fun FeedScreen(
 
     FeedBody(
         newslineLoadState = state.newslineLoadState,
+        filters = state.filters,
         scrollState = state.scrollState,
         rootPaddingValues = rootPaddingValues,
         snackbarHostState = snackbarHostState,
@@ -72,6 +73,7 @@ fun FeedScreen(
         onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
         onSearchClick = {},
         onRefreshClick = viewModel::loadNewsline,
-        fetchNextBatch = viewModel::getNextPostsBatch
+        fetchNextBatch = viewModel::getNextPostsBatch,
+        onFilterChange = viewModel::applyFilters
     )
 }

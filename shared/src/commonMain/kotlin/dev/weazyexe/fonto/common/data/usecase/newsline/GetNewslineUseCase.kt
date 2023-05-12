@@ -4,6 +4,7 @@ import dev.weazyexe.fonto.common.data.mapper.toPosts
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
+import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Newsline
@@ -17,7 +18,10 @@ class GetNewslineUseCase(
     private val atomRepository: AtomRepository
 ) {
 
-    suspend operator fun invoke(feeds: List<Feed>): Newsline {
+    suspend operator fun invoke(
+        feeds: List<Feed>,
+        filters: List<NewslineFilter>? = null
+    ): Newsline {
         val parsedFeed = coroutineScope {
             feeds.map {
                 async {
@@ -43,9 +47,16 @@ class GetNewslineUseCase(
             .flatten()
             .forEach { newslineRepository.insertOrUpdate(it) }
 
+        val filtersToUse = filters ?: newslineRepository.getDefaultFilters()
         return Newsline(
-            posts = newslineRepository.getAll(feeds = feeds, limit = 20, offset = 0),
-            loadedWithError = problematicFeedList
+            posts = newslineRepository.getAll(
+                feeds = feeds,
+                limit = 20,
+                offset = 0,
+                filters = filtersToUse
+            ),
+            loadedWithError = problematicFeedList,
+            filters = filtersToUse
         )
     }
 }

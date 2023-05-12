@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
+import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
@@ -61,7 +62,7 @@ class FeedViewModel(
             } ?: return@launch
         setState { copy(feeds = feeds.data) }
 
-        val newsline = request { getNewsline(feeds.data) }
+        val newsline = request { getNewsline(feeds.data, state.filters) }
             .withErrorHandling {
                 setState { copy(newslineLoadState = LoadState.Error(it)) }
             } ?: return@launch
@@ -79,22 +80,19 @@ class FeedViewModel(
                 copy(
                     newslineLoadState = newsline.asViewState { it.asNewslineViewState() },
                     offset = state.offset + DEFAULT_LIMIT,
-                    isSwipeRefreshing = false
+                    isSwipeRefreshing = false,
+                    filters = newsline.data.filters
                 )
             }
             showNotLoadedSourcesError(newsline.data.loadedWithError.map { it.feed })
         }
     }
 
-    fun onScroll(state: ScrollState) {
-        setState { copy(scrollState = state) }
-    }
-
     fun getNextPostsBatch() = viewModelScope.launch {
         setState { copy(newslinePaginationState = PaginationState.LOADING) }
 
         val newslineBatch = request {
-            getPaginatedNewsline(state.feeds, state.limit, state.offset)
+            getPaginatedNewsline(state.feeds, state.limit, state.offset, state.filters)
         }
             .withErrorHandling {
                 setState { copy(newslinePaginationState = PaginationState.ERROR) }
@@ -115,9 +113,21 @@ class FeedViewModel(
                 } else {
                     PaginationState.PAGINATION_EXHAUST
                 },
-                offset = state.offset + DEFAULT_LIMIT
+                offset = state.offset + DEFAULT_LIMIT,
+                filters = newslineBatch.data.filters
             )
         }
+    }
+
+    fun applyFilters(updatedFilter: NewslineFilter) {
+        val newFilters = state.filters?.map {
+            when (it.javaClass) {
+                updatedFilter.javaClass -> updatedFilter
+                else -> it
+            }
+        }
+        setState { copy(filters = newFilters) }
+        loadNewsline()
     }
 
     fun openPost(post: PostViewState) = viewModelScope.launch {
@@ -125,6 +135,10 @@ class FeedViewModel(
             OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(post.link, settingsStorage.getTheme()).emit()
             OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
         }
+    }
+
+    fun onScroll(state: ScrollState) {
+        setState { copy(scrollState = state) }
     }
 
     private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {
