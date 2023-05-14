@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -75,7 +76,9 @@ fun FiltersRow(
                         selected = it.filter.range != null,
                         onClick = { openDateRangePickerDialog(it.filter) },
                         label = { Text(text = it.title) },
-                        modifier = Modifier.padding(end = 8.dp),
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .testTag("filter_dates_range"),
                         leadingIcon = {
                             CloseButton(isVisible = it.filter.range != null) {
                                 onClearDatesFilter(it.filter.change(null))

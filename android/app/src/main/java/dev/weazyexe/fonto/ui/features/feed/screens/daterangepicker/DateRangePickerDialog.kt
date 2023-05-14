@@ -15,8 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -27,7 +31,7 @@ import dev.weazyexe.fonto.core.ui.animation.FullScreenDialogAnimationStyle
 import dev.weazyexe.fonto.core.ui.components.CloseDialogButton
 import kotlinx.datetime.Instant
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Destination(style = FullScreenDialogAnimationStyle::class)
 @Composable
 fun DateRangePickerDialog(
@@ -40,6 +44,9 @@ fun DateRangePickerDialog(
     }
 
     Scaffold(
+        modifier = Modifier.semantics {
+            testTagsAsResourceId = true
+        },
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.date_range_picker_dialog_title)) },
@@ -71,7 +78,9 @@ fun DateRangePickerDialog(
     ) { padding ->
         DateRangePicker(
             state = state,
-            modifier = Modifier.padding(padding),
+            modifier = Modifier
+                .padding(padding)
+                .testTag("date_range_picker"),
             title = null,
             headline = {
                 Text(

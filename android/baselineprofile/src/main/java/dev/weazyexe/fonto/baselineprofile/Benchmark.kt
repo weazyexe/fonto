@@ -14,12 +14,18 @@ class Benchmark {
     val macrobenchmarkRule = MacrobenchmarkRule()
 
     @Test
-    fun startupNoBaselineProfiles() = startup(CompilationMode.None())
+    fun scrollFeedNoBaselineProfiles() = scrollFeed(CompilationMode.None())
 
     @Test
-    fun startupWithBaselineProfiles() = startup(CompilationMode.Partial())
+    fun scrollFeedWithBaselineProfiles() = scrollFeed(CompilationMode.Partial())
 
-    private fun startup(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
+    @Test
+    fun useDateRangePickerNoBaselineProfiles() = useDateRangePicker(CompilationMode.None())
+
+    @Test
+    fun useDateRangePickerWithBaselineProfiles() = useDateRangePicker(CompilationMode.Partial())
+
+    private fun scrollFeed(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
         packageName = "dev.weazyexe.fonto.benchmark",
         metrics = listOf(
             StartupTimingMetric(),
@@ -30,6 +36,20 @@ class Benchmark {
         startupMode = StartupMode.COLD,
         measureBlock = {
             startupAndScrollFeed()
+        }
+    )
+
+    private fun useDateRangePicker(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
+        packageName = "dev.weazyexe.fonto.benchmark",
+        metrics = listOf(
+            StartupTimingMetric(),
+            FrameTimingMetric()
+        ),
+        compilationMode = compilationMode,
+        iterations = 5,
+        startupMode = StartupMode.COLD,
+        measureBlock = {
+            startupAndUseDateRangePicker()
         }
     )
 }
