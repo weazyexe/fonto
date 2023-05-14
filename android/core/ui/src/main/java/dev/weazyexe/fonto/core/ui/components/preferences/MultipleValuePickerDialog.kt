@@ -6,40 +6,43 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 
 @Composable
-fun <T> ValuePickerDialog(
-    value: Value<T>,
+fun <T> MultipleValuePickerDialog(
+    values: List<Value<T>>,
     possibleValues: List<Value<T>>,
     @DrawableRes icon: Int,
     @StringRes title: Int,
-    onSave: (Value<T>) -> Unit,
+    onSave: (List<Value<T>>) -> Unit,
     onCancel: () -> Unit
 ) {
-    var currentValue by remember { mutableStateOf(value) }
+    val scrollState = rememberScrollState()
+    val currentValues = remember { values.toMutableStateList() }
 
     AlertDialog(
         onDismissRequest = onCancel,
         confirmButton = {
-            TextButton(onClick = { onSave(currentValue) }) {
+            TextButton(onClick = { onSave(currentValues.toMutableList()) }) {
                 Text(text = stringResource(id = R.string.value_picker_save))
             }
         },
@@ -50,17 +53,27 @@ fun <T> ValuePickerDialog(
         },
         title = { Text(text = stringResource(id = title)) },
         text = {
-            Column {
+            Column(modifier = Modifier.heightIn(max = 384.dp)) {
                 Divider(color = MaterialTheme.colorScheme.outlineVariant)
 
-                possibleValues.forEach {
-                    RadioWithText(
-                        text = stringResource(id = it.title),
-                        selected = it == currentValue,
-                        onSelect = {
-                            currentValue = it
-                        }
-                    )
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(scrollState)
+                        .weight(1f, fill = false)
+                ) {
+                    possibleValues.forEach {
+                        CheckboxWithText(
+                            text = it.title,
+                            selected = it in currentValues,
+                            onSelect = { isChecked ->
+                                if (isChecked) {
+                                    currentValues.add(it)
+                                } else {
+                                    currentValues.remove(it)
+                                }
+                            }
+                        )
+                    }
                 }
 
                 Divider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -76,20 +89,20 @@ fun <T> ValuePickerDialog(
 }
 
 @Composable
-private fun RadioWithText(
+private fun CheckboxWithText(
     text: String,
     selected: Boolean,
-    onSelect: () -> Unit
+    onSelect: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .clickable(onClick = onSelect)
+            .clickable(onClick = { onSelect(!selected) })
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(
-            selected = selected,
-            onClick = onSelect
+        Checkbox(
+            checked = selected,
+            onCheckedChange = onSelect
         )
         Text(text = text)
     }

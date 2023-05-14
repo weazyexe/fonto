@@ -56,6 +56,9 @@
     <string name="feed_filters_bookmarks">Bookmarks</string>
     <string name="feed_filters_dates">Dates</string>
     <string name="feed_filters_dates_value">%s — %s</string>
+    <string name="feed_filters_sources">Sources</string>
+    <string name="feed_filters_sources_two">%s and %s</string>
+    <string name="feed_filters_sources_multiple">%s, %s and %d more</string>
 
     <string name="manage_feed_title">Manage feed</string>
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>

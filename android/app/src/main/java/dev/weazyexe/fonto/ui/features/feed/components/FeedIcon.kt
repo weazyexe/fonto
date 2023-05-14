@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.core.ui.R
 
 @Composable
 fun FeedIcon(

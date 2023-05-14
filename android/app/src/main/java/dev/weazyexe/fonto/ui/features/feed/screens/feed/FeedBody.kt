@@ -15,6 +15,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
@@ -50,7 +51,9 @@ fun FeedBody(
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
     fetchNextBatch: () -> Unit,
     onFilterChange: (NewslineFilter) -> Unit,
-    openDateRangePickerDialog: (NewslineFilter) -> Unit
+    openDateRangePickerDialog: (NewslineFilter) -> Unit,
+    openMultiplePickerDialog: (NewslineFilter) -> Unit,
+    getTitleById: (Feed.Id) -> String
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val lazyListState = rememberLazyListState()
@@ -65,7 +68,9 @@ fun FeedBody(
                 onFilterChange = onFilterChange,
                 onSearchClick = onSearchClick,
                 onManageFeedClick = onManageFeedClick,
-                openDateRangePickerDialog = openDateRangePickerDialog
+                openDateRangePickerDialog = openDateRangePickerDialog,
+                openMultiplePickerDialog = openMultiplePickerDialog,
+                getTitleById = getTitleById
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -136,7 +141,9 @@ private fun FeedBodyPreview() = ThemedPreview {
         onRefreshClick = {},
         fetchNextBatch = {},
         onFilterChange = {},
-        openDateRangePickerDialog = {}
+        openDateRangePickerDialog = {},
+        openMultiplePickerDialog = {},
+        getTitleById = { "" }
     )
 }
 
@@ -159,6 +166,8 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         onRefreshClick = {},
         fetchNextBatch = {},
         onFilterChange = {},
-        openDateRangePickerDialog = {}
+        openDateRangePickerDialog = {},
+        openMultiplePickerDialog = {},
+        getTitleById = { "" }
     )
 }

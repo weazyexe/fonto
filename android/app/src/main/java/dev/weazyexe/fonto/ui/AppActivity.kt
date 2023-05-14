@@ -24,7 +24,6 @@ import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultA
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.animation.SlideAnimations
-import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
 import dev.weazyexe.fonto.core.ui.theme.FontoTheme
 import dev.weazyexe.fonto.ui.navigation.AppNavGraph
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,11 +47,7 @@ class AppActivity : ComponentActivity() {
             val state by viewModel.uiState.collectAsState()
 
             FontoTheme(
-                accentColor = if (state.accentColor != -1L) {
-                    state.accentColor
-                } else {
-                    DEFAULT_COLOR.data
-                },
+                accentColor = state.accentColor,
                 darkTheme = when (state.theme) {
                     Theme.LIGHT -> false
                     Theme.DARK -> true

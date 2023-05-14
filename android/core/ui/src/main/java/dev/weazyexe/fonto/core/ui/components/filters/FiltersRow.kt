@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.filter.Bool
 import dev.weazyexe.fonto.common.feature.filter.Dates
-import dev.weazyexe.fonto.common.feature.filter.Single
+import dev.weazyexe.fonto.common.feature.filter.Multiple
 import dev.weazyexe.fonto.core.ui.R
 
 @Composable
@@ -36,6 +36,8 @@ fun FiltersRow(
     onBoolFilterChange: (Bool<*>) -> Unit,
     openDateRangePickerDialog: (Dates<*>) -> Unit,
     onClearDatesFilter: (Dates<*>) -> Unit,
+    openMultiplePickerDialog: (Multiple<*, *>) -> Unit,
+    onClearMultipleFilter: (Multiple<*, *>) -> Unit,
     modifier: Modifier = Modifier,
     startPadding: Dp = 16.dp
 ) {
@@ -68,10 +70,6 @@ fun FiltersRow(
                     )
                 }
 
-                is Single<*> -> {
-                    // TODO implement other filter chips
-                }
-
                 is Dates<*> -> {
                     FilterChip(
                         selected = it.filter.range != null,
@@ -79,19 +77,26 @@ fun FiltersRow(
                         label = { Text(text = it.title) },
                         modifier = Modifier.padding(end = 8.dp),
                         leadingIcon = {
-                            AnimatedVisibility(
-                                visible = it.filter.range != null,
-                                enter = fadeIn() + expandHorizontally(),
-                                exit = fadeOut() + shrinkHorizontally()
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_close_24),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .clickable {
-                                            onClearDatesFilter(it.filter.change(null))
-                                        }
+                            CloseButton(isVisible = it.filter.range != null) {
+                                onClearDatesFilter(it.filter.change(null))
+                            }
+                        }
+                    )
+                }
+
+                is Multiple<*, *> -> {
+                    FilterChip(
+                        selected = it.filter.values.isNotEmpty(),
+                        onClick = { openMultiplePickerDialog(it.filter) },
+                        label = { Text(text = it.title) },
+                        modifier = Modifier.padding(end = 8.dp),
+                        leadingIcon = {
+                            CloseButton(isVisible = it.filter.values.isNotEmpty()) {
+                                onClearMultipleFilter(
+                                    (it.filter as Multiple<Any, *>).change(
+                                        emptyList(),
+                                        it.filter.possibleValues
+                                    )
                                 )
                             }
                         }
@@ -103,5 +108,25 @@ fun FiltersRow(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CloseButton(
+    isVisible: Boolean,
+    onClick: () -> Unit
+) {
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = fadeIn() + expandHorizontally(),
+        exit = fadeOut() + shrinkHorizontally()
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_close_24),
+            contentDescription = null,
+            modifier = Modifier
+                .clip(CircleShape)
+                .clickable(onClick = onClick)
+        )
     }
 }

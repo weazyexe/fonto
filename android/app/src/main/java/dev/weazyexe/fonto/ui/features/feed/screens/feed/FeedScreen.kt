@@ -12,13 +12,18 @@ import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
 import dev.weazyexe.fonto.common.feature.filter.Dates
-import dev.weazyexe.fonto.common.feature.newsline.PostDates
+import dev.weazyexe.fonto.common.feature.newsline.ByFeed
+import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
+import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
+import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerArgs
+import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.minimize
 import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
+import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 
@@ -31,6 +36,7 @@ fun FeedScreen(
     navigateTo: NavigateTo,
     manageFeedResultRecipientProvider: ManageFeedResults,
     dateRangePickerResultRecipientProvider: DateRangePickerResults,
+    feedPickerResults: FeedPickerResults
 ) {
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
@@ -59,11 +65,30 @@ fun FeedScreen(
             is NavResult.Value -> {
                 result.value?.let {
                     viewModel.applyFilters(
-                        PostDates(
+                        ByPostDates(
                             range = Dates.Range(
                                 from = it.from,
                                 to = it.to
                             )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    feedPickerResults.invoke().onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                result.value?.let { result ->
+                    viewModel.applyFilters(
+                        ByFeed(
+                            values = result.values.map { it.id },
+                            possibleValues = result.possibleValues.map { it.id }
                         )
                     )
                 }
@@ -85,6 +110,18 @@ fun FeedScreen(
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                 context.startActivity(intent)
             }
+
+            is FeedEffect.OpenFeedPicker -> {
+                navigateTo(
+                    FeedPickerDialogDestination(
+                        args = FeedPickerArgs(
+                            values = values.map { it.minimize() },
+                            possibleValues = possibleValues.map { it.minimize() },
+                            title = title
+                        )
+                    )
+                )
+            }
         }
     }
 
@@ -104,6 +141,8 @@ fun FeedScreen(
         onRefreshClick = viewModel::loadNewsline,
         fetchNextBatch = viewModel::getNextPostsBatch,
         onFilterChange = viewModel::applyFilters,
-        openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) }
+        openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) },
+        openMultiplePickerDialog = viewModel::openMultipleValuePicker,
+        getTitleById = viewModel::getFeedTitleById
     )
 }

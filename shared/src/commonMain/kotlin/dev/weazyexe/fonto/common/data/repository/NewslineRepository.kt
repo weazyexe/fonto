@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.common.data.repository
 import dev.weazyexe.fonto.common.data.datasource.NewslineDataSource
 import dev.weazyexe.fonto.common.data.mapper.toDao
 import dev.weazyexe.fonto.common.data.mapper.toPost
+import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
@@ -47,5 +48,15 @@ class NewslineRepository(
 
     fun deleteAll() = newslineDataSource.deleteAll()
 
-    fun getDefaultFilters(): List<NewslineFilter> = newslineDataSource.getDefaultFilters()
+    fun composeFilters(
+        feeds: List<Feed>
+    ): List<NewslineFilter> =
+        newslineDataSource
+            .getDefaultFilters()
+            .map {
+                when (it) {
+                    is ByFeed -> it.change(emptyList(), feeds.map { it.id })
+                    else -> it
+                }
+            }
 }

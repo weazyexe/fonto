@@ -3,6 +3,8 @@ package dev.weazyexe.fonto.common.feature.newsline
 import dev.weazyexe.fonto.common.feature.filter.Bool
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.filter.Filter
+import dev.weazyexe.fonto.common.feature.filter.Multiple
+import dev.weazyexe.fonto.common.model.feed.Feed
 
 sealed interface NewslineFilter : Filter
 
@@ -15,16 +17,27 @@ data class OnlyBookmarksFilter(
     }
 }
 
-data class PostDates(
+data class ByPostDates(
     override val range: Dates.Range?
-) : Dates<PostDates>, NewslineFilter {
+) : Dates<ByPostDates>, NewslineFilter {
 
-    override fun change(range: Dates.Range?): PostDates {
-        return PostDates(range)
+    override fun change(range: Dates.Range?): ByPostDates {
+        return ByPostDates(range)
+    }
+}
+
+data class ByFeed(
+    override val values: List<Feed.Id>,
+    override val possibleValues: List<Feed.Id>
+) : Multiple<Feed.Id, ByFeed>, NewslineFilter {
+
+    override fun change(newValue: List<Feed.Id>, newPossibleValues: List<Feed.Id>): ByFeed {
+        return ByFeed(newValue, newPossibleValues)
     }
 }
 
 val NewslineFilters = listOf(
     OnlyBookmarksFilter(isEnabled = false),
-    PostDates(range = null)
+    ByPostDates(range = null),
+    ByFeed(values = emptyList(), possibleValues = emptyList())
 )

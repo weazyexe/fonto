@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
-import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DAY_MONTH_FORMAT
+import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DATE_FORMAT
 import dev.weazyexe.fonto.common.utils.format
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.animation.FullScreenDialogAnimationStyle
@@ -79,14 +79,14 @@ fun DateRangePickerDialog(
 
                             stringResource(
                                 id = R.string.feed_filters_dates_value,
-                                from.format(HUMAN_READABLE_DAY_MONTH_FORMAT),
-                                to.format(HUMAN_READABLE_DAY_MONTH_FORMAT),
+                                from.format(HUMAN_READABLE_DATE_FORMAT),
+                                to.format(HUMAN_READABLE_DATE_FORMAT),
                             )
                         }
 
                         state.selectedStartDateMillis != null -> {
                             val from = state.selectedStartDateMillis?.asInstant() ?: return@DateRangePicker
-                            from.format(HUMAN_READABLE_DAY_MONTH_FORMAT)
+                            from.format(HUMAN_READABLE_DATE_FORMAT)
                         }
 
                         else -> ""

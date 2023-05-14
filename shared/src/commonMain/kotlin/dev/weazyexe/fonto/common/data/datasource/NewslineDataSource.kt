@@ -2,10 +2,11 @@ package dev.weazyexe.fonto.common.data.datasource
 
 import androidx.core.util.rangeTo
 import dev.weazyexe.fonto.common.db.PostDao
+import dev.weazyexe.fonto.common.feature.newsline.ByFeed
+import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
 import dev.weazyexe.fonto.common.feature.newsline.OnlyBookmarksFilter
-import dev.weazyexe.fonto.common.feature.newsline.PostDates
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.flowList
 import dev.weazyexe.fonto.db.FontoDatabase
@@ -23,16 +24,23 @@ class NewslineDataSource(database: FontoDatabase) {
         offset: Long,
         filters: List<NewslineFilter>
     ): Flow<List<PostDao>> {
-        val isSaved =
-            filters.filterIsInstance<OnlyBookmarksFilter>().firstOrNull()?.isEnabled ?: false
-        val dateRange = filters.filterIsInstance<PostDates>().firstOrNull()?.range
+        val isSaved = filters.filterIsInstance<OnlyBookmarksFilter>()
+            .firstOrNull()?.isEnabled ?: false
+
+        val dateRange = filters.filterIsInstance<ByPostDates>().firstOrNull()?.range
         val rangeInSeconds = dateRange?.let {
             val utcOffset = it.from.offsetIn(TimeZone.currentSystemDefault()).totalSeconds
             (it.from.epochSeconds - utcOffset) rangeTo (it.to.epochSeconds - utcOffset + 86_400)
         }
 
+        val feedsFromFilter = filters.filterIsInstance<ByFeed>().firstOrNull()?.values.orEmpty()
+
         return queries.getByFeedId(
-            feedId = feeds.map { it.id.origin },
+            feedId = if (feedsFromFilter.isEmpty()) {
+                feeds.map { it.id.origin }
+            } else {
+                feedsFromFilter.map { it.origin }
+            },
             limit = limit,
             offset = offset,
             isSavedFilterEnabled = isSaved.toString(),

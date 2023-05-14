@@ -5,7 +5,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
 import dev.weazyexe.fonto.common.model.preference.Theme
-import dev.weazyexe.fonto.core.ui.components.preferences.ValuePickerDialog
+import dev.weazyexe.fonto.core.ui.components.preferences.SingleValuePickerDialog
 
 @Destination(style = DestinationStyle.Dialog::class)
 @Composable
@@ -13,7 +13,7 @@ fun ThemePickerDialog(
     args: ThemePickerArgs,
     resultBackNavigator: ResultBackNavigator<Theme?>
 ) {
-    ValuePickerDialog(
+    SingleValuePickerDialog(
         value = args.value,
         possibleValues = args.possibleValues,
         icon = args.icon,

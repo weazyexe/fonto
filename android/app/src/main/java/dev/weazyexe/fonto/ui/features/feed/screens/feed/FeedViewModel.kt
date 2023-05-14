@@ -8,6 +8,7 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
+import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -136,6 +137,20 @@ class FeedViewModel(
         loadNewsline(useCache = true)
     }
 
+    fun openMultipleValuePicker(updatedFilter: NewslineFilter) {
+        when (updatedFilter) {
+            is ByFeed -> FeedEffect.OpenFeedPicker(
+                values = updatedFilter.values.findFeeds(),
+                possibleValues = updatedFilter.possibleValues.findFeeds(),
+                title = R.string.feed_filters_sources
+            ).emit()
+
+            else -> {
+                // Do nothing
+            }
+        }
+    }
+
     fun savePost(post: PostViewState) = viewModelScope.launch {
         val updatedPost = post.copy(isSaved = !post.isSaved)
         request { updatePost(post = updatedPost.asPost()) }
@@ -192,6 +207,10 @@ class FeedViewModel(
         setState { copy(scrollState = state) }
     }
 
+    fun getFeedTitleById(id: Feed.Id): String {
+        return id.findFeed().title
+    }
+
     private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {
         if (problematicFeedList.isNotEmpty()) {
             val feedListString = problematicFeedList.joinToString { it.title }
@@ -205,4 +224,10 @@ class FeedViewModel(
             .onEach { loadNewsline() }
             .launchInViewModelScope()
     }
+
+    private fun List<Feed.Id>.findFeeds(): List<Feed> =
+        map { id -> id.findFeed() }
+
+    private fun Feed.Id.findFeed(): Feed =
+        state.feeds.first { it.id == this }
 }

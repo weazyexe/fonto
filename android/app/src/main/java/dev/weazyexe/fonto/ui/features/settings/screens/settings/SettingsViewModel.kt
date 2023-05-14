@@ -1,7 +1,9 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
+import android.content.Context
 import android.os.Build
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.app.App
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
@@ -13,9 +15,6 @@ import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.components.preferences.model.findPreference
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.theme.COLORS
-import dev.weazyexe.fonto.core.ui.theme.DEFAULT_COLOR
-import dev.weazyexe.fonto.core.ui.theme.asColorValue
 import dev.weazyexe.fonto.util.AppHelper
 import dev.weazyexe.fonto.util.stringRes
 import io.github.aakira.napier.Napier
@@ -23,7 +22,8 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val settingsStorage: SettingsStorage,
-    private val eventBus: EventBus
+    private val eventBus: EventBus,
+    private val context: App,
 ) : CoreViewModel<SettingsState, SettingsEffect>() {
 
     override val initialState: SettingsState = SettingsState()
@@ -36,9 +36,9 @@ class SettingsViewModel(
         val openPostPreference = settingsStorage.getOpenPostPreference()
         val themePreference = settingsStorage.getTheme()
         val isDynamicColorsEnabled = settingsStorage.isDynamicColorsEnabled()
-        val accentColor = settingsStorage.getAccentColor()?.asColorValue() ?: DEFAULT_COLOR
+        val accentColor = settingsStorage.getAccentColor().asColorValue(context)
 
-        val updatedPreferences = state.preferences
+        val updatedPreferences = buildPreferences(context)
             .map { group ->
                 Group(
                     title = group.title,
@@ -60,8 +60,12 @@ class SettingsViewModel(
                                     title = preference.title,
                                     subtitle = preference.subtitle,
                                     icon = preference.icon,
-                                    value = Value(themePreference, themePreference.stringRes),
-                                    possibleValues = Theme.values().map { Value(it, it.stringRes) }
+                                    value = Value(
+                                        themePreference,
+                                        context.getString(themePreference.stringRes)
+                                    ),
+                                    possibleValues = Theme.values()
+                                        .map { Value(it, context.getString(it.stringRes)) }
                                 )
                             }
 
@@ -82,7 +86,7 @@ class SettingsViewModel(
                                     subtitle = preference.subtitle,
                                     icon = preference.icon,
                                     value = Value(accentColor.data, accentColor.title),
-                                    possibleValues = COLORS
+                                    possibleValues = buildColors(context)
                                 )
                             }
 
@@ -163,7 +167,7 @@ class SettingsViewModel(
             .findPreference(Preference.Identifier.THEME) as? Preference.CustomValue<Theme>
             ?: return@launch
 
-        update(preference.copy(value = Value(theme, theme.stringRes)))
+        update(preference.copy(value = Value(theme, context.getString(theme.stringRes))))
     }
 
     fun saveColor(color: Long) = viewModelScope.launch {
@@ -174,7 +178,7 @@ class SettingsViewModel(
             .findPreference(Preference.Identifier.COLOR_SCHEME) as? Preference.CustomValue<Long>
             ?: return@launch
 
-        val colorValue = color.asColorValue() ?: return@launch
+        val colorValue = color.asColorValue(context)
         update(preference.copy(value = colorValue))
     }
 
@@ -241,4 +245,92 @@ class SettingsViewModel(
             }
         }
     }
+}
+
+private fun buildPreferences(context: Context): List<Group> = listOf(
+    Group(
+        title = R.string.settings_feed_group,
+        preferences = listOf(
+            Preference.Text(
+                id = Preference.Identifier.MANAGE_FEED,
+                title = R.string.settings_feed_manage_title,
+                subtitle = R.string.settings_feed_manage_description,
+                icon = R.drawable.ic_feed_24
+            ),
+            Preference.Switch(
+                id = Preference.Identifier.OPEN_POST,
+                title = R.string.settings_feed_open_post_title,
+                subtitle = R.string.settings_feed_open_post_description,
+                icon = R.drawable.ic_language_24,
+                value = true
+            )
+        )
+    ),
+    Group(
+        title = R.string.settings_display_group,
+        preferences = listOf(
+            Preference.CustomValue(
+                id = Preference.Identifier.THEME,
+                title = R.string.settings_display_theme_title,
+                subtitle = R.string.settings_display_theme_description,
+                icon = R.drawable.ic_lightbulb_24,
+                value = Value(Theme.SYSTEM, context.getString(Theme.SYSTEM.stringRes)),
+                possibleValues = Theme.values().map { Value(it, context.getString(it.stringRes)) }
+            ),
+            Preference.Switch(
+                id = Preference.Identifier.DYNAMIC_COLORS,
+                title = R.string.settings_display_dynamic_colors_title,
+                subtitle = R.string.settings_display_dynamic_colors_description,
+                icon = R.drawable.ic_palette_24,
+                value = true
+            ),
+            Preference.CustomValue(
+                id = Preference.Identifier.COLOR_SCHEME,
+                title = R.string.settings_display_color_scheme_title,
+                subtitle = R.string.settings_display_color_scheme_description,
+                icon = R.drawable.ic_format_paint_24,
+                value = buildColors(context).first(),
+                possibleValues = buildColors(context)
+            ),
+        )
+    ),
+    Group(
+        title = R.string.settings_debug_group,
+        preferences = listOf(
+            Preference.Text(
+                id = Preference.Identifier.DEBUG_MENU,
+                title = R.string.settings_debug_menu_title,
+                subtitle = R.string.settings_debug_menu_description,
+                icon = R.drawable.ic_bug_24
+            )
+        )
+    )
+)
+
+private fun buildColors(context: Context): List<Value<Long>> = listOf(
+    Value(
+        data = 0xFF6383F8,
+        title = context.getString(R.string.settings_display_color_scheme_value_blue)
+    ),
+    Value(
+        data = 0xFF88CF9B,
+        title = context.getString(R.string.settings_display_color_scheme_value_green)
+    ),
+    Value(
+        data = 0xFFDFA576,
+        title = context.getString(R.string.settings_display_color_scheme_value_orange)
+    ),
+    Value(
+        data = 0xFFCE6E6E,
+        title = context.getString(R.string.settings_display_color_scheme_value_red)
+    ),
+    Value(
+        data = 0xFFFF96EA,
+        title = context.getString(R.string.settings_display_color_scheme_value_pink)
+    ),
+)
+
+private fun Long?.asColorValue(context: Context): Value<Long> {
+    val allColors = buildColors(context)
+    return allColors.firstOrNull { it.data == this } ?: allColors.first()
 }

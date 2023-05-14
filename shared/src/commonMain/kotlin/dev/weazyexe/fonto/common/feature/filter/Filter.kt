@@ -4,14 +4,14 @@ import kotlinx.datetime.Instant
 
 interface Filter
 
-interface Bool<B: Bool<B>> : Filter {
+interface Bool<B : Bool<B>> : Filter {
 
     val isEnabled: Boolean
 
     fun toggle(): B
 }
 
-interface Dates<D: Dates<D>>: Filter {
+interface Dates<D : Dates<D>> : Filter {
 
     val range: Range?
 
@@ -23,9 +23,9 @@ interface Dates<D: Dates<D>>: Filter {
     )
 }
 
-interface Single<T> : Filter {
-    val value: T
+interface Multiple<T : Any, M : Multiple<T, M>> : Filter {
+    val values: List<T>
     val possibleValues: List<T>
 
-    fun <F : Single<T>> change(newValue: T): F
+    fun change(newValue: List<T>, newPossibleValues: List<T>): M
 }

@@ -15,8 +15,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import dev.weazyexe.fonto.core.ui.R
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 
 
 private val LightColorScheme = lightColorScheme(
@@ -117,14 +115,3 @@ fun FontoTheme(
         content = content
     )
 }
-
-val COLORS = listOf(
-    Value(data = 0xFF6383F8, title = R.string.settings_display_color_scheme_value_blue),
-    Value(data = 0xFF88CF9B, title = R.string.settings_display_color_scheme_value_green),
-    Value(data = 0xFFDFA576, title = R.string.settings_display_color_scheme_value_orange),
-    Value(data = 0xFFCE6E6E, title = R.string.settings_display_color_scheme_value_red),
-    Value(data = 0xFFFF96EA, title = R.string.settings_display_color_scheme_value_pink),
-)
-val DEFAULT_COLOR = COLORS[0]
-
-fun Long.asColorValue(): Value<Long>? = COLORS.firstOrNull { it.data == this }

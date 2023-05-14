@@ -15,7 +15,7 @@ class GetPaginatedNewslineUseCase(
         offset: Int,
         filters: List<NewslineFilter>? = null
     ): Newsline {
-        val filtersToUse = filters ?: newslineRepository.getDefaultFilters()
+        val filtersToUse = filters ?: newslineRepository.composeFilters(feeds)
         return Newsline(
             posts = newslineRepository.getAll(
                 feeds = feeds,

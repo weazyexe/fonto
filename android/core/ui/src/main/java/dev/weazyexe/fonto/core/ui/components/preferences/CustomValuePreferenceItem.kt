@@ -65,7 +65,7 @@ fun <T> CustomValuePreferenceItem(
         }
 
         Text(
-            text = stringResource(id = value.title),
+            text = value.title,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -89,7 +89,7 @@ private fun CustomValuePreferenceItemPreview() = ThemedPreview {
                     // Do nothing
                 }
             },
-            R.string.settings_display_theme_value_light
+            stringResource(R.string.settings_display_theme_value_light)
         ),
         onClick = {},
         modifier = Modifier.fillMaxWidth()

@@ -59,7 +59,7 @@ class GetNewslineUseCase(
             .flatten()
             .forEach { newslineRepository.insertOrIgnore(it) }
 
-        val filtersToUse = filters ?: newslineRepository.getDefaultFilters()
+        val filtersToUse = filters ?: newslineRepository.composeFilters(feeds)
         return Newsline(
             posts = newslineRepository.getAll(
                 feeds = feeds,
@@ -76,7 +76,7 @@ class GetNewslineUseCase(
         feeds: List<Feed>,
         filters: List<NewslineFilter>? = null,
     ): Newsline {
-        val filtersToUse = filters ?: newslineRepository.getDefaultFilters()
+        val filtersToUse = filters ?: newslineRepository.composeFilters(feeds)
         return Newsline(
             posts = newslineRepository.getAll(
                 feeds = feeds,

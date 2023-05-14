@@ -33,4 +33,10 @@ sealed interface FeedEffect : Effect {
     ) : FeedEffect
 
     data class OpenPostInBrowser(val link: String) : FeedEffect
+
+    data class OpenFeedPicker(
+        val values: List<Feed>,
+        val possibleValues: List<Feed>,
+        @StringRes val title: Int
+    ) : FeedEffect
 }
