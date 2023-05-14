@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
@@ -71,7 +72,7 @@ fun NewslineList(
 
     LazyColumn(
         state = lazyListState,
-        modifier = modifier
+        modifier = modifier.testTag("newsline_list")
     ) {
         if (newsline.posts.isEmpty()) {
             item(key = "error pane") {

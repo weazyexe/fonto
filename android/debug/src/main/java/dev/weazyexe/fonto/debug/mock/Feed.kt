@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.debug.mock
 
 import dev.weazyexe.fonto.common.model.feed.Feed
 
-internal val VALID_FEED = listOf(
+val VALID_FEED = listOf(
     Feed(
         id = Feed.Id(1),
         title = "TechCrunch",

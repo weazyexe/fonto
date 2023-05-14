@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.annotation.StringRes
+import dev.weazyexe.fonto.BuildConfig
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -20,7 +21,8 @@ data class FeedState(
     val feeds: List<Feed> = emptyList(),
     val limit: Int = DEFAULT_LIMIT,
     val offset: Int = 0,
-    val filters: List<NewslineFilter>? = null
+    val filters: List<NewslineFilter>? = null,
+    val isBenchmarking: Boolean = BuildConfig.BUILD_TYPE == "benchmark"
 ) : State
 
 sealed interface FeedEffect : Effect {

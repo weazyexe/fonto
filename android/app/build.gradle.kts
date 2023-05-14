@@ -45,10 +45,12 @@ android {
         }
 
         create("benchmark") {
+            applicationIdSuffix = ".benchmark"
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
             isDebuggable = false
             proguardFiles("benchmark-rules.pro")
+            resValue("string", "app_name", "@string/app_name_benchmark")
         }
     }
 

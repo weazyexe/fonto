@@ -10,8 +10,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
@@ -33,7 +36,7 @@ import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.NewslineList
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun FeedBody(
     newslineLoadState: LoadState<NewslineViewState>,
@@ -59,7 +62,11 @@ fun FeedBody(
     val lazyListState = rememberLazyListState()
 
     Scaffold(
-        modifier = Modifier.padding(bottom = rootPaddingValues.calculateBottomPadding()),
+        modifier = Modifier
+            .padding(bottom = rootPaddingValues.calculateBottomPadding())
+            .semantics {
+                testTagsAsResourceId = true
+            },
         topBar = {
             FeedToolbar(
                 filters = filters,

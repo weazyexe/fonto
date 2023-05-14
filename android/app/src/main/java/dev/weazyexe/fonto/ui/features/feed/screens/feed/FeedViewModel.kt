@@ -20,6 +20,7 @@ import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
 import dev.weazyexe.fonto.core.ui.utils.asResponseError
+import dev.weazyexe.fonto.debug.mock.VALID_FEED
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
@@ -63,10 +64,14 @@ class FeedViewModel(
             )
         }
 
-        val feeds = request { getFeed() }
-            .withErrorHandling {
-                setState { copy(newslineLoadState = LoadState.Error(it)) }
-            } ?: return@launch
+        val feeds = if (state.isBenchmarking) {
+            LoadState.Data(VALID_FEED)
+        } else {
+            request { getFeed() }
+                .withErrorHandling {
+                    setState { copy(newslineLoadState = LoadState.Error(it)) }
+                } ?: return@launch
+        }
         setState { copy(feeds = feeds.data) }
 
         val newsline = request { getNewsline(feeds.data, state.filters, useCache) }
@@ -193,13 +198,15 @@ class FeedViewModel(
     }
 
     fun openPost(post: PostViewState) = viewModelScope.launch {
-        when (settingsStorage.getOpenPostPreference()) {
-            OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(
-                post.link,
-                settingsStorage.getTheme()
-            ).emit()
+        if (!state.isBenchmarking) {
+            when (settingsStorage.getOpenPostPreference()) {
+                OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(
+                    post.link,
+                    settingsStorage.getTheme()
+                ).emit()
 
-            OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
+                OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
+            }
         }
     }
 

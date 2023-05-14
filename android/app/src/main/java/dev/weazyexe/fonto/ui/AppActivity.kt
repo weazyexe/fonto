@@ -22,6 +22,7 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
+import dev.weazyexe.fonto.BuildConfig
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.animation.SlideAnimations
 import dev.weazyexe.fonto.core.ui.theme.FontoTheme
@@ -35,8 +36,11 @@ class AppActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition {
-            !viewModel.uiState.value.isInitialized
+
+        if (BuildConfig.BUILD_TYPE != "benchmark") {
+            splashScreen.setKeepOnScreenCondition {
+                !viewModel.uiState.value.isInitialized
+            }
         }
 
         super.onCreate(savedInstanceState)

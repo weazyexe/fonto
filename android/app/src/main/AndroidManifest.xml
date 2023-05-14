@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fonto.Splash">
 
+        <profileable android:shell="true" />
+
         <activity
             android:name=".ui.AppActivity"
             android:exported="true">
