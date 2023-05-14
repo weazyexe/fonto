@@ -26,7 +26,7 @@ class Benchmark {
     fun useDateRangePickerWithBaselineProfiles() = useDateRangePicker(CompilationMode.Partial())
 
     private fun scrollFeed(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
-        packageName = "dev.weazyexe.fonto.benchmark",
+        packageName = "dev.weazyexe.fonto",
         metrics = listOf(
             StartupTimingMetric(),
             FrameTimingMetric()
@@ -40,7 +40,7 @@ class Benchmark {
     )
 
     private fun useDateRangePicker(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
-        packageName = "dev.weazyexe.fonto.benchmark",
+        packageName = "dev.weazyexe.fonto",
         metrics = listOf(
             StartupTimingMetric(),
             FrameTimingMetric()
