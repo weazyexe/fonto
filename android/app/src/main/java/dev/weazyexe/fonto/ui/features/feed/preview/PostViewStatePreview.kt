@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
@@ -20,11 +21,15 @@ object PostViewStatePreview {
             link = "",
             imageUrl = "https://rozetked.me/images/uploads/webp/Oe98tb9q9Ek5.webp?1679993179",
             publishedAt = Clock.System.now(),
-            sourceTitle = "Rozetked",
-            sourceIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap(),
+            feed = Feed(
+                id = Feed.Id(0),
+                title = "Rozetked",
+                link = "",
+                icon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap()?.asLocalImage(),
+                type = Feed.Type.RSS
+            ),
             isSaved = false,
             content = null,
-            sourceId = Feed.Id(0)
         )
 
     val noPictures: PostViewState
@@ -37,11 +42,15 @@ object PostViewStatePreview {
             link = "",
             imageUrl = null,
             publishedAt = Clock.System.now(),
-            sourceTitle = "Rozetked",
-            sourceIcon = null,
+            feed = Feed(
+                id = Feed.Id(0),
+                title = "Rozetked",
+                link = "",
+                icon = null,
+                type = Feed.Type.RSS
+            ),
             isSaved = false,
-            content = null,
-            sourceId = Feed.Id(0)
+            content = null
         )
 
     val saved: PostViewState
@@ -54,10 +63,14 @@ object PostViewStatePreview {
             link = "",
             imageUrl = "https://cdn4.telegram-cdn.org/file/flZogY_p55kA2Xd7RV_UykABn6DzblOJql15NmjTF688nWstLIbVi0EcUmeHZOc_8jHwdXDwNuqgUvXOPCAB5BXa0l79XqhFn_ho5jg1DMcULXNq6IIPIJAFTE_VflgY1A1H8Z9MrKlwEdDRRLz1NDH8kxm_lSD8qD9EOk3EZLr-TFKtzjt7piTNDd9Mf-L9v3e6UNNMi6nlEw4EX7WS1BFFJuB761mTf8G1r-BkzZHdlSVF2XiY8KDQjqH06TPpMICvZZpeKc2q_AlueRqowI86uWrifFdgf-yQOYLp13Q7xq3bhi_fs41nmBh5H_YxXNFZJTQ6FQusLYLzGQZGew.jpg",
             publishedAt = Clock.System.now(),
-            sourceTitle = "Rozetked",
-            sourceIcon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap(),
+            feed = Feed(
+                id = Feed.Id(0),
+                title = "Rozetked",
+                link = "",
+                icon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap()?.asLocalImage(),
+                type = Feed.Type.RSS
+            ),
             isSaved = true,
             content = null,
-            sourceId = Feed.Id(0)
         )
 }

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
@@ -48,9 +49,9 @@ fun PostItem(
             .clickable(onClick = onPostClick)
     ) {
         PostTitle(
-            title = post.sourceTitle,
+            title = post.feed.title,
             publishedAt = post.publishedAt.formatHumanFriendly(),
-            icon = post.sourceIcon?.asImageBitmap(),
+            icon = post.feed.icon?.asBitmap()?.asImageBitmap(),
             isSaved = post.isSaved,
             onSaveClick = onSaveClick,
             modifier = Modifier

@@ -1,9 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.viewstates
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.datetime.Instant
@@ -17,9 +15,7 @@ data class PostViewState(
     val content: String?,
     val imageUrl: String?,
     val publishedAt: Instant,
-    val sourceId: Feed.Id,
-    val sourceTitle: String,
-    val sourceIcon: Bitmap?,
+    val feed: Feed,
     val isSaved: Boolean,
 )
 
@@ -32,8 +28,19 @@ fun Post.asViewState() = PostViewState(
     content = content,
     imageUrl = imageUrl,
     publishedAt = publishedAt,
-    sourceId = feed.id,
-    sourceTitle = feed.title,
-    sourceIcon = feed.icon?.asBitmap(),
+    feed = feed,
+    isSaved = isSaved
+)
+
+@Stable
+fun PostViewState.asPost() = Post(
+    id = id,
+    title = title,
+    description = description,
+    link = link,
+    content = content,
+    imageUrl = imageUrl,
+    publishedAt = publishedAt,
+    feed = feed,
     isSaved = isSaved
 )

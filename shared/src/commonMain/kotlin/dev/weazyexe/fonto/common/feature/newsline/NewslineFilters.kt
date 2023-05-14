@@ -6,14 +6,14 @@ import dev.weazyexe.fonto.common.feature.filter.Filter
 sealed interface NewslineFilter : Filter
 
 data class OnlyBookmarksFilter(
-    override val value: Boolean
+    override val isEnabled: Boolean
 ) : Bool<OnlyBookmarksFilter>, NewslineFilter {
 
     override fun toggle(): OnlyBookmarksFilter {
-        return OnlyBookmarksFilter(!value)
+        return OnlyBookmarksFilter(!isEnabled)
     }
 }
 
 val NewslineFilters = listOf<NewslineFilter>(
-    OnlyBookmarksFilter(value = false)
+    OnlyBookmarksFilter(isEnabled = false)
 )

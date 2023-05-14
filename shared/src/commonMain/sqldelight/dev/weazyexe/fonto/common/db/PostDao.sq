@@ -12,7 +12,7 @@ CREATE TABLE PostDao (
 
 getByFeedId:
 SELECT * FROM PostDao
-WHERE feedId IN ? AND isSaved = ?
+WHERE feedId IN ? AND (:isSavedFilterEnabled = "false" OR isSaved = ?)
 ORDER BY publishedAt DESC
 LIMIT :limit OFFSET :offset;
 
@@ -22,6 +22,10 @@ WHERE id = :id;
 
 insertOrUpdate:
 INSERT OR REPLACE INTO PostDao
+VALUES ?;
+
+insertOrIgnore:
+INSERT OR IGNORE INTO PostDao
 VALUES ?;
 
 delete:

@@ -50,9 +50,11 @@ fun FeedScreen(
             is FeedEffect.ShowMessage -> {
                 snackbarHostState.showSnackbar(context.getString(message, *args))
             }
+
             is FeedEffect.OpenPostInApp -> {
                 InAppBrowser.openPost(context, link, theme)
             }
+
             is FeedEffect.OpenPostInBrowser -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                 context.startActivity(intent)
@@ -69,6 +71,7 @@ fun FeedScreen(
         paginationState = state.newslinePaginationState,
         isSwipeRefreshing = state.isSwipeRefreshing,
         onPostClick = viewModel::openPost,
+        onPostSaveClick = viewModel::savePost,
         onScroll = viewModel::onScroll,
         onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
         onSearchClick = {},

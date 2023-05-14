@@ -19,19 +19,22 @@ class NewslineDataSource(database: FontoDatabase) {
         offset: Long,
         filters: List<NewslineFilter>
     ): Flow<List<PostDao>> {
-        val isSaved = filters.filterIsInstance<OnlyBookmarksFilter>().firstOrNull()?.value ?: false
+        val isSaved = filters.filterIsInstance<OnlyBookmarksFilter>().firstOrNull()?.isEnabled ?: false
 
         return queries.getByFeedId(
             feedId = feeds.map { it.id.origin },
             limit = limit,
             offset = offset,
-            isSaved = isSaved.toString()
+            isSavedFilterEnabled = isSaved.toString(),
+            isSaved = true.toString()
         ).flowList()
     }
 
     fun getPostById(id: String): PostDao = queries.getPostById(id).executeAsOne()
 
     fun insertOrUpdate(postDao: PostDao) = queries.insertOrUpdate(postDao)
+
+    fun insertOrIgnore(postDao: PostDao) = queries.insertOrIgnore(postDao)
 
     fun delete(id: String) = queries.delete(id)
 

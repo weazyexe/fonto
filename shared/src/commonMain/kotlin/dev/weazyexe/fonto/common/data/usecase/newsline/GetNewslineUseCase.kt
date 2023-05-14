@@ -45,7 +45,7 @@ class GetNewslineUseCase(
                 }
             }
             .flatten()
-            .forEach { newslineRepository.insertOrUpdate(it) }
+            .forEach { newslineRepository.insertOrIgnore(it) }
 
         val filtersToUse = filters ?: newslineRepository.getDefaultFilters()
         return Newsline(

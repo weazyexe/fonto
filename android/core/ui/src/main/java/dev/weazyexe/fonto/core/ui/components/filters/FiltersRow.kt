@@ -42,12 +42,12 @@ fun FiltersRow(
             when (it.filter) {
                 is Bool<*> -> {
                     FilterChip(
-                        selected = it.filter.value,
+                        selected = it.filter.isEnabled,
                         onClick = { onBoolFilterChange(it.filter.toggle()) },
                         label = { Text(text = it.title) },
                         leadingIcon = {
                             AnimatedVisibility(
-                                visible = it.filter.value,
+                                visible = it.filter.isEnabled,
                                 enter = fadeIn() + expandHorizontally(),
                                 exit = fadeOut() + shrinkHorizontally()
                             ) {

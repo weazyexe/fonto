@@ -39,6 +39,8 @@ class NewslineRepository(
 
     fun insertOrUpdate(post: Post) = newslineDataSource.insertOrUpdate(post.toDao())
 
+    fun insertOrIgnore(post: Post) = newslineDataSource.insertOrIgnore(post.toDao())
+
     fun delete(id: String) = newslineDataSource.delete(id)
 
     fun deletePostsFromFeed(feedId: Long) = newslineDataSource.deletePostsFromFeed(feedId)

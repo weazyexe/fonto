@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -21,6 +22,7 @@ import dev.weazyexe.fonto.core.ui.utils.asResponseError
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
+import dev.weazyexe.fonto.ui.features.feed.viewstates.asPost
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
 class FeedViewModel(
     private val getFeed: GetFeedUseCase,
     private val getNewsline: GetNewslineUseCase,
+    private val updatePost: UpdatePostUseCase,
     private val getPaginatedNewsline: GetPaginatedNewslineUseCase,
     private val settingsStorage: SettingsStorage,
     private val eventBus: EventBus
@@ -130,9 +133,57 @@ class FeedViewModel(
         loadNewsline()
     }
 
+    fun savePost(post: PostViewState) = viewModelScope.launch {
+        val updatedPost = post.copy(isSaved = !post.isSaved)
+        request { updatePost(post = updatedPost.asPost()) }
+            .withErrorHandling {
+                FeedEffect.ShowMessage(
+                    message = if (updatedPost.isSaved) {
+                        R.string.feed_post_saving_error
+                    } else {
+                        R.string.feed_post_removing_from_bookmarks_error
+                    }
+                ).emit()
+            } ?: return@launch
+
+        val loadState = state.newslineLoadState as? LoadState.Data ?: return@launch
+        val updatedPosts = loadState
+            .data
+            .posts
+            .map {
+                if (it.id == post.id) {
+                    updatedPost
+                } else {
+                    it
+                }
+            }
+
+        setState {
+            copy(
+                newslineLoadState = loadState.copy(
+                    data = loadState.data.copy(
+                        posts = updatedPosts
+                    )
+                )
+            )
+        }
+
+        FeedEffect.ShowMessage(
+            message = if (updatedPost.isSaved) {
+                R.string.feed_post_saved_to_bookmarks
+            } else {
+                R.string.feed_post_removed_from_bookmarks
+            }
+        ).emit()
+    }
+
     fun openPost(post: PostViewState) = viewModelScope.launch {
         when (settingsStorage.getOpenPostPreference()) {
-            OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(post.link, settingsStorage.getTheme()).emit()
+            OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(
+                post.link,
+                settingsStorage.getTheme()
+            ).emit()
+
             OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
         }
     }

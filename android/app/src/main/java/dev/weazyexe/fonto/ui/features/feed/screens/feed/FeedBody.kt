@@ -65,6 +65,7 @@ fun FeedBody(
     paginationState: PaginationState,
     isSwipeRefreshing: Boolean,
     onPostClick: (PostViewState) -> Unit,
+    onPostSaveClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeedClick: () -> Unit,
     onSearchClick: () -> Unit,
@@ -138,6 +139,7 @@ fun FeedBody(
                             lazyListState = lazyListState,
                             paginationState = paginationState,
                             onPostClick = onPostClick,
+                            onPostSaveClick = onPostSaveClick,
                             onScroll = onScroll,
                             onManageFeed = onManageFeedClick,
                             fetchNextBatch = fetchNextBatch,
@@ -168,6 +170,7 @@ private fun NewslineList(
     scrollState: ScrollState,
     paginationState: PaginationState,
     onPostClick: (PostViewState) -> Unit,
+    onPostSaveClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
     fetchNextBatch: () -> Unit,
@@ -226,7 +229,7 @@ private fun NewslineList(
                 PostItem(
                     post = it,
                     onPostClick = { onPostClick(it) },
-                    onSaveClick = { /*TODO*/ },
+                    onSaveClick = { onPostSaveClick(it) },
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }

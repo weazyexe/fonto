@@ -25,6 +25,7 @@ import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.feature.parser.atom.AtomParser
@@ -100,6 +101,7 @@ internal val newslineModule = module {
     single { GetNewslineUseCase(get(), get(), get()) }
     single { GetPaginatedNewslineUseCase(get()) }
     single { GetPostUseCase(get(), get()) }
+    single { UpdatePostUseCase(get()) }
 }
 
 fun appModules(): List<Module> =

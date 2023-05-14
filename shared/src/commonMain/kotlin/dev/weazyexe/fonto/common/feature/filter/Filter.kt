@@ -4,7 +4,7 @@ interface Filter
 
 interface Bool<B: Bool<B>> : Filter {
 
-    val value: Boolean
+    val isEnabled: Boolean
 
     fun toggle(): B
 }
