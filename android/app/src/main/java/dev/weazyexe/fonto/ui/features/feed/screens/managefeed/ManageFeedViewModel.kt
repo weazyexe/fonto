@@ -1,10 +1,10 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState

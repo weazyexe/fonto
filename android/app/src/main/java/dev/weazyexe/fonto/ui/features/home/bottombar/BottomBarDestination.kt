@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.ui.features.home.bottombar
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
-import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.ui.features.destinations.BookmarksScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.SettingsScreenDestination

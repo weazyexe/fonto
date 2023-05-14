@@ -38,7 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.CloseDialogButton
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
@@ -101,7 +101,7 @@ fun AddEditFeedBody(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
                         elevation = 3.dp
                     )

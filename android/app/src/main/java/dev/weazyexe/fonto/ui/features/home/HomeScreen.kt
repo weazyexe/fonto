@@ -15,11 +15,15 @@ import com.ramcosta.composedestinations.spec.Direction
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
+import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
+import dev.weazyexe.fonto.ui.features.feed.screens.daterangepicker.DateRangeResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.ui.features.home.bottombar.BottomBar
 import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
+import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
+import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
@@ -34,7 +38,8 @@ fun HomeScreen(
     navController: NavController,
     manageFeedResultRecipient: ResultRecipient<ManageFeedScreenDestination, Boolean>,
     themePickerResultRecepient: ResultRecipient<ThemePickerDialogDestination, Theme?>,
-    colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, Long>
+    colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, Long>,
+    dateRangePickerResultRecipient: ResultRecipient<DateRangePickerDialogDestination, DateRangeResults?>
 ) {
     val feedViewModel = koinViewModel<FeedViewModel>()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
@@ -53,8 +58,17 @@ fun HomeScreen(
                 dependency(feedViewModel)
                 dependency(settingsViewModel)
                 dependency(
-                    fun(): ResultRecipient<ManageFeedScreenDestination, Boolean> {
-                        return manageFeedResultRecipient
+                    object: ManageFeedResults {
+                        override fun invoke(): ResultRecipient<ManageFeedScreenDestination, Boolean> {
+                            return manageFeedResultRecipient
+                        }
+                    }
+                )
+                dependency(
+                    object : DateRangePickerResults {
+                        override fun invoke(): ResultRecipient<DateRangePickerDialogDestination, DateRangeResults?> {
+                            return dateRangePickerResultRecipient
+                        }
                     }
                 )
                 dependency(

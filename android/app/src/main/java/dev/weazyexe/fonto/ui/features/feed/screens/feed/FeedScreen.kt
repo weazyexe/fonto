@@ -11,11 +11,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.NavResult
-import com.ramcosta.composedestinations.result.ResultRecipient
+import dev.weazyexe.fonto.common.feature.filter.Dates
+import dev.weazyexe.fonto.common.feature.newsline.PostDates
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
+import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
+import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
+import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 
 @BottomBarNavGraph(start = true)
@@ -25,13 +29,14 @@ fun FeedScreen(
     rootPaddingValues: PaddingValues,
     viewModel: FeedViewModel,
     navigateTo: NavigateTo,
-    manageFeedResultRecipientProvider: () -> ResultRecipient<ManageFeedScreenDestination, Boolean>
+    manageFeedResultRecipientProvider: ManageFeedResults,
+    dateRangePickerResultRecipientProvider: DateRangePickerResults,
 ) {
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    manageFeedResultRecipientProvider().onNavResult { result ->
+    manageFeedResultRecipientProvider.invoke().onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> {
                 // Do nothing
@@ -40,6 +45,27 @@ fun FeedScreen(
             is NavResult.Value -> {
                 if (result.value) {
                     viewModel.loadNewsline()
+                }
+            }
+        }
+    }
+
+    dateRangePickerResultRecipientProvider.invoke().onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                result.value?.let {
+                    viewModel.applyFilters(
+                        PostDates(
+                            range = Dates.Range(
+                                from = it.from,
+                                to = it.to
+                            )
+                        )
+                    )
                 }
             }
         }
@@ -77,6 +103,7 @@ fun FeedScreen(
         onSearchClick = {},
         onRefreshClick = viewModel::loadNewsline,
         fetchNextBatch = viewModel::getNextPostsBatch,
-        onFilterChange = viewModel::applyFilters
+        onFilterChange = viewModel::applyFilters,
+        openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) }
     )
 }

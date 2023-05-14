@@ -54,6 +54,8 @@
     <string name="feed_post_saving_error">Failed to save the post to bookmarks. Please try again</string>
     <string name="feed_post_removing_from_bookmarks_error">Failed to remove the post from bookmarks. Please try again</string>
     <string name="feed_filters_bookmarks">Bookmarks</string>
+    <string name="feed_filters_dates">Dates</string>
+    <string name="feed_filters_dates_value">%s — %s</string>
 
     <string name="manage_feed_title">Manage feed</string>
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>
@@ -106,6 +108,9 @@
     <string name="value_picker_cancel">Cancel</string>
 
     <string name="color_picker_pick_color">Pick color</string>
+
+    <string name="date_range_picker_dialog_title">Select date range</string>
+    <string name="date_range_picker_dialog_pick">Pick</string>
 
     <string name="debug_title">Debug screen</string>
     <string name="debug_feed_group">Feed</string>

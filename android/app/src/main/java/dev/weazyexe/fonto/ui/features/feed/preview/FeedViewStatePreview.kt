@@ -4,8 +4,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
-import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 
 object FeedViewStatePreview {

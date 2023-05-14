@@ -12,7 +12,9 @@ CREATE TABLE PostDao (
 
 getByFeedId:
 SELECT * FROM PostDao
-WHERE feedId IN ? AND (:isSavedFilterEnabled = "false" OR isSaved = ?)
+WHERE feedId IN ?
+AND (:isSavedFilterEnabled = "false" OR isSaved = ?)
+AND (:isDateRangeFilterEnabled = "false" OR (publishedAt >= :publishedFrom AND publishedAt <= :publishedTo))
 ORDER BY publishedAt DESC
 LIMIT :limit OFFSET :offset;
 

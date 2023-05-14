@@ -17,8 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
-import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.core.ui.R
 
 @Destination(style = DestinationStyle.Dialog::class)
 @Composable

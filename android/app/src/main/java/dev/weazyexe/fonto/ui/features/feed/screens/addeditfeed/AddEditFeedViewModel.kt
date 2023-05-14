@@ -2,7 +2,6 @@ package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.R
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
@@ -12,6 +11,7 @@ import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError

@@ -49,7 +49,8 @@ fun FeedBody(
     onSearchClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
     fetchNextBatch: () -> Unit,
-    onFilterChange: (NewslineFilter) -> Unit
+    onFilterChange: (NewslineFilter) -> Unit,
+    openDateRangePickerDialog: (NewslineFilter) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val lazyListState = rememberLazyListState()
@@ -63,7 +64,8 @@ fun FeedBody(
                 lazyListState = lazyListState,
                 onFilterChange = onFilterChange,
                 onSearchClick = onSearchClick,
-                onManageFeedClick = onManageFeedClick
+                onManageFeedClick = onManageFeedClick,
+                openDateRangePickerDialog = openDateRangePickerDialog
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -133,7 +135,8 @@ private fun FeedBodyPreview() = ThemedPreview {
         onSearchClick = {},
         onRefreshClick = {},
         fetchNextBatch = {},
-        onFilterChange = {}
+        onFilterChange = {},
+        openDateRangePickerDialog = {}
     )
 }
 
@@ -155,6 +158,7 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         onSearchClick = {},
         onRefreshClick = {},
         fetchNextBatch = {},
-        onFilterChange = {}
+        onFilterChange = {},
+        openDateRangePickerDialog = {}
     )
 }

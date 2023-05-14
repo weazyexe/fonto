@@ -26,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.R
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 import kotlinx.coroutines.delay

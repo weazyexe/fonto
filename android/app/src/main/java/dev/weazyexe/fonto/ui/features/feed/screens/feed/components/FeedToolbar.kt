@@ -34,6 +34,7 @@ fun FeedToolbar(
     scrollBehavior: TopAppBarScrollBehavior,
     lazyListState: LazyListState,
     onFilterChange: (NewslineFilter) -> Unit,
+    openDateRangePickerDialog: (NewslineFilter) -> Unit,
     onSearchClick: () -> Unit,
     onManageFeedClick: () -> Unit
 ) {
@@ -52,9 +53,11 @@ fun FeedToolbar(
                     AnimatedVisibility(visible = areFiltersVisible) {
                         FiltersRow(
                             filters = filters.asViewStates(),
-                            onBoolFilterChange = {
-                                onFilterChange(it as NewslineFilter)
+                            onBoolFilterChange = { onFilterChange(it as NewslineFilter) },
+                            openDateRangePickerDialog = {
+                                openDateRangePickerDialog(it as NewslineFilter)
                             },
+                            onClearDatesFilter = { onFilterChange(it as NewslineFilter) },
                             modifier = Modifier.alpha(1f - scrollBehavior.state.collapsedFraction),
                             startPadding = 0.dp
                         )
