@@ -213,7 +213,7 @@ private fun NewslineList(
         modifier = modifier
     ) {
         if (newsline.posts.isEmpty()) {
-            item {
+            item(key = "error pane") {
                 ErrorPane(
                     params = ErrorPaneParams.empty(
                         message = R.string.feed_empty_newsline,
@@ -225,7 +225,7 @@ private fun NewslineList(
                 )
             }
         } else {
-            items(items = newsline.posts) {
+            items(items = newsline.posts, key = { it.id.origin }) {
                 PostItem(
                     post = it,
                     onPostClick = { onPostClick(it) },
@@ -234,7 +234,7 @@ private fun NewslineList(
                 )
             }
 
-            item {
+            item(key = "footer") {
                 PaginationFooter(
                     state = paginationState,
                     onRefresh = fetchNextBatch

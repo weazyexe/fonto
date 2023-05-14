@@ -11,7 +11,7 @@ fun <T> LoadStateComponent(
     onError: @Composable (LoadState.Error<T>) -> Unit,
     onLoading: @Composable () -> Unit
 ) {
-    Crossfade(loadState::class) { clazz ->
+    Crossfade(loadState::class, label = "load_state") { clazz ->
         when (clazz) {
             LoadState.Loading::class -> {
                 (loadState as? LoadState.Loading)?.also { onLoading() }

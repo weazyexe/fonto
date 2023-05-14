@@ -44,7 +44,10 @@ class FeedViewModel(
         listenToEventBus()
     }
 
-    fun loadNewsline(isSwipeRefreshing: Boolean = false) = viewModelScope.launch {
+    fun loadNewsline(
+        isSwipeRefreshing: Boolean = false,
+        useCache: Boolean = false
+    ) = viewModelScope.launch {
         setState {
             copy(
                 newslineLoadState = if (isSwipeRefreshing) {
@@ -65,7 +68,7 @@ class FeedViewModel(
             } ?: return@launch
         setState { copy(feeds = feeds.data) }
 
-        val newsline = request { getNewsline(feeds.data, state.filters) }
+        val newsline = request { getNewsline(feeds.data, state.filters, useCache) }
             .withErrorHandling {
                 setState { copy(newslineLoadState = LoadState.Error(it)) }
             } ?: return@launch
@@ -130,7 +133,7 @@ class FeedViewModel(
             }
         }
         setState { copy(filters = newFilters) }
-        loadNewsline()
+        loadNewsline(useCache = true)
     }
 
     fun savePost(post: PostViewState) = viewModelScope.launch {
@@ -147,16 +150,13 @@ class FeedViewModel(
             } ?: return@launch
 
         val loadState = state.newslineLoadState as? LoadState.Data ?: return@launch
-        val updatedPosts = loadState
-            .data
-            .posts
-            .map {
-                if (it.id == post.id) {
-                    updatedPost
-                } else {
-                    it
-                }
+        val updatedPosts = loadState.data.posts.map {
+            if (it.id == post.id) {
+                updatedPost
+            } else {
+                it
             }
+        }
 
         setState {
             copy(

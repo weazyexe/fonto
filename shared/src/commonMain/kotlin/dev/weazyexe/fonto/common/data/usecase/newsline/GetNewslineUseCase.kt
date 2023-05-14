@@ -20,7 +20,19 @@ class GetNewslineUseCase(
 
     suspend operator fun invoke(
         feeds: List<Feed>,
-        filters: List<NewslineFilter>? = null
+        filters: List<NewslineFilter>? = null,
+        useCache: Boolean = false
+    ): Newsline {
+        return if (useCache) {
+            getNewslineFromCache(feeds, filters)
+        } else {
+            getNewslineFromServer(feeds, filters)
+        }
+    }
+
+    private suspend fun getNewslineFromServer(
+        feeds: List<Feed>,
+        filters: List<NewslineFilter>? = null,
     ): Newsline {
         val parsedFeed = coroutineScope {
             feeds.map {
@@ -56,6 +68,23 @@ class GetNewslineUseCase(
                 filters = filtersToUse
             ),
             loadedWithError = problematicFeedList,
+            filters = filtersToUse
+        )
+    }
+
+    private suspend fun getNewslineFromCache(
+        feeds: List<Feed>,
+        filters: List<NewslineFilter>? = null,
+    ): Newsline {
+        val filtersToUse = filters ?: newslineRepository.getDefaultFilters()
+        return Newsline(
+            posts = newslineRepository.getAll(
+                feeds = feeds,
+                limit = 20,
+                offset = 0,
+                filters = filtersToUse
+            ),
+            loadedWithError = emptyList(),
             filters = filtersToUse
         )
     }
