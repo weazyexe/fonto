@@ -22,13 +22,19 @@ fun List<NewslineFilter>.asViewStates(
         filter = it,
         title = when (it) {
             is OnlyBookmarksFilter -> stringResource(R.string.feed_filters_bookmarks)
-            is ByPostDates -> when (val range = it.range) {
-                null -> stringResource(id = R.string.feed_filters_dates)
-                else -> stringResource(
-                    id = R.string.feed_filters_dates_value,
-                    range.from.format(HUMAN_READABLE_DATE_FORMAT),
-                    range.to.format(HUMAN_READABLE_DATE_FORMAT),
-                )
+            is ByPostDates -> {
+                val range = it.range
+                when {
+                    range == null -> stringResource(id = R.string.feed_filters_dates)
+
+                    range.from == range.to -> range.from.format(HUMAN_READABLE_DATE_FORMAT)
+
+                    else -> stringResource(
+                        id = R.string.feed_filters_dates_value,
+                        range.from.format(HUMAN_READABLE_DATE_FORMAT),
+                        range.to.format(HUMAN_READABLE_DATE_FORMAT),
+                    )
+                }
             }
 
             is ByFeed -> when (val count = it.values.size) {

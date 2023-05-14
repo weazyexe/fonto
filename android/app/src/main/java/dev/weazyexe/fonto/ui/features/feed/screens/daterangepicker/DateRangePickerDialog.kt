@@ -36,7 +36,7 @@ fun DateRangePickerDialog(
     val state = rememberDateRangePickerState()
 
     val areDatesValid by remember {
-        derivedStateOf { state.selectedStartDateMillis != null && state.selectedEndDateMillis != null }
+        derivedStateOf { state.selectedStartDateMillis != null }
     }
 
     Scaffold(
@@ -48,8 +48,11 @@ fun DateRangePickerDialog(
                     TextButton(
                         onClick = {
                             val results = DateRangeResults(
-                                from = state.selectedStartDateMillis?.asInstant() ?: return@TextButton,
-                                to = state.selectedEndDateMillis?.asInstant() ?: return@TextButton,
+                                from = state.selectedStartDateMillis?.asInstant()
+                                    ?: return@TextButton,
+                                to = state.selectedEndDateMillis?.asInstant()
+                                    ?: state.selectedStartDateMillis?.asInstant()
+                                    ?: return@TextButton,
                             )
                             resultBackNavigator.navigateBack(result = results)
                         },
@@ -73,9 +76,11 @@ fun DateRangePickerDialog(
             headline = {
                 Text(
                     text = when {
-                        areDatesValid -> {
-                            val from = state.selectedStartDateMillis?.asInstant() ?: return@DateRangePicker
-                            val to = state.selectedEndDateMillis?.asInstant() ?: return@DateRangePicker
+                        state.selectedStartDateMillis != null && state.selectedEndDateMillis != null -> {
+                            val from =
+                                state.selectedStartDateMillis?.asInstant() ?: return@DateRangePicker
+                            val to =
+                                state.selectedEndDateMillis?.asInstant() ?: return@DateRangePicker
 
                             stringResource(
                                 id = R.string.feed_filters_dates_value,
@@ -85,7 +90,8 @@ fun DateRangePickerDialog(
                         }
 
                         state.selectedStartDateMillis != null -> {
-                            val from = state.selectedStartDateMillis?.asInstant() ?: return@DateRangePicker
+                            val from =
+                                state.selectedStartDateMillis?.asInstant() ?: return@DateRangePicker
                             from.format(HUMAN_READABLE_DATE_FORMAT)
                         }
 
