@@ -18,11 +18,14 @@ fun MacrobenchmarkScope.startupAndScrollFeed() {
 fun MacrobenchmarkScope.startupAndUseDateRangePicker() {
     startActivityAndWait()
     val datesRangeSelector = By.res("filter_dates_range")
+    val dateRangePickerSelector = By.res("date_range_picker")
+
     device.wait(Until.hasObject(datesRangeSelector), 10_000L)
     val datesRange = device.findObject(datesRangeSelector)
-    datesRange.clickAndWait(Until.newWindow(), 5_000)
-    val dateRangePicker = device.findObject(By.res("date_range_picker"))
+    datesRange.click()
+    device.wait(Until.hasObject(dateRangePickerSelector), 10_000L)
 
+    val dateRangePicker = device.findObject(dateRangePickerSelector)
     dateRangePicker.fling(Direction.DOWN, 25000)
     dateRangePicker.fling(Direction.DOWN, 25000)
 }
