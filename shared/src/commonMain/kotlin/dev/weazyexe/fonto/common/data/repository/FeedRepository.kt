@@ -1,27 +1,39 @@
 package dev.weazyexe.fonto.common.data.repository
 
+import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
 import dev.weazyexe.fonto.common.data.datasource.FeedDataSource
+import dev.weazyexe.fonto.common.data.mapper.toCategory
 import dev.weazyexe.fonto.common.data.mapper.toDao
 import dev.weazyexe.fonto.common.data.mapper.toFeed
-import dev.weazyexe.fonto.common.data.mapper.toFeedList
 import dev.weazyexe.fonto.common.model.base.LocalImage
+import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import kotlinx.coroutines.flow.first
 
 class FeedRepository(
-    private val feedDataSource: FeedDataSource
+    private val feedDataSource: FeedDataSource,
+    private val categoryDataSource: CategoryDataSource
 ) {
 
     suspend fun getAll(): List<Feed> {
-        return feedDataSource.getAll().first().toFeedList()
+        val categoriesDao = categoryDataSource.getAll().first()
+        val feedsDao = feedDataSource.getAll().first()
+
+        return categoriesDao.flatMap { category ->
+            feedsDao
+                .filter { category.id == it.categoryId }
+                .map { it.toFeed(category.toCategory()) }
+        }
     }
 
     fun getById(id: Feed.Id): Feed {
-        return feedDataSource.getById(id.origin).toFeed()
+        val feedDao = feedDataSource.getById(id.origin)
+        val categoryDao = categoryDataSource.getById(feedDao.categoryId)
+        return feedDao.toFeed(categoryDao.toCategory())
     }
 
-    fun insert(title: String, link: String, icon: LocalImage?, type: Feed.Type) {
-        feedDataSource.insert(title, link, icon?.bytes, type.id)
+    fun insert(title: String, link: String, icon: LocalImage?, type: Feed.Type, categoryId: Category.Id) {
+        feedDataSource.insert(title, link, icon?.bytes, type.id, categoryId.origin)
     }
 
     fun update(feed: Feed) {

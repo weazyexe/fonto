@@ -8,5 +8,5 @@ data class NewslineViewState(
     val posts: List<PostViewState> = emptyList()
 )
 
-fun Newsline.asNewslineViewState(): NewslineViewState =
+fun Newsline.Success.asNewslineViewState(): NewslineViewState =
     NewslineViewState(posts = posts.map { it.asViewState() })

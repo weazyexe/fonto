@@ -10,15 +10,16 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.coroutines.flow.first
 
 class NewslineRepository(
-    private val newslineDataSource: NewslineDataSource
+    private val newslineDataSource: NewslineDataSource,
+    private val feedRepository: FeedRepository
 ) {
 
     suspend fun getAll(
-        feeds: List<Feed>,
         limit: Int,
         offset: Int,
         filters: List<NewslineFilter>
     ): List<Post> {
+        val feeds = feedRepository.getAll()
         val postDaos = newslineDataSource.getAll(
             feeds = feeds,
             limit = limit.toLong(),
@@ -48,15 +49,15 @@ class NewslineRepository(
 
     fun deleteAll() = newslineDataSource.deleteAll()
 
-    fun composeFilters(
-        feeds: List<Feed>
-    ): List<NewslineFilter> =
-        newslineDataSource
+    suspend fun composeFilters(): List<NewslineFilter> {
+        val feeds = feedRepository.getAll()
+        return newslineDataSource
             .getDefaultFilters()
-            .map {
-                when (it) {
-                    is ByFeed -> it.change(emptyList(), feeds.map { it.id })
-                    else -> it
+            .map { filter ->
+                when (filter) {
+                    is ByFeed -> filter.change(emptyList(), feeds.map { it.id })
+                    else -> filter
                 }
             }
+    }
 }

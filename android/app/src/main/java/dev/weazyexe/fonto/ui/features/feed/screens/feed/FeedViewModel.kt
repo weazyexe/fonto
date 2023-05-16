@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
@@ -12,15 +12,15 @@ import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.feed.Feed
+import dev.weazyexe.fonto.common.model.feed.Newsline
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
-import dev.weazyexe.fonto.core.ui.utils.asResponseError
-import dev.weazyexe.fonto.debug.mock.VALID_FEED
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
-    private val getFeed: GetFeedUseCase,
+    private val getAllFeeds: GetAllFeedsUseCase,
     private val getNewsline: GetNewslineUseCase,
     private val updatePost: UpdatePostUseCase,
     private val getPaginatedNewsline: GetPaginatedNewslineUseCase,
@@ -64,39 +64,32 @@ class FeedViewModel(
             )
         }
 
-        val feeds = if (state.isBenchmarking) {
-            LoadState.Data(VALID_FEED)
-        } else {
-            request { getFeed() }
-                .withErrorHandling {
-                    setState { copy(newslineLoadState = LoadState.Error(it)) }
-                } ?: return@launch
-        }
-        setState { copy(feeds = feeds.data) }
-
-        val newsline = request { getNewsline(feeds.data, state.filters, useCache) }
+        val newsline = request { getNewsline(state.filters, useCache) }
             .withErrorHandling {
                 setState { copy(newslineLoadState = LoadState.Error(it)) }
             } ?: return@launch
 
-        if (newsline.data.loadedWithError.isNotEmpty() && newsline.data.loadedWithError.size == feeds.data.size) {
-            val error = newsline.data.loadedWithError.first().throwable.asResponseError()
-            setState {
-                copy(
-                    newslineLoadState = LoadState.Error(error),
-                    isSwipeRefreshing = false
-                )
+        when (val data = newsline.data) {
+            is Newsline.Success -> {
+                setState {
+                    copy(
+                        newslineLoadState = LoadState.Data(data.asNewslineViewState()),
+                        offset = state.offset + DEFAULT_LIMIT,
+                        isSwipeRefreshing = false,
+                        filters = data.filters
+                    )
+                }
+                showNotLoadedSourcesError(data.loadedWithError.map { it.feed })
             }
-        } else {
-            setState {
-                copy(
-                    newslineLoadState = newsline.asViewState { it.asNewslineViewState() },
-                    offset = state.offset + DEFAULT_LIMIT,
-                    isSwipeRefreshing = false,
-                    filters = newsline.data.filters
-                )
+
+            is Newsline.Error -> {
+                setState {
+                    copy(
+                        newslineLoadState = LoadState.Error(ResponseError.FetchNewslineError()),
+                        isSwipeRefreshing = false
+                    )
+                }
             }
-            showNotLoadedSourcesError(newsline.data.loadedWithError.map { it.feed })
         }
     }
 
@@ -104,30 +97,36 @@ class FeedViewModel(
         setState { copy(newslinePaginationState = PaginationState.LOADING) }
 
         val newslineBatch = request {
-            getPaginatedNewsline(state.feeds, state.limit, state.offset, state.filters)
-        }
-            .withErrorHandling {
+            getPaginatedNewsline(state.limit, state.offset, state.filters)
+        }.withErrorHandling {
+            setState { copy(newslinePaginationState = PaginationState.ERROR) }
+        } ?: return@launch
+
+        when (val data = newslineBatch.data) {
+            is Newsline.Success -> {
+                val currentPosts =
+                    (state.newslineLoadState as? LoadState.Data)?.data?.posts ?: return@launch
+                val newPosts = data.posts.map { it.asViewState() }
+
+                val updatedNewsline = LoadState.Data(currentPosts + newPosts)
+                    .asViewState { NewslineViewState(it) }
+
+                setState {
+                    copy(
+                        newslineLoadState = updatedNewsline,
+                        newslinePaginationState = if (newPosts.isNotEmpty()) {
+                            PaginationState.IDLE
+                        } else {
+                            PaginationState.PAGINATION_EXHAUST
+                        },
+                        offset = state.offset + DEFAULT_LIMIT,
+                        filters = data.filters
+                    )
+                }
+            }
+            is Newsline.Error -> {
                 setState { copy(newslinePaginationState = PaginationState.ERROR) }
-            } ?: return@launch
-
-        val currentPosts =
-            (state.newslineLoadState as? LoadState.Data)?.data?.posts ?: return@launch
-        val newPosts = newslineBatch.data.posts.map { it.asViewState() }
-
-        val updatedNewsline = LoadState.Data(currentPosts + newPosts)
-            .asViewState { NewslineViewState(it) }
-
-        setState {
-            copy(
-                newslineLoadState = updatedNewsline,
-                newslinePaginationState = if (newPosts.isNotEmpty()) {
-                    PaginationState.IDLE
-                } else {
-                    PaginationState.PAGINATION_EXHAUST
-                },
-                offset = state.offset + DEFAULT_LIMIT,
-                filters = newslineBatch.data.filters
-            )
+            }
         }
     }
 
@@ -216,6 +215,15 @@ class FeedViewModel(
 
     fun getFeedTitleById(id: Feed.Id): String {
         return id.findFeed().title
+    }
+
+    private suspend fun loadFeeds(): List<Feed> {
+        val feeds = request { getAllFeeds() }
+            .withErrorHandling {
+                setState { copy(newslineLoadState = LoadState.Error(it)) }
+            } ?: return emptyList()
+
+        return feeds.data
     }
 
     private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {

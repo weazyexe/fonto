@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
@@ -12,7 +12,7 @@ import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
 import kotlinx.coroutines.launch
 
 class ManageFeedViewModel(
-    private val getFeed: GetFeedUseCase,
+    private val getFeed: GetAllFeedsUseCase,
     private val deleteFeed: DeleteFeedUseCase
 ) : CoreViewModel<ManageFeedState, ManageFeedEffect>() {
 

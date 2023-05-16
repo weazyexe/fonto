@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
+import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.R
@@ -25,8 +26,12 @@ object PostViewStatePreview {
                 id = Feed.Id(0),
                 title = "Rozetked",
                 link = "",
-                icon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap()?.asLocalImage(),
-                type = Feed.Type.RSS
+                icon = AppCompatResources.getDrawable(
+                    LocalContext.current,
+                    R.drawable.preview_favicon
+                )?.toBitmap()?.asLocalImage(),
+                type = Feed.Type.RSS,
+                category = Category(Category.Id(0), "News")
             ),
             isSaved = false,
             content = null,
@@ -47,7 +52,8 @@ object PostViewStatePreview {
                 title = "Rozetked",
                 link = "",
                 icon = null,
-                type = Feed.Type.RSS
+                type = Feed.Type.RSS,
+                category = Category(Category.Id(1), "Technologies")
             ),
             isSaved = false,
             content = null
@@ -67,8 +73,12 @@ object PostViewStatePreview {
                 id = Feed.Id(0),
                 title = "Rozetked",
                 link = "",
-                icon = AppCompatResources.getDrawable(LocalContext.current, R.drawable.preview_favicon)?.toBitmap()?.asLocalImage(),
-                type = Feed.Type.RSS
+                icon = AppCompatResources.getDrawable(
+                    LocalContext.current,
+                    R.drawable.preview_favicon
+                )?.toBitmap()?.asLocalImage(),
+                type = Feed.Type.RSS,
+                category = Category(Category.Id(2), "Technologies")
             ),
             isSaved = true,
             content = null,

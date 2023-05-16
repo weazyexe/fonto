@@ -4,6 +4,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
+import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
@@ -20,7 +21,8 @@ object FeedViewStatePreview {
                 title = "Rozetked",
                 link = "https://rozetked.me/turbo",
                 icon = icon,
-                type = Feed.Type.RSS
+                type = Feed.Type.RSS,
+                category = Category(Category.Id(0), "News")
             )
         }
 
@@ -32,7 +34,8 @@ object FeedViewStatePreview {
                 title = "DTF",
                 link = "https://dtf.ru/rss/all",
                 icon = null,
-                type = Feed.Type.RSS
+                type = Feed.Type.RSS,
+                category = Category(Category.Id(1), "Games")
             )
 
 }

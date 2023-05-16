@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
+import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 
 @Immutable
@@ -12,7 +13,8 @@ data class FeedViewState(
     val title: String,
     val link: String,
     val icon: Bitmap?,
-    val type: Feed.Type
+    val type: Feed.Type,
+    val category: Category
 )
 
 fun Feed.asViewState() = FeedViewState(
@@ -20,7 +22,8 @@ fun Feed.asViewState() = FeedViewState(
     title = title,
     link = link,
     icon = icon?.asBitmap(),
-    type = type
+    type = type,
+    category = category
 )
 
 fun FeedViewState.asFeed() = Feed(
@@ -28,5 +31,6 @@ fun FeedViewState.asFeed() = Feed(
     title = title,
     link = link,
     icon = icon?.asLocalImage(),
-    type = type
+    type = type,
+    category = category
 )

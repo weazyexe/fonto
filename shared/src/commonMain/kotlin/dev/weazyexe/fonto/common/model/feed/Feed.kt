@@ -9,7 +9,8 @@ data class Feed(
     val title: String,
     val link: String,
     val icon: LocalImage?,
-    val type: Type
+    val type: Type,
+    val category: Category
 ) {
 
     @Serializable

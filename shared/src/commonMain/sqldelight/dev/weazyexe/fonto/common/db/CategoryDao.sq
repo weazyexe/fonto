@@ -1,0 +1,24 @@
+CREATE TABLE CategoryDao (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL
+);
+
+getAll:
+SELECT * FROM CategoryDao;
+
+getById:
+SELECT * FROM CategoryDao WHERE id = :id;
+
+insert:
+INSERT INTO CategoryDao(title)
+VALUES (?);
+
+update:
+INSERT OR REPLACE INTO CategoryDao
+VALUES ?;
+
+delete:
+DELETE FROM CategoryDao WHERE id = :id;
+
+deleteAll:
+DELETE FROM CategoryDao;
