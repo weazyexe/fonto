@@ -109,7 +109,9 @@
     <string name="settings_debug_menu_description">Settings for more efficient development</string>
 
     <string name="value_picker_save">Save</string>
+    <string name="value_picker_ok">Ok</string>
     <string name="value_picker_cancel">Cancel</string>
+    <string name="value_picker_no_possible_values">There are no any values to pick</string>
 
     <string name="color_picker_pick_color">Pick color</string>
 

@@ -39,7 +39,7 @@ class NewslineDataSource(database: FontoDatabase) {
             feedId = if (feedsFromFilter.isEmpty()) {
                 feeds.map { it.id.origin }
             } else {
-                feedsFromFilter.map { it.origin }
+                feedsFromFilter.map { it.id.origin }
             },
             limit = limit,
             offset = offset,

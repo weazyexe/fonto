@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
@@ -31,7 +30,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
-    private val getAllFeeds: GetAllFeedsUseCase,
     private val getNewsline: GetNewslineUseCase,
     private val updatePost: UpdatePostUseCase,
     private val getPaginatedNewsline: GetPaginatedNewslineUseCase,
@@ -144,8 +142,8 @@ class FeedViewModel(
     fun openMultipleValuePicker(updatedFilter: NewslineFilter) {
         when (updatedFilter) {
             is ByFeed -> FeedEffect.OpenFeedPicker(
-                values = updatedFilter.values.findFeeds(),
-                possibleValues = updatedFilter.possibleValues.findFeeds(),
+                values = updatedFilter.values,
+                possibleValues = updatedFilter.possibleValues,
                 title = R.string.feed_filters_sources
             ).emit()
 
@@ -213,19 +211,6 @@ class FeedViewModel(
         setState { copy(scrollState = state) }
     }
 
-    fun getFeedTitleById(id: Feed.Id): String {
-        return id.findFeed().title
-    }
-
-    private suspend fun loadFeeds(): List<Feed> {
-        val feeds = request { getAllFeeds() }
-            .withErrorHandling {
-                setState { copy(newslineLoadState = LoadState.Error(it)) }
-            } ?: return emptyList()
-
-        return feeds.data
-    }
-
     private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {
         if (problematicFeedList.isNotEmpty()) {
             val feedListString = problematicFeedList.joinToString { it.title }
@@ -239,10 +224,4 @@ class FeedViewModel(
             .onEach { loadNewsline() }
             .launchInViewModelScope()
     }
-
-    private fun List<Feed.Id>.findFeeds(): List<Feed> =
-        map { id -> id.findFeed() }
-
-    private fun Feed.Id.findFeed(): Feed =
-        state.feeds.first { it.id == this }
 }

@@ -38,45 +38,61 @@ fun <T> MultipleValuePickerDialog(
 ) {
     val scrollState = rememberScrollState()
     val currentValues = remember { values.toMutableStateList() }
+    val hasDataToPick = possibleValues.isNotEmpty()
 
     AlertDialog(
         onDismissRequest = onCancel,
         confirmButton = {
             TextButton(onClick = { onSave(currentValues.toMutableList()) }) {
-                Text(text = stringResource(id = R.string.value_picker_save))
+                Text(
+                    text = stringResource(
+                        id = if (hasDataToPick) {
+                            R.string.value_picker_save
+                        } else {
+                            R.string.value_picker_ok
+                        }
+                    )
+                )
             }
         },
         dismissButton = {
-            TextButton(onClick = onCancel) {
-                Text(text = stringResource(id = R.string.value_picker_cancel))
+            if (hasDataToPick) {
+                TextButton(onClick = onCancel) {
+                    Text(text = stringResource(id = R.string.value_picker_cancel))
+                }
             }
         },
         title = { Text(text = stringResource(id = title)) },
         text = {
-            Column(modifier = Modifier.heightIn(max = 384.dp)) {
-                Divider(color = MaterialTheme.colorScheme.outlineVariant)
+            if (hasDataToPick) {
+                Column(modifier = Modifier.heightIn(max = 384.dp)) {
 
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(scrollState)
-                        .weight(1f, fill = false)
-                ) {
-                    possibleValues.forEach {
-                        CheckboxWithText(
-                            text = it.title,
-                            selected = it in currentValues,
-                            onSelect = { isChecked ->
-                                if (isChecked) {
-                                    currentValues.add(it)
-                                } else {
-                                    currentValues.remove(it)
+                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(scrollState)
+                            .weight(1f, fill = false)
+                    ) {
+                        possibleValues.forEach {
+                            CheckboxWithText(
+                                text = it.title,
+                                selected = it in currentValues,
+                                onSelect = { isChecked ->
+                                    if (isChecked) {
+                                        currentValues.add(it)
+                                    } else {
+                                        currentValues.remove(it)
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
-                }
 
-                Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                    Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                }
+            } else {
+                Text(text = stringResource(id = R.string.value_picker_no_possible_values))
             }
         },
         icon = {

@@ -3,8 +3,8 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed
 import androidx.annotation.StringRes
 import dev.weazyexe.fonto.BuildConfig
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
+import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
@@ -18,7 +18,6 @@ data class FeedState(
     val newslinePaginationState: PaginationState = PaginationState.IDLE,
     val scrollState: ScrollState = ScrollState(),
     val isSwipeRefreshing: Boolean = false,
-    val feeds: List<Feed> = emptyList(),
     val limit: Int = DEFAULT_LIMIT,
     val offset: Int = 0,
     val filters: List<NewslineFilter>? = null,
@@ -37,8 +36,8 @@ sealed interface FeedEffect : Effect {
     data class OpenPostInBrowser(val link: String) : FeedEffect
 
     data class OpenFeedPicker(
-        val values: List<Feed>,
-        val possibleValues: List<Feed>,
+        val values: List<ByFeed.Data>,
+        val possibleValues: List<ByFeed.Data>,
         @StringRes val title: Int
     ) : FeedEffect
 }

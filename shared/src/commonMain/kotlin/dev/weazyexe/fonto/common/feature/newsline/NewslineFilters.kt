@@ -5,6 +5,7 @@ import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.filter.Filter
 import dev.weazyexe.fonto.common.feature.filter.Multiple
 import dev.weazyexe.fonto.common.model.feed.Feed
+import kotlinx.serialization.Serializable
 
 sealed interface NewslineFilter : Filter
 
@@ -27,13 +28,19 @@ data class ByPostDates(
 }
 
 data class ByFeed(
-    override val values: List<Feed.Id>,
-    override val possibleValues: List<Feed.Id>
-) : Multiple<Feed.Id, ByFeed>, NewslineFilter {
+    override val values: List<Data>,
+    override val possibleValues: List<Data>
+) : Multiple<ByFeed.Data, ByFeed>, NewslineFilter {
 
-    override fun change(newValue: List<Feed.Id>, newPossibleValues: List<Feed.Id>): ByFeed {
+    override fun change(newValue: List<Data>, newPossibleValues: List<Data>): ByFeed {
         return ByFeed(newValue, newPossibleValues)
     }
+
+    @Serializable
+    data class Data(
+        val id: Feed.Id,
+        val title: String
+    )
 }
 
 val NewslineFilters = listOf(

@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.filters.FiltersRow
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewStates
@@ -38,11 +37,10 @@ fun FeedToolbar(
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit,
     onSearchClick: () -> Unit,
-    onManageFeedClick: () -> Unit,
-    getTitleById: (Feed.Id) -> String
+    onManageFeedClick: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val areFiltersVisible by remember {
+    val isToolbarExpanded by remember {
         derivedStateOf {
             1f - scrollBehavior.state.collapsedFraction > 0.6f
         }
@@ -53,9 +51,9 @@ fun FeedToolbar(
             Column {
                 Text(text = stringResource(id = R.string.home_bottom_label_feed))
                 filters?.let {
-                    AnimatedVisibility(visible = areFiltersVisible) {
+                    AnimatedVisibility(visible = isToolbarExpanded) {
                         FiltersRow(
-                            filters = filters.asViewStates(getTitleById),
+                            filters = filters.asViewStates(),
                             onBoolFilterChange = { onFilterChange(it as NewslineFilter) },
                             openDateRangePickerDialog = {
                                 openDateRangePickerDialog(it as NewslineFilter)

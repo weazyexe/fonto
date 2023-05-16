@@ -55,7 +55,7 @@ class NewslineRepository(
             .getDefaultFilters()
             .map { filter ->
                 when (filter) {
-                    is ByFeed -> filter.change(emptyList(), feeds.map { it.id })
+                    is ByFeed -> filter.change(emptyList(), feeds.map { ByFeed.Data(it.id, it.title) })
                     else -> filter
                 }
             }

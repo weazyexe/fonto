@@ -18,7 +18,6 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
-import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
@@ -55,8 +54,7 @@ fun FeedBody(
     fetchNextBatch: () -> Unit,
     onFilterChange: (NewslineFilter) -> Unit,
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
-    openMultiplePickerDialog: (NewslineFilter) -> Unit,
-    getTitleById: (Feed.Id) -> String
+    openMultiplePickerDialog: (NewslineFilter) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val lazyListState = rememberLazyListState()
@@ -76,8 +74,7 @@ fun FeedBody(
                 onSearchClick = onSearchClick,
                 onManageFeedClick = onManageFeedClick,
                 openDateRangePickerDialog = openDateRangePickerDialog,
-                openMultiplePickerDialog = openMultiplePickerDialog,
-                getTitleById = getTitleById
+                openMultiplePickerDialog = openMultiplePickerDialog
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -149,8 +146,7 @@ private fun FeedBodyPreview() = ThemedPreview {
         fetchNextBatch = {},
         onFilterChange = {},
         openDateRangePickerDialog = {},
-        openMultiplePickerDialog = {},
-        getTitleById = { "" }
+        openMultiplePickerDialog = {}
     )
 }
 
@@ -174,7 +170,6 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         fetchNextBatch = {},
         onFilterChange = {},
         openDateRangePickerDialog = {},
-        openMultiplePickerDialog = {},
-        getTitleById = { "" }
+        openMultiplePickerDialog = {}
     )
 }

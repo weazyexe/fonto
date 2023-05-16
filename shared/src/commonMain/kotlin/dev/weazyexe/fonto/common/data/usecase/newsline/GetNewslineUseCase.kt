@@ -61,7 +61,7 @@ class GetNewslineUseCase(
             .forEach { newslineRepository.insertOrIgnore(it) }
 
         val filtersToUse = filters ?: newslineRepository.composeFilters()
-        return if (problematicFeedList.size != feeds.size) {
+        return if (feeds.isEmpty() || problematicFeedList.size != feeds.size) {
             Newsline.Success(
                 posts = newslineRepository.getAll(
                     limit = 20,

@@ -21,7 +21,6 @@ import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
 import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerArgs
-import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.minimize
 import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
@@ -87,8 +86,8 @@ fun FeedScreen(
                 result.value?.let { result ->
                     viewModel.applyFilters(
                         ByFeed(
-                            values = result.values.map { it.id },
-                            possibleValues = result.possibleValues.map { it.id }
+                            values = result.values,
+                            possibleValues = result.possibleValues
                         )
                     )
                 }
@@ -115,8 +114,8 @@ fun FeedScreen(
                 navigateTo(
                     FeedPickerDialogDestination(
                         args = FeedPickerArgs(
-                            values = values.map { it.minimize() },
-                            possibleValues = possibleValues.map { it.minimize() },
+                            values = values,
+                            possibleValues = possibleValues,
                             title = title
                         )
                     )
@@ -142,7 +141,6 @@ fun FeedScreen(
         fetchNextBatch = viewModel::getNextPostsBatch,
         onFilterChange = viewModel::applyFilters,
         openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) },
-        openMultiplePickerDialog = viewModel::openMultipleValuePicker,
-        getTitleById = viewModel::getFeedTitleById
+        openMultiplePickerDialog = viewModel::openMultipleValuePicker
     )
 }
