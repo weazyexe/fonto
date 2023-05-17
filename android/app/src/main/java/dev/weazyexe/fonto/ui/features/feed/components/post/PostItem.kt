@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.feed.components
+package dev.weazyexe.fonto.ui.features.feed.components.post
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,8 +34,8 @@ import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
+import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedIcon
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
-import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 
 @Composable
 fun PostItem(

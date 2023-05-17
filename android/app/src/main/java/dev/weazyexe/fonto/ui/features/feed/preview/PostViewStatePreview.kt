@@ -9,7 +9,7 @@ import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.R
-import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import kotlinx.datetime.Clock
 import java.util.UUID
 

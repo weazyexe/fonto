@@ -38,9 +38,9 @@ import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.ui.features.feed.components.FeedItem
+import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedItem
+import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedViewState
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
-import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

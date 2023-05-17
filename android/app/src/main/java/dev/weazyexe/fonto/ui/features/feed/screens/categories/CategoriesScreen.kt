@@ -1,6 +1,8 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.categories
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import org.koin.androidx.compose.koinViewModel
@@ -11,8 +13,13 @@ fun CategoriesScreen(
     navController: NavController
 ) {
     val viewModel = koinViewModel<CategoriesViewModel>()
+    val state by viewModel.uiState.collectAsState()
 
     CategoriesBody(
-        onBackClick = navController::navigateUp
+        categoriesLoadState = state.categoriesLoadState,
+        onBackClick = navController::navigateUp,
+        onCategoryClick = {},
+        onAddClick = {},
+        onDeleteClick = {}
     )
 }

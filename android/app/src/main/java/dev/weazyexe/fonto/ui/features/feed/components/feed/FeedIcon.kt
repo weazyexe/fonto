@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.feed.components
+package dev.weazyexe.fonto.ui.features.feed.components.feed
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

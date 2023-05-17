@@ -20,11 +20,11 @@ import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
+import dev.weazyexe.fonto.ui.features.feed.components.post.asPost
+import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.asPost
-import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

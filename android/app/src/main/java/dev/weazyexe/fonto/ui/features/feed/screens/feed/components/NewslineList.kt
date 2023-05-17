@@ -19,9 +19,9 @@ import dev.weazyexe.fonto.core.ui.components.PaginationFooter
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
-import dev.weazyexe.fonto.ui.features.feed.components.PostItem
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostItem
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 

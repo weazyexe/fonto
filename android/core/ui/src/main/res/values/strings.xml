@@ -82,6 +82,15 @@
     <string name="feed_delete_confirmation_delete">Yes, delete the feed</string>
     <string name="feed_delete_confirmation_cancel">Cancel</string>
 
+    <string name="categories_title">Categories</string>
+    <plurals name="categories_amount_of_feeds">
+        <item quantity="zero">%d feeds</item>
+        <item quantity="one">%d feed</item>
+        <item quantity="many">%d feed</item>
+        <item quantity="other">%d feed</item>
+    </plurals>
+    <string name="categories_delete">Delete</string>
+
     <string name="post_title">Post</string>
 
     <string name="settings_feed_group">Feed</string>

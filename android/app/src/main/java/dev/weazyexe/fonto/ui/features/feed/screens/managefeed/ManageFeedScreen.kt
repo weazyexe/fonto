@@ -17,7 +17,7 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.DeleteConfirmationDialogDestination
-import dev.weazyexe.fonto.ui.features.feed.viewstates.asFeed
+import dev.weazyexe.fonto.ui.features.feed.components.feed.asFeed
 import org.koin.androidx.compose.koinViewModel
 
 @Destination

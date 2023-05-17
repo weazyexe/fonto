@@ -29,11 +29,11 @@ import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedToolbar
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.NewslineList
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.PostViewState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable

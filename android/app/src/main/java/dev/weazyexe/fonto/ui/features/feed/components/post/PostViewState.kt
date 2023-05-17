@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.feed.viewstates
+package dev.weazyexe.fonto.ui.features.feed.components.post
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable

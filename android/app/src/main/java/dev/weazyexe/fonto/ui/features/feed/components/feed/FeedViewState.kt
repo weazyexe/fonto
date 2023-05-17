@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.feed.viewstates
+package dev.weazyexe.fonto.ui.features.feed.components.feed
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable

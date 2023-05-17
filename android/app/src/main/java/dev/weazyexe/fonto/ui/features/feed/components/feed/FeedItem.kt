@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.ui.features.feed.components
+package dev.weazyexe.fonto.ui.features.feed.components.feed
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
-import dev.weazyexe.fonto.ui.features.feed.viewstates.FeedViewState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
