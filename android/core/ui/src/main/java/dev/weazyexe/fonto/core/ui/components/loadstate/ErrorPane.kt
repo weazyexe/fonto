@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.core.ui.components.error
+package dev.weazyexe.fonto.core.ui.components.loadstate
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement

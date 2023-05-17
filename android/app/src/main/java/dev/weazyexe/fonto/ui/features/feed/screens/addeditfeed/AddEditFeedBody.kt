@@ -12,17 +12,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -39,11 +33,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.core.ui.R
-import dev.weazyexe.fonto.core.ui.components.CloseDialogButton
-import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
+import dev.weazyexe.fonto.core.ui.components.loadstate.LoadStateComponent
+import dev.weazyexe.fonto.core.ui.components.toolbar.FullScreenDialogToolbar
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditFeedBody(
     title: String,
@@ -75,37 +68,23 @@ fun AddEditFeedBody(
     Scaffold(
         modifier = Modifier.imePadding(),
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(
-                            id = if (isEditMode) {
-                                R.string.add_edit_feed_edit_feed
-                            } else {
-                                R.string.add_edit_feed_new_feed
-                            }
-                        )
-                    )
-                },
-                navigationIcon = { CloseDialogButton(onBackClick) },
-                actions = {
-                    TextButton(onClick = onFinishClick) {
-                        Text(
-                            text = stringResource(
-                                if (isEditMode) {
-                                    R.string.add_edit_feed_save
-                                } else {
-                                    R.string.add_edit_feed_create
-                                }
-                            )
-                        )
+            FullScreenDialogToolbar(
+                title = stringResource(
+                    id = if (isEditMode) {
+                        R.string.add_edit_feed_edit_feed
+                    } else {
+                        R.string.add_edit_feed_new_feed
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                        elevation = 3.dp
-                    )
-                )
+                ),
+                doneButtonText = stringResource(
+                    if (isEditMode) {
+                        R.string.add_edit_feed_save
+                    } else {
+                        R.string.add_edit_feed_create
+                    }
+                ),
+                onBackClick = onBackClick,
+                onDoneClick = onFinishClick
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }

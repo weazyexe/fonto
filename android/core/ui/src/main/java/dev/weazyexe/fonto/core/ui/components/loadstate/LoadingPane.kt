@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.core.ui.components
+package dev.weazyexe.fonto.core.ui.components.loadstate
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

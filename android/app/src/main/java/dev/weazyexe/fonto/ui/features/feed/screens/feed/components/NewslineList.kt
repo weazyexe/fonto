@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.PaginationFooter
-import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
-import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
+import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostItem
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState

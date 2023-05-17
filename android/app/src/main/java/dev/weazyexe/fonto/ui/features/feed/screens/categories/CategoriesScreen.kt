@@ -5,6 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.navigate
+import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryScreenDestination
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
@@ -19,7 +21,7 @@ fun CategoriesScreen(
         categoriesLoadState = state.categoriesLoadState,
         onBackClick = navController::navigateUp,
         onCategoryClick = {},
-        onAddClick = {},
+        onAddClick = { navController.navigate(AddEditCategoryScreenDestination()) },
         onDeleteClick = {}
     )
 }

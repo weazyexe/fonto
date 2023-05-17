@@ -20,12 +20,12 @@ import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
-import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
-import dev.weazyexe.fonto.core.ui.components.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
-import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
-import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
-import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
+import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.loadstate.LoadStateComponent
+import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
+import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview

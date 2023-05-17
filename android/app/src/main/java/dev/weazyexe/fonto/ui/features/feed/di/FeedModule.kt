@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.feed.di
 
+import dev.weazyexe.fonto.ui.features.feed.screens.addeditcategory.AddEditCategoryViewModel
 import dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed.AddEditFeedViewModel
 import dev.weazyexe.fonto.ui.features.feed.screens.categories.CategoriesViewModel
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.FeedViewModel
@@ -12,4 +13,5 @@ val feedModule = module {
     viewModel { ManageFeedViewModel(get(), get()) }
     viewModel { AddEditFeedViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { CategoriesViewModel(get(), get()) }
+    viewModel { AddEditCategoryViewModel() }
 }

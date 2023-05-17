@@ -3,18 +3,10 @@ package dev.weazyexe.fonto.ui.features.feed.screens.daterangepicker
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDateRangePickerState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -28,7 +20,7 @@ import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DATE_FORMAT
 import dev.weazyexe.fonto.common.utils.format
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.animation.FullScreenDialogAnimationStyle
-import dev.weazyexe.fonto.core.ui.components.CloseDialogButton
+import dev.weazyexe.fonto.core.ui.components.toolbar.FullScreenDialogToolbar
 import kotlinx.datetime.Instant
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -38,41 +30,25 @@ fun DateRangePickerDialog(
     resultBackNavigator: ResultBackNavigator<DateRangeResults?>
 ) {
     val state = rememberDateRangePickerState()
-
-    val areDatesValid by remember {
-        derivedStateOf { state.selectedStartDateMillis != null }
-    }
-
     Scaffold(
         modifier = Modifier.semantics {
             testTagsAsResourceId = true
         },
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.date_range_picker_dialog_title)) },
-                navigationIcon = { CloseDialogButton { resultBackNavigator.navigateBack(result = null) } },
-                actions = {
-                    TextButton(
-                        onClick = {
-                            val results = DateRangeResults(
-                                from = state.selectedStartDateMillis?.asInstant()
-                                    ?: return@TextButton,
-                                to = state.selectedEndDateMillis?.asInstant()
-                                    ?: state.selectedStartDateMillis?.asInstant()
-                                    ?: return@TextButton,
-                            )
-                            resultBackNavigator.navigateBack(result = results)
-                        },
-                        enabled = areDatesValid
-                    ) {
-                        Text(text = stringResource(R.string.date_range_picker_dialog_pick))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                        elevation = 3.dp
+            FullScreenDialogToolbar(
+                title = stringResource(R.string.date_range_picker_dialog_title),
+                doneButtonText = stringResource(R.string.date_range_picker_dialog_pick),
+                onBackClick = { resultBackNavigator.navigateBack(result = null) },
+                onDoneClick = {
+                    val results = DateRangeResults(
+                        from = state.selectedStartDateMillis?.asInstant()
+                            ?: return@FullScreenDialogToolbar,
+                        to = state.selectedEndDateMillis?.asInstant()
+                            ?: state.selectedStartDateMillis?.asInstant()
+                            ?: return@FullScreenDialogToolbar,
                     )
-                )
+                    resultBackNavigator.navigateBack(result = results)
+                }
             )
         }
     ) { padding ->

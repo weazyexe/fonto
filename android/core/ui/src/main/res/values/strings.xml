@@ -91,6 +91,11 @@
     </plurals>
     <string name="categories_delete">Delete</string>
 
+    <string name="add_edit_category_new">New category</string>
+    <string name="add_edit_category_edit">Edit category</string>
+    <string name="add_edit_category_save">Save</string>
+    <string name="add_edit_category_create">Create</string>
+
     <string name="post_title">Post</string>
 
     <string name="settings_feed_group">Feed</string>

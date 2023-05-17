@@ -32,11 +32,11 @@ import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
-import dev.weazyexe.fonto.core.ui.components.LoadStateComponent
-import dev.weazyexe.fonto.core.ui.components.LoadingPane
-import dev.weazyexe.fonto.core.ui.components.error.ErrorPane
-import dev.weazyexe.fonto.core.ui.components.error.ErrorPaneParams
-import dev.weazyexe.fonto.core.ui.components.error.asErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
+import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
+import dev.weazyexe.fonto.core.ui.components.loadstate.LoadStateComponent
+import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
+import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedItem
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedViewState

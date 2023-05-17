@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.core.ui.components.error
+package dev.weazyexe.fonto.core.ui.components.loadstate
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
