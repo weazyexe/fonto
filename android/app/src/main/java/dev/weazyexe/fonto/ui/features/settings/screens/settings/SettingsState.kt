@@ -20,6 +20,8 @@ sealed interface SettingsEffect : Effect {
 
     object OpenManageFeedScreen : SettingsEffect
 
+    object OpenCategoriesScreen : SettingsEffect
+
     object OpenDebugScreen : SettingsEffect
 
     data class OpenThemePickerDialog(

@@ -87,6 +87,8 @@
     <string name="settings_feed_group">Feed</string>
     <string name="settings_feed_manage_title">Manage feed</string>
     <string name="settings_feed_manage_description">Edit the sources you read</string>
+    <string name="settings_category_manage_title">Manage categories</string>
+    <string name="settings_category_manage_description">Edit the feed categories</string>
     <string name="settings_feed_open_post_title">Open posts with in-app browser</string>
     <string name="settings_feed_open_post_description">If unchecked, use system default browser</string>
     <string name="settings_display_group">Display</string>

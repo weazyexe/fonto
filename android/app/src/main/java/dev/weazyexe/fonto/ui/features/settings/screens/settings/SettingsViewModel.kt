@@ -91,6 +91,7 @@ class SettingsViewModel(
                             }
 
                             Preference.Identifier.MANAGE_FEED,
+                            Preference.Identifier.MANAGE_CATEGORIES,
                             Preference.Identifier.DEBUG_MENU -> preference
                         }
                     }
@@ -108,6 +109,7 @@ class SettingsViewModel(
     fun onTextPreferenceClick(preference: Preference.Text) {
         when (preference.id) {
             Preference.Identifier.MANAGE_FEED -> SettingsEffect.OpenManageFeedScreen.emit()
+            Preference.Identifier.MANAGE_CATEGORIES -> SettingsEffect.OpenCategoriesScreen.emit()
             Preference.Identifier.DEBUG_MENU -> SettingsEffect.OpenDebugScreen.emit()
             else -> {
                 // Do nothing
@@ -256,6 +258,12 @@ private fun buildPreferences(context: Context): List<Group> = listOf(
                 title = R.string.settings_feed_manage_title,
                 subtitle = R.string.settings_feed_manage_description,
                 icon = R.drawable.ic_feed_24
+            ),
+            Preference.Text(
+                id = Preference.Identifier.MANAGE_CATEGORIES,
+                title = R.string.settings_category_manage_title,
+                subtitle = R.string.settings_category_manage_description,
+                icon = R.drawable.ic_category_24
             ),
             Preference.Switch(
                 id = Preference.Identifier.OPEN_POST,

@@ -8,6 +8,7 @@ import com.ramcosta.composedestinations.result.NavResult
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
+import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
@@ -58,6 +59,7 @@ fun SettingsScreen(
     ReceiveEffect(viewModel.effects) {
         when (this) {
             is SettingsEffect.OpenManageFeedScreen -> navigateTo(ManageFeedScreenDestination())
+            is SettingsEffect.OpenCategoriesScreen -> navigateTo(CategoriesScreenDestination())
             is SettingsEffect.OpenDebugScreen -> navigateTo(DebugScreenDestination())
             is SettingsEffect.OpenThemePickerDialog -> {
                 navigateWithResult(

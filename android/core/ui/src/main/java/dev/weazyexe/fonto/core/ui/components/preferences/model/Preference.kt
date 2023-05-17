@@ -54,6 +54,7 @@ sealed interface Preference {
     enum class Identifier {
         // Feed group
         MANAGE_FEED,
+        MANAGE_CATEGORIES,
         OPEN_POST,
 
         // Display group
