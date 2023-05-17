@@ -59,7 +59,8 @@ fun CategoryItem(
             Text(
                 text = pluralStringResource(
                     id = R.plurals.categories_amount_of_feeds,
-                    count = category.amountOfFeeds
+                    count = category.amountOfFeeds,
+                    category.amountOfFeeds
                 ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

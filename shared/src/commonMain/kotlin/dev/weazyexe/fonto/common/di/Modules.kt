@@ -19,6 +19,7 @@ import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
+import dev.weazyexe.fonto.common.data.usecase.category.GetCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.UpdateCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
@@ -85,6 +86,7 @@ internal val categoryModule = module {
     single { CategoryDataSource(get()) }
     single { CategoryRepository(get()) }
     single { GetAllCategoriesUseCase(get()) }
+    single { GetCategoryUseCase(get()) }
     single { CreateCategoryUseCase(get()) }
     single { UpdateCategoryUseCase(get()) }
     single { DeleteCategoryUseCase(get()) }

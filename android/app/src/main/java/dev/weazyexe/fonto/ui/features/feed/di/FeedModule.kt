@@ -13,5 +13,5 @@ val feedModule = module {
     viewModel { ManageFeedViewModel(get(), get()) }
     viewModel { AddEditFeedViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { CategoriesViewModel(get(), get()) }
-    viewModel { AddEditCategoryViewModel() }
+    viewModel { AddEditCategoryViewModel(get(), get(), get(), get()) }
 }

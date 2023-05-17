@@ -86,8 +86,8 @@
     <plurals name="categories_amount_of_feeds">
         <item quantity="zero">%d feeds</item>
         <item quantity="one">%d feed</item>
-        <item quantity="many">%d feed</item>
-        <item quantity="other">%d feed</item>
+        <item quantity="many">%d feeds</item>
+        <item quantity="other">%d feeds</item>
     </plurals>
     <string name="categories_delete">Delete</string>
 
@@ -95,6 +95,8 @@
     <string name="add_edit_category_edit">Edit category</string>
     <string name="add_edit_category_save">Save</string>
     <string name="add_edit_category_create">Create</string>
+    <string name="add_edit_category_title">Title</string>
+    <string name="add_edit_category_title_hint">News, technologies or games</string>
 
     <string name="post_title">Post</string>
 
