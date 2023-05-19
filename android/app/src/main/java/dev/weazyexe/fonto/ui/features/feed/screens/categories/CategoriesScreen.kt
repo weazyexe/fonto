@@ -11,15 +11,18 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
+import dev.weazyexe.fonto.ui.features.destinations.CategoryDeleteConfirmationDialogDestination
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
 @Composable
 fun CategoriesScreen(
     navController: NavController,
-    resultRecipient: ResultRecipient<AddEditCategoryDialogDestination, Boolean>
+    addEditResultRecipient: ResultRecipient<AddEditCategoryDialogDestination, Boolean>,
+    deleteResultRecipient: ResultRecipient<CategoryDeleteConfirmationDialogDestination, Long?>
 ) {
     val viewModel = koinViewModel<CategoriesViewModel>()
     val state by viewModel.uiState.collectAsState()
@@ -27,15 +30,31 @@ fun CategoriesScreen(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    resultRecipient.onNavResult { isSavedSuccessfully ->
+    addEditResultRecipient.onNavResult { isSavedSuccessfully ->
         when (isSavedSuccessfully) {
             is NavResult.Canceled -> {
                 // Do nothing
             }
+
             is NavResult.Value -> {
                 if (isSavedSuccessfully.value) {
                     viewModel.loadCategories()
                     viewModel.showCategorySavedDialog()
+                }
+            }
+        }
+    }
+
+    deleteResultRecipient.onNavResult { deletionResult ->
+        when (deletionResult) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+
+            is NavResult.Value -> {
+                val id = deletionResult.value
+                if (id != null) {
+                    viewModel.deleteCategoryWithId(Category.Id(id))
                 }
             }
         }
@@ -55,6 +74,13 @@ fun CategoriesScreen(
         onBackClick = navController::navigateUp,
         onCategoryClick = { navController.navigate(AddEditCategoryDialogDestination(it.id)) },
         onAddClick = { navController.navigate(AddEditCategoryDialogDestination()) },
-        onDeleteClick = {}
+        onDeleteClick = {
+            navController.navigate(
+                CategoryDeleteConfirmationDialogDestination(
+                    categoryId = it.id,
+                    categoryTitle = it.title
+                )
+            )
+        }
     )
 }

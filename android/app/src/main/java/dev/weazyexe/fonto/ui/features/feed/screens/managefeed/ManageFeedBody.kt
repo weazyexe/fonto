@@ -1,6 +1,5 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -20,8 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -46,21 +43,12 @@ import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 @Composable
 fun ManageFeedBody(
     feedsLoadState: LoadState<List<FeedViewState>>,
-    @StringRes messageRes: Int?,
+    snackbarHostState: SnackbarHostState,
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
     onClick: (FeedViewState) -> Unit,
     onDeleteClick: (FeedViewState) -> Unit
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val message = messageRes?.let { stringResource(it) }
-
-    LaunchedEffect(message) {
-        message?.let {
-            snackbarHostState.showSnackbar(it)
-        }
-    }
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         modifier = Modifier
@@ -153,7 +141,7 @@ private fun ManageFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPre
                 FeedViewStatePreview.noIcon,
             )
         ),
-        messageRes = null,
+        snackbarHostState = SnackbarHostState(),
         onAddClick = {},
         onBackClick = {},
         onClick = {},
