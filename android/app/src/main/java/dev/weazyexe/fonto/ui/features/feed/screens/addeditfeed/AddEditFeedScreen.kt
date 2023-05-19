@@ -6,10 +6,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.navigate
+import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultBackNavigator
+import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.core.ui.animation.FullScreenDialogAnimationStyle
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
 import org.koin.androidx.compose.koinViewModel
 
 @Destination(
@@ -18,13 +23,29 @@ import org.koin.androidx.compose.koinViewModel
 )
 @Composable
 fun AddEditFeedScreen(
-    resultBackNavigator: ResultBackNavigator<Boolean>
+    navController: NavController,
+    resultBackNavigator: ResultBackNavigator<Boolean>,
+    resultRecipient: ResultRecipient<AddEditCategoryDialogDestination, Boolean>
 ) {
     val viewModel = koinViewModel<AddEditFeedViewModel>()
     val state by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+
+    resultRecipient.onNavResult {
+        when (it) {
+            is NavResult.Canceled -> {
+                // Do nothing
+            }
+            is NavResult.Value -> {
+                if (it.value) {
+                    viewModel.loadCategories()
+                    viewModel.showCategoryAddedMessage()
+                }
+            }
+        }
+    }
 
     ReceiveEffect(viewModel.effects) {
         when (this) {
@@ -49,6 +70,6 @@ fun AddEditFeedScreen(
         onCategoryChange = viewModel::updateCategory,
         onFinishClick = viewModel::finish,
         onBackClick = { resultBackNavigator.navigateBack(result = false) },
-        onAddCategoryClick = {}
+        onAddCategoryClick = { navController.navigate(AddEditCategoryDialogDestination()) }
     )
 }

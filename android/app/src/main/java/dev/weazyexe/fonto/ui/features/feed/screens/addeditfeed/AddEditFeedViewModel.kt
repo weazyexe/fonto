@@ -78,6 +78,10 @@ class AddEditFeedViewModel(
         setState { copy(category = category) }
     }
 
+    fun showCategoryAddedMessage() {
+        AddEditFeedEffect.ShowMessage(R.string.categories_category_has_been_saved).emit()
+    }
+
     fun finish() = viewModelScope.launch {
         if (state.title.isEmpty()) {
             setState { copy(finishLoadState = LoadState.Error(ResponseError.FeedValidationError(R.string.error_feed_invalid_title))) }
