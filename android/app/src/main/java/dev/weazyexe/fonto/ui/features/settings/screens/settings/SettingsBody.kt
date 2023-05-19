@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +35,7 @@ fun SettingsBody(
     onCustomPreferenceClick: (Preference.CustomValue<Value<*>>) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val lazyListState = rememberLazyListState()
     val groups = remember(settings) {
         settings
             .filter { group ->
@@ -56,7 +58,10 @@ fun SettingsBody(
             )
         }
     ) { padding ->
-        LazyColumn(modifier = Modifier.padding(padding)) {
+        LazyColumn(
+            modifier = Modifier.padding(padding),
+            state = lazyListState
+        ) {
             items(groups) { group ->
                 PreferencesGroup(title = stringResource(group.title)) {
                     group.preferences.forEach { pref ->

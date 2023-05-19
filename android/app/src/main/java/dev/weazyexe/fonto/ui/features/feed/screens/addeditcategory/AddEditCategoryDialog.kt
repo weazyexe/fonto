@@ -32,6 +32,7 @@ fun AddEditCategoryDialog(
         title = state.title,
         isEditMode = state.id != null,
         savingLoadState = state.savingLoadState,
+        initLoadState = state.initLoadState,
         onCancelClick = { resultBackNavigator.navigateBack(result = false) },
         onTitleChange = viewModel::onTitleChange,
         onSaveClick = viewModel::onSaveClick

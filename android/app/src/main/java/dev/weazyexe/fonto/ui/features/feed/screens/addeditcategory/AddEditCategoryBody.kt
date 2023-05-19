@@ -10,30 +10,57 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.FontoTextButton
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import kotlinx.coroutines.delay
 
 @Composable
 fun AddEditCategoryBody(
     title: String,
     isEditMode: Boolean,
     savingLoadState: LoadState<Unit>,
+    initLoadState: LoadState<Unit>,
     onTitleChange: (String) -> Unit,
     onCancelClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(text = title))
+    }
+
+    LaunchedEffect(initLoadState) {
+        if (initLoadState is LoadState.Data) {
+            if (title.isNotEmpty()) {
+                textFieldValue = TextFieldValue(text = title, TextRange(index = title.length))
+            }
+            delay(200L)
+            focusRequester.requestFocus()
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onCancelClick,
@@ -68,9 +95,14 @@ fun AddEditCategoryBody(
         },
         text = {
             OutlinedTextField(
-                value = title,
-                onValueChange = onTitleChange,
-                modifier = Modifier.fillMaxWidth(),
+                value = textFieldValue,
+                onValueChange = {
+                    onTitleChange(it.text)
+                    textFieldValue = it
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 label = { Text(text = stringResource(id = R.string.add_edit_category_title)) },
                 placeholder = { Text(text = stringResource(id = R.string.add_edit_category_title_hint)) },
                 maxLines = 1,
@@ -80,8 +112,11 @@ fun AddEditCategoryBody(
                     if (savingLoadState is LoadState.Error) {
                         Text(
                             text = savingLoadState.error.asLocalizedMessage(context),
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
+                            overflow = TextOverflow.Ellipsis
                         )
+                    } else {
+                        Text(text = "", overflow = TextOverflow.Ellipsis)
                     }
                 },
                 keyboardOptions = KeyboardOptions(
@@ -111,6 +146,7 @@ private fun AddEditCategoryPreview() = ThemedPreview {
         title = "",
         isEditMode = true,
         savingLoadState = LoadState.Data(Unit),
+        initLoadState = LoadState.Data(Unit),
         onTitleChange = {},
         onCancelClick = {},
         onSaveClick = {}
@@ -124,6 +160,7 @@ private fun AddEditCategoryErrorPreview() = ThemedPreview {
         title = "",
         isEditMode = false,
         savingLoadState = LoadState.Error(ResponseError.NoInternetError()),
+        initLoadState = LoadState.Data(Unit),
         onTitleChange = {},
         onCancelClick = {},
         onSaveClick = {}

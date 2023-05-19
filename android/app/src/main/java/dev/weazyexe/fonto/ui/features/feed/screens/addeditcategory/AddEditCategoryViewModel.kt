@@ -49,12 +49,13 @@ class AddEditCategoryViewModel(
 
     private fun loadCategory() = viewModelScope.launch {
         state.id?.let {
+            setState { copy(initLoadState = LoadState.Loading()) }
             val category = request { getCategory(it) }
                 .withErrorHandling {
-                    // Do nothing
+                    setState { copy(initLoadState = LoadState.Error(it)) }
                 }?.data ?: return@launch
 
-            setState { copy(title = category.title) }
+            setState { copy(title = category.title, initLoadState = LoadState.Data(Unit)) }
         }
     }
 }

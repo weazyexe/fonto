@@ -8,7 +8,8 @@ import dev.weazyexe.fonto.core.ui.presentation.State
 data class AddEditCategoryState(
     val id: Category.Id? = null,
     val title: String = "",
-    val savingLoadState: LoadState<Unit> = LoadState.Data(Unit)
+    val savingLoadState: LoadState<Unit> = LoadState.Data(Unit),
+    val initLoadState: LoadState<Unit> = LoadState.Data(Unit),
 ) : State
 
 sealed interface AddEditCategoryEffect : Effect {
