@@ -4,11 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
+import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedIconUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
+import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.core.ui.R
@@ -25,7 +27,8 @@ class AddEditFeedViewModel(
     private val updateFeed: UpdateFeedUseCase,
     private val getIconByRssUrl: GetIconByRssUrlUseCase,
     private val getFeedType: GetFeedTypeUseCase,
-    private val getFeedIcon: GetFeedIconUseCase
+    private val getFeedIcon: GetFeedIconUseCase,
+    private val getAllCategories: GetAllCategoriesUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
     private val args = AddEditFeedScreenDestination.argsFrom(savedStateHandle)
@@ -37,7 +40,17 @@ class AddEditFeedViewModel(
     )
 
     init {
+        loadCategories()
         args.feedId?.let { fetchFeedIcon(it) }
+    }
+
+    fun loadCategories() = viewModelScope.launch {
+        val categories = request { getAllCategories() }
+            .withErrorHandling {
+                AddEditFeedEffect.ShowMessage(R.string.add_edit_feed_categories_loading_failure).emit()
+            }?.data ?: return@launch
+
+        setState { copy(categories = categories) }
     }
 
     fun updateTitle(title: String) {
@@ -54,10 +67,15 @@ class AddEditFeedViewModel(
                 rawBytesImage.asBitmap()
             }.withErrorHandling {
                 setState { copy(iconLoadState = LoadState.Error(it)) }
+                AddEditFeedEffect.ShowMessage(it.errorMessage).emit()
             } ?: return@launch
 
             setState { copy(iconLoadState = icon) }
         }
+    }
+
+    fun updateCategory(category: Category?) {
+        setState { copy(category = category) }
     }
 
     fun finish() = viewModelScope.launch {

@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 
 import android.graphics.Bitmap
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -14,6 +15,7 @@ data class AddEditFeedState(
     val title: String = "",
     val link: String = "",
     val category: Category? = null,
+    val categories: List<Category> = emptyList(),
     val iconLoadState: LoadState<Bitmap?> = LoadState.Data(null),
     val finishLoadState: LoadState<Unit> = LoadState.Data(Unit)
 ) : State
@@ -21,4 +23,6 @@ data class AddEditFeedState(
 sealed interface AddEditFeedEffect : Effect {
 
     data class NavigateUp(val isSuccessful: Boolean) : AddEditFeedEffect
+
+    data class ShowMessage(@StringRes val message: Int) : AddEditFeedEffect
 }
