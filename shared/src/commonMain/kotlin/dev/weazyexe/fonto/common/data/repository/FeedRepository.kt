@@ -16,24 +16,24 @@ class FeedRepository(
 ) {
 
     suspend fun getAll(): List<Feed> {
-        val categoriesDao = categoryDataSource.getAll().first()
+        val categoriesDao = categoryDataSource.getAll().first() + null
         val feedsDao = feedDataSource.getAll().first()
 
         return categoriesDao.flatMap { category ->
             feedsDao
-                .filter { category.id == it.categoryId }
-                .map { it.toFeed(category.toCategory()) }
+                .filter { category?.id == it.categoryId }
+                .map { it.toFeed(category?.toCategory()) }
         }
     }
 
     fun getById(id: Feed.Id): Feed {
         val feedDao = feedDataSource.getById(id.origin)
-        val categoryDao = categoryDataSource.getById(feedDao.categoryId)
-        return feedDao.toFeed(categoryDao.toCategory())
+        val categoryDao = feedDao.categoryId?.let { categoryDataSource.getById(it) }
+        return feedDao.toFeed(categoryDao?.toCategory())
     }
 
-    fun insert(title: String, link: String, icon: LocalImage?, type: Feed.Type, categoryId: Category.Id) {
-        feedDataSource.insert(title, link, icon?.bytes, type.id, categoryId.origin)
+    fun insert(title: String, link: String, icon: LocalImage?, type: Feed.Type, categoryId: Category.Id?) {
+        feedDataSource.insert(title, link, icon?.bytes, type.id, categoryId?.origin)
     }
 
     fun update(feed: Feed) {

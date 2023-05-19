@@ -13,8 +13,9 @@ class CreateFeedUseCase(
         title: String,
         link: String,
         image: LocalImage?,
-        type: Feed.Type
+        type: Feed.Type,
+        category: Category?
     ) {
-        feedRepository.insert(title, link, image, type, Category.Id(0))
+        feedRepository.insert(title, link, image, type, category?.id)
     }
 }

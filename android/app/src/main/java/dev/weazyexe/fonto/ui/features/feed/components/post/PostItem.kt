@@ -51,6 +51,7 @@ fun PostItem(
     ) {
         PostTitle(
             title = post.feed.title,
+            categoryTitle = post.feed.category?.title,
             publishedAt = post.publishedAt.formatHumanFriendly(),
             icon = post.feed.icon?.asBitmap()?.asImageBitmap(),
             isSaved = post.isSaved,
@@ -72,6 +73,7 @@ fun PostItem(
 @Composable
 private fun ColumnScope.PostTitle(
     title: String,
+    categoryTitle: String?,
     publishedAt: String,
     icon: ImageBitmap?,
     isSaved: Boolean,
@@ -91,6 +93,12 @@ private fun ColumnScope.PostTitle(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center
         ) {
+            val categoryAndPublicationDate = if (categoryTitle != null) {
+                "$categoryTitle • $publishedAt"
+            } else {
+                publishedAt
+            }
+
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
@@ -98,7 +106,7 @@ private fun ColumnScope.PostTitle(
             )
 
             Text(
-                text = publishedAt,
+                text = categoryAndPublicationDate,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface
             )

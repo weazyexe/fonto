@@ -110,7 +110,6 @@ class AddEditFeedViewModel(
 
     private fun saveChanges(type: Feed.Type) = viewModelScope.launch {
         val image = (state.iconLoadState as? LoadState.Data)?.data?.asLocalImage()
-        val category = state.category ?: return@launch
 
         request {
             val editFeedId = state.id
@@ -122,11 +121,11 @@ class AddEditFeedViewModel(
                         link = state.link.trim(),
                         icon = image,
                         type = type,
-                        category = category
+                        category = state.category
                     )
                 )
             } else {
-                createFeed(state.title, state.link, image, type)
+                createFeed(state.title, state.link, image, type, state.category)
             }
         }.withErrorHandling {
             setState { copy(finishLoadState = LoadState.Error(it)) }

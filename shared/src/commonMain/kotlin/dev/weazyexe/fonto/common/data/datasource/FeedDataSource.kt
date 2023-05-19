@@ -13,7 +13,7 @@ class FeedDataSource(database: FontoDatabase) {
 
     fun getById(id: Long): FeedDao = queries.getById(id).executeAsOne()
 
-    fun insert(title: String, link: String, icon: ByteArray?, type: Long, categoryId: Long) =
+    fun insert(title: String, link: String, icon: ByteArray?, type: Long, categoryId: Long?) =
         queries.insert(title, link, icon, type, categoryId)
 
     fun update(feed: FeedDao) = queries.update(feed)

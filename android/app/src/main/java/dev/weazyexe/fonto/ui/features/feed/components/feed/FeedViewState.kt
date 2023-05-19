@@ -14,7 +14,7 @@ data class FeedViewState(
     val link: String,
     val icon: Bitmap?,
     val type: Feed.Type,
-    val category: Category
+    val category: Category?
 )
 
 fun Feed.asViewState() = FeedViewState(

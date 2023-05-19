@@ -4,7 +4,7 @@ CREATE TABLE FeedDao (
     link TEXT NOT NULL,
     icon BLOB,
     type INTEGER NOT NULL,
-    categoryId INTEGER NOT NULL
+    categoryId INTEGER
 );
 
 getAll:

@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.common.model.base.LocalImage
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 
-internal fun FeedDao.toFeed(category: Category): Feed = Feed(
+internal fun FeedDao.toFeed(category: Category?): Feed = Feed(
     id = Feed.Id(id),
     title = title,
     link = link,
@@ -20,5 +20,5 @@ internal fun Feed.toDao(): FeedDao = FeedDao(
     link = link,
     icon = icon?.bytes,
     type = type.id,
-    categoryId = category.id.origin
+    categoryId = category?.id?.origin
 )

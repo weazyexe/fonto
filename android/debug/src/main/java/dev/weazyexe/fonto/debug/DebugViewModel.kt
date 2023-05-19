@@ -22,7 +22,7 @@ class DebugViewModel(
         deleteAllFeeds()
 
         feed.forEach {
-            createFeed(it.title, it.link, it.icon, it.type)
+            createFeed(it.title, it.link, it.icon, it.type, it.category)
         }
 
         DebugEffect.ShowMessage(R.string.debug_feed_storage_updated).emit()

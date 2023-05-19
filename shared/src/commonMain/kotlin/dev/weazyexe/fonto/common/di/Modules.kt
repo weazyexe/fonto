@@ -21,6 +21,7 @@ import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.UpdateCategoryUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.ChangeFeedCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
@@ -89,7 +90,8 @@ internal val categoryModule = module {
     single { GetCategoryUseCase(get()) }
     single { CreateCategoryUseCase(get()) }
     single { UpdateCategoryUseCase(get()) }
-    single { DeleteCategoryUseCase(get()) }
+    single { DeleteCategoryUseCase(get(), get(), get()) }
+    single { ChangeFeedCategoryUseCase(get()) }
 }
 
 internal val feedModule = module {
