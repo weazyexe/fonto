@@ -90,6 +90,7 @@
         <item quantity="other">%d feeds</item>
     </plurals>
     <string name="categories_delete">Delete</string>
+    <string name="categories_category_has_been_saved">Category has been saved</string>
 
     <string name="add_edit_category_new">New category</string>
     <string name="add_edit_category_edit">Edit category</string>

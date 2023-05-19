@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.categories
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
+import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.ui.features.feed.components.category.asViewState
@@ -35,5 +36,9 @@ class CategoriesViewModel(
             category.asViewState(amountOfFeeds)
         }
         setState { copy(categoriesLoadState = LoadState.Data(viewState)) }
+    }
+
+    fun showCategorySavedDialog() {
+        CategoriesEffect.ShowMessage(R.string.categories_category_has_been_saved).emit()
     }
 }
