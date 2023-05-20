@@ -6,8 +6,8 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import kotlinx.coroutines.launch
 
 class DebugViewModel(
@@ -25,7 +25,7 @@ class DebugViewModel(
             createFeed(it.title, it.link, it.icon, it.type, it.category)
         }
 
-        DebugEffect.ShowMessage(R.string.debug_feed_storage_updated).emit()
+        DebugEffect.ShowMessage(StringResources.debug_feed_storage_updated).emit()
         eventBus.emit(AppEvent.RefreshFeed)
     }
 }

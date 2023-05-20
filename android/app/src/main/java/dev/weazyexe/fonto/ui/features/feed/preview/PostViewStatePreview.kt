@@ -8,7 +8,7 @@ import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import kotlinx.datetime.Clock
 import java.util.UUID
@@ -28,7 +28,7 @@ object PostViewStatePreview {
                 link = "",
                 icon = AppCompatResources.getDrawable(
                     LocalContext.current,
-                    R.drawable.preview_favicon
+                    DrawableResources.preview_favicon
                 )?.toBitmap()?.asLocalImage(),
                 type = Feed.Type.RSS,
                 category = Category(Category.Id(0), "News")
@@ -75,7 +75,7 @@ object PostViewStatePreview {
                 link = "",
                 icon = AppCompatResources.getDrawable(
                     LocalContext.current,
-                    R.drawable.preview_favicon
+                    DrawableResources.preview_favicon
                 )?.toBitmap()?.asLocalImage(),
                 type = Feed.Type.RSS,
                 category = Category(Category.Id(2), "Technologies")

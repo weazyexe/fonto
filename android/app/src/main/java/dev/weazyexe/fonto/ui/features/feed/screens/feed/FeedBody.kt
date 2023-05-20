@@ -18,7 +18,6 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
@@ -29,6 +28,7 @@ import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedToolbar
@@ -84,7 +84,7 @@ fun FeedBody(
             onRefresh = { onRefreshClick(true) },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(PaddingValues(top = padding.calculateTopPadding()))
+                .padding(top = padding.calculateTopPadding())
         ) {
             LoadStateComponent(
                 loadState = newslineLoadState,
@@ -106,7 +106,7 @@ fun FeedBody(
                     ErrorPane(
                         it.error.asErrorPaneParams(
                             action = ErrorPaneParams.Action(
-                                title = R.string.error_pane_refresh,
+                                title = StringResources.error_pane_refresh,
                                 onClick = { onRefreshClick(false) }
                             )
                         )

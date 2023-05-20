@@ -13,11 +13,11 @@ import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import kotlinx.coroutines.launch
 
@@ -47,7 +47,7 @@ class AddEditFeedViewModel(
     fun loadCategories() = viewModelScope.launch {
         val categories = request { getAllCategories() }
             .withErrorHandling {
-                AddEditFeedEffect.ShowMessage(R.string.add_edit_feed_categories_loading_failure).emit()
+                AddEditFeedEffect.ShowMessage(StringResources.add_edit_feed_categories_loading_failure).emit()
             }?.data ?: return@launch
 
         setState { copy(categories = categories) }
@@ -79,17 +79,17 @@ class AddEditFeedViewModel(
     }
 
     fun showCategoryAddedMessage() {
-        AddEditFeedEffect.ShowMessage(R.string.categories_category_has_been_saved).emit()
+        AddEditFeedEffect.ShowMessage(StringResources.categories_category_has_been_saved).emit()
     }
 
     fun finish() = viewModelScope.launch {
         if (state.title.isEmpty()) {
-            setState { copy(finishLoadState = LoadState.Error(ResponseError.FeedValidationError(R.string.error_feed_invalid_title))) }
+            setState { copy(finishLoadState = LoadState.Error(ResponseError.FeedValidationError(StringResources.error_feed_invalid_title))) }
             return@launch
         }
 
         if (state.link.isEmpty()) {
-            setState { copy(finishLoadState = LoadState.Error(ResponseError.FeedValidationError(R.string.error_feed_invalid_link))) }
+            setState { copy(finishLoadState = LoadState.Error(ResponseError.FeedValidationError(StringResources.error_feed_invalid_link))) }
             return@launch
         }
 

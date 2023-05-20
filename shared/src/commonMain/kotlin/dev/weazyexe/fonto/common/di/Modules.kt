@@ -2,6 +2,8 @@
 
 package dev.weazyexe.fonto.common.di
 
+import dev.weazyexe.fonto.common.app.AppInitializer
+import dev.weazyexe.fonto.common.app.CategoriesInitializer
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
 import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
@@ -40,6 +42,7 @@ import dev.weazyexe.fonto.common.feature.parser.atom.AtomParser
 import dev.weazyexe.fonto.common.feature.parser.rss.RssParser
 import dev.weazyexe.fonto.common.feature.settings.createSettingsStorage
 import dev.weazyexe.fonto.common.network.createHttpClient
+import dev.weazyexe.fonto.common.resources.createStringsProvider
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -51,6 +54,7 @@ internal val coreModule = module {
     single { createDatabase(get()) }
     single { createHttpClient() }
     single { createSettingsStorage(get()) }
+    single { createStringsProvider(get())  }
 
     single { EventBus() }
 }
@@ -126,5 +130,21 @@ internal val newslineModule = module {
     single { UpdatePostUseCase(get()) }
 }
 
+internal val initializerModule = module {
+    includes(coreModule)
+    includes(categoryModule)
+
+    single { CategoriesInitializer(get(), get(), get()) }
+    single { AppInitializer(get()) }
+}
+
 fun appModules(): List<Module> =
-    listOf(feedModule, iconModule, rssModule, atomModule, newslineModule, categoryModule)
+    listOf(
+        initializerModule,
+        feedModule,
+        iconModule,
+        rssModule,
+        atomModule,
+        newslineModule,
+        categoryModule
+    )

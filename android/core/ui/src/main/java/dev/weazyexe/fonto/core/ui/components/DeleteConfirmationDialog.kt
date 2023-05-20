@@ -10,7 +10,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
-import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 
 @Composable
 fun DeleteConfirmationDialog(
@@ -45,7 +45,7 @@ fun DeleteConfirmationDialog(
         },
         icon = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_delete_forever_24),
+                painter = painterResource(id = DrawableResources.ic_delete_forever_24),
                 contentDescription = null
             )
         }

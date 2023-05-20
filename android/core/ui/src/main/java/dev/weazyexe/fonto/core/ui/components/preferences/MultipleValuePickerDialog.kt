@@ -24,8 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Composable
 fun <T> MultipleValuePickerDialog(
@@ -47,9 +47,9 @@ fun <T> MultipleValuePickerDialog(
                 Text(
                     text = stringResource(
                         id = if (hasDataToPick) {
-                            R.string.value_picker_save
+                            StringResources.value_picker_save
                         } else {
-                            R.string.value_picker_ok
+                            StringResources.value_picker_ok
                         }
                     )
                 )
@@ -58,7 +58,7 @@ fun <T> MultipleValuePickerDialog(
         dismissButton = {
             if (hasDataToPick) {
                 TextButton(onClick = onCancel) {
-                    Text(text = stringResource(id = R.string.value_picker_cancel))
+                    Text(text = stringResource(id = StringResources.value_picker_cancel))
                 }
             }
         },
@@ -92,7 +92,7 @@ fun <T> MultipleValuePickerDialog(
                     Divider(color = MaterialTheme.colorScheme.outlineVariant)
                 }
             } else {
-                Text(text = stringResource(id = R.string.value_picker_no_possible_values))
+                Text(text = stringResource(id = StringResources.value_picker_no_possible_values))
             }
         },
         icon = {

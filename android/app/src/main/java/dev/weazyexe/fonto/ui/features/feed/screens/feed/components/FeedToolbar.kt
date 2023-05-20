@@ -22,8 +22,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.filters.FiltersRow
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewStates
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,7 @@ fun FeedToolbar(
     LargeTopAppBar(
         title = {
             Column {
-                Text(text = stringResource(id = R.string.home_bottom_label_feed))
+                Text(text = stringResource(id = StringResources.home_bottom_label_feed))
                 filters?.let {
                     AnimatedVisibility(visible = isToolbarExpanded) {
                         FiltersRow(
@@ -80,13 +81,13 @@ fun FeedToolbar(
         actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_search_24),
+                    painter = painterResource(id = DrawableResources.ic_search_24),
                     contentDescription = null
                 )
             }
             IconButton(onClick = onManageFeedClick) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_controls_24),
+                    painter = painterResource(id = DrawableResources.ic_controls_24),
                     contentDescription = null
                 )
             }

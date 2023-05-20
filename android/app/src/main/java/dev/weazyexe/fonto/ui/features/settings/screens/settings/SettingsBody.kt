@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.CustomValuePreferenceItem
 import dev.weazyexe.fonto.core.ui.components.preferences.PreferencesGroup
 import dev.weazyexe.fonto.core.ui.components.preferences.SwitchPreferenceItem
@@ -23,6 +23,7 @@ import dev.weazyexe.fonto.core.ui.components.preferences.TextPreferenceItem
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,6 +31,7 @@ import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 fun SettingsBody(
     settings: List<Group>,
     hiddenPreferences: List<Preference.Identifier>,
+    rootPaddingValues: PaddingValues,
     onTextPreferenceClick: (Preference.Text) -> Unit,
     onSwitchPreferenceClick: (Preference.Switch, Boolean) -> Unit,
     onCustomPreferenceClick: (Preference.CustomValue<Value<*>>) -> Unit,
@@ -50,16 +52,18 @@ fun SettingsBody(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .padding(bottom = rootPaddingValues.calculateBottomPadding())
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.home_bottom_label_settings)) },
+                title = { Text(text = stringResource(id = StringResources.home_bottom_label_settings)) },
                 scrollBehavior = scrollBehavior
             )
         }
     ) { padding ->
         LazyColumn(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(top = padding.calculateTopPadding()),
             state = lazyListState
         ) {
             items(groups) { group ->

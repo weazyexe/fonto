@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 
 @Composable
 fun SwitchPreferenceItem(
@@ -75,7 +75,7 @@ fun SwitchPreferenceItem(
             thumbContent = {
                 if (value) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_done_24),
+                        painter = painterResource(id = DrawableResources.ic_done_24),
                         contentDescription = null,
                         modifier = Modifier.size(16.dp)
                     )
@@ -94,7 +94,7 @@ private fun SwitchPreferenceItemPreview() = ThemedPreview {
         title = "Something",
         description = "Enabled or disabled",
         value = true,
-        icon = R.drawable.ic_bookmark_24,
+        icon = DrawableResources.ic_bookmark_24,
         onValueChange = {},
         modifier = Modifier.fillMaxWidth()
     )
@@ -107,7 +107,7 @@ private fun SwitchPreferenceItemDisabledPreview() = ThemedPreview {
         title = "Something",
         description = "Lorem ipsum dolor set very long text very long text very long text",
         value = false,
-        icon = R.drawable.ic_bookmark_24,
+        icon = DrawableResources.ic_bookmark_24,
         onValueChange = {},
         modifier = Modifier.fillMaxWidth()
     )

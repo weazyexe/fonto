@@ -28,11 +28,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.FontoTextButton
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import kotlinx.coroutines.delay
 
 @Composable
@@ -68,9 +69,9 @@ fun AddEditCategoryBody(
             FontoTextButton(
                 title = stringResource(
                     if (isEditMode) {
-                        R.string.add_edit_category_save
+                        StringResources.add_edit_category_save
                     } else {
-                        R.string.add_edit_category_create
+                        StringResources.add_edit_category_create
                     }
                 ),
                 onClick = onSaveClick,
@@ -79,16 +80,16 @@ fun AddEditCategoryBody(
         },
         dismissButton = {
             TextButton(onClick = onCancelClick) {
-                Text(text = stringResource(id = R.string.value_picker_cancel))
+                Text(text = stringResource(id = StringResources.value_picker_cancel))
             }
         },
         title = {
             Text(
                 text = stringResource(
                     id = if (isEditMode) {
-                        R.string.add_edit_category_edit
+                        StringResources.add_edit_category_edit
                     } else {
-                        R.string.add_edit_category_new
+                        StringResources.add_edit_category_new
                     }
                 )
             )
@@ -103,8 +104,8 @@ fun AddEditCategoryBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
-                label = { Text(text = stringResource(id = R.string.add_edit_category_title)) },
-                placeholder = { Text(text = stringResource(id = R.string.add_edit_category_title_hint)) },
+                label = { Text(text = stringResource(id = StringResources.add_edit_category_title)) },
+                placeholder = { Text(text = stringResource(id = StringResources.add_edit_category_title_hint)) },
                 maxLines = 1,
                 singleLine = true,
                 isError = savingLoadState is LoadState.Error,
@@ -132,7 +133,7 @@ fun AddEditCategoryBody(
         },
         icon = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_category_24),
+                painter = painterResource(id = DrawableResources.ic_category_24),
                 contentDescription = null
             )
         }

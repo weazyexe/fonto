@@ -6,7 +6,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.common.model.preference.Theme
-import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.util.customTabsColorScheme
 
 object InAppBrowser {
@@ -21,7 +21,7 @@ object InAppBrowser {
             .setCloseButtonIcon(
                 AppCompatResources.getDrawable(
                     context,
-                    R.drawable.ic_arrow_back_24
+                    DrawableResources.ic_arrow_back_24
                 )!!.toBitmap()
             )
             .setShowTitle(true)

@@ -20,16 +20,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Composable
 fun PaginationFooter(
     state: PaginationState,
     onRefresh: () -> Unit
 ) {
-    Crossfade(state) {
+    Crossfade(state, label = "pagination footer") {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,24 +48,24 @@ fun PaginationFooter(
                 PaginationState.ERROR -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = stringResource(id = R.string.error_pagination),
+                            text = stringResource(id = StringResources.error_pagination),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         TextButton(onClick = onRefresh) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_refresh_24),
+                                painter = painterResource(id = DrawableResources.ic_refresh_24),
                                 contentDescription = null,
                                 modifier = Modifier.padding(end = 4.dp)
                             )
-                            Text(text = stringResource(id = R.string.error_pane_refresh))
+                            Text(text = stringResource(id = StringResources.error_pane_refresh))
                         }
                     }
                 }
 
                 PaginationState.PAGINATION_EXHAUST -> {
                     Text(
-                        text = stringResource(id = R.string.error_pagination_exhausted),
+                        text = stringResource(id = StringResources.error_pagination_exhausted),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

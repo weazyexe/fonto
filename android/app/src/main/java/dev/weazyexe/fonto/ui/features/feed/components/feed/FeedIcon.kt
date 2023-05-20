@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 
 @Composable
 fun FeedIcon(
@@ -34,7 +34,7 @@ fun FeedIcon(
         )
     } else {
         Image(
-            painter = painterResource(id = R.drawable.ic_feed_24),
+            painter = painterResource(id = DrawableResources.ic_feed_24),
             contentDescription = null,
             modifier = imageModifier,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.inverseSurface)

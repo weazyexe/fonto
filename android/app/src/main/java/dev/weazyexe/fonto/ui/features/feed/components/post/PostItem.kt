@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.weazyexe.fonto.common.core.asBitmap
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedIcon
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
@@ -119,9 +119,9 @@ private fun ColumnScope.PostTitle(
             Icon(
                 painter = painterResource(
                     id = if (isSaved) {
-                        R.drawable.ic_bookmark_added_24
+                        DrawableResources.ic_bookmark_added_24
                     } else {
-                        R.drawable.ic_bookmark_24
+                        DrawableResources.ic_bookmark_24
                     }
                 ),
                 contentDescription = null

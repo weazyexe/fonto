@@ -13,12 +13,12 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.PaginationFooter
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostItem
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
@@ -78,9 +78,9 @@ fun NewslineList(
             item(key = "error pane") {
                 ErrorPane(
                     params = ErrorPaneParams.empty(
-                        message = R.string.feed_empty_newsline,
+                        message = StringResources.feed_empty_newsline,
                         action = ErrorPaneParams.Action(
-                            title = R.string.feed_empty_newsline_manage_feed,
+                            title = StringResources.feed_empty_newsline_manage_feed,
                             onClick = onManageFeed
                         )
                     )

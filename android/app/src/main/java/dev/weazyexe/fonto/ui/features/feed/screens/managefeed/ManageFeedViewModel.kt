@@ -4,10 +4,10 @@ import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.feed.asViewState
 import kotlinx.coroutines.launch
 
@@ -38,10 +38,10 @@ class ManageFeedViewModel(
     fun deleteFeedById(id: Feed.Id) = viewModelScope.launch {
         request { deleteFeed(id) }
             .withErrorHandling {
-                ManageFeedEffect.ShowMessage(R.string.error_feed_can_not_delete_feed).emit()
+                ManageFeedEffect.ShowMessage(StringResources.error_feed_can_not_delete_feed).emit()
             } ?: return@launch
 
-        ManageFeedEffect.ShowMessage(R.string.error_feed_deleted_successfully).emit()
+        ManageFeedEffect.ShowMessage(StringResources.error_feed_deleted_successfully).emit()
         updateChangesStatus()
         loadFeed()
     }
@@ -51,6 +51,6 @@ class ManageFeedViewModel(
     }
 
     fun showSavedMessage() {
-        ManageFeedEffect.ShowMessage(R.string.manage_feed_changes_saved).emit()
+        ManageFeedEffect.ShowMessage(StringResources.manage_feed_changes_saved).emit()
     }
 }

@@ -22,8 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Composable
 fun <T> SingleValuePickerDialog(
@@ -40,12 +40,12 @@ fun <T> SingleValuePickerDialog(
         onDismissRequest = onCancel,
         confirmButton = {
             TextButton(onClick = { onSave(currentValue) }) {
-                Text(text = stringResource(id = R.string.value_picker_save))
+                Text(text = stringResource(id = StringResources.value_picker_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onCancel) {
-                Text(text = stringResource(id = R.string.value_picker_cancel))
+                Text(text = stringResource(id = StringResources.value_picker_cancel))
             }
         },
         title = { Text(text = stringResource(id = title)) },

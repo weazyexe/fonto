@@ -9,12 +9,13 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.components.preferences.model.findPreference
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.util.AppHelper
 import dev.weazyexe.fonto.util.stringRes
 import io.github.aakira.napier.Napier
@@ -138,8 +139,8 @@ class SettingsViewModel(
             Preference.Identifier.THEME -> {
                 SettingsEffect.OpenThemePickerDialog(
                     id = preference.id,
-                    title = R.string.settings_display_theme_title,
-                    icon = R.drawable.ic_lightbulb_24,
+                    title = StringResources.settings_display_theme_title,
+                    icon = DrawableResources.ic_lightbulb_24,
                     value = preference.value as Value<Theme>,
                     possibleValues = preference.possibleValues as List<Value<Theme>>
                 ).emit()
@@ -251,65 +252,65 @@ class SettingsViewModel(
 
 private fun buildPreferences(context: Context): List<Group> = listOf(
     Group(
-        title = R.string.settings_feed_group,
+        title = StringResources.settings_feed_group,
         preferences = listOf(
             Preference.Text(
                 id = Preference.Identifier.MANAGE_FEED,
-                title = R.string.settings_feed_manage_title,
-                subtitle = R.string.settings_feed_manage_description,
-                icon = R.drawable.ic_feed_24
+                title = StringResources.settings_feed_manage_title,
+                subtitle = StringResources.settings_feed_manage_description,
+                icon = DrawableResources.ic_feed_24
             ),
             Preference.Text(
                 id = Preference.Identifier.MANAGE_CATEGORIES,
-                title = R.string.settings_category_manage_title,
-                subtitle = R.string.settings_category_manage_description,
-                icon = R.drawable.ic_category_24
+                title = StringResources.settings_category_manage_title,
+                subtitle = StringResources.settings_category_manage_description,
+                icon = DrawableResources.ic_category_24
             ),
             Preference.Switch(
                 id = Preference.Identifier.OPEN_POST,
-                title = R.string.settings_feed_open_post_title,
-                subtitle = R.string.settings_feed_open_post_description,
-                icon = R.drawable.ic_language_24,
+                title = StringResources.settings_feed_open_post_title,
+                subtitle = StringResources.settings_feed_open_post_description,
+                icon = DrawableResources.ic_language_24,
                 value = true
             )
         )
     ),
     Group(
-        title = R.string.settings_display_group,
+        title = StringResources.settings_display_group,
         preferences = listOf(
             Preference.CustomValue(
                 id = Preference.Identifier.THEME,
-                title = R.string.settings_display_theme_title,
-                subtitle = R.string.settings_display_theme_description,
-                icon = R.drawable.ic_lightbulb_24,
+                title = StringResources.settings_display_theme_title,
+                subtitle = StringResources.settings_display_theme_description,
+                icon = DrawableResources.ic_lightbulb_24,
                 value = Value(Theme.SYSTEM, context.getString(Theme.SYSTEM.stringRes)),
                 possibleValues = Theme.values().map { Value(it, context.getString(it.stringRes)) }
             ),
             Preference.Switch(
                 id = Preference.Identifier.DYNAMIC_COLORS,
-                title = R.string.settings_display_dynamic_colors_title,
-                subtitle = R.string.settings_display_dynamic_colors_description,
-                icon = R.drawable.ic_palette_24,
+                title = StringResources.settings_display_dynamic_colors_title,
+                subtitle = StringResources.settings_display_dynamic_colors_description,
+                icon = DrawableResources.ic_palette_24,
                 value = true
             ),
             Preference.CustomValue(
                 id = Preference.Identifier.COLOR_SCHEME,
-                title = R.string.settings_display_color_scheme_title,
-                subtitle = R.string.settings_display_color_scheme_description,
-                icon = R.drawable.ic_format_paint_24,
+                title = StringResources.settings_display_color_scheme_title,
+                subtitle = StringResources.settings_display_color_scheme_description,
+                icon = DrawableResources.ic_format_paint_24,
                 value = buildColors(context).first(),
                 possibleValues = buildColors(context)
             ),
         )
     ),
     Group(
-        title = R.string.settings_debug_group,
+        title = StringResources.settings_debug_group,
         preferences = listOf(
             Preference.Text(
                 id = Preference.Identifier.DEBUG_MENU,
-                title = R.string.settings_debug_menu_title,
-                subtitle = R.string.settings_debug_menu_description,
-                icon = R.drawable.ic_bug_24
+                title = StringResources.settings_debug_menu_title,
+                subtitle = StringResources.settings_debug_menu_description,
+                icon = DrawableResources.ic_bug_24
             )
         )
     )
@@ -318,23 +319,23 @@ private fun buildPreferences(context: Context): List<Group> = listOf(
 private fun buildColors(context: Context): List<Value<Long>> = listOf(
     Value(
         data = 0xFF6383F8,
-        title = context.getString(R.string.settings_display_color_scheme_value_blue)
+        title = context.getString(StringResources.settings_display_color_scheme_value_blue)
     ),
     Value(
         data = 0xFF88CF9B,
-        title = context.getString(R.string.settings_display_color_scheme_value_green)
+        title = context.getString(StringResources.settings_display_color_scheme_value_green)
     ),
     Value(
         data = 0xFFDFA576,
-        title = context.getString(R.string.settings_display_color_scheme_value_orange)
+        title = context.getString(StringResources.settings_display_color_scheme_value_orange)
     ),
     Value(
         data = 0xFFCE6E6E,
-        title = context.getString(R.string.settings_display_color_scheme_value_red)
+        title = context.getString(StringResources.settings_display_color_scheme_value_red)
     ),
     Value(
         data = 0xFFFF96EA,
-        title = context.getString(R.string.settings_display_color_scheme_value_pink)
+        title = context.getString(StringResources.settings_display_color_scheme_value_pink)
     ),
 )
 

@@ -49,11 +49,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.common.model.feed.Category
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.Rotatable
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.toolbar.FullScreenDialogToolbar
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
@@ -89,16 +90,16 @@ fun AddEditFeedBody(
             FullScreenDialogToolbar(
                 title = stringResource(
                     id = if (isEditMode) {
-                        R.string.add_edit_feed_edit_feed
+                        StringResources.add_edit_feed_edit_feed
                     } else {
-                        R.string.add_edit_feed_new_feed
+                        StringResources.add_edit_feed_new_feed
                     }
                 ),
                 doneButtonText = stringResource(
                     if (isEditMode) {
-                        R.string.add_edit_feed_save
+                        StringResources.add_edit_feed_save
                     } else {
-                        R.string.add_edit_feed_create
+                        StringResources.add_edit_feed_create
                     }
                 ),
                 onBackClick = onBackClick,
@@ -119,8 +120,8 @@ fun AddEditFeedBody(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .focusRequester(focusRequester),
-                label = { Text(text = stringResource(id = R.string.add_edit_feed_link)) },
-                placeholder = { Text(text = stringResource(id = R.string.add_edit_feed_link_hint)) },
+                label = { Text(text = stringResource(id = StringResources.add_edit_feed_link)) },
+                placeholder = { Text(text = stringResource(id = StringResources.add_edit_feed_link_hint)) },
                 trailingIcon = { FeedIcon(iconLoadState = iconLoadState) },
                 maxLines = 1,
                 singleLine = true,
@@ -143,8 +144,8 @@ fun AddEditFeedBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                label = { Text(text = stringResource(id = R.string.add_edit_feed_title)) },
-                placeholder = { Text(text = stringResource(id = R.string.add_edit_feed_title_hint)) },
+                label = { Text(text = stringResource(id = StringResources.add_edit_feed_title)) },
+                placeholder = { Text(text = stringResource(id = StringResources.add_edit_feed_title_hint)) },
                 maxLines = 1,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
@@ -168,13 +169,13 @@ fun AddEditFeedBody(
             ) {
                 OutlinedTextField(
                     value = category?.title
-                        ?: stringResource(id = R.string.add_edit_feed_category_title_not_selected),
+                        ?: stringResource(id = StringResources.add_edit_feed_category_title_not_selected),
                     onValueChange = {},
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth(),
                     readOnly = true,
-                    label = { Text(text = stringResource(id = R.string.add_edit_feed_category)) },
+                    label = { Text(text = stringResource(id = StringResources.add_edit_feed_category)) },
                     trailingIcon = {
                         Rotatable(isRotated = isCategoriesExpanded) {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = true)
@@ -190,7 +191,7 @@ fun AddEditFeedBody(
                     modifier = Modifier.exposedDropdownSize()
                 ) {
                     CategoryDropdownItem(
-                        title = stringResource(id = R.string.add_edit_feed_add_new_category),
+                        title = stringResource(id = StringResources.add_edit_feed_add_new_category),
                         isSelected = false,
                         isAddItem = true,
                         onClick = {
@@ -200,7 +201,7 @@ fun AddEditFeedBody(
                     )
 
                     CategoryDropdownItem(
-                        title = stringResource(id = R.string.add_edit_feed_category_title_not_selected),
+                        title = stringResource(id = StringResources.add_edit_feed_category_title_not_selected),
                         isSelected = category == null,
                         isAddItem = false,
                         onClick = {
@@ -272,7 +273,7 @@ private fun CategoryDropdownItem(
             when {
                 isSelected -> {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_done_24),
+                        painter = painterResource(id = DrawableResources.ic_done_24),
                         contentDescription = null,
                         modifier = Modifier.padding(start = 16.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -281,7 +282,7 @@ private fun CategoryDropdownItem(
 
                 isAddItem -> {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_add_24),
+                        painter = painterResource(id = DrawableResources.ic_add_24),
                         contentDescription = null,
                         modifier = Modifier.padding(start = 16.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -303,7 +304,7 @@ private fun CategoryDropdownItem(
 @Composable
 private fun AddEditFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
     val context = LocalContext.current
-    val icon = AppCompatResources.getDrawable(context, R.drawable.preview_favicon)?.toBitmap()
+    val icon = AppCompatResources.getDrawable(context, DrawableResources.preview_favicon)?.toBitmap()
 
     AddEditFeedBody(
         title = "Rozetked",

@@ -21,9 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Composable
 fun <T> CustomValuePreferenceItem(
@@ -78,7 +79,7 @@ private fun CustomValuePreferenceItemPreview() = ThemedPreview {
     CustomValuePreferenceItem(
         title = "Theme",
         description = "Color scheme for the app",
-        icon = R.drawable.ic_lightbulb_24,
+        icon = DrawableResources.ic_lightbulb_24,
         value = Value(
             object : Parcelable {
                 override fun describeContents(): Int {
@@ -89,7 +90,7 @@ private fun CustomValuePreferenceItemPreview() = ThemedPreview {
                     // Do nothing
                 }
             },
-            stringResource(R.string.settings_display_theme_value_light)
+            stringResource(StringResources.settings_display_theme_value_light)
         ),
         onClick = {},
         modifier = Modifier.fillMaxWidth()

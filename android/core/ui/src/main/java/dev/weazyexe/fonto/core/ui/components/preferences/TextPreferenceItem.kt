@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 
 @Composable
 fun TextPreferenceItem(
@@ -67,7 +67,7 @@ private fun TextPreferenceItemPreview() = ThemedPreview {
     TextPreferenceItem(
         title = "Debug menu",
         description = "Settings for more efficient development",
-        icon = R.drawable.ic_bug_24,
+        icon = DrawableResources.ic_bug_24,
         onClick = {},
         modifier = Modifier.fillMaxWidth()
     )

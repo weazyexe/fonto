@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,6 +25,7 @@ import io.github.aakira.napier.Napier
 @Destination
 @Composable
 fun SettingsScreen(
+    rootPaddingValues: PaddingValues,
     viewModel: SettingsViewModel,
     navigateTo: NavigateTo,
     navigateWithResult: NavigateWithResult,
@@ -90,6 +92,7 @@ fun SettingsScreen(
     SettingsBody(
         settings = state.preferences,
         hiddenPreferences = state.hiddenPreferences,
+        rootPaddingValues = rootPaddingValues,
         onTextPreferenceClick = viewModel::onTextPreferenceClick,
         onSwitchPreferenceClick = viewModel::onSwitchPreferenceClick,
         onCustomPreferenceClick = viewModel::onCustomPreferenceClick

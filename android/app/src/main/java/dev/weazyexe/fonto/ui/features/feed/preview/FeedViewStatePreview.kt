@@ -6,7 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedViewState
 
 object FeedViewStatePreview {
@@ -15,7 +15,7 @@ object FeedViewStatePreview {
         @Composable
         get() {
             val context = LocalContext.current
-            val icon = AppCompatResources.getDrawable(context, R.drawable.preview_favicon)?.toBitmap()
+            val icon = AppCompatResources.getDrawable(context, DrawableResources.preview_favicon)?.toBitmap()
             return FeedViewState(
                 id = Feed.Id(0L),
                 title = "Rozetked",

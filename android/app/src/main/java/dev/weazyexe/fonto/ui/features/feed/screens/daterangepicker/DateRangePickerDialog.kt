@@ -18,9 +18,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DATE_FORMAT
 import dev.weazyexe.fonto.common.utils.format
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.animation.FullScreenDialogAnimationStyle
 import dev.weazyexe.fonto.core.ui.components.toolbar.FullScreenDialogToolbar
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import kotlinx.datetime.Instant
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -36,8 +36,8 @@ fun DateRangePickerDialog(
         },
         topBar = {
             FullScreenDialogToolbar(
-                title = stringResource(R.string.date_range_picker_dialog_title),
-                doneButtonText = stringResource(R.string.date_range_picker_dialog_pick),
+                title = stringResource(StringResources.date_range_picker_dialog_title),
+                doneButtonText = stringResource(StringResources.date_range_picker_dialog_pick),
                 onBackClick = { resultBackNavigator.navigateBack(result = null) },
                 onDoneClick = {
                     val results = DateRangeResults(
@@ -68,7 +68,7 @@ fun DateRangePickerDialog(
                                 state.selectedEndDateMillis?.asInstant() ?: return@DateRangePicker
 
                             stringResource(
-                                id = R.string.feed_filters_dates_value,
+                                id = StringResources.feed_filters_dates_value,
                                 from.format(HUMAN_READABLE_DATE_FORMAT),
                                 to.format(HUMAN_READABLE_DATE_FORMAT),
                             )

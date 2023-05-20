@@ -20,4 +20,8 @@ interface SettingsStorage {
     suspend fun getAccentColor(): Long?
 
     suspend fun saveAccentColor(color: Long)
+
+    suspend fun isAppInitialized(): Boolean
+
+    suspend fun saveAppInitialized(isInitialized: Boolean)
 }

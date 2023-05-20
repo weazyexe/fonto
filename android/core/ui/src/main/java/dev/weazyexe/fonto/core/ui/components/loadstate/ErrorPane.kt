@@ -18,8 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Composable
 fun ErrorPane(params: ErrorPaneParams) {
@@ -78,7 +78,7 @@ private fun ErrorPaneNoInternetPreview() = ThemedPreview {
     ErrorPane(
         params = ErrorPaneParams.noInternet(
             action = ErrorPaneParams.Action(
-                title = R.string.error_pane_refresh,
+                title = StringResources.error_pane_refresh,
                 onClick = {}
             )
         )
@@ -95,7 +95,7 @@ private fun ErrorPaneEmptyPreview() = ThemedPreview {
     ErrorPane(
         params = ErrorPaneParams.empty(
             action = ErrorPaneParams.Action(
-                title = R.string.error_pane_refresh,
+                title = StringResources.error_pane_refresh,
                 onClick = {}
             )
         )

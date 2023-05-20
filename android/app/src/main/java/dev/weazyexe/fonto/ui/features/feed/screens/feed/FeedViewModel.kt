@@ -13,13 +13,13 @@ import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Newsline
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.presentation.asViewState
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.components.post.asPost
 import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
@@ -144,7 +144,7 @@ class FeedViewModel(
             is ByFeed -> FeedEffect.OpenFeedPicker(
                 values = updatedFilter.values,
                 possibleValues = updatedFilter.possibleValues,
-                title = R.string.feed_filters_sources
+                title = StringResources.feed_filters_sources
             ).emit()
 
             else -> {
@@ -159,9 +159,9 @@ class FeedViewModel(
             .withErrorHandling {
                 FeedEffect.ShowMessage(
                     message = if (updatedPost.isSaved) {
-                        R.string.feed_post_saving_error
+                        StringResources.feed_post_saving_error
                     } else {
-                        R.string.feed_post_removing_from_bookmarks_error
+                        StringResources.feed_post_removing_from_bookmarks_error
                     }
                 ).emit()
             } ?: return@launch
@@ -187,9 +187,9 @@ class FeedViewModel(
 
         FeedEffect.ShowMessage(
             message = if (updatedPost.isSaved) {
-                R.string.feed_post_saved_to_bookmarks
+                StringResources.feed_post_saved_to_bookmarks
             } else {
-                R.string.feed_post_removed_from_bookmarks
+                StringResources.feed_post_removed_from_bookmarks
             }
         ).emit()
     }
@@ -214,7 +214,7 @@ class FeedViewModel(
     private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {
         if (problematicFeedList.isNotEmpty()) {
             val feedListString = problematicFeedList.joinToString { it.title }
-            FeedEffect.ShowMessage(R.string.feed_error_sources, feedListString).emit()
+            FeedEffect.ShowMessage(StringResources.feed_error_sources, feedListString).emit()
         }
     }
 

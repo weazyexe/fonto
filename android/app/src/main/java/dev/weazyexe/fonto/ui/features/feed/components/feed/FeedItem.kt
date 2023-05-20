@@ -26,7 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -75,7 +76,7 @@ fun FeedItem(
                 onDismissRequest = { isActionsDropdownExpanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(text = stringResource(id = R.string.add_edit_feed_delete)) },
+                    text = { Text(text = stringResource(id = StringResources.add_edit_feed_delete)) },
                     onClick = {
                         onDeleteClick()
                         scope.launch {
@@ -87,7 +88,7 @@ fun FeedItem(
             }
 
             Icon(
-                painter = painterResource(id = R.drawable.ic_more_horizontal_24),
+                painter = painterResource(id = DrawableResources.ic_more_horizontal_24),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )

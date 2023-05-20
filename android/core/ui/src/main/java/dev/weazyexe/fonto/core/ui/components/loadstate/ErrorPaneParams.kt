@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Immutable
 class ErrorPaneParams private constructor(
@@ -28,8 +28,8 @@ class ErrorPaneParams private constructor(
         @Composable
         fun noInternet(action: Action? = null): ErrorPaneParams =
             ErrorPaneParams(
-                title = stringResource(id = R.string.error_no_internet_title),
-                message = stringResource(id = R.string.error_no_internet_message),
+                title = stringResource(id = StringResources.error_no_internet_title),
+                message = stringResource(id = StringResources.error_no_internet_message),
                 emoji = "\uD83D\uDD0C",
                 action = action
             )
@@ -38,8 +38,8 @@ class ErrorPaneParams private constructor(
         @Composable
         fun unknown(action: Action? = null) =
             ErrorPaneParams(
-                title = stringResource(id = R.string.error_unknown_title),
-                message = stringResource(id = R.string.error_unknown_message),
+                title = stringResource(id = StringResources.error_unknown_title),
+                message = stringResource(id = StringResources.error_unknown_message),
                 emoji = "\uD83C\uDF43",
                 action = action
             )
@@ -47,8 +47,8 @@ class ErrorPaneParams private constructor(
         @Stable
         @Composable
         fun empty(
-            @StringRes title: Int = R.string.error_empty_default_title,
-            @StringRes message: Int = R.string.error_empty_default_message,
+            @StringRes title: Int = StringResources.error_empty_default_title,
+            @StringRes message: Int = StringResources.error_empty_default_message,
             emoji: String = "\uD83D\uDCC2",
             action: Action? = null
         ) = ErrorPaneParams(

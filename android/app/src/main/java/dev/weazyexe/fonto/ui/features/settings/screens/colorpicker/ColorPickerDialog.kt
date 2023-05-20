@@ -24,8 +24,8 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.components.BottomSheetLayout
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Destination(style = DestinationStyle.BottomSheet::class)
 @Composable
@@ -38,7 +38,7 @@ fun ColorPickerDialog(
         Spacer(modifier = Modifier.size(8.dp))
 
         Text(
-            text = stringResource(id = R.string.color_picker_pick_color),
+            text = stringResource(id = StringResources.color_picker_pick_color),
             modifier = Modifier.padding(start = 16.dp),
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.titleMedium

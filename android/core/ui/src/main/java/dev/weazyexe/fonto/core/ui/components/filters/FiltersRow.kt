@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.filter.Bool
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.filter.Multiple
-import dev.weazyexe.fonto.core.ui.R
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 
 @Composable
 fun FiltersRow(
@@ -63,7 +63,7 @@ fun FiltersRow(
                                 exit = fadeOut() + shrinkHorizontally()
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.ic_done_24),
+                                    painter = painterResource(id = DrawableResources.ic_done_24),
                                     contentDescription = null
                                 )
                             }
@@ -125,7 +125,7 @@ private fun CloseButton(
         exit = fadeOut() + shrinkHorizontally()
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_close_24),
+            painter = painterResource(id = DrawableResources.ic_close_24),
             contentDescription = null,
             modifier = Modifier
                 .clip(CircleShape)

@@ -18,8 +18,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.PluralResources
 import dev.weazyexe.fonto.ui.features.feed.preview.CategoryViewStatePreview
 
 @Composable
@@ -45,7 +46,7 @@ fun CategoryItem(
 
             Text(
                 text = pluralStringResource(
-                    id = R.plurals.categories_amount_of_feeds,
+                    id = PluralResources.categories_amount_of_feeds,
                     count = category.amountOfFeeds,
                     category.amountOfFeeds
                 ),
@@ -58,7 +59,7 @@ fun CategoryItem(
 
         IconButton(onClick = onDeleteClick) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_delete_24),
+                painter = painterResource(id = DrawableResources.ic_delete_24),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )

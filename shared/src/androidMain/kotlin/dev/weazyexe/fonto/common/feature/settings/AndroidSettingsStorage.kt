@@ -22,6 +22,7 @@ class AndroidSettingsStorage(
     private val themePreferenceKey = stringPreferencesKey(THEME_PREFERENCE)
     private val dynamicColorsPreferenceKey = booleanPreferencesKey(DYNAMIC_COLORS_PREFERENCE)
     private val accentColorPreferenceKey = longPreferencesKey(ACCENT_COLOR_PREFERENCE)
+    private val appInitializedPreferenceKey = booleanPreferencesKey(APP_INITIALIZED_PREFERENCE)
 
     override suspend fun getOpenPostPreference(): OpenPostPreference {
         val key = get(key = openPostPreferenceKey, default = OpenPostPreference.INTERNAL.key)
@@ -59,6 +60,14 @@ class AndroidSettingsStorage(
         save(key = accentColorPreferenceKey, value = color)
     }
 
+    override suspend fun isAppInitialized(): Boolean {
+        return get(appInitializedPreferenceKey, default = false)
+    }
+
+    override suspend fun saveAppInitialized(isInitialized: Boolean) {
+        save(appInitializedPreferenceKey, isInitialized)
+    }
+
     private suspend fun <T> get(key: Preferences.Key<T>, default: T): T =
         context.dataStore.data
             .map { it[key] }
@@ -77,5 +86,6 @@ class AndroidSettingsStorage(
         const val THEME_PREFERENCE = "THEME_PREFERENCE"
         const val DYNAMIC_COLORS_PREFERENCE = "DYNAMIC_COLORS_PREFERENCE"
         const val ACCENT_COLOR_PREFERENCE = "ACCENT_COLOR_PREFERENCE"
+        const val APP_INITIALIZED_PREFERENCE = "APP_INITIALIZED_PREFERENCE"
     }
 }

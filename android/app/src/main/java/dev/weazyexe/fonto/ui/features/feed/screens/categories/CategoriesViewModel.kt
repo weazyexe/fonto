@@ -5,9 +5,9 @@ import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
 import dev.weazyexe.fonto.common.model.feed.Category
-import dev.weazyexe.fonto.core.ui.R
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.category.asViewState
 import kotlinx.coroutines.launch
 
@@ -44,14 +44,14 @@ class CategoriesViewModel(
     fun deleteCategoryWithId(id: Category.Id) = viewModelScope.launch {
         request { deleteCategory(id) }
             .withErrorHandling {
-                CategoriesEffect.ShowMessage(R.string.categories_category_delete_failure).emit()
+                CategoriesEffect.ShowMessage(StringResources.categories_category_delete_failure).emit()
             }?.data ?: return@launch
 
-        CategoriesEffect.ShowMessage(R.string.categories_category_has_been_deleted).emit()
+        CategoriesEffect.ShowMessage(StringResources.categories_category_has_been_deleted).emit()
         loadCategories()
     }
 
     fun showCategorySavedDialog() {
-        CategoriesEffect.ShowMessage(R.string.categories_category_has_been_saved).emit()
+        CategoriesEffect.ShowMessage(StringResources.categories_category_has_been_saved).emit()
     }
 }
