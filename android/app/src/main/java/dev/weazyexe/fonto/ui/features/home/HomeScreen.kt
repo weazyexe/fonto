@@ -14,15 +14,18 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.spec.Direction
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.ui.features.NavGraphs
+import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
+import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerResult
 import dev.weazyexe.fonto.ui.features.feed.screens.daterangepicker.DateRangeResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerResult
 import dev.weazyexe.fonto.ui.features.home.bottombar.BottomBar
+import dev.weazyexe.fonto.ui.features.home.dependencies.CategoryPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
@@ -43,7 +46,8 @@ fun HomeScreen(
     themePickerResultRecepient: ResultRecipient<ThemePickerDialogDestination, Theme?>,
     colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, Long>,
     dateRangePickerResultRecipient: ResultRecipient<DateRangePickerDialogDestination, DateRangeResults?>,
-    feedPickerResultRecipient: ResultRecipient<FeedPickerDialogDestination, FeedPickerResult?>
+    feedPickerResultRecipient: ResultRecipient<FeedPickerDialogDestination, FeedPickerResult?>,
+    categoryPickerResultRecipient: ResultRecipient<CategoryPickerDialogDestination, CategoryPickerResult?>,
 ) {
     val feedViewModel = koinViewModel<FeedViewModel>()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
@@ -79,6 +83,13 @@ fun HomeScreen(
                     object : FeedPickerResults {
                         override fun invoke(): ResultRecipient<FeedPickerDialogDestination, FeedPickerResult?> {
                             return feedPickerResultRecipient
+                        }
+                    }
+                )
+                dependency(
+                    object : CategoryPickerResults {
+                        override fun invoke(): ResultRecipient<CategoryPickerDialogDestination, CategoryPickerResult?> {
+                            return categoryPickerResultRecipient
                         }
                     }
                 )

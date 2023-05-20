@@ -3,6 +3,8 @@ package dev.weazyexe.fonto.ui.features.feed.viewstates
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
+import dev.weazyexe.fonto.common.feature.filter.Multiple
+import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
@@ -14,13 +16,13 @@ import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Stable
 @Composable
-fun List<NewslineFilter>.asViewStates(): List<FilterViewState<NewslineFilter>> = map {
+fun List<NewslineFilter>.asViewStates(): List<FilterViewState<NewslineFilter>> = map { filter ->
     FilterViewState(
-        filter = it,
-        title = when (it) {
+        filter = filter,
+        title = when (filter) {
             is OnlyBookmarksFilter -> stringResource(StringResources.feed_filters_bookmarks)
             is ByPostDates -> {
-                val range = it.range
+                val range = filter.range
                 when {
                     range == null -> stringResource(id = StringResources.feed_filters_dates)
 
@@ -34,22 +36,38 @@ fun List<NewslineFilter>.asViewStates(): List<FilterViewState<NewslineFilter>> =
                 }
             }
 
-            is ByFeed -> when (val count = it.values.size) {
-                0 -> stringResource(id = StringResources.feed_filters_sources)
-                1 -> it.values.first().title
-                2 -> stringResource(
-                    id = StringResources.feed_filters_sources_two,
-                    it.values[0].title,
-                    it.values[1].title
-                )
+            is ByFeed -> filter.formatMultipleFilterTitle(
+                zeroValue = stringResource(id = StringResources.feed_filters_sources),
+                getTitle = { it.title }
+            )
 
-                else -> stringResource(
-                    id = StringResources.feed_filters_sources_multiple,
-                    it.values[0],
-                    it.values[1],
-                    count - 2
-                )
-            }
+            is ByCategory -> filter.formatMultipleFilterTitle(
+                zeroValue = stringResource(id = StringResources.feed_filters_categories),
+                getTitle = { it.title }
+            )
         }
     )
 }
+
+@Stable
+@Composable
+private fun <T : Any> Multiple<T, *>.formatMultipleFilterTitle(
+    zeroValue: String,
+    getTitle: (T) -> String
+): String =
+    when (val count = values.size) {
+        0 -> zeroValue
+        1 -> getTitle(values.first())
+        2 -> stringResource(
+            id = StringResources.feed_filters_quantity_two,
+            getTitle(values[0]),
+            getTitle(values[1]),
+        )
+
+        else -> stringResource(
+            id = StringResources.feed_filters_quantity_multiple,
+            getTitle(values[0]),
+            getTitle(values[1]),
+            count - 2
+        )
+    }

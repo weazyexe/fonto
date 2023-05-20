@@ -123,7 +123,7 @@ internal val newslineModule = module {
     includes(feedModule)
 
     single { NewslineDataSource(get()) }
-    single { NewslineRepository(get(), get()) }
+    single { NewslineRepository(get(), get(), get()) }
     single { GetNewslineUseCase(get(), get(), get(), get()) }
     single { GetPaginatedNewslineUseCase(get()) }
     single { GetPostUseCase(get(), get()) }

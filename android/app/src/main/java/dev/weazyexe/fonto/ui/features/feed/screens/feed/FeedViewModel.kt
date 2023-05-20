@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
+import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
@@ -145,6 +146,12 @@ class FeedViewModel(
                 values = updatedFilter.values,
                 possibleValues = updatedFilter.possibleValues,
                 title = StringResources.feed_filters_sources
+            ).emit()
+
+            is ByCategory -> FeedEffect.OpenSourcePicker(
+                values = updatedFilter.values,
+                possibleValues = updatedFilter.possibleValues,
+                title = StringResources.feed_filters_categories
             ).emit()
 
             else -> {

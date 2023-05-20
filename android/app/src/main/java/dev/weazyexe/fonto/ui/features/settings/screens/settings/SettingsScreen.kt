@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.result.NavResult
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
@@ -19,6 +18,7 @@ import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
+import dev.weazyexe.fonto.util.handleResults
 import io.github.aakira.napier.Napier
 
 @BottomBarNavGraph
@@ -34,28 +34,12 @@ fun SettingsScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    themePickerResults.invoke().onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> {
-                // Do nothing
-            }
-
-            is NavResult.Value -> {
-                result.value?.let { viewModel.saveTheme(it) }
-            }
-        }
+    themePickerResults.invoke().handleResults { result ->
+        result?.let { viewModel.saveTheme(it) }
     }
 
-    colorPickerResults.invoke().onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> {
-                // Do nothing
-            }
-
-            is NavResult.Value -> {
-                viewModel.saveColor(result.value)
-            }
-        }
+    colorPickerResults.invoke().handleResults { result ->
+        viewModel.saveColor(result)
     }
 
     ReceiveEffect(viewModel.effects) {

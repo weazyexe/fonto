@@ -10,21 +10,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.result.NavResult
 import dev.weazyexe.fonto.common.feature.filter.Dates
+import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
+import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerArgs
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
 import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerArgs
+import dev.weazyexe.fonto.ui.features.home.dependencies.CategoryPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
+import dev.weazyexe.fonto.util.handleResults
 
 @BottomBarNavGraph(start = true)
 @Destination
@@ -35,63 +39,51 @@ fun FeedScreen(
     navigateTo: NavigateTo,
     manageFeedResultRecipientProvider: ManageFeedResults,
     dateRangePickerResultRecipientProvider: DateRangePickerResults,
-    feedPickerResults: FeedPickerResults
+    feedPickerResults: FeedPickerResults,
+    categoryPickerResults: CategoryPickerResults,
 ) {
     val context = LocalContext.current
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    manageFeedResultRecipientProvider.invoke().onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> {
-                // Do nothing
-            }
-
-            is NavResult.Value -> {
-                if (result.value) {
-                    viewModel.loadNewsline()
-                }
-            }
+    manageFeedResultRecipientProvider.invoke().handleResults { result ->
+        if (result) {
+            viewModel.loadNewsline()
         }
     }
 
-    dateRangePickerResultRecipientProvider.invoke().onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> {
-                // Do nothing
-            }
-
-            is NavResult.Value -> {
-                result.value?.let {
-                    viewModel.applyFilters(
-                        ByPostDates(
-                            range = Dates.Range(
-                                from = it.from,
-                                to = it.to
-                            )
-                        )
+    dateRangePickerResultRecipientProvider.invoke().handleResults { result ->
+        result?.let {
+            viewModel.applyFilters(
+                ByPostDates(
+                    range = Dates.Range(
+                        from = it.from,
+                        to = it.to
                     )
-                }
-            }
+                )
+            )
         }
     }
 
-    feedPickerResults.invoke().onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> {
-                // Do nothing
-            }
+    feedPickerResults.invoke().handleResults { result ->
+        result?.let { result ->
+            viewModel.applyFilters(
+                ByFeed(
+                    values = result.values,
+                    possibleValues = result.possibleValues
+                )
+            )
+        }
+    }
 
-            is NavResult.Value -> {
-                result.value?.let { result ->
-                    viewModel.applyFilters(
-                        ByFeed(
-                            values = result.values,
-                            possibleValues = result.possibleValues
-                        )
-                    )
-                }
-            }
+    categoryPickerResults.invoke().handleResults {
+        it?.let { result ->
+            viewModel.applyFilters(
+                ByCategory(
+                    values = result.values,
+                    possibleValues = result.possibleValues
+                )
+            )
         }
     }
 
@@ -114,6 +106,18 @@ fun FeedScreen(
                 navigateTo(
                     FeedPickerDialogDestination(
                         args = FeedPickerArgs(
+                            values = values,
+                            possibleValues = possibleValues,
+                            title = title
+                        )
+                    )
+                )
+            }
+
+            is FeedEffect.OpenSourcePicker -> {
+                navigateTo(
+                    CategoryPickerDialogDestination(
+                        args = CategoryPickerArgs(
                             values = values,
                             possibleValues = possibleValues,
                             title = title

@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.common.data.datasource
 
 import androidx.core.util.rangeTo
 import dev.weazyexe.fonto.common.db.PostDao
+import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
@@ -34,6 +35,7 @@ class NewslineDataSource(database: FontoDatabase) {
         }
 
         val feedsFromFilter = filters.filterIsInstance<ByFeed>().firstOrNull()?.values.orEmpty()
+        val categoriesFromFilter = filters.filterIsInstance<ByCategory>().firstOrNull()?.values.orEmpty()
 
         return queries.getByFeedId(
             feedId = if (feedsFromFilter.isEmpty()) {
@@ -47,7 +49,9 @@ class NewslineDataSource(database: FontoDatabase) {
             isSaved = true.toString(),
             isDateRangeFilterEnabled = (dateRange != null).toString(),
             publishedFrom = rangeInSeconds?.lower?.toLong() ?: 0,
-            publishedTo = rangeInSeconds?.upper?.toLong() ?: 0
+            publishedTo = rangeInSeconds?.upper?.toLong() ?: 0,
+            isCategoriesFilterEnabled = categoriesFromFilter.isNotEmpty().toString(),
+            categoryId = categoriesFromFilter.map { it.id.origin }
         ).flowList()
     }
 

@@ -9,12 +9,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
-import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.CategoryDeleteConfirmationDialogDestination
+import dev.weazyexe.fonto.util.handleResults
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
@@ -30,33 +30,16 @@ fun CategoriesScreen(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    addEditResultRecipient.onNavResult { isSavedSuccessfully ->
-        when (isSavedSuccessfully) {
-            is NavResult.Canceled -> {
-                // Do nothing
-            }
-
-            is NavResult.Value -> {
-                if (isSavedSuccessfully.value) {
-                    viewModel.loadCategories()
-                    viewModel.showCategorySavedDialog()
-                }
-            }
+    addEditResultRecipient.handleResults { isSavedSuccessfully ->
+        if (isSavedSuccessfully) {
+            viewModel.loadCategories()
+            viewModel.showCategorySavedDialog()
         }
     }
 
-    deleteResultRecipient.onNavResult { deletionResult ->
-        when (deletionResult) {
-            is NavResult.Canceled -> {
-                // Do nothing
-            }
-
-            is NavResult.Value -> {
-                val id = deletionResult.value
-                if (id != null) {
-                    viewModel.deleteCategoryWithId(Category.Id(id))
-                }
-            }
+    deleteResultRecipient.handleResults { id ->
+        if (id != null) {
+            viewModel.deleteCategoryWithId(Category.Id(id))
         }
     }
 

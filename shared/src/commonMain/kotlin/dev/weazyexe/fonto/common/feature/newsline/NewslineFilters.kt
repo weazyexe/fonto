@@ -4,6 +4,7 @@ import dev.weazyexe.fonto.common.feature.filter.Bool
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.filter.Filter
 import dev.weazyexe.fonto.common.feature.filter.Multiple
+import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import kotlinx.serialization.Serializable
 
@@ -43,8 +44,19 @@ data class ByFeed(
     )
 }
 
+data class ByCategory(
+    override val values: List<Category>,
+    override val possibleValues: List<Category>
+) : Multiple<Category, ByCategory>, NewslineFilter {
+
+    override fun change(newValue: List<Category>, newPossibleValues: List<Category>): ByCategory {
+        return ByCategory(newValue, newPossibleValues)
+    }
+}
+
 val NewslineFilters = listOf(
     OnlyBookmarksFilter(isEnabled = false),
     ByPostDates(range = null),
-    ByFeed(values = emptyList(), possibleValues = emptyList())
+    ByFeed(values = emptyList(), possibleValues = emptyList()),
+    ByCategory(values = emptyList(), possibleValues = emptyList())
 )
