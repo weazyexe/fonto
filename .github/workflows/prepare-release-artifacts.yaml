@@ -53,6 +53,13 @@ jobs:
       - name: Grant Permissions to gradlew
         run: chmod +x gradlew
 
+      # Sets up virtualization
+      - name: Enable KVM group permissions
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
       # Cleans managed device if previously settle and space currently is not available
       - name: Clean Managed Devices
         run: ./gradlew cleanManagedDevices --unused-only
@@ -71,7 +78,7 @@ jobs:
         ## gradle.workers.max:
         ## Required to avoid running multiple managed device tests concurrently. Read more at https://issuetracker.google.com/issues/193118030
 
-        run: ./gradlew :android:baselineprofile:pixel6Api31BenchmarkAndroidTest -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile -Dorg.gradle.workers.max=4
+        run: ./gradlew :android:baselineprofile:pixel6Api31BenchmarkAndroidTest -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile -Dorg.gradle.workers.max=4
 
       # Sets the Baseline Profile on its proper place so it gets correctly bundled into Play Store
       - name: Move & Rename Baseline Profiles
