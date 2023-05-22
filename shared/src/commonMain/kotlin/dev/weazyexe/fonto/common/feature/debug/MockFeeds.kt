@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.debug.mock
+package dev.weazyexe.fonto.common.feature.debug
 
 import dev.weazyexe.fonto.common.model.feed.Feed
 
@@ -85,7 +85,7 @@ val VALID_FEED = listOf(
     ),
 )
 
-internal val PARTIALLY_INVALID_FEED = listOf(
+val PARTIALLY_INVALID_FEED = listOf(
     Feed(
         id = Feed.Id(1),
         title = "TechCrunch",
@@ -168,7 +168,7 @@ internal val PARTIALLY_INVALID_FEED = listOf(
     ),
 )
 
-internal val FULLY_INVALID_FEED = listOf(
+val FULLY_INVALID_FEED = listOf(
     Feed(
         id = Feed.Id(1),
         title = "ya.ru",

@@ -14,6 +14,12 @@ class Benchmark {
     val macrobenchmarkRule = MacrobenchmarkRule()
 
     @Test
+    fun startupNoBaselineProfiles() = startup(CompilationMode.None())
+
+    @Test
+    fun startupWithBaselineProfiles() = startup(CompilationMode.Partial())
+
+    @Test
     fun scrollFeedNoBaselineProfiles() = scrollFeed(CompilationMode.None())
 
     @Test
@@ -25,6 +31,20 @@ class Benchmark {
     @Test
     fun useDateRangePickerWithBaselineProfiles() = useDateRangePicker(CompilationMode.Partial())
 
+    private fun startup(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
+        packageName = "dev.weazyexe.fonto",
+        metrics = listOf(
+            StartupTimingMetric(),
+            FrameTimingMetric()
+        ),
+        compilationMode = compilationMode,
+        iterations = 5,
+        startupMode = StartupMode.COLD,
+        measureBlock = {
+            baselineScenario()
+        }
+    )
+
     private fun scrollFeed(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
         packageName = "dev.weazyexe.fonto",
         metrics = listOf(
@@ -34,22 +54,29 @@ class Benchmark {
         compilationMode = compilationMode,
         iterations = 5,
         startupMode = StartupMode.COLD,
+        setupBlock = {
+            startActivityAndWait()
+        },
         measureBlock = {
-            startupAndScrollFeed()
+            scrollFeed()
         }
     )
 
-    private fun useDateRangePicker(compilationMode: CompilationMode) = macrobenchmarkRule.measureRepeated(
-        packageName = "dev.weazyexe.fonto",
-        metrics = listOf(
-            StartupTimingMetric(),
-            FrameTimingMetric()
-        ),
-        compilationMode = compilationMode,
-        iterations = 5,
-        startupMode = StartupMode.COLD,
-        measureBlock = {
-            startupAndUseDateRangePicker()
-        }
-    )
+    private fun useDateRangePicker(compilationMode: CompilationMode) =
+        macrobenchmarkRule.measureRepeated(
+            packageName = "dev.weazyexe.fonto",
+            metrics = listOf(
+                StartupTimingMetric(),
+                FrameTimingMetric()
+            ),
+            compilationMode = compilationMode,
+            iterations = 5,
+            startupMode = StartupMode.COLD,
+            setupBlock = {
+                startActivityAndWait()
+            },
+            measureBlock = {
+                useDateRangePicker()
+            }
+        )
 }

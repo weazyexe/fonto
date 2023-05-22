@@ -5,6 +5,7 @@ import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
+import dev.weazyexe.fonto.common.feature.debug.VALID_FEED
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -22,19 +23,27 @@ class GetNewslineUseCase(
 
     suspend operator fun invoke(
         filters: List<NewslineFilter>? = null,
-        useCache: Boolean = false
+        useCache: Boolean = false,
+        useMockFeeds: Boolean = false
     ): Newsline {
         return if (useCache) {
             getNewslineFromCache(filters)
         } else {
-            getNewslineFromServer(filters)
+            getNewslineFromServer(filters, useMockFeeds)
         }
     }
 
     private suspend fun getNewslineFromServer(
-        filters: List<NewslineFilter>? = null,
+        filters: List<NewslineFilter>?,
+        useMockFeeds: Boolean
     ): Newsline {
+        if (useMockFeeds) {
+            VALID_FEED.forEach {
+                feedRepository.insertOrIgnore(it)
+            }
+        }
         val feeds = feedRepository.getAll()
+
         val parsedFeed = coroutineScope {
             feeds.map {
                 async {
@@ -48,7 +57,7 @@ class GetNewslineUseCase(
 
         val problematicFeedList = mutableListOf<ParsedFeed.Error>()
         parsedFeed
-            .map {
+            .flatMap {
                 when (it) {
                     is ParsedFeed.Success -> it.toPosts()
                     is ParsedFeed.Error -> {
@@ -57,7 +66,6 @@ class GetNewslineUseCase(
                     }
                 }
             }
-            .flatten()
             .forEach { newslineRepository.insertOrIgnore(it) }
 
         val filtersToUse = filters ?: newslineRepository.composeFilters()
@@ -77,7 +85,7 @@ class GetNewslineUseCase(
     }
 
     private suspend fun getNewslineFromCache(
-        filters: List<NewslineFilter>? = null
+        filters: List<NewslineFilter>?
     ): Newsline {
         val filtersToUse = filters ?: newslineRepository.composeFilters()
         return Newsline.Success(

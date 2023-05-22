@@ -6,26 +6,17 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalBaselineProfilesApi::class)
-class BaselineProfiles {
+class BaselineProfilesGenerator {
 
     @get:Rule
     val baselineProfileRule = BaselineProfileRule()
 
     @Test
-    fun startupAndScrollFeed() =
+    fun startup() =
         baselineProfileRule.collectBaselineProfile(
             packageName = "dev.weazyexe.fonto",
             profileBlock = {
-                startupAndScrollFeed()
-            }
-        )
-
-    @Test
-    fun startupAndUseDateRangePicker() =
-        baselineProfileRule.collectBaselineProfile(
-            packageName = "dev.weazyexe.fonto",
-            profileBlock = {
-                startupAndUseDateRangePicker()
+                baselineScenario()
             }
         )
 }

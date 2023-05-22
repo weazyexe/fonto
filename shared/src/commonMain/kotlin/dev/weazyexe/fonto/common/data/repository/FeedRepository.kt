@@ -36,6 +36,10 @@ class FeedRepository(
         feedDataSource.insert(title, link, icon?.bytes, type.id, categoryId?.origin)
     }
 
+    fun insertOrIgnore(feed: Feed) {
+        feedDataSource.insertOrIgnore(feed.toDao())
+    }
+
     fun update(feed: Feed) {
         feedDataSource.update(feed.toDao())
     }

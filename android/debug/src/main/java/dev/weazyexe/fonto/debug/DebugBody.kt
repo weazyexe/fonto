@@ -13,15 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import dev.weazyexe.fonto.common.feature.debug.FULLY_INVALID_FEED
+import dev.weazyexe.fonto.common.feature.debug.PARTIALLY_INVALID_FEED
+import dev.weazyexe.fonto.common.feature.debug.VALID_FEED
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.preferences.PreferencesGroup
 import dev.weazyexe.fonto.core.ui.components.preferences.TextPreferenceItem
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.debug.mock.FULLY_INVALID_FEED
-import dev.weazyexe.fonto.debug.mock.PARTIALLY_INVALID_FEED
-import dev.weazyexe.fonto.debug.mock.VALID_FEED
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

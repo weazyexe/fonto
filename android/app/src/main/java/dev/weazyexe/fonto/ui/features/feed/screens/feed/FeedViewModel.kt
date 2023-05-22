@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.BuildConfig
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
@@ -64,7 +65,8 @@ class FeedViewModel(
             )
         }
 
-        val newsline = request { getNewsline(state.filters, useCache) }
+        val shouldUseMockFeeds = BuildConfig.BUILD_TYPE == "benchmark"
+        val newsline = request { getNewsline(state.filters, useCache, shouldUseMockFeeds) }
             .withErrorHandling {
                 setState { copy(newslineLoadState = LoadState.Error(it)) }
             } ?: return@launch

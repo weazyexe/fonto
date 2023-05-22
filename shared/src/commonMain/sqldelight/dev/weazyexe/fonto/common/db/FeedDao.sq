@@ -21,6 +21,10 @@ update:
 INSERT OR REPLACE INTO FeedDao
 VALUES ?;
 
+insertOrIgnore:
+INSERT OR IGNORE INTO FeedDao
+VALUES ?;
+
 delete:
 DELETE FROM FeedDao WHERE id = :id;
 

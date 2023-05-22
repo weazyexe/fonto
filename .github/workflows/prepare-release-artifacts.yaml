@@ -76,7 +76,7 @@ jobs:
       # Sets the Baseline Profile on its proper place so it gets correctly bundled into Play Store
       - name: Move & Rename Baseline Profiles
         run:  |
-          mv -f android/baselineprofile/build/outputs/managed_device_android_test_additional_output/pixel6Api31/BaselineProfileGenerator_startup-baseline-prof.txt android/app/src/main/baseline-prof.txt
+          mv -f android/baselineprofile/build/outputs/managed_device_android_test_additional_output/pixel6Api31/BaselineProfilesGenerator_startup-baseline-prof.txt android/app/src/main/baseline-prof.txt
 
       # Commits the generated Baseline Profile to your origin/remote
       - name: Commit Baseline Profiles
