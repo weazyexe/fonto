@@ -19,11 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.vibration.vibrate
 
 @Composable
 fun SwitchPreferenceItem(
@@ -34,10 +36,16 @@ fun SwitchPreferenceItem(
     onValueChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Row(
         modifier = modifier
             .defaultMinSize(minHeight = 72.dp)
-            .clickable(onClick = { onValueChange(!value) })
+            .clickable(
+                onClick = {
+                    context.vibrate()
+                    onValueChange(!value)
+                }
+            )
             .padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
