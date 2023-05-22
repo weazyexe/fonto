@@ -58,6 +58,7 @@ class FeedViewModel(
                 },
                 scrollState = ScrollState(),
                 offset = 0,
+                filters = state.filters.takeIf { useCache },
                 isSwipeRefreshing = isSwipeRefreshing,
                 newslinePaginationState = PaginationState.IDLE
             )

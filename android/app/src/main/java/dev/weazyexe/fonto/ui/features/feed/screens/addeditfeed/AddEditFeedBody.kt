@@ -75,7 +75,7 @@ fun AddEditFeedBody(
     onFinishClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val focusRequester = remember { FocusRequester() }
+    val titleFocusRequester = remember { FocusRequester() }
     var isCategoriesExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(finishLoadState) {
@@ -118,8 +118,7 @@ fun AddEditFeedBody(
                 onValueChange = onLinkChange,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .focusRequester(focusRequester),
+                    .padding(horizontal = 16.dp),
                 label = { Text(text = stringResource(id = StringResources.add_edit_feed_link)) },
                 placeholder = { Text(text = stringResource(id = StringResources.add_edit_feed_link_hint)) },
                 trailingIcon = { FeedIcon(iconLoadState = iconLoadState) },
@@ -127,12 +126,11 @@ fun AddEditFeedBody(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
-                    keyboardType = KeyboardType.Text,
-                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onNext = { focusRequester.requestFocus() }
+                    onNext = { titleFocusRequester.requestFocus() }
                 )
             )
 
@@ -143,14 +141,16 @@ fun AddEditFeedBody(
                 onValueChange = onTitleChange,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .focusRequester(titleFocusRequester),
                 label = { Text(text = stringResource(id = StringResources.add_edit_feed_title)) },
                 placeholder = { Text(text = stringResource(id = StringResources.add_edit_feed_title_hint)) },
                 maxLines = 1,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
-                    keyboardType = KeyboardType.Uri,
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Sentences,
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
