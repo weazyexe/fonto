@@ -1,32 +1,22 @@
 package dev.weazyexe.fonto.core.ui.vibration
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
-import android.os.Vibrator.VIBRATION_EFFECT_SUPPORT_YES
+import android.os.Vibrator
 import android.os.VibratorManager
-import androidx.annotation.RequiresApi
 
 
+@SuppressLint("MissingPermission")
 fun Context.vibrate() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        vibrateAndroid12OrHigher()
+    vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+}
+
+private val Context.vibrator: Vibrator
+    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
     } else {
-        vibrateBeforeAndroid12()
+        getSystemService(VIBRATOR_SERVICE) as Vibrator
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-private fun Context.vibrateAndroid12OrHigher() {
-    val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-    val vibrator = vibratorManager.defaultVibrator
-    val clickEffect = VibrationEffect.EFFECT_CLICK
-
-    if (vibrator.areAllEffectsSupported(clickEffect) == VIBRATION_EFFECT_SUPPORT_YES) {
-        vibrator.vibrate(VibrationEffect.createPredefined(clickEffect))
-    }
-}
-
-private fun Context.vibrateBeforeAndroid12() {
-
-}

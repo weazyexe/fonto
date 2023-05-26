@@ -1,28 +1,24 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
 import dev.weazyexe.fonto.core.ui.ScrollState
-import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
-import dev.weazyexe.fonto.core.ui.components.loadstate.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.pagination.PaginationState
@@ -31,8 +27,8 @@ import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedToolbar
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.NewslineList
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedScaffold
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.buildNewsline
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -56,64 +52,43 @@ fun FeedBody(
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val lazyListState = rememberLazyListState()
 
-    Scaffold(
-        modifier = Modifier
-            .padding(bottom = rootPaddingValues.calculateBottomPadding())
-            .semantics {
-                testTagsAsResourceId = true
-            },
-        topBar = {
-            FeedToolbar(
-                filters = filters,
-                scrollBehavior = scrollBehavior,
-                lazyListState = lazyListState,
-                onFilterChange = onFilterChange,
-                onSearchClick = onSearchClick,
-                onManageFeedClick = onManageFeedClick,
-                openDateRangePickerDialog = openDateRangePickerDialog,
-                openMultiplePickerDialog = openMultiplePickerDialog
-            )
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
-        SwipeToRefresh(
-            isRefreshing = isSwipeRefreshing,
-            onRefresh = { onRefreshClick(true) },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = padding.calculateTopPadding())
-        ) {
-            LoadStateComponent(
-                loadState = newslineLoadState,
-                onSuccess = {
-                    NewslineList(
-                        newsline = it,
-                        scrollState = scrollState,
-                        lazyListState = lazyListState,
-                        paginationState = paginationState,
-                        onPostClick = onPostClick,
-                        onPostSaveClick = onPostSaveClick,
-                        onScroll = onScroll,
-                        onManageFeed = onManageFeedClick,
-                        fetchNextBatch = fetchNextBatch,
-                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                    )
-                },
-                onError = {
+    FeedScaffold(
+        lazyListState = lazyListState,
+        isSwipeRefreshing = isSwipeRefreshing,
+        onRefresh = { onRefreshClick(true) }
+    ) {
+        when (newslineLoadState) {
+            is LoadState.Loading -> {
+                item {
+                    LoadingPane()
+                }
+            }
+
+            is LoadState.Error -> {
+                item {
                     ErrorPane(
-                        it.error.asErrorPaneParams(
+                        params = newslineLoadState.error.asErrorPaneParams(
                             action = ErrorPaneParams.Action(
                                 title = StringResources.error_pane_refresh,
                                 onClick = { onRefreshClick(false) }
                             )
                         )
                     )
-                },
-                onLoading = { LoadingPane() }
-            )
+                }
+            }
+
+            is LoadState.Data -> {
+                buildNewsline(
+                    newsline = newslineLoadState.data,
+                    paginationState = paginationState,
+                    onPostClick = onPostClick,
+                    onPostSaveClick = onPostSaveClick,
+                    onManageFeed = onManageFeedClick,
+                    fetchNextBatch = fetchNextBatch,
+                )
+            }
         }
     }
 }
@@ -148,6 +123,24 @@ private fun FeedBodyPreview() = ThemedPreview {
         openDateRangePickerDialog = {},
         openMultiplePickerDialog = {}
     )
+}
+
+@Composable
+private fun LazyListState.isScrollingUp(): State<Boolean> {
+    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }
 }
 
 @Preview
