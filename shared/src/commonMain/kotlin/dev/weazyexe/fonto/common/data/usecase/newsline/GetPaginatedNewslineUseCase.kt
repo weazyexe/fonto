@@ -12,7 +12,7 @@ class GetPaginatedNewslineUseCase(
         offset: Int
     ): Newsline {
         return Newsline.Success(
-            posts = newslineRepository.getAll(
+            posts = newslineRepository.getPosts(
                 limit = limit,
                 offset = offset
             ),

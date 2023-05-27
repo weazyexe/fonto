@@ -12,24 +12,18 @@ class NewslineDataSource(database: FontoDatabase) {
 
     private val queries = database.postDaoQueries
 
-    fun getAll(
+    fun getAll(): Flow<List<PostDao>> = queries.getAll().flowList()
+
+    fun getPosts(
         feeds: List<Feed>,
         limit: Long,
         offset: Long
-    ): Flow<List<PostDao>> {
-        return queries.getByFeedId(
+    ): Flow<List<PostDao>> =
+        queries.getByFeedId(
             feedId = feeds.map { it.id.origin },
             limit = limit,
-            offset = offset,
-            isSavedFilterEnabled = "false",
-            isSaved = true.toString(),
-            isDateRangeFilterEnabled = "false",
-            publishedFrom = 0,
-            publishedTo =  0,
-            isCategoriesFilterEnabled = "false",
-            categoryId = emptyList()
+            offset = offset
         ).flowList()
-    }
 
     fun getPostById(id: String): PostDao = queries.getPostById(id).executeAsOne()
 

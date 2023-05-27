@@ -21,17 +21,8 @@ class GetNewslineUseCase(
 ) {
 
     suspend operator fun invoke(
-        useCache: Boolean = false,
         useMockFeeds: Boolean = false
     ): Newsline {
-        return if (useCache) {
-            getNewslineFromCache()
-        } else {
-            getNewslineFromServer(useMockFeeds)
-        }
-    }
-
-    private suspend fun getNewslineFromServer(useMockFeeds: Boolean): Newsline {
         if (useMockFeeds) {
             VALID_FEED.forEach {
                 feedRepository.insertOrIgnore(it)
@@ -65,7 +56,7 @@ class GetNewslineUseCase(
 
         return if (feeds.isEmpty() || problematicFeedList.size != feeds.size) {
             Newsline.Success(
-                posts = newslineRepository.getAll(
+                posts = newslineRepository.getPosts(
                     limit = 20,
                     offset = 0
                 ),
@@ -74,15 +65,5 @@ class GetNewslineUseCase(
         } else {
             Newsline.Error
         }
-    }
-
-    private suspend fun getNewslineFromCache(): Newsline {
-        return Newsline.Success(
-            posts = newslineRepository.getAll(
-                limit = 20,
-                offset = 0
-            ),
-            loadedWithError = emptyList()
-        )
     }
 }

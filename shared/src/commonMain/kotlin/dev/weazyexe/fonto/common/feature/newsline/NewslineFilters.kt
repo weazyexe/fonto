@@ -10,12 +10,12 @@ import kotlinx.serialization.Serializable
 
 sealed interface NewslineFilter : Filter
 
-data class OnlyBookmarksFilter(
+data class BySaved(
     override val isEnabled: Boolean
-) : Bool<OnlyBookmarksFilter>, NewslineFilter {
+) : Bool<BySaved>, NewslineFilter {
 
-    override fun toggle(): OnlyBookmarksFilter {
-        return OnlyBookmarksFilter(!isEnabled)
+    override fun toggle(): BySaved {
+        return BySaved(!isEnabled)
     }
 }
 
@@ -55,7 +55,7 @@ data class ByCategory(
 }
 
 val NewslineFilters = listOf(
-    OnlyBookmarksFilter(isEnabled = false),
+    BySaved(isEnabled = false),
     ByPostDates(range = null),
     ByFeed(values = emptyList(), possibleValues = emptyList()),
     ByCategory(values = emptyList(), possibleValues = emptyList())

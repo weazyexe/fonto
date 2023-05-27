@@ -43,10 +43,7 @@ class FeedViewModel(
         listenToEventBus()
     }
 
-    fun loadNewsline(
-        isSwipeRefreshing: Boolean = false,
-        useCache: Boolean = false
-    ) = viewModelScope.launch {
+    fun loadNewsline(isSwipeRefreshing: Boolean = false) = viewModelScope.launch {
         setState {
             copy(
                 newslineLoadState = if (isSwipeRefreshing) {
@@ -62,7 +59,7 @@ class FeedViewModel(
         }
 
         val shouldUseMockFeeds = BuildConfig.BUILD_TYPE == "benchmark"
-        val newsline = request { getNewsline(useCache, shouldUseMockFeeds) }
+        val newsline = request { getNewsline(shouldUseMockFeeds) }
             .withErrorHandling {
                 setState { copy(newslineLoadState = LoadState.Error(it)) }
             } ?: return@launch

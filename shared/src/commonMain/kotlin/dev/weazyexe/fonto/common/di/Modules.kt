@@ -32,6 +32,7 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedIconUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
@@ -126,6 +127,7 @@ internal val newslineModule = module {
     single { NewslineDataSource(get()) }
     single { NewslineRepository(get(), get(), get()) }
     single { GetNewslineUseCase(get(), get(), get(), get()) }
+    single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
     single { GetPaginatedNewslineUseCase(get()) }
     single { GetPostUseCase(get(), get()) }

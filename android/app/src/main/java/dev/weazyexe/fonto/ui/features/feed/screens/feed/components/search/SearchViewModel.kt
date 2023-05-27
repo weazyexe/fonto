@@ -1,28 +1,26 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed.components.search
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
 import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
+import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val getFilters: GetFiltersUseCase
+    private val getFilters: GetFiltersUseCase,
+    private val getFilteredPosts: GetFilteredPostsUseCase
 ) : CoreViewModel<SearchState, SearchEffect>() {
 
     override val initialState: SearchState = SearchState()
 
     init {
         loadFilters()
-    }
-
-    fun loadFilters() = viewModelScope.launch {
-        val filters = getFilters()
-        setState { copy(filters = filters) }
     }
 
     fun onQueryChange(query: String) {
@@ -41,7 +39,7 @@ class SearchViewModel(
             }
         }
         setState { copy(filters = newFilters) }
-        // TODO load filtered posts
+        loadFilteredPosts()
     }
 
     fun openDateRangePicker(filter: NewslineFilter) {
@@ -71,5 +69,21 @@ class SearchViewModel(
                 // Do nothing
             }
         }
+    }
+
+    private fun loadFilters() = viewModelScope.launch {
+        val filters = getFilters()
+        setState { copy(filters = filters) }
+    }
+
+    private fun loadFilteredPosts() = viewModelScope.launch {
+        setState { copy(postsLoadState = LoadState.Loading()) }
+
+        val posts = request { getFilteredPosts(state.filters) }
+            .withErrorHandling {
+                setState { copy(postsLoadState = LoadState.Error(it)) }
+            }?.data ?: return@launch
+
+        setState { copy(postsLoadState = LoadState.Data(posts)) }
     }
 }

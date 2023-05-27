@@ -10,24 +10,12 @@ CREATE TABLE PostDao (
     link TEXT NOT NULL
 );
 
+getAll:
+SELECT * FROM PostDao;
+
 getByFeedId:
-SELECT
- PostDao.id,
- PostDao.title,
- PostDao.description,
- PostDao.content,
- PostDao.imageUrl,
- PostDao.publishedAt,
- PostDao.feedId,
- PostDao.isSaved,
- PostDao.link
-FROM PostDao
-INNER JOIN FeedDao ON PostDao.feedId = FeedDao.id
+SELECT * FROM PostDao
 WHERE feedId IN ?
-AND (:isSavedFilterEnabled = "false" OR isSaved = ?)
-AND (:isDateRangeFilterEnabled = "false" OR (publishedAt >= :publishedFrom AND publishedAt <= :publishedTo))
-AND (:isCategoriesFilterEnabled = "false" OR FeedDao.categoryId IN ?)
-ORDER BY publishedAt DESC
 LIMIT :limit OFFSET :offset;
 
 getPostById:
