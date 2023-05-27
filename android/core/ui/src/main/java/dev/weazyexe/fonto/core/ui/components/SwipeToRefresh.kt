@@ -1,9 +1,8 @@
 package dev.weazyexe.fonto.core.ui.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshDefaults
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -11,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -21,12 +19,10 @@ fun SwipeToRefresh(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val density = LocalDensity.current
-    val statusBarHeight = with(density) { WindowInsets.statusBars.getTop(this).toDp() }
     val state = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = onRefresh,
-        refreshingOffset = statusBarHeight * 2
+        refreshingOffset = PullRefreshDefaults.RefreshingOffset * 2
     )
 
     Box(modifier.pullRefresh(state)) {

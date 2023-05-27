@@ -6,7 +6,6 @@ import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.NewslineRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.feature.debug.VALID_FEED
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Newsline
@@ -22,21 +21,17 @@ class GetNewslineUseCase(
 ) {
 
     suspend operator fun invoke(
-        filters: List<NewslineFilter>? = null,
         useCache: Boolean = false,
         useMockFeeds: Boolean = false
     ): Newsline {
         return if (useCache) {
-            getNewslineFromCache(filters)
+            getNewslineFromCache()
         } else {
-            getNewslineFromServer(filters, useMockFeeds)
+            getNewslineFromServer(useMockFeeds)
         }
     }
 
-    private suspend fun getNewslineFromServer(
-        filters: List<NewslineFilter>?,
-        useMockFeeds: Boolean
-    ): Newsline {
+    private suspend fun getNewslineFromServer(useMockFeeds: Boolean): Newsline {
         if (useMockFeeds) {
             VALID_FEED.forEach {
                 feedRepository.insertOrIgnore(it)
@@ -68,34 +63,26 @@ class GetNewslineUseCase(
             }
             .forEach { newslineRepository.insertOrIgnore(it) }
 
-        val filtersToUse = filters ?: newslineRepository.composeFilters()
         return if (feeds.isEmpty() || problematicFeedList.size != feeds.size) {
             Newsline.Success(
                 posts = newslineRepository.getAll(
                     limit = 20,
-                    offset = 0,
-                    filters = filtersToUse
+                    offset = 0
                 ),
-                loadedWithError = problematicFeedList,
-                filters = filtersToUse
+                loadedWithError = problematicFeedList
             )
         } else {
             Newsline.Error
         }
     }
 
-    private suspend fun getNewslineFromCache(
-        filters: List<NewslineFilter>?
-    ): Newsline {
-        val filtersToUse = filters ?: newslineRepository.composeFilters()
+    private suspend fun getNewslineFromCache(): Newsline {
         return Newsline.Success(
             posts = newslineRepository.getAll(
                 limit = 20,
-                offset = 0,
-                filters = filtersToUse
+                offset = 0
             ),
-            loadedWithError = emptyList(),
-            filters = filtersToUse
+            loadedWithError = emptyList()
         )
     }
 }

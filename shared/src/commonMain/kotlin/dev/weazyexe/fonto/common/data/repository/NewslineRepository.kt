@@ -18,15 +18,13 @@ class NewslineRepository(
 
     suspend fun getAll(
         limit: Int,
-        offset: Int,
-        filters: List<NewslineFilter>
+        offset: Int
     ): List<Post> {
         val feeds = feedRepository.getAll()
         val postDaos = newslineDataSource.getAll(
             feeds = feeds,
             limit = limit.toLong(),
-            offset = offset.toLong(),
-            filters = filters
+            offset = offset.toLong()
         ).first()
 
         return feeds

@@ -1,21 +1,21 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
@@ -30,12 +30,12 @@ import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedScaffold
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.buildNewsline
 import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun FeedBody(
     newslineLoadState: LoadState<NewslineViewState>,
-    filters: List<NewslineFilter>?,
     scrollState: ScrollState,
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
@@ -45,19 +45,49 @@ fun FeedBody(
     onPostSaveClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeedClick: () -> Unit,
-    onSearchClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
-    fetchNextBatch: () -> Unit,
-    onFilterChange: (NewslineFilter) -> Unit,
-    openDateRangePickerDialog: (NewslineFilter) -> Unit,
-    openMultiplePickerDialog: (NewslineFilter) -> Unit
+    fetchNextBatch: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
+    val shouldStartPaginate by remember {
+        derivedStateOf {
+            val lastVisibleItemIndex =
+                lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val indexToStartPaginate = lazyListState.layoutInfo.totalItemsCount - 5
+            paginationState == PaginationState.IDLE && lastVisibleItemIndex >= indexToStartPaginate
+        }
+    }
+
+    LaunchedEffect(shouldStartPaginate) {
+        if (shouldStartPaginate) {
+            fetchNextBatch()
+        }
+    }
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemScrollOffset }
+            .map {
+                onScroll(
+                    ScrollState(
+                        item = lazyListState.firstVisibleItemIndex,
+                        offset = lazyListState.firstVisibleItemScrollOffset
+                    )
+                )
+            }
+            .collect()
+    }
+
+    LaunchedEffect(Unit) {
+        lazyListState.scrollToItem(scrollState.item, scrollState.offset)
+    }
+
     FeedScaffold(
         lazyListState = lazyListState,
+        snackbarHostState = snackbarHostState,
         isSwipeRefreshing = isSwipeRefreshing,
-        onRefresh = { onRefreshClick(true) }
+        onRefresh = { onRefreshClick(true) },
+        modifier = Modifier.padding(bottom = rootPaddingValues.calculateBottomPadding())
     ) {
         when (newslineLoadState) {
             is LoadState.Loading -> {
@@ -106,7 +136,6 @@ private fun FeedBodyPreview() = ThemedPreview {
                 )
             )
         ),
-        filters = NewslineFilters,
         scrollState = ScrollState(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
@@ -116,12 +145,8 @@ private fun FeedBodyPreview() = ThemedPreview {
         onPostSaveClick = {},
         onScroll = {},
         onManageFeedClick = {},
-        onSearchClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {},
-        onFilterChange = {},
-        openDateRangePickerDialog = {},
-        openMultiplePickerDialog = {}
+        fetchNextBatch = {}
     )
 }
 
@@ -148,7 +173,6 @@ private fun LazyListState.isScrollingUp(): State<Boolean> {
 private fun FeedBodyLoadingPreview() = ThemedPreview {
     FeedBody(
         newslineLoadState = LoadState.Loading(),
-        filters = NewslineFilters,
         scrollState = ScrollState(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
@@ -158,11 +182,7 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         onPostSaveClick = {},
         onScroll = {},
         onManageFeedClick = {},
-        onSearchClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {},
-        onFilterChange = {},
-        openDateRangePickerDialog = {},
-        openMultiplePickerDialog = {}
+        fetchNextBatch = {}
     )
 }

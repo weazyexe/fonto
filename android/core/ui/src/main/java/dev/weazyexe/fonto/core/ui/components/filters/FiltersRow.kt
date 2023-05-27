@@ -28,17 +28,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.filter.Bool
 import dev.weazyexe.fonto.common.feature.filter.Dates
+import dev.weazyexe.fonto.common.feature.filter.Filter
 import dev.weazyexe.fonto.common.feature.filter.Multiple
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 
 @Composable
 fun FiltersRow(
     filters: List<FilterViewState<*>>,
-    onBoolFilterChange: (Bool<*>) -> Unit,
+    onFilterChange: (Filter) -> Unit,
     openDateRangePickerDialog: (Dates<*>) -> Unit,
-    onClearDatesFilter: (Dates<*>) -> Unit,
     openMultiplePickerDialog: (Multiple<*, *>) -> Unit,
-    onClearMultipleFilter: (Multiple<*, *>) -> Unit,
     modifier: Modifier = Modifier,
     startPadding: Dp = 16.dp
 ) {
@@ -53,7 +52,7 @@ fun FiltersRow(
                 is Bool<*> -> {
                     FilterChip(
                         selected = it.filter.isEnabled,
-                        onClick = { onBoolFilterChange(it.filter.toggle()) },
+                        onClick = { onFilterChange(it.filter.toggle()) },
                         label = { Text(text = it.title) },
                         modifier = Modifier.padding(end = 8.dp),
                         leadingIcon = {
@@ -81,7 +80,7 @@ fun FiltersRow(
                             .testTag("filter_dates_range"),
                         leadingIcon = {
                             CloseButton(isVisible = it.filter.range != null) {
-                                onClearDatesFilter(it.filter.change(null))
+                                onFilterChange(it.filter.change(null))
                             }
                         }
                     )
@@ -95,7 +94,7 @@ fun FiltersRow(
                         modifier = Modifier.padding(end = 8.dp),
                         leadingIcon = {
                             CloseButton(isVisible = it.filter.values.isNotEmpty()) {
-                                onClearMultipleFilter(
+                                onFilterChange(
                                     (it.filter as Multiple<Any, *>).change(
                                         emptyList(),
                                         it.filter.possibleValues

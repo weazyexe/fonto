@@ -8,9 +8,6 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Newsline
@@ -59,14 +56,13 @@ class FeedViewModel(
                 },
                 scrollState = ScrollState(),
                 offset = 0,
-                filters = state.filters.takeIf { useCache },
                 isSwipeRefreshing = isSwipeRefreshing,
                 newslinePaginationState = PaginationState.IDLE
             )
         }
 
         val shouldUseMockFeeds = BuildConfig.BUILD_TYPE == "benchmark"
-        val newsline = request { getNewsline(state.filters, useCache, shouldUseMockFeeds) }
+        val newsline = request { getNewsline(useCache, shouldUseMockFeeds) }
             .withErrorHandling {
                 setState { copy(newslineLoadState = LoadState.Error(it)) }
             } ?: return@launch
@@ -77,8 +73,7 @@ class FeedViewModel(
                     copy(
                         newslineLoadState = LoadState.Data(data.asNewslineViewState()),
                         offset = state.offset + DEFAULT_LIMIT,
-                        isSwipeRefreshing = false,
-                        filters = data.filters
+                        isSwipeRefreshing = false
                     )
                 }
                 showNotLoadedSourcesError(data.loadedWithError.map { it.feed })
@@ -99,7 +94,7 @@ class FeedViewModel(
         setState { copy(newslinePaginationState = PaginationState.LOADING) }
 
         val newslineBatch = request {
-            getPaginatedNewsline(state.limit, state.offset, state.filters)
+            getPaginatedNewsline(state.limit, state.offset)
         }.withErrorHandling {
             setState { copy(newslinePaginationState = PaginationState.ERROR) }
         } ?: return@launch
@@ -121,44 +116,13 @@ class FeedViewModel(
                         } else {
                             PaginationState.PAGINATION_EXHAUST
                         },
-                        offset = state.offset + DEFAULT_LIMIT,
-                        filters = data.filters
+                        offset = state.offset + DEFAULT_LIMIT
                     )
                 }
             }
+
             is Newsline.Error -> {
                 setState { copy(newslinePaginationState = PaginationState.ERROR) }
-            }
-        }
-    }
-
-    fun applyFilters(updatedFilter: NewslineFilter) {
-        val newFilters = state.filters?.map {
-            when (it.javaClass) {
-                updatedFilter.javaClass -> updatedFilter
-                else -> it
-            }
-        }
-        setState { copy(filters = newFilters) }
-        loadNewsline(useCache = true)
-    }
-
-    fun openMultipleValuePicker(updatedFilter: NewslineFilter) {
-        when (updatedFilter) {
-            is ByFeed -> FeedEffect.OpenFeedPicker(
-                values = updatedFilter.values,
-                possibleValues = updatedFilter.possibleValues,
-                title = StringResources.feed_filters_sources
-            ).emit()
-
-            is ByCategory -> FeedEffect.OpenSourcePicker(
-                values = updatedFilter.values,
-                possibleValues = updatedFilter.possibleValues,
-                title = StringResources.feed_filters_categories
-            ).emit()
-
-            else -> {
-                // Do nothing
             }
         }
     }
