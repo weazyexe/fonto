@@ -84,7 +84,7 @@ class SearchViewModel(
     private fun loadFilteredPosts() = viewModelScope.launch {
         setState { copy(postsLoadState = LoadState.Loading()) }
 
-        val posts = request { getFilteredPosts(state.filters) }
+        val posts = request { getFilteredPosts(state.query, state.filters) }
             .withErrorHandling {
                 setState { copy(postsLoadState = LoadState.Error(it)) }
             }?.data ?: return@launch

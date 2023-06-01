@@ -16,7 +16,10 @@ class GetFilteredPostsUseCase(
     private val newslineRepository: NewslineRepository
 ) {
 
-    suspend operator fun invoke(filters: List<NewslineFilter>): List<Post> {
+    suspend operator fun invoke(
+        query: String,
+        filters: List<NewslineFilter>
+    ): List<Post> {
         val posts = newslineRepository.getAll()
 
         return posts.filter { post ->
@@ -27,7 +30,7 @@ class GetFilteredPostsUseCase(
                     is ByFeed -> post.filterByFeed(filter.values.map { it.id })
                     is ByPostDates -> post.filterByDates(filter.range)
                 }
-            }
+            } && post.containsQuery(query)
         }
     }
 
@@ -46,4 +49,10 @@ class GetFilteredPostsUseCase(
                 || isTheSameDate && publishedAt in range.from..(range.to + 1.days)
                 || publishedAt in range.from..range.to
     }
+
+    private fun Post.containsQuery(query: String): Boolean =
+        title.contains(query, ignoreCase = true)
+                || description.contains(query, ignoreCase = true)
+                || content?.contains(query, ignoreCase = true) == true
+                || feed.title.contains(query, ignoreCase = true)
 }
