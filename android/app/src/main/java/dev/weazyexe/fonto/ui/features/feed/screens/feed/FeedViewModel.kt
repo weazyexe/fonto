@@ -138,23 +138,7 @@ class FeedViewModel(
             } ?: return@launch
 
         val loadState = state.newslineLoadState as? LoadState.Data ?: return@launch
-        val updatedPosts = loadState.data.posts.map {
-            if (it.id == post.id) {
-                updatedPost
-            } else {
-                it
-            }
-        }
-
-        setState {
-            copy(
-                newslineLoadState = loadState.copy(
-                    data = loadState.data.copy(
-                        posts = updatedPosts
-                    )
-                )
-            )
-        }
+        setState { copy(newslineLoadState = loadState.update(updatedPost)) }
 
         FeedEffect.ShowMessage(
             message = if (updatedPost.isSaved) {
@@ -175,6 +159,12 @@ class FeedViewModel(
 
                 OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
             }
+
+            val updatedPost = post.copy(isRead = true)
+            request { updatePost(post = updatedPost.asPost()) }
+                .withErrorHandling {  }?.data ?: return@launch
+
+            setState { copy(newslineLoadState = state.newslineLoadState.update(updatedPost)) }
         }
     }
 
@@ -198,5 +188,25 @@ class FeedViewModel(
             .filter { it is AppEvent.RefreshFeed }
             .onEach { loadNewsline() }
             .launchInViewModelScope()
+    }
+
+    private fun LoadState<NewslineViewState>.update(post: PostViewState): LoadState<NewslineViewState> {
+        val data = (this as? LoadState.Data)?.data ?: return this
+        val updatedPosts = data.posts.updatePost(post)
+        return update(updatedPosts)
+    }
+
+    private fun LoadState.Data<NewslineViewState>.update(posts: List<PostViewState>): LoadState.Data<NewslineViewState> {
+        return copy(data = data.copy(posts = posts))
+    }
+
+    private fun List<PostViewState>.updatePost(post: PostViewState): List<PostViewState> {
+        return map {
+            if (it.id == post.id) {
+                post
+            } else {
+                it
+            }
+        }
     }
 }

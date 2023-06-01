@@ -17,7 +17,8 @@ fun ParsedFeed.Success.toPosts(): List<Post> =
             publishedAt = it.pubDate,
             feed = it.feed,
             isSaved = false,
-            link = it.link
+            link = it.link,
+            isRead = false
         )
     }
 
@@ -31,7 +32,8 @@ fun Post.toDao(): PostDao =
         publishedAt = publishedAt.epochSeconds,
         feedId = feed.id.origin,
         isSaved = isSaved.toString(),
-        link = link
+        link = link,
+        isRead = isRead.toString()
     )
 
 fun PostDao.toPost(feed: Feed): Post =
@@ -44,8 +46,9 @@ fun PostDao.toPost(feed: Feed): Post =
         publishedAt = Instant.fromEpochSeconds(publishedAt),
         feed = feed,
         isSaved = isSaved.toBooleanStrict(),
-        link = link
+        link = link,
+        isRead = isRead.toBooleanStrict()
     )
 
 private fun generateId(feedId: Long, postId: String): Post.Id =
-    Post.Id("SOURCE:$feedId|LINK:$postId")
+    Post.Id("SOURCE:$feedId|LINK:$postId".hashCode().toString())
