@@ -16,6 +16,7 @@ SELECT * FROM PostDao;
 getByFeedId:
 SELECT * FROM PostDao
 WHERE feedId IN ?
+ORDER BY publishedAt DESC
 LIMIT :limit OFFSET :offset;
 
 getPostById:
