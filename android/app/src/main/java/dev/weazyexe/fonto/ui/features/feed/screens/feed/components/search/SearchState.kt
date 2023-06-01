@@ -17,8 +17,13 @@ data class SearchState(
     val debouncedQuery: MutableStateFlow<String> = MutableStateFlow(""),
     val isActive: Boolean = false,
     val postsLoadState: LoadState<List<Post>> = LoadState.Data(emptyList()),
-    val filters: List<NewslineFilter> = emptyList()
-) : State
+    val filters: List<NewslineFilter> = emptyList(),
+    val initialFilters: List<NewslineFilter> = emptyList(),
+) : State {
+
+    val areFiltersChanged: Boolean
+        get() = filters != initialFilters
+}
 
 sealed interface SearchEffect : Effect {
 

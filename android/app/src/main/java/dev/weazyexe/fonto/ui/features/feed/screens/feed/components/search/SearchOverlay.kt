@@ -44,6 +44,7 @@ fun SearchOverlay(
         postsLoadState = state.postsLoadState,
         filters = state.filters,
         isActive = state.isActive,
+        areFiltersChanged = state.areFiltersChanged,
         contentPadding = contentPadding,
         onQueryChange = viewModel::onQueryChange,
         onSearch = {},

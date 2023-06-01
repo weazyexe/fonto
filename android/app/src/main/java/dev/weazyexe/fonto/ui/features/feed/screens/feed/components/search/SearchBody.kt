@@ -44,6 +44,7 @@ fun SearchBody(
     postsLoadState: LoadState<List<Post>>,
     filters: List<NewslineFilter>,
     isActive: Boolean,
+    areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
@@ -63,6 +64,7 @@ fun SearchBody(
             postsLoadState = postsLoadState,
             filters = filters,
             isActive = isActive,
+            areFiltersChanged = areFiltersChanged,
             contentPadding = contentPadding,
             onQueryChange = onQueryChange,
             onSearch = onSearch,
@@ -86,6 +88,7 @@ private fun SearchBarAndResults(
     isActive: Boolean,
     postsLoadState: LoadState<List<Post>>,
     filters: List<NewslineFilter>,
+    areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
@@ -140,7 +143,7 @@ private fun SearchBarAndResults(
                 is LoadState.Data -> {
                     val posts = postsLoadState.data
                     when {
-                        query.isEmpty() -> {
+                        query.isEmpty() && !areFiltersChanged -> {
                             EmptyQueryPane(
                                 modifier = Modifier
                                     .fillMaxWidth()

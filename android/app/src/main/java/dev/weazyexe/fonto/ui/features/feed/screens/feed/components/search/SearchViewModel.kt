@@ -78,7 +78,12 @@ class SearchViewModel(
 
     private fun loadFilters() = viewModelScope.launch {
         val filters = getFilters()
-        setState { copy(filters = filters) }
+        setState {
+            copy(
+                filters = filters,
+                initialFilters = filters
+            )
+        }
     }
 
     private fun loadFilteredPosts() = viewModelScope.launch {
