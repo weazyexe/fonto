@@ -9,10 +9,12 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.presentation.Effect
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.State
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Immutable
 data class SearchState(
     val query: String = "",
+    val debouncedQuery: MutableStateFlow<String> = MutableStateFlow(""),
     val isActive: Boolean = false,
     val postsLoadState: LoadState<List<Post>> = LoadState.Data(emptyList()),
     val filters: List<NewslineFilter> = emptyList()

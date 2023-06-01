@@ -39,6 +39,10 @@
     <string name="error_unknown_message">We faced with unexpected error. Please try to refresh the page</string>
     <string name="error_empty_default_title">Such an emptiness</string>,
     <string name="error_empty_default_message">You don\'t have any data we could show you</string>
+    <string name="error_empty_query_title">Search something</string>,
+    <string name="error_empty_query_message">Also you can use filters</string>
+    <string name="error_not_found_title">Not found</string>,
+    <string name="error_not_found_message">You can try to change the search query or remove some filters</string>
     <string name="error_pagination">Failed to fetch more data</string>
     <string name="error_pagination_exhausted">That\'s all folks!</string>
 

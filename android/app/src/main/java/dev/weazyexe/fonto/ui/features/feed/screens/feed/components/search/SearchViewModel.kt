@@ -10,6 +10,9 @@ import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -21,10 +24,12 @@ class SearchViewModel(
 
     init {
         loadFilters()
+        subscribeOnQueryChange()
     }
 
     fun onQueryChange(query: String) {
         setState { copy(query = query) }
+        state.debouncedQuery.value = query
     }
 
     fun onActiveChange(isActive: Boolean) {
@@ -85,5 +90,14 @@ class SearchViewModel(
             }?.data ?: return@launch
 
         setState { copy(postsLoadState = LoadState.Data(posts)) }
+    }
+
+    private fun subscribeOnQueryChange() {
+        state.debouncedQuery
+            .filter { it.isNotEmpty() }
+            .onEach { setState { copy(postsLoadState = LoadState.Loading()) } }
+            .debounce(500L)
+            .onEach { loadFilteredPosts() }
+            .launchInViewModelScope()
     }
 }

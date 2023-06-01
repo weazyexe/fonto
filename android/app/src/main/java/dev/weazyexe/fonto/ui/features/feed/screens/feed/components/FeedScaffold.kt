@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +38,7 @@ fun FeedScaffold(
     isSwipeRefreshing: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
     content: LazyListScope.() -> Unit
 ) {
     val density = LocalDensity.current
@@ -48,7 +50,8 @@ fun FeedScaffold(
     SwipeToRefresh(
         isRefreshing = isSwipeRefreshing,
         onRefresh = onRefresh,
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = contentPadding
     ) {
         Box(
             modifier = Modifier
@@ -72,7 +75,7 @@ fun FeedScaffold(
                         searchBarPaddingPx = it.size.height
                     }
             ) {
-                SearchOverlay()
+                SearchOverlay(contentPadding = contentPadding)
             }
 
             LazyColumn(state = lazyListState) {

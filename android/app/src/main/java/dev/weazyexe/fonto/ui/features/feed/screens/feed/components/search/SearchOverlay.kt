@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed.components.search
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,7 +25,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchOverlay(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues
 ) {
     val viewModel = koinViewModel<SearchViewModel>()
     val state by viewModel.uiState.collectAsState()
@@ -42,6 +44,7 @@ fun SearchOverlay(
         postsLoadState = state.postsLoadState,
         filters = state.filters,
         isActive = state.isActive,
+        contentPadding = contentPadding,
         onQueryChange = viewModel::onQueryChange,
         onSearch = {},
         onActiveChange = viewModel::onActiveChange,
