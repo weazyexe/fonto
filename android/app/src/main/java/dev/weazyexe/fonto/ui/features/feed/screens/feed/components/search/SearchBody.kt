@@ -25,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.filters.FiltersRow
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
@@ -37,13 +36,12 @@ import dev.weazyexe.fonto.ui.features.feed.components.panes.EmptyQueryPane
 import dev.weazyexe.fonto.ui.features.feed.components.panes.NotFoundPane
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostCompactItem
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
-import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewStates
 
 @Composable
 fun SearchBody(
     query: String,
-    postsLoadState: LoadState<List<Post>>,
+    postsLoadState: LoadState<List<PostViewState>>,
     filters: List<NewslineFilter>,
     isActive: Boolean,
     areFiltersChanged: Boolean,
@@ -54,6 +52,8 @@ fun SearchBody(
     onFilterChange: (NewslineFilter) -> Unit,
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit,
+    onPostClick: (PostViewState) -> Unit,
+    onPostSaveClick: (PostViewState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
@@ -74,6 +74,8 @@ fun SearchBody(
             onFilterChange = onFilterChange,
             openDateRangePickerDialog = openDateRangePickerDialog,
             openMultiplePickerDialog = openMultiplePickerDialog,
+            onPostClick = onPostClick,
+            onPostSaveClick = onPostSaveClick,
             modifier = Modifier.weight(1f)
         )
 
@@ -88,7 +90,7 @@ fun SearchBody(
 private fun SearchBarAndResults(
     query: String,
     isActive: Boolean,
-    postsLoadState: LoadState<List<Post>>,
+    postsLoadState: LoadState<List<PostViewState>>,
     filters: List<NewslineFilter>,
     areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
@@ -98,6 +100,8 @@ private fun SearchBarAndResults(
     onFilterChange: (NewslineFilter) -> Unit,
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit,
+    onPostClick: (PostViewState) -> Unit,
+    onPostSaveClick: (PostViewState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     SearchBar(
@@ -169,8 +173,10 @@ private fun SearchBarAndResults(
                         }
 
                         else -> PostsList(
-                            posts = posts.map { it.asViewState() },
-                            contentPadding = contentPadding
+                            posts = posts,
+                            contentPadding = contentPadding,
+                            onPostClick = onPostClick,
+                            onSaveClick = onPostSaveClick
                         )
                     }
                 }
@@ -184,7 +190,9 @@ private fun SearchBarAndResults(
 @Composable
 private fun PostsList(
     posts: List<PostViewState>,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    onPostClick: (PostViewState) -> Unit,
+    onSaveClick: (PostViewState) -> Unit
 ) {
     if (posts.isEmpty()) {
         NotFoundPane(modifier = Modifier.fillMaxSize())
@@ -196,8 +204,8 @@ private fun PostsList(
             ) { post ->
                 PostCompactItem(
                     post = post,
-                    onPostClick = {},
-                    onSaveClick = {}
+                    onPostClick = { onPostClick(post) },
+                    onSaveClick = { onSaveClick(post) }
                 )
             }
             item {

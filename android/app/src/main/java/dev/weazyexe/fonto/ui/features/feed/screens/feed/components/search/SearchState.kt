@@ -5,17 +5,17 @@ import androidx.compose.runtime.Immutable
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Category
-import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.presentation.Effect
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.State
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Immutable
 data class SearchState(
     val query: String = "",
     val debouncedQuery: MutableStateFlow<String> = MutableStateFlow(""),
-    val postsLoadState: LoadState<List<Post>> = LoadState.Data(emptyList()),
+    val postsLoadState: LoadState<List<PostViewState>> = LoadState.Data(emptyList()),
     val filters: List<NewslineFilter> = emptyList(),
     val initialFilters: List<NewslineFilter> = emptyList(),
 ) : State {

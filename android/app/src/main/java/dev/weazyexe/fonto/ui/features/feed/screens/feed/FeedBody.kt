@@ -86,10 +86,12 @@ fun FeedBody(
         lazyListState = lazyListState,
         snackbarHostState = snackbarHostState,
         isSwipeRefreshing = isSwipeRefreshing,
-        onRefresh = { onRefreshClick(true) },
-        contentPadding = rootPaddingValues,
         isSearchBarActive = isSearchBarActive,
-        onSearchBarActiveChange = onSearchBarActiveChange
+        onRefresh = { onRefreshClick(true) },
+        onSearchBarActiveChange = onSearchBarActiveChange,
+        onPostClick = onPostClick,
+        onPostSaveClick = onPostSaveClick,
+        contentPadding = rootPaddingValues
     ) {
         when (newslineLoadState) {
             is LoadState.Loading -> {

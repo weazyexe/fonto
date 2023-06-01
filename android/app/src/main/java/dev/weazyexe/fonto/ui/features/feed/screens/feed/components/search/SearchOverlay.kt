@@ -13,6 +13,7 @@ import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerArgs
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResults
@@ -27,6 +28,8 @@ import org.koin.androidx.compose.koinViewModel
 fun SearchOverlay(
     isActive: Boolean,
     onSearchBarActiveChange: (Boolean) -> Unit,
+    onPostClick: (PostViewState) -> Unit,
+    onPostSaveClick: (PostViewState) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
@@ -54,6 +57,11 @@ fun SearchOverlay(
         onFilterChange = viewModel::applyFilters,
         openDateRangePickerDialog = viewModel::openDateRangePicker,
         openMultiplePickerDialog = viewModel::openMultiplePicker,
+        onPostClick = onPostClick,
+        onPostSaveClick = {
+            onPostSaveClick(it)
+            viewModel.onPostSave(it)
+        },
         modifier = modifier
     )
 }

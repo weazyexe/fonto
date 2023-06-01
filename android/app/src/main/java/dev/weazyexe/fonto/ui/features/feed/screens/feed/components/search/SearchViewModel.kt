@@ -10,6 +10,8 @@ import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
+import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
@@ -72,6 +74,19 @@ class SearchViewModel(
         }
     }
 
+    fun onPostSave(post: PostViewState) {
+        (state.postsLoadState as? LoadState.Data)?.data?.let { posts ->
+            val updatedPosts = posts.map {
+                if (it.id == post.id) {
+                    it.copy(isSaved = !post.isSaved)
+                } else {
+                    it
+                }
+            }
+            setState { copy(postsLoadState = LoadState.Data(updatedPosts)) }
+        }
+    }
+
     private fun loadFilters() = viewModelScope.launch {
         val filters = getFilters()
         setState {
@@ -90,7 +105,7 @@ class SearchViewModel(
                 setState { copy(postsLoadState = LoadState.Error(it)) }
             }?.data ?: return@launch
 
-        setState { copy(postsLoadState = LoadState.Data(posts)) }
+        setState { copy(postsLoadState = LoadState.Data(posts.map { it.asViewState() })) }
     }
 
     private fun subscribeOnQueryChange() {

@@ -49,9 +49,15 @@ fun PostCompactItem(
     Row(
         modifier = modifier
             .clickable(onClick = onPostClick)
-            .padding(16.dp),
+            .padding(start = 8.dp, top = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        BookmarkButton(
+            isSaved = post.isSaved,
+            onClick = onSaveClick,
+            modifier = Modifier.padding(end = 8.dp)
+        )
+
         Column(modifier = Modifier.weight(2f)) {
             Text(
                 text = post.title,
