@@ -39,12 +39,14 @@ fun FeedBody(
     snackbarHostState: SnackbarHostState,
     paginationState: PaginationState,
     isSwipeRefreshing: Boolean,
+    isSearchBarActive: Boolean,
     onPostClick: (PostViewState) -> Unit,
     onPostSaveClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeedClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
-    fetchNextBatch: () -> Unit
+    fetchNextBatch: () -> Unit,
+    onSearchBarActiveChange: (Boolean) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -85,7 +87,9 @@ fun FeedBody(
         snackbarHostState = snackbarHostState,
         isSwipeRefreshing = isSwipeRefreshing,
         onRefresh = { onRefreshClick(true) },
-        contentPadding = rootPaddingValues
+        contentPadding = rootPaddingValues,
+        isSearchBarActive = isSearchBarActive,
+        onSearchBarActiveChange = onSearchBarActiveChange
     ) {
         when (newslineLoadState) {
             is LoadState.Loading -> {
@@ -139,12 +143,14 @@ private fun FeedBodyPreview() = ThemedPreview {
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,
         isSwipeRefreshing = false,
+        isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
         onScroll = {},
         onManageFeedClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {}
+        fetchNextBatch = {},
+        onSearchBarActiveChange = {}
     )
 }
 
@@ -176,11 +182,13 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,
         isSwipeRefreshing = false,
+        isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
         onScroll = {},
         onManageFeedClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {}
+        fetchNextBatch = {},
+        onSearchBarActiveChange = {}
     )
 }

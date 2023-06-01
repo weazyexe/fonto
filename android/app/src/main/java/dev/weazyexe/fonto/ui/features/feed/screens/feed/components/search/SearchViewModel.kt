@@ -32,10 +32,6 @@ class SearchViewModel(
         state.debouncedQuery.value = query
     }
 
-    fun onActiveChange(isActive: Boolean) {
-        setState { copy(isActive = isActive) }
-    }
-
     fun applyFilters(updatedFilter: NewslineFilter) {
         val newFilters = state.filters.map {
             when (it.javaClass) {

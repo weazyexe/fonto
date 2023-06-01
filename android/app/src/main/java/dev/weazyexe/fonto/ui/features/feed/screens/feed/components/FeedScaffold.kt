@@ -36,7 +36,9 @@ fun FeedScaffold(
     lazyListState: LazyListState,
     snackbarHostState: SnackbarHostState,
     isSwipeRefreshing: Boolean,
+    isSearchBarActive: Boolean,
     onRefresh: () -> Unit,
+    onSearchBarActiveChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     content: LazyListScope.() -> Unit
@@ -51,7 +53,8 @@ fun FeedScaffold(
         isRefreshing = isSwipeRefreshing,
         onRefresh = onRefresh,
         modifier = modifier,
-        contentPadding = contentPadding
+        contentPadding = contentPadding,
+        isEnabled = !isSearchBarActive
     ) {
         Box(
             modifier = Modifier
@@ -75,7 +78,11 @@ fun FeedScaffold(
                         searchBarPaddingPx = it.size.height
                     }
             ) {
-                SearchOverlay(contentPadding = contentPadding)
+                SearchOverlay(
+                    isActive = isSearchBarActive,
+                    onSearchBarActiveChange = onSearchBarActiveChange,
+                    contentPadding = contentPadding
+                )
             }
 
             LazyColumn(state = lazyListState) {

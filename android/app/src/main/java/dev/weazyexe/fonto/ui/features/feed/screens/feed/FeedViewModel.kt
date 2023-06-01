@@ -182,6 +182,10 @@ class FeedViewModel(
         setState { copy(scrollState = state) }
     }
 
+    fun onSearchBarActiveChange(isActive: Boolean) {
+        setState { copy(isSearchBarActive = isActive) }
+    }
+
     private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {
         if (problematicFeedList.isNotEmpty()) {
             val feedListString = problematicFeedList.joinToString { it.title }

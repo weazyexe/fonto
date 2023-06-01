@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Post
@@ -31,6 +32,7 @@ import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.panes.EmptyQueryPane
 import dev.weazyexe.fonto.ui.features.feed.components.panes.NotFoundPane
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostCompactItem
@@ -81,7 +83,7 @@ fun SearchBody(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchBarAndResults(
     query: String,
@@ -105,22 +107,29 @@ private fun SearchBarAndResults(
         active = isActive,
         onActiveChange = onActiveChange,
         modifier = modifier,
-        placeholder = { Text("Search posts") },
+        placeholder = { Text(stringResource(id = StringResources.feed_search_hint)) },
         leadingIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    painter = painterResource(id = DrawableResources.ic_search_24),
-                    contentDescription = null
-                )
+            ScaleAnimatedVisibility(isVisible = isActive) {
+                IconButton(onClick = { onActiveChange(false) }) {
+                    Icon(
+                        painter = painterResource(id = DrawableResources.ic_arrow_back_24),
+                        contentDescription = null
+                    )
+                }
+            }
+
+            ScaleAnimatedVisibility(isVisible = !isActive) {
+                IconButton(onClick = { onActiveChange(true) }) {
+                    Icon(
+                        painter = painterResource(id = DrawableResources.ic_search_24),
+                        contentDescription = null
+                    )
+                }
             }
         },
         trailingIcon = {
-            AnimatedVisibility(
-                visible = isActive,
-                enter = scaleIn(),
-                exit = scaleOut()
-            ) {
-                IconButton(onClick = { onActiveChange(false) }) {
+            ScaleAnimatedVisibility(isVisible = isActive && query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChange("") }) {
                     Icon(
                         painter = painterResource(id = DrawableResources.ic_close_24),
                         contentDescription = null
@@ -195,5 +204,17 @@ private fun PostsList(
                 Spacer(modifier = Modifier.size(contentPadding.calculateBottomPadding()))
             }
         }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun ScaleAnimatedVisibility(isVisible: Boolean, content: @Composable () -> Unit) {
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = scaleIn(),
+        exit = scaleOut()
+    ) {
+        content()
     }
 }

@@ -22,6 +22,7 @@ fun SwipeToRefresh(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
+    isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val state = rememberPullRefreshState(
@@ -30,7 +31,7 @@ fun SwipeToRefresh(
         refreshingOffset = PullRefreshDefaults.RefreshingOffset * 2
     )
 
-    Box(modifier.pullRefresh(state)) {
+    Box(modifier.pullRefresh(state, isEnabled)) {
         Column {
             content()
             Spacer(modifier = Modifier.size(contentPadding.calculateBottomPadding()))

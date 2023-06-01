@@ -25,6 +25,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchOverlay(
+    isActive: Boolean,
+    onSearchBarActiveChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
@@ -43,12 +45,12 @@ fun SearchOverlay(
         query = state.query,
         postsLoadState = state.postsLoadState,
         filters = state.filters,
-        isActive = state.isActive,
+        isActive = isActive,
         areFiltersChanged = state.areFiltersChanged,
         contentPadding = contentPadding,
         onQueryChange = viewModel::onQueryChange,
         onSearch = {},
-        onActiveChange = viewModel::onActiveChange,
+        onActiveChange = onSearchBarActiveChange,
         onFilterChange = viewModel::applyFilters,
         openDateRangePickerDialog = viewModel::openDateRangePicker,
         openMultiplePickerDialog = viewModel::openMultiplePicker,

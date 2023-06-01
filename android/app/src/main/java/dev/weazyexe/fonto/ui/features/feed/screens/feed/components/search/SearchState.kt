@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 data class SearchState(
     val query: String = "",
     val debouncedQuery: MutableStateFlow<String> = MutableStateFlow(""),
-    val isActive: Boolean = false,
     val postsLoadState: LoadState<List<Post>> = LoadState.Data(emptyList()),
     val filters: List<NewslineFilter> = emptyList(),
     val initialFilters: List<NewslineFilter> = emptyList(),

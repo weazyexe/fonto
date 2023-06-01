@@ -64,12 +64,14 @@ fun FeedScreen(
             snackbarHostState = snackbarHostState,
             paginationState = state.newslinePaginationState,
             isSwipeRefreshing = state.isSwipeRefreshing,
+            isSearchBarActive = state.isSearchBarActive,
             onPostClick = viewModel::openPost,
             onPostSaveClick = viewModel::savePost,
             onScroll = viewModel::onScroll,
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
             onRefreshClick = viewModel::loadNewsline,
             fetchNextBatch = viewModel::getNextPostsBatch,
+            onSearchBarActiveChange = viewModel::onSearchBarActiveChange
         )
     }
 }

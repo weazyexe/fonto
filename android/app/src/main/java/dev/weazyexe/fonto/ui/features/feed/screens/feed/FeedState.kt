@@ -18,6 +18,7 @@ data class FeedState(
     val isSwipeRefreshing: Boolean = false,
     val limit: Int = DEFAULT_LIMIT,
     val offset: Int = 0,
+    val isSearchBarActive: Boolean = false,
     val isBenchmarking: Boolean = BuildConfig.BUILD_TYPE == "benchmark"
 ) : State
 
