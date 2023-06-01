@@ -208,7 +208,7 @@ private fun PostsList(
                     onSaveClick = { onSaveClick(post) }
                 )
             }
-            item {
+            item(key = "bottom_padding") {
                 Spacer(modifier = Modifier.size(contentPadding.calculateBottomPadding()))
             }
         }

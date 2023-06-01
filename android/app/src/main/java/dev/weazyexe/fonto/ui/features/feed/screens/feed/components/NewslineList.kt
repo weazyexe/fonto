@@ -35,8 +35,6 @@ fun LazyListScope.NewslineList(
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
     fetchNextBatch: () -> Unit,
-    scope: LazyListScope,
-    modifier: Modifier = Modifier
 ) {
     val shouldStartPaginate by remember {
         derivedStateOf {
