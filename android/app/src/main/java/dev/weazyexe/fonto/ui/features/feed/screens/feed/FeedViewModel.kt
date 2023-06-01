@@ -153,12 +153,12 @@ class FeedViewModel(
         if (!state.isBenchmarking) {
             when (settingsStorage.getOpenPostPreference()) {
                 OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(
-                    post.link,
-                    settingsStorage.getTheme()
-                ).emit()
+                    link = post.link,
+                    theme = settingsStorage.getTheme()
+                )
 
-                OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link).emit()
-            }
+                OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link)
+            }.emit()
 
             val updatedPost = post.copy(isRead = true)
             request { updatePost(post = updatedPost.asPost()) }
