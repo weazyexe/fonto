@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
@@ -91,20 +93,21 @@ fun FeedBody(
     ) {
         when (newslineLoadState) {
             is LoadState.Loading -> {
-                item {
-                    LoadingPane()
+                item("loading") {
+                    LoadingPane(modifier = Modifier.fillMaxSize())
                 }
             }
 
             is LoadState.Error -> {
-                item {
+                item("error") {
                     ErrorPane(
                         params = newslineLoadState.error.asErrorPaneParams(
                             action = ErrorPaneParams.Action(
                                 title = StringResources.error_pane_refresh,
                                 onClick = { onRefreshClick(false) }
                             )
-                        )
+                        ),
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }

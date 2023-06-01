@@ -151,7 +151,7 @@ private fun SearchBarAndResults(
             )
 
             when (postsLoadState) {
-                is LoadState.Loading -> LoadingPane()
+                is LoadState.Loading -> LoadingPane(modifier = Modifier.fillMaxSize())
                 is LoadState.Error -> ErrorPane(params = postsLoadState.error.asErrorPaneParams())
                 is LoadState.Data -> {
                     val posts = postsLoadState.data

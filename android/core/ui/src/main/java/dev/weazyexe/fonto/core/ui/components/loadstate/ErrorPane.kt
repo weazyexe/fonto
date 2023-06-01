@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import dev.weazyexe.fonto.core.ui.theme.EmojiFont
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 
@@ -34,8 +36,9 @@ fun ErrorPane(
         Text(
             text = params.emoji,
             modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.displayLarge,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontFamily = EmojiFont,
+            fontSize = 56.sp
         )
 
         Text(

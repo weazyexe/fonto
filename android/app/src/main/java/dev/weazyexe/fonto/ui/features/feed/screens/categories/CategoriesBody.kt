@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.categories
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -90,7 +91,7 @@ fun CategoriesBody(
             onError = {
                 ErrorPane(it.error.asErrorPaneParams())
             },
-            onLoading = { LoadingPane() }
+            onLoading = { LoadingPane(modifier = Modifier.fillMaxSize()) }
         )
     }
 }

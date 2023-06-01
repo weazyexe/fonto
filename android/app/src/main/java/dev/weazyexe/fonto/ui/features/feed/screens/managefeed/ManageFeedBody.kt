@@ -3,8 +3,10 @@ package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Divider
@@ -30,10 +32,11 @@ import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
-import dev.weazyexe.fonto.core.ui.components.loadstate.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
+import dev.weazyexe.fonto.core.ui.presentation.ResponseError
+import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedItem
@@ -76,21 +79,33 @@ fun ManageFeedBody(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        LoadStateComponent(
-            loadState = feedsLoadState,
-            onSuccess = {
-                FeedList(
-                    list = it,
-                    padding = padding,
-                    onClick = onClick,
-                    onDeleteClick = onDeleteClick
+        when (feedsLoadState) {
+            is LoadState.Error -> {
+                ErrorPane(
+                    params = feedsLoadState.error.asErrorPaneParams(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
                 )
-            },
-            onError = {
-                ErrorPane(it.error.asErrorPaneParams())
-            },
-            onLoading = { LoadingPane() }
-        )
+            }
+
+            is LoadState.Loading -> {
+                LoadingPane(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                )
+            }
+
+            is LoadState.Data -> {
+                FeedList(
+                    list = feedsLoadState.data,
+                    onClick = onClick,
+                    onDeleteClick = onDeleteClick,
+                    padding = padding
+                )
+            }
+        }
     }
 }
 
@@ -128,13 +143,16 @@ private fun FeedList(
             }
         }
     } else {
-        ErrorPane(params = ErrorPaneParams.empty())
+        ErrorPane(
+            params = ErrorPaneParams.empty(),
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
 @Preview
 @Composable
-private fun ManageFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
+private fun ManageFeedBodyPreview() = ThemedPreview {
     ManageFeedBody(
         feedsLoadState = LoadState.Data(
             listOf(
@@ -142,6 +160,32 @@ private fun ManageFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPre
                 FeedViewStatePreview.noIcon,
             )
         ),
+        snackbarHostState = SnackbarHostState(),
+        onAddClick = {},
+        onBackClick = {},
+        onClick = {},
+        onDeleteClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun ManageFeedBodyEmptyPreview() = ThemedPreview {
+    ManageFeedBody(
+        feedsLoadState = LoadState.Data(emptyList()),
+        snackbarHostState = SnackbarHostState(),
+        onAddClick = {},
+        onBackClick = {},
+        onClick = {},
+        onDeleteClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun ManageFeedBodyErrorPreview() = ThemedPreview {
+    ManageFeedBody(
+        feedsLoadState = LoadState.Error(ResponseError.NoInternetError()),
         snackbarHostState = SnackbarHostState(),
         onAddClick = {},
         onBackClick = {},
