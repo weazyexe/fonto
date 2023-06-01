@@ -5,6 +5,7 @@ import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
+import dev.weazyexe.fonto.common.feature.newsline.ByRead
 import dev.weazyexe.fonto.common.feature.newsline.BySaved
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Category
@@ -26,6 +27,7 @@ class GetFilteredPostsUseCase(
             filters.all { filter ->
                 when (filter) {
                     is BySaved -> post.filterBySaved(filter.isEnabled)
+                    is ByRead -> post.filterByRead(filter.isEnabled)
                     is ByCategory -> post.filterByCategory(filter.values)
                     is ByFeed -> post.filterByFeed(filter.values.map { it.id })
                     is ByPostDates -> post.filterByDates(filter.range)
@@ -36,6 +38,9 @@ class GetFilteredPostsUseCase(
 
     private fun Post.filterBySaved(isFilterEnabled: Boolean): Boolean =
         !isFilterEnabled || isSaved
+
+    private fun Post.filterByRead(isFilterEnabled: Boolean): Boolean =
+        !isFilterEnabled || isRead
 
     private fun Post.filterByCategory(categories: List<Category>): Boolean =
         categories.isEmpty() || feed.category in categories

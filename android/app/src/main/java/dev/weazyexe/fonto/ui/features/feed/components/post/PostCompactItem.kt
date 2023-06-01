@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,7 +72,8 @@ fun PostCompactItem(
             PostFooter(
                 icon = post.feed.icon?.asBitmap()?.asImageBitmap(),
                 feedTitle = post.feed.title,
-                publishedAt = post.publishedAt.formatHumanFriendly()
+                publishedAt = post.publishedAt.formatHumanFriendly(),
+                isRead = post.isRead
             )
         }
 
@@ -113,6 +115,7 @@ private fun PostFooter(
     icon: ImageBitmap?,
     feedTitle: String,
     publishedAt: String,
+    isRead: Boolean
 ) {
     Row {
         if (icon != null) {
@@ -127,11 +130,20 @@ private fun PostFooter(
 
         Text(
             text = buildBottomLabel(feedTitle, publishedAt),
-            modifier = Modifier.padding(end = 8.dp),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
             maxLines = 1
         )
+
+        if (isRead) {
+            Icon(
+                painter = painterResource(id = DrawableResources.ic_done_all_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(16.dp)
+                    .padding(start = 4.dp)
+            )
+        }
     }
 }
 

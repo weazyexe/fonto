@@ -17,6 +17,7 @@ data class PostViewState(
     val publishedAt: Instant,
     val feed: Feed,
     val isSaved: Boolean,
+    val isRead: Boolean,
 )
 
 @Stable
@@ -29,7 +30,8 @@ fun Post.asViewState() = PostViewState(
     imageUrl = imageUrl,
     publishedAt = publishedAt,
     feed = feed,
-    isSaved = isSaved
+    isSaved = isSaved,
+    isRead = isRead
 )
 
 @Stable
@@ -42,5 +44,6 @@ fun PostViewState.asPost() = Post(
     imageUrl = imageUrl,
     publishedAt = publishedAt,
     feed = feed,
-    isSaved = isSaved
+    isSaved = isSaved,
+    isRead = isRead
 )

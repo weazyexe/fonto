@@ -60,6 +60,7 @@
     <string name="feed_post_saving_error">Failed to save the post to bookmarks. Please try again</string>
     <string name="feed_post_removing_from_bookmarks_error">Failed to remove the post from bookmarks. Please try again</string>
     <string name="feed_filters_bookmarks">Bookmarks</string>
+    <string name="feed_filters_read">Read posts</string>
     <string name="feed_filters_dates">Dates</string>
     <string name="feed_filters_dates_value">%s — %s</string>
     <string name="feed_filters_sources">Sources</string>

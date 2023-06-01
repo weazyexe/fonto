@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
@@ -24,6 +26,7 @@ import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchOverlay(
     isActive: Boolean,
@@ -33,6 +36,8 @@ fun SearchOverlay(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val viewModel = koinViewModel<SearchViewModel>()
     val state by viewModel.uiState.collectAsState()
 
@@ -52,7 +57,7 @@ fun SearchOverlay(
         areFiltersChanged = state.areFiltersChanged,
         contentPadding = contentPadding,
         onQueryChange = viewModel::onQueryChange,
-        onSearch = {},
+        onSearch = { keyboardController?.hide() },
         onActiveChange = onSearchBarActiveChange,
         onFilterChange = viewModel::applyFilters,
         openDateRangePickerDialog = viewModel::openDateRangePicker,

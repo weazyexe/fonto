@@ -19,6 +19,15 @@ data class BySaved(
     }
 }
 
+data class ByRead(
+    override val isEnabled: Boolean
+) : Bool<ByRead>, NewslineFilter {
+
+    override fun toggle(): ByRead {
+        return ByRead(!isEnabled)
+    }
+}
+
 data class ByPostDates(
     override val range: Dates.Range?
 ) : Dates<ByPostDates>, NewslineFilter {
@@ -56,6 +65,7 @@ data class ByCategory(
 
 val NewslineFilters = listOf(
     BySaved(isEnabled = false),
+    ByRead(isEnabled = false),
     ByPostDates(range = null),
     ByFeed(values = emptyList(), possibleValues = emptyList()),
     ByCategory(values = emptyList(), possibleValues = emptyList())
