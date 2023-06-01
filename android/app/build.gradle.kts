@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = libs.versions.applicationId.get()
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdkPreview = libs.versions.targetSdk.get()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
