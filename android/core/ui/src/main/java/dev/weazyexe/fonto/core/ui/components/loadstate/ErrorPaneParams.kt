@@ -57,6 +57,34 @@ class ErrorPaneParams private constructor(
             emoji = emoji,
             action = action
         )
+
+        @Stable
+        @Composable
+        fun emptyQuery(
+            @StringRes title: Int = StringResources.error_empty_query_title,
+            @StringRes message: Int = StringResources.error_empty_query_message,
+            emoji: String = "\uD83D\uDD0D",
+            action: Action? = null
+        ) = ErrorPaneParams(
+            title = stringResource(id = title),
+            message = stringResource(id = message),
+            emoji = emoji,
+            action = action
+        )
+
+        @Stable
+        @Composable
+        fun notFound(
+            @StringRes title: Int = StringResources.error_not_found_title,
+            @StringRes message: Int = StringResources.error_not_found_message,
+            emoji: String = "\uD83E\uDEB9",
+            action: Action? = null
+        ) = ErrorPaneParams(
+            title = stringResource(id = title),
+            message = stringResource(id = message),
+            emoji = emoji,
+            action = action
+        )
     }
 }
 

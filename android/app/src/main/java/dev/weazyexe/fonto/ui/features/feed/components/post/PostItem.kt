@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -23,7 +21,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +29,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
-import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedIcon
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
@@ -112,21 +108,10 @@ private fun ColumnScope.PostTitle(
             )
         }
 
-        IconButton(
-            onClick = onSaveClick,
-            modifier = Modifier.size(48.dp)
-        ) {
-            Icon(
-                painter = painterResource(
-                    id = if (isSaved) {
-                        DrawableResources.ic_bookmark_added_24
-                    } else {
-                        DrawableResources.ic_bookmark_24
-                    }
-                ),
-                contentDescription = null
-            )
-        }
+        BookmarkButton(
+            isSaved = isSaved,
+            onClick = onSaveClick
+        )
     }
 }
 

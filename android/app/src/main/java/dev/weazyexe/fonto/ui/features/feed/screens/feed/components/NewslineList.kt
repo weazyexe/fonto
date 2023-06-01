@@ -1,7 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed.components
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.PaginationFooter
@@ -26,7 +25,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 
 @Composable
-fun NewslineList(
+fun LazyListScope.NewslineList(
     newsline: NewslineViewState,
     lazyListState: LazyListState,
     scrollState: ScrollState,
@@ -36,7 +35,6 @@ fun NewslineList(
     onScroll: (ScrollState) -> Unit,
     onManageFeed: () -> Unit,
     fetchNextBatch: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     val shouldStartPaginate by remember {
         derivedStateOf {
@@ -70,38 +68,72 @@ fun NewslineList(
         lazyListState.scrollToItem(scrollState.item, scrollState.offset)
     }
 
-    LazyColumn(
-        state = lazyListState,
-        modifier = modifier.testTag("newsline_list")
-    ) {
-        if (newsline.posts.isEmpty()) {
-            item(key = "error pane") {
-                ErrorPane(
-                    params = ErrorPaneParams.empty(
-                        message = StringResources.feed_empty_newsline,
-                        action = ErrorPaneParams.Action(
-                            title = StringResources.feed_empty_newsline_manage_feed,
-                            onClick = onManageFeed
-                        )
+    if (newsline.posts.isEmpty()) {
+        item(key = "error pane") {
+            ErrorPane(
+                params = ErrorPaneParams.empty(
+                    message = StringResources.feed_empty_newsline,
+                    action = ErrorPaneParams.Action(
+                        title = StringResources.feed_empty_newsline_manage_feed,
+                        onClick = onManageFeed
                     )
                 )
-            }
-        } else {
-            items(items = newsline.posts, key = { it.id.origin }) {
-                PostItem(
-                    post = it,
-                    onPostClick = { onPostClick(it) },
-                    onSaveClick = { onPostSaveClick(it) },
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-            }
+            )
+        }
+    } else {
+        items(items = newsline.posts, key = { it.id.origin }) {
+            PostItem(
+                post = it,
+                onPostClick = { onPostClick(it) },
+                onSaveClick = { onPostSaveClick(it) },
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
 
-            item(key = "footer") {
-                PaginationFooter(
-                    state = paginationState,
-                    onRefresh = fetchNextBatch
+        item(key = "footer") {
+            PaginationFooter(
+                state = paginationState,
+                onRefresh = fetchNextBatch
+            )
+        }
+    }
+}
+
+fun LazyListScope.buildNewsline(
+    newsline: NewslineViewState,
+    paginationState: PaginationState,
+    onManageFeed: () -> Unit,
+    onPostClick: (PostViewState) -> Unit,
+    onPostSaveClick: (PostViewState) -> Unit,
+    fetchNextBatch: () -> Unit
+) {
+    if (newsline.posts.isEmpty()) {
+        item(key = "error pane") {
+            ErrorPane(
+                params = ErrorPaneParams.empty(
+                    message = StringResources.feed_empty_newsline,
+                    action = ErrorPaneParams.Action(
+                        title = StringResources.feed_empty_newsline_manage_feed,
+                        onClick = onManageFeed
+                    )
                 )
-            }
+            )
+        }
+    } else {
+        items(items = newsline.posts, key = { it.id.origin }) {
+            PostItem(
+                post = it,
+                onPostClick = { onPostClick(it) },
+                onSaveClick = { onPostSaveClick(it) },
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        item(key = "footer") {
+            PaginationFooter(
+                state = paginationState,
+                onRefresh = fetchNextBatch
+            )
         }
     }
 }

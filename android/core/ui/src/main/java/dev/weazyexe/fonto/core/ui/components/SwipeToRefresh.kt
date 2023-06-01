@@ -1,7 +1,12 @@
 package dev.weazyexe.fonto.core.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshDefaults
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -16,15 +21,21 @@ fun SwipeToRefresh(
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+    isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val state = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = onRefresh
+        onRefresh = onRefresh,
+        refreshingOffset = PullRefreshDefaults.RefreshingOffset * 2
     )
 
-    Box(modifier.pullRefresh(state)) {
-        content()
+    Box(modifier.pullRefresh(state, isEnabled)) {
+        Column {
+            content()
+            Spacer(modifier = Modifier.size(contentPadding.calculateBottomPadding()))
+        }
         PullRefreshIndicator(
             refreshing = isRefreshing,
             state = state,

@@ -7,8 +7,8 @@ import dev.weazyexe.fonto.common.feature.filter.Multiple
 import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
+import dev.weazyexe.fonto.common.feature.newsline.BySaved
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.common.feature.newsline.OnlyBookmarksFilter
 import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DATE_FORMAT
 import dev.weazyexe.fonto.common.utils.format
 import dev.weazyexe.fonto.core.ui.components.filters.FilterViewState
@@ -20,7 +20,7 @@ fun List<NewslineFilter>.asViewStates(): List<FilterViewState<NewslineFilter>> =
     FilterViewState(
         filter = filter,
         title = when (filter) {
-            is OnlyBookmarksFilter -> stringResource(StringResources.feed_filters_bookmarks)
+            is BySaved -> stringResource(StringResources.feed_filters_bookmarks)
             is ByPostDates -> {
                 val range = filter.range
                 when {

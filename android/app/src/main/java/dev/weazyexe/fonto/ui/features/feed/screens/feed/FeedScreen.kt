@@ -5,30 +5,27 @@ import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
-import dev.weazyexe.fonto.common.feature.filter.Dates
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
-import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
-import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
-import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
-import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerArgs
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
-import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerArgs
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResults
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResults
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResults
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavigateTo
 import dev.weazyexe.fonto.ui.features.home.dependencies.CategoryPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.util.handleResults
+import kotlinx.coroutines.flow.Flow
 
 @BottomBarNavGraph(start = true)
 @Destination
@@ -52,42 +49,40 @@ fun FeedScreen(
         }
     }
 
-    dateRangePickerResultRecipientProvider.invoke().handleResults { result ->
-        result?.let {
-            viewModel.applyFilters(
-                ByPostDates(
-                    range = Dates.Range(
-                        from = it.from,
-                        to = it.to
-                    )
-                )
-            )
-        }
-    }
+    HandleEffects(effects = viewModel.effects, snackbarHostState = snackbarHostState)
 
-    feedPickerResults.invoke().handleResults { result ->
-        result?.let { result ->
-            viewModel.applyFilters(
-                ByFeed(
-                    values = result.values,
-                    possibleValues = result.possibleValues
-                )
-            )
-        }
+    CompositionLocalProvider(
+        LocalNavigateTo provides navigateTo,
+        LocalDateRangePickerResults provides dateRangePickerResultRecipientProvider,
+        LocalFeedPickerResults provides feedPickerResults,
+        LocalCategoryPickerResults provides categoryPickerResults
+    ) {
+        FeedBody(
+            newslineLoadState = state.newslineLoadState,
+            scrollState = state.scrollState,
+            rootPaddingValues = rootPaddingValues,
+            snackbarHostState = snackbarHostState,
+            paginationState = state.newslinePaginationState,
+            isSwipeRefreshing = state.isSwipeRefreshing,
+            isSearchBarActive = state.isSearchBarActive,
+            onPostClick = viewModel::openPost,
+            onPostSaveClick = viewModel::savePost,
+            onScroll = viewModel::onScroll,
+            onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
+            onRefreshClick = viewModel::loadNewsline,
+            fetchNextBatch = viewModel::getNextPostsBatch,
+            onSearchBarActiveChange = viewModel::onSearchBarActiveChange
+        )
     }
+}
 
-    categoryPickerResults.invoke().handleResults {
-        it?.let { result ->
-            viewModel.applyFilters(
-                ByCategory(
-                    values = result.values,
-                    possibleValues = result.possibleValues
-                )
-            )
-        }
-    }
-
-    ReceiveEffect(viewModel.effects) {
+@Composable
+private fun HandleEffects(
+    effects: Flow<FeedEffect>,
+    snackbarHostState: SnackbarHostState
+) {
+    val context = LocalContext.current
+    ReceiveEffect(effects) {
         when (this) {
             is FeedEffect.ShowMessage -> {
                 snackbarHostState.showSnackbar(context.getString(message, *args))
@@ -101,50 +96,6 @@ fun FeedScreen(
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                 context.startActivity(intent)
             }
-
-            is FeedEffect.OpenFeedPicker -> {
-                navigateTo(
-                    FeedPickerDialogDestination(
-                        args = FeedPickerArgs(
-                            values = values,
-                            possibleValues = possibleValues,
-                            title = title
-                        )
-                    )
-                )
-            }
-
-            is FeedEffect.OpenSourcePicker -> {
-                navigateTo(
-                    CategoryPickerDialogDestination(
-                        args = CategoryPickerArgs(
-                            values = values,
-                            possibleValues = possibleValues,
-                            title = title
-                        )
-                    )
-                )
-            }
         }
     }
-
-    FeedBody(
-        newslineLoadState = state.newslineLoadState,
-        filters = state.filters,
-        scrollState = state.scrollState,
-        rootPaddingValues = rootPaddingValues,
-        snackbarHostState = snackbarHostState,
-        paginationState = state.newslinePaginationState,
-        isSwipeRefreshing = state.isSwipeRefreshing,
-        onPostClick = viewModel::openPost,
-        onPostSaveClick = viewModel::savePost,
-        onScroll = viewModel::onScroll,
-        onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
-        onSearchClick = {},
-        onRefreshClick = viewModel::loadNewsline,
-        fetchNextBatch = viewModel::getNextPostsBatch,
-        onFilterChange = viewModel::applyFilters,
-        openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) },
-        openMultiplePickerDialog = viewModel::openMultipleValuePicker
-    )
 }
