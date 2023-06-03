@@ -242,6 +242,7 @@ class SettingsViewModel(
 
         setState { copy(isLoading = false) }
         SettingsEffect.ShowMessage(StringResources.settings_import_fonto_successful).emit()
+        eventBus.emit(AppEvent.RefreshFeed)
     }
 
     private suspend fun onOpenPostChanged(preference: Preference.Switch, value: Boolean) {
