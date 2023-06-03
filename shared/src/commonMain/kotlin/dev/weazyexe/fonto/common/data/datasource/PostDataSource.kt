@@ -8,7 +8,7 @@ import dev.weazyexe.fonto.common.utils.flowList
 import dev.weazyexe.fonto.db.FontoDatabase
 import kotlinx.coroutines.flow.Flow
 
-class NewslineDataSource(database: FontoDatabase) {
+class PostDataSource(database: FontoDatabase) {
 
     private val queries = database.postDaoQueries
 

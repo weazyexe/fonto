@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.common.data.usecase.newsline
 import dev.weazyexe.fonto.common.data.mapper.toPosts
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
-import dev.weazyexe.fonto.common.data.repository.NewslineRepository
+import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.feature.debug.VALID_FEED
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
@@ -15,7 +15,7 @@ import kotlinx.coroutines.coroutineScope
 
 class GetNewslineUseCase(
     private val feedRepository: FeedRepository,
-    private val newslineRepository: NewslineRepository,
+    private val postRepository: PostRepository,
     private val rssRepository: RssRepository,
     private val atomRepository: AtomRepository
 ) {
@@ -52,11 +52,11 @@ class GetNewslineUseCase(
                     }
                 }
             }
-            .forEach { newslineRepository.insertOrIgnore(it) }
+            .forEach { postRepository.insertOrIgnore(it) }
 
         return if (feeds.isEmpty() || problematicFeedList.size != feeds.size) {
             Newsline.Success(
-                posts = newslineRepository.getPosts(
+                posts = postRepository.getPosts(
                     limit = 20,
                     offset = 0
                 ),

@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.data.usecase.newsline
 
-import dev.weazyexe.fonto.common.data.repository.NewslineRepository
+import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
@@ -14,14 +14,14 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import kotlin.time.Duration.Companion.days
 
 class GetFilteredPostsUseCase(
-    private val newslineRepository: NewslineRepository
+    private val postRepository: PostRepository
 ) {
 
     suspend operator fun invoke(
         query: String,
         filters: List<NewslineFilter>
     ): List<Post> {
-        val posts = newslineRepository.getAll()
+        val posts = postRepository.getAll()
 
         return posts.filter { post ->
             filters.all { filter ->

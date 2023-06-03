@@ -13,6 +13,8 @@ class CategoryDataSource(database: FontoDatabase) {
 
     fun getById(id: Long): CategoryDao = queries.getById(id).executeAsOne()
 
+    fun getByIdOrNull(id: Long): CategoryDao? = queries.getById(id).executeAsOneOrNull()
+
     fun insert(title: String) = queries.insert(title)
 
     fun update(category: CategoryDao) = queries.update(category)

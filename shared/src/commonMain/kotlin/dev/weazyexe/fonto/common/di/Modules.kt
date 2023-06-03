@@ -9,15 +9,16 @@ import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
 import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
 import dev.weazyexe.fonto.common.data.datasource.FeedDataSource
 import dev.weazyexe.fonto.common.data.datasource.IconDataSource
-import dev.weazyexe.fonto.common.data.datasource.NewslineDataSource
+import dev.weazyexe.fonto.common.data.datasource.PostDataSource
 import dev.weazyexe.fonto.common.data.datasource.RssDataSource
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.CategoryRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.IconRepository
-import dev.weazyexe.fonto.common.data.repository.NewslineRepository
+import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.backup.GetBackupDataUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
@@ -118,20 +119,25 @@ internal val feedModule = module {
     single { GetFeedTypeUseCase(get(), get()) }
 }
 
-internal val newslineModule = module {
+internal val postModule = module {
     includes(coreModule)
     includes(rssModule)
     includes(atomModule)
     includes(feedModule)
 
-    single { NewslineDataSource(get()) }
-    single { NewslineRepository(get(), get(), get()) }
+    single { PostDataSource(get()) }
+    single { PostRepository(get(), get(), get()) }
     single { GetNewslineUseCase(get(), get(), get(), get()) }
     single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
     single { GetPaginatedNewslineUseCase(get()) }
     single { GetPostUseCase(get(), get()) }
     single { UpdatePostUseCase(get()) }
+}
+
+internal val backupModule = module {
+    includes(coreModule, feedModule, categoryModule, postModule)
+    single { GetBackupDataUseCase(get(), get(), get()) }
 }
 
 internal val initializerModule = module {
@@ -149,6 +155,7 @@ fun appModules(): List<Module> =
         iconModule,
         rssModule,
         atomModule,
-        newslineModule,
-        categoryModule
+        postModule,
+        categoryModule,
+        backupModule
     )

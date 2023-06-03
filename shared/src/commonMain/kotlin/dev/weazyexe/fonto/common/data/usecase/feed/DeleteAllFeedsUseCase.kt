@@ -1,15 +1,15 @@
 package dev.weazyexe.fonto.common.data.usecase.feed
 
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
-import dev.weazyexe.fonto.common.data.repository.NewslineRepository
+import dev.weazyexe.fonto.common.data.repository.PostRepository
 
 class DeleteAllFeedsUseCase(
     private val feedRepository: FeedRepository,
-    private val newslineRepository: NewslineRepository
+    private val postRepository: PostRepository
 ) {
 
     operator fun invoke() {
         feedRepository.deleteAll()
-        newslineRepository.deleteAll()
+        postRepository.deleteAll()
     }
 }

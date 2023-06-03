@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.data.repository
 
-import dev.weazyexe.fonto.common.data.datasource.NewslineDataSource
+import dev.weazyexe.fonto.common.data.datasource.PostDataSource
 import dev.weazyexe.fonto.common.data.mapper.toDao
 import dev.weazyexe.fonto.common.data.mapper.toPost
 import dev.weazyexe.fonto.common.db.PostDao
@@ -11,15 +11,15 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.coroutines.flow.first
 
-class NewslineRepository(
-    private val newslineDataSource: NewslineDataSource,
+class PostRepository(
+    private val postDataSource: PostDataSource,
     private val feedRepository: FeedRepository,
     private val categoryRepository: CategoryRepository,
 ) {
 
     suspend fun getAll(): List<Post> {
         val feeds = feedRepository.getAll()
-        val postDaos = newslineDataSource.getAll().first()
+        val postDaos = postDataSource.getAll().first()
         return postDaos.mergeWithFeeds(feeds)
     }
 
@@ -28,7 +28,7 @@ class NewslineRepository(
         offset: Int
     ): List<Post> {
         val feeds = feedRepository.getAll()
-        val postDaos = newslineDataSource.getPosts(
+        val postDaos = postDataSource.getPosts(
             feeds = feeds,
             limit = limit.toLong(),
             offset = offset.toLong()
@@ -38,22 +38,22 @@ class NewslineRepository(
     }
 
     fun getPostById(id: Post.Id, feed: Feed): Post =
-        newslineDataSource.getPostById(id.origin).toPost(feed)
+        postDataSource.getPostById(id.origin).toPost(feed)
 
-    fun insertOrUpdate(post: Post) = newslineDataSource.insertOrUpdate(post.toDao())
+    fun insertOrUpdate(post: Post) = postDataSource.insertOrUpdate(post.toDao())
 
-    fun insertOrIgnore(post: Post) = newslineDataSource.insertOrIgnore(post.toDao())
+    fun insertOrIgnore(post: Post) = postDataSource.insertOrIgnore(post.toDao())
 
-    fun delete(id: String) = newslineDataSource.delete(id)
+    fun delete(id: String) = postDataSource.delete(id)
 
-    fun deletePostsFromFeed(feedId: Long) = newslineDataSource.deletePostsFromFeed(feedId)
+    fun deletePostsFromFeed(feedId: Long) = postDataSource.deletePostsFromFeed(feedId)
 
-    fun deleteAll() = newslineDataSource.deleteAll()
+    fun deleteAll() = postDataSource.deleteAll()
 
     suspend fun composeFilters(): List<NewslineFilter> {
         val feeds = feedRepository.getAll()
         val categories = categoryRepository.getAll()
-        return newslineDataSource
+        return postDataSource
             .getDefaultFilters()
             .map { filter ->
                 when (filter) {
