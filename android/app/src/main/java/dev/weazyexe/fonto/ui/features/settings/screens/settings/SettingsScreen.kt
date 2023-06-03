@@ -63,6 +63,7 @@ fun SettingsScreen(
 
     SettingsBody(
         settings = state.preferences,
+        isLoading = state.isLoading,
         hiddenPreferences = state.hiddenPreferences,
         rootPaddingValues = rootPaddingValues,
         snackbarHostState = snackbarHostState,

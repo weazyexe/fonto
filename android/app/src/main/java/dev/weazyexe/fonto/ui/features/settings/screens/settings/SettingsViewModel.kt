@@ -193,16 +193,21 @@ class SettingsViewModel(
     }
 
     fun saveFile(uri: Uri) = viewModelScope.launch {
+        setState { copy(isLoading = true) }
+
         val exportData = request { getExportData() }
             .withErrorHandling {
+                setState { copy(isLoading = false) }
                 SettingsEffect.ShowMessage(StringResources.settings_export_fonto_data_preparation_failed).emit()
             }?.data ?: return@launch
 
         request { AndroidFileSaver(context, uri).save(exportData.toByteArray()) }
             .withErrorHandling {
+                setState { copy(isLoading = false) }
                 SettingsEffect.ShowMessage(StringResources.settings_export_fonto_file_saving_failed).emit()
             } ?: return@launch
 
+        setState { copy(isLoading = false) }
         SettingsEffect.ShowMessage(StringResources.settings_export_fonto_successful).emit()
     }
 

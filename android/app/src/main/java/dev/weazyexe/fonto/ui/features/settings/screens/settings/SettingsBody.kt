@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import dev.weazyexe.fonto.core.ui.components.SmallProgressIndicator
 import dev.weazyexe.fonto.core.ui.components.preferences.CustomValuePreferenceItem
 import dev.weazyexe.fonto.core.ui.components.preferences.PreferencesGroup
 import dev.weazyexe.fonto.core.ui.components.preferences.SwitchPreferenceItem
@@ -32,6 +34,7 @@ import dev.weazyexe.fonto.core.ui.utils.StringResources
 @Composable
 fun SettingsBody(
     settings: List<Group>,
+    isLoading: Boolean,
     hiddenPreferences: List<Preference.Identifier>,
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
@@ -61,7 +64,12 @@ fun SettingsBody(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = StringResources.home_bottom_label_settings)) },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    if (isLoading) {
+                        SmallProgressIndicator(modifier = Modifier.padding(end = 16.dp))
+                    }
+                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -70,7 +78,10 @@ fun SettingsBody(
             modifier = Modifier.padding(top = padding.calculateTopPadding()),
             state = lazyListState
         ) {
-            items(groups) { group ->
+            items(
+                items = groups,
+                key = { it.hashCode() }
+            ) { group ->
                 PreferencesGroup(title = stringResource(group.title)) {
                     group.preferences.forEach { pref ->
                         when (pref) {
