@@ -25,7 +25,7 @@ fun Feed.asBackupModel(): FeedBackupModel =
     )
 
 fun FeedBackupModel.asFeed(
-    category: Category,
+    category: Category?,
     icon: LocalImage?
 ): Feed =
     Feed(

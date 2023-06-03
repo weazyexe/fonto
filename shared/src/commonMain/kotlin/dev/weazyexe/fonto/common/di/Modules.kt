@@ -19,6 +19,8 @@ import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.backup.GetExportDataUseCase
+import dev.weazyexe.fonto.common.data.usecase.backup.ImportDataUseCase
+import dev.weazyexe.fonto.common.data.usecase.backup.ParseBackupDataUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
@@ -29,10 +31,10 @@ import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
-import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedIconUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
+import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
@@ -85,7 +87,7 @@ internal val iconModule = module {
 
     single { IconDataSource(get()) }
     single { IconRepository(get()) }
-    single { GetIconByRssUrlUseCase(get()) }
+    single { GetFaviconByUrlUseCase(get()) }
 }
 
 internal val categoryModule = module {
@@ -110,12 +112,12 @@ internal val feedModule = module {
     single { FeedDataSource(get()) }
     single { FeedRepository(get(), get()) }
 
+    single { GetFeedUseCase(get()) }
     single { GetAllFeedsUseCase(get()) }
     single { CreateFeedUseCase(get()) }
     single { UpdateFeedUseCase(get()) }
     single { DeleteFeedUseCase(get(), get()) }
     single { DeleteAllFeedsUseCase(get(), get()) }
-    single { GetFeedIconUseCase(get()) }
     single { GetFeedTypeUseCase(get(), get()) }
 }
 
@@ -136,8 +138,10 @@ internal val postModule = module {
 }
 
 internal val backupModule = module {
-    includes(coreModule, feedModule, categoryModule, postModule)
+    includes(coreModule, feedModule, categoryModule, postModule, iconModule)
     single { GetExportDataUseCase(get(), get(), get()) }
+    single { ParseBackupDataUseCase() }
+    single { ImportDataUseCase(get(), get(), get(), get()) }
 }
 
 internal val initializerModule = module {

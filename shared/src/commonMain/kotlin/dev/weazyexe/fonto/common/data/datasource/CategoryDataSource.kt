@@ -17,6 +17,8 @@ class CategoryDataSource(database: FontoDatabase) {
 
     fun insert(title: String) = queries.insert(title)
 
+    fun insert(category: CategoryDao) = queries.insertWholeCategory(category)
+
     fun update(category: CategoryDao) = queries.update(category)
 
     fun delete(id: Long) = queries.delete(id)

@@ -66,7 +66,8 @@ fun SettingsScreen(
         navigateTo = navigateTo,
         navigateWithResult = navigateWithResult,
         snackbarHostState = snackbarHostState,
-        saveFile = viewModel::saveFile
+        saveFontoBackupFile = viewModel::saveFontoBackupFile,
+        readFontoBackupFile = viewModel::readFontoBackupFile
     )
 
     SettingsBody(
@@ -87,12 +88,18 @@ private fun HandleEffects(
     navigateTo: NavigateTo,
     navigateWithResult: NavigateWithResult,
     snackbarHostState: SnackbarHostState,
-    saveFile: (uri: Uri) -> Unit
+    saveFontoBackupFile: (uri: Uri) -> Unit,
+    readFontoBackupFile: (uri: Uri) -> Unit,
 ) {
     val context = LocalContext.current
     val exportFontoSaver = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json"),
-        onResult = { it?.let { saveFile(it) } }
+        onResult = { it?.let { saveFontoBackupFile(it) } }
+    )
+
+    val openDocumentPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { it?.let { readFontoBackupFile(it) } }
     )
 
     ReceiveEffect(effects) {
@@ -141,6 +148,10 @@ private fun HandleEffects(
 
             is SettingsEffect.OpenExportStrategyPicker -> {
                 navigateTo(ExportStrategyPickerDialogDestination())
+            }
+
+            is SettingsEffect.OpenFilePicker -> {
+                openDocumentPicker.launch(arrayOf(mimeType))
             }
         }
     }

@@ -8,6 +8,9 @@ import dev.weazyexe.fonto.app.App
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.backup.GetExportDataUseCase
+import dev.weazyexe.fonto.common.data.usecase.backup.ImportDataUseCase
+import dev.weazyexe.fonto.common.data.usecase.backup.ParseBackupDataUseCase
+import dev.weazyexe.fonto.common.feature.backup.AndroidFileReader
 import dev.weazyexe.fonto.common.feature.backup.AndroidFileSaver
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.backup.ExportStrategy
@@ -29,7 +32,9 @@ class SettingsViewModel(
     private val settingsStorage: SettingsStorage,
     private val eventBus: EventBus,
     private val context: App,
-    private val getExportData: GetExportDataUseCase
+    private val getExportData: GetExportDataUseCase,
+    private val parseBackupData: ParseBackupDataUseCase,
+    private val importData: ImportDataUseCase
 ) : CoreViewModel<SettingsState, SettingsEffect>() {
 
     override val initialState: SettingsState = SettingsState()
@@ -99,6 +104,7 @@ class SettingsViewModel(
                             Preference.Identifier.MANAGE_FEED,
                             Preference.Identifier.MANAGE_CATEGORIES,
                             Preference.Identifier.EXPORT_FONTO,
+                            Preference.Identifier.IMPORT_FONTO,
                             Preference.Identifier.DEBUG_MENU,
                             -> preference
                         }
@@ -119,6 +125,7 @@ class SettingsViewModel(
             Preference.Identifier.MANAGE_FEED -> SettingsEffect.OpenManageFeedScreen.emit()
             Preference.Identifier.MANAGE_CATEGORIES -> SettingsEffect.OpenCategoriesScreen.emit()
             Preference.Identifier.EXPORT_FONTO -> SettingsEffect.OpenExportStrategyPicker.emit()
+            Preference.Identifier.IMPORT_FONTO -> SettingsEffect.OpenFilePicker("application/json").emit()
             Preference.Identifier.DEBUG_MENU -> SettingsEffect.OpenDebugScreen.emit()
             else -> {
                 // Do nothing
@@ -198,7 +205,7 @@ class SettingsViewModel(
         SettingsEffect.ExportFonto.emit()
     }
 
-    fun saveFile(uri: Uri) = viewModelScope.launch {
+    fun saveFontoBackupFile(uri: Uri) = viewModelScope.launch {
         setState { copy(isLoading = true) }
 
         val exportData = request { getExportData(state.exportStrategy) }
@@ -215,6 +222,26 @@ class SettingsViewModel(
 
         setState { copy(isLoading = false) }
         SettingsEffect.ShowMessage(StringResources.settings_export_fonto_successful).emit()
+    }
+
+    fun readFontoBackupFile(uri: Uri) = viewModelScope.launch {
+        setState { copy(isLoading = true) }
+
+        val fileReader = AndroidFileReader(context, uri)
+        val backup = request { parseBackupData(fileReader) }
+            .withErrorHandling {
+                setState { copy(isLoading = false) }
+                SettingsEffect.ShowMessage(StringResources.settings_import_fonto_file_reading_failed).emit()
+            }?.data ?: return@launch
+
+        request { importData(backup) }
+            .withErrorHandling {
+                setState { copy(isLoading = false) }
+                SettingsEffect.ShowMessage(StringResources.settings_import_fonto_data_import_failed).emit()
+            } ?: return@launch
+
+        setState { copy(isLoading = false) }
+        SettingsEffect.ShowMessage(StringResources.settings_import_fonto_successful).emit()
     }
 
     private suspend fun onOpenPostChanged(preference: Preference.Switch, value: Boolean) {
@@ -343,6 +370,12 @@ private fun buildPreferences(context: Context): List<Group> = listOf(
                 title = StringResources.settings_export_fonto_title,
                 subtitle = StringResources.settings_export_fonto_description,
                 icon = DrawableResources.ic_upload_24
+            ),
+            Preference.Text(
+                id = Preference.Identifier.IMPORT_FONTO,
+                title = StringResources.settings_import_fonto_title,
+                subtitle = StringResources.settings_import_fonto_description,
+                icon = DrawableResources.ic_download_24
             )
         )
     ),

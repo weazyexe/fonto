@@ -49,7 +49,7 @@ fun HomeScreen(
     dateRangePickerResultRecipient: ResultRecipient<DateRangePickerDialogDestination, DateRangeResults?>,
     feedPickerResultRecipient: ResultRecipient<FeedPickerDialogDestination, FeedPickerResult?>,
     categoryPickerResultRecipient: ResultRecipient<CategoryPickerDialogDestination, CategoryPickerResult?>,
-    exportStrategyPickerResultsRecipient: ResultRecipient<ExportStrategyPickerDialogDestination, ExportStrategyResults?>,
+    exportStrategyPickerResultsRecipient: ResultRecipient<ExportStrategyPickerDialogDestination, ExportStrategyResults?>
 ) {
     val feedViewModel = koinViewModel<FeedViewModel>()
     val settingsViewModel = koinViewModel<SettingsViewModel>()

@@ -40,6 +40,11 @@ class PostRepository(
     fun getPostById(id: Post.Id, feed: Feed): Post =
         postDataSource.getPostById(id.origin).toPost(feed)
 
+    fun insert(
+        post: Post,
+        feed: Feed
+    ) = postDataSource.insertOrUpdate(post.toDao())
+
     fun insertOrUpdate(post: Post) = postDataSource.insertOrUpdate(post.toDao())
 
     fun insertOrIgnore(post: Post) = postDataSource.insertOrIgnore(post.toDao())

@@ -6,48 +6,61 @@ import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedIconUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.icon.GetIconByRssUrlUseCase
+import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.ResponseError
-import dev.weazyexe.fonto.core.ui.presentation.asViewState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import kotlinx.coroutines.launch
 
 class AddEditFeedViewModel(
     savedStateHandle: SavedStateHandle,
+    private val getFeed: GetFeedUseCase,
     private val createFeed: CreateFeedUseCase,
     private val updateFeed: UpdateFeedUseCase,
-    private val getIconByRssUrl: GetIconByRssUrlUseCase,
+    private val getFaviconByUrl: GetFaviconByUrlUseCase,
     private val getFeedType: GetFeedTypeUseCase,
-    private val getFeedIcon: GetFeedIconUseCase,
     private val getAllCategories: GetAllCategoriesUseCase
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
     private val args = AddEditFeedScreenDestination.argsFrom(savedStateHandle)
 
-    override val initialState: AddEditFeedState = AddEditFeedState(
-        id = args.feedId,
-        title = args.feedTitle,
-        link = args.feedLink
-    )
+    override val initialState: AddEditFeedState = AddEditFeedState(id = args.feedId)
 
     init {
         loadCategories()
-        args.feedId?.let { fetchFeedIcon(it) }
+        args.feedId?.let { loadFeed(it) }
+    }
+
+    fun loadFeed(id: Feed.Id) = viewModelScope.launch {
+        val feed = request { getFeed(id) }
+            .withErrorHandling {
+                AddEditFeedEffect.ShowMessage(StringResources.add_edit_feed_feed_loading_failure)
+                    .emit()
+            }?.data ?: return@launch
+
+        setState {
+            copy(
+                title = feed.title,
+                link = feed.link,
+                category = feed.category,
+                iconLoadState = LoadState.Data(feed.icon?.asBitmap())
+            )
+        }
     }
 
     fun loadCategories() = viewModelScope.launch {
         val categories = request { getAllCategories() }
             .withErrorHandling {
-                AddEditFeedEffect.ShowMessage(StringResources.add_edit_feed_categories_loading_failure).emit()
+                AddEditFeedEffect.ShowMessage(StringResources.add_edit_feed_categories_loading_failure)
+                    .emit()
             }?.data ?: return@launch
 
         setState { copy(categories = categories) }
@@ -63,8 +76,8 @@ class AddEditFeedViewModel(
         if (link.isUrlValid()) {
             setState { copy(iconLoadState = LoadState.Loading()) }
             val icon = request {
-                val rawBytesImage = getIconByRssUrl(link)
-                rawBytesImage.asBitmap()
+                val rawBytesImage = getFaviconByUrl(link)
+                rawBytesImage?.asBitmap()
             }.withErrorHandling {
                 setState { copy(iconLoadState = LoadState.Error(it)) }
                 AddEditFeedEffect.ShowMessage(it.errorMessage).emit()
@@ -84,12 +97,28 @@ class AddEditFeedViewModel(
 
     fun finish() = viewModelScope.launch {
         if (state.title.isEmpty()) {
-            setState { copy(finishLoadState = LoadState.Error(ResponseError.FeedValidationError(StringResources.error_feed_invalid_title))) }
+            setState {
+                copy(
+                    finishLoadState = LoadState.Error(
+                        ResponseError.FeedValidationError(
+                            StringResources.error_feed_invalid_title
+                        )
+                    )
+                )
+            }
             return@launch
         }
 
         if (state.link.isEmpty()) {
-            setState { copy(finishLoadState = LoadState.Error(ResponseError.FeedValidationError(StringResources.error_feed_invalid_link))) }
+            setState {
+                copy(
+                    finishLoadState = LoadState.Error(
+                        ResponseError.FeedValidationError(
+                            StringResources.error_feed_invalid_link
+                        )
+                    )
+                )
+            }
             return@launch
         }
 
@@ -132,14 +161,5 @@ class AddEditFeedViewModel(
         } ?: return@launch
 
         AddEditFeedEffect.NavigateUp(isSuccessful = true).emit()
-    }
-
-    private fun fetchFeedIcon(id: Feed.Id) = viewModelScope.launch {
-        val icon = request { getFeedIcon(id) }
-            .withErrorHandling { }
-
-        if (icon is LoadState.Data) {
-            setState { copy(iconLoadState = icon.asViewState { it?.asBitmap() }) }
-        }
     }
 }

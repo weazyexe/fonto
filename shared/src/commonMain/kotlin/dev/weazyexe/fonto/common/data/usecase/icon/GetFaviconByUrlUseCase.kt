@@ -4,12 +4,14 @@ import dev.weazyexe.fonto.common.data.repository.IconRepository
 import dev.weazyexe.fonto.common.model.base.LocalImage
 import dev.weazyexe.fonto.common.utils.getHostnameWithScheme
 
-class GetIconByRssUrlUseCase(
+class GetFaviconByUrlUseCase(
     private val iconRepository: IconRepository
 ) {
 
-    suspend operator fun invoke(rssUrl: String): LocalImage {
+    suspend operator fun invoke(rssUrl: String): LocalImage? = try {
         val url = "${rssUrl.getHostnameWithScheme()}/favicon.ico"
-        return iconRepository.loadIcon(url)
+        iconRepository.loadIcon(url)
+    } catch (e: Exception) {
+        null
     }
 }

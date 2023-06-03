@@ -66,11 +66,7 @@ fun ManageFeedScreen(
         onBackClick = { resultBackNavigator.navigateBack(result = state.hasChanges) },
         onClick = {
             navController.navigate(
-                AddEditFeedScreenDestination(
-                    feedId = it.id,
-                    feedTitle = it.title,
-                    feedLink = it.link
-                )
+                AddEditFeedScreenDestination(feedId = it.id)
             )
         },
         onDeleteClick = {

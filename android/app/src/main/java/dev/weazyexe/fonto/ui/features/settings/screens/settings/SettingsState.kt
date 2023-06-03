@@ -16,7 +16,7 @@ data class SettingsState(
     val openPostPreference: OpenPostPreference = OpenPostPreference.INTERNAL,
     val hiddenPreferences: List<Preference.Identifier> = emptyList(),
     val isLoading: Boolean = false,
-    val exportStrategy: ExportStrategy = ExportStrategy(categories = true, feeds = true, posts = true),
+    val exportStrategy: ExportStrategy = ExportStrategy(categories = true, feeds = true, posts = true)
 ) : State
 
 sealed interface SettingsEffect : Effect {
@@ -32,6 +32,8 @@ sealed interface SettingsEffect : Effect {
     object OpenExportStrategyPicker : SettingsEffect
 
     object ExportFonto : SettingsEffect
+
+    data class OpenFilePicker(val mimeType: String) : SettingsEffect
 
     data class OpenThemePickerDialog(
         val id: Preference.Identifier,

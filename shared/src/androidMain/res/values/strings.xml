@@ -87,6 +87,7 @@
     <string name="add_edit_feed_category_title_not_selected">Not selected</string>
     <string name="add_edit_feed_add_new_category">Add new category</string>
     <string name="add_edit_feed_categories_loading_failure">Failed to load categories</string>
+    <string name="add_edit_feed_feed_loading_failure">Failed to load feed</string>
 
     <string name="feed_delete_confirmation_title">Delete the feed?</string>
     <string name="feed_delete_confirmation_description_first">You are about to delete</string>
@@ -159,19 +160,31 @@
     <string name="settings_export_fonto_file_saving_failed">Failed to save the backup file</string>
     <string name="settings_export_fonto_successful">Your data has been completely backed up!</string>
     <string name="settings_export_fonto_default_file_name">fonto_backup_%s.json</string>
+    <string name="settings_import_fonto_title">Import a Fonto format backup</string>
+    <string name="settings_import_fonto_description">This will delete all your data and replace them with new ones</string>
+    <string name="settings_import_fonto_file_reading_failed">Failed to read the backup file</string>
+    <string name="settings_import_fonto_data_import_failed">Failed to import the backup data</string>
+    <string name="settings_import_fonto_successful">Your data has been completely restored!</string>
     <string name="settings_debug_group">Debug</string>
     <string name="settings_debug_menu_title">Debug menu</string>
     <string name="settings_debug_menu_description">Settings for more efficient development</string>
 
     <string name="export_strategy_picker_title">Export strategy</string>
     <string name="export_strategy_picker_description">
-        Pick what you want to export, keeping in mind that you can\'t export posts without a feed and you can\'t export feeds without categories.
+        Pick what you want to export, keeping in mind that you can\'t export posts without a feed and you can\'t export feeds without categories
     </string>
     <string name="export_strategy_picker_export">Export</string>
     <string name="export_strategy_picker_cancel">Cancel</string>
     <string name="export_strategy_picker_categories">Categories</string>
     <string name="export_strategy_picker_feeds">Feeds</string>
     <string name="export_strategy_picker_posts">Posts</string>
+
+    <string name="import_strategy_picker_title">Import strategy</string>
+    <string name="import_strategy_picker_description">It is possible to combine this backup data with the local data or completely replace the local data with the backup</string>
+    <string name="import_strategy_picker_import">Import</string>
+    <string name="import_strategy_picker_cancel">Cancel</string>
+    <string name="import_strategy_picker_merge">Merge</string>
+    <string name="import_strategy_picker_replace">Replace</string>
 
     <string name="value_picker_save">Save</string>
     <string name="value_picker_ok">Ok</string>

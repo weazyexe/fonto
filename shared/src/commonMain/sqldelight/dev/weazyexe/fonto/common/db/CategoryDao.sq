@@ -13,6 +13,10 @@ insert:
 INSERT INTO CategoryDao(title)
 VALUES (?);
 
+insertWholeCategory:
+INSERT INTO CategoryDao
+VALUES ?;
+
 update:
 INSERT OR REPLACE INTO CategoryDao
 VALUES ?;

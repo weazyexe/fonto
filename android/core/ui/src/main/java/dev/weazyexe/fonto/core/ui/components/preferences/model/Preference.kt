@@ -64,6 +64,7 @@ sealed interface Preference {
 
         // Backup
         EXPORT_FONTO,
+        IMPORT_FONTO,
 
         // Debug group
         DEBUG_MENU

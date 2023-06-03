@@ -23,6 +23,10 @@ class CategoryRepository(
         categoryDataSource.insert(title)
     }
 
+    fun insert(category: Category) {
+        categoryDataSource.insert(category.toDao())
+    }
+
     fun update(category: Category) {
         categoryDataSource.update(category.toDao())
     }

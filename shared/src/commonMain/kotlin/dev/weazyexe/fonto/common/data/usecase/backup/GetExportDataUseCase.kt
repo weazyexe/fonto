@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.common.model.backup.FontoBackupModel
 import dev.weazyexe.fonto.common.model.backup.JsonString
 import dev.weazyexe.fonto.common.model.backup.asBackupModel
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class GetExportDataUseCase(
@@ -40,6 +41,6 @@ class GetExportDataUseCase(
             feeds = feeds.map { it.asBackupModel() },
             posts = posts.map { it.asBackupModel() },
             categories = categories.map { it.asBackupModel() }
-        ).let { json.encodeToString(FontoBackupModel.serializer(), it) }
+        ).let { json.encodeToString(it) }
     }
 }
