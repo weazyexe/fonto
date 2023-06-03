@@ -62,6 +62,9 @@ sealed interface Preference {
         DYNAMIC_COLORS,
         COLOR_SCHEME,
 
+        // Backup
+        EXPORT_FONTO,
+
         // Debug group
         DEBUG_MENU
     }

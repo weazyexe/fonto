@@ -1,11 +1,14 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.app.App
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.bus.EventBus
+import dev.weazyexe.fonto.common.data.usecase.backup.GetExportDataUseCase
+import dev.weazyexe.fonto.common.feature.backup.AndroidFileSaver
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
@@ -25,6 +28,7 @@ class SettingsViewModel(
     private val settingsStorage: SettingsStorage,
     private val eventBus: EventBus,
     private val context: App,
+    private val getExportData: GetExportDataUseCase
 ) : CoreViewModel<SettingsState, SettingsEffect>() {
 
     override val initialState: SettingsState = SettingsState()
@@ -93,7 +97,9 @@ class SettingsViewModel(
 
                             Preference.Identifier.MANAGE_FEED,
                             Preference.Identifier.MANAGE_CATEGORIES,
-                            Preference.Identifier.DEBUG_MENU -> preference
+                            Preference.Identifier.EXPORT_FONTO,
+                            Preference.Identifier.DEBUG_MENU,
+                            -> preference
                         }
                     }
                 )
@@ -111,6 +117,7 @@ class SettingsViewModel(
         when (preference.id) {
             Preference.Identifier.MANAGE_FEED -> SettingsEffect.OpenManageFeedScreen.emit()
             Preference.Identifier.MANAGE_CATEGORIES -> SettingsEffect.OpenCategoriesScreen.emit()
+            Preference.Identifier.EXPORT_FONTO -> SettingsEffect.ExportFonto.emit()
             Preference.Identifier.DEBUG_MENU -> SettingsEffect.OpenDebugScreen.emit()
             else -> {
                 // Do nothing
@@ -183,6 +190,20 @@ class SettingsViewModel(
 
         val colorValue = color.asColorValue(context)
         update(preference.copy(value = colorValue))
+    }
+
+    fun saveFile(uri: Uri) = viewModelScope.launch {
+        val exportData = request { getExportData() }
+            .withErrorHandling {
+                SettingsEffect.ShowMessage(StringResources.settings_export_fonto_data_preparation_failed).emit()
+            }?.data ?: return@launch
+
+        request { AndroidFileSaver(context, uri).save(exportData.toByteArray()) }
+            .withErrorHandling {
+                SettingsEffect.ShowMessage(StringResources.settings_export_fonto_file_saving_failed).emit()
+            } ?: return@launch
+
+        SettingsEffect.ShowMessage(StringResources.settings_export_fonto_successful).emit()
     }
 
     private suspend fun onOpenPostChanged(preference: Preference.Switch, value: Boolean) {
@@ -301,6 +322,17 @@ private fun buildPreferences(context: Context): List<Group> = listOf(
                 value = buildColors(context).first(),
                 possibleValues = buildColors(context)
             ),
+        )
+    ),
+    Group(
+        title = StringResources.settings_backup_group,
+        preferences = listOf(
+            Preference.Text(
+                id = Preference.Identifier.EXPORT_FONTO,
+                title = StringResources.settings_export_fonto_title,
+                subtitle = StringResources.settings_export_fonto_description,
+                icon = DrawableResources.ic_upload_24
+            )
         )
     ),
     Group(

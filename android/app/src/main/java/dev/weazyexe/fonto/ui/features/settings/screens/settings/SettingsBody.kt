@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -32,6 +34,7 @@ fun SettingsBody(
     settings: List<Group>,
     hiddenPreferences: List<Preference.Identifier>,
     rootPaddingValues: PaddingValues,
+    snackbarHostState: SnackbarHostState,
     onTextPreferenceClick: (Preference.Text) -> Unit,
     onSwitchPreferenceClick: (Preference.Switch, Boolean) -> Unit,
     onCustomPreferenceClick: (Preference.CustomValue<Value<*>>) -> Unit,
@@ -60,7 +63,8 @@ fun SettingsBody(
                 title = { Text(text = stringResource(id = StringResources.home_bottom_label_settings)) },
                 scrollBehavior = scrollBehavior
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(top = padding.calculateTopPadding()),

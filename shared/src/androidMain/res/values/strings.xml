@@ -152,6 +152,13 @@
     <string name="settings_display_color_scheme_value_pink">Pink</string>
     <string name="settings_display_color_scheme_value_red">Red</string>
     <string name="settings_display_color_scheme_value_orange">Orange</string>
+    <string name="settings_backup_group">Backup</string>
+    <string name="settings_export_fonto_title">Export in Fonto format</string>
+    <string name="settings_export_fonto_description">Including all posts, categories and feed list</string>
+    <string name="settings_export_fonto_data_preparation_failed">Failed to prepare your export data</string>
+    <string name="settings_export_fonto_file_saving_failed">Failed to save the backup file</string>
+    <string name="settings_export_fonto_successful">Your data has been completely backed up!</string>
+    <string name="settings_export_fonto_default_file_name">fonto_backup_%s.json</string>
     <string name="settings_debug_group">Debug</string>
     <string name="settings_debug_menu_title">Debug menu</string>
     <string name="settings_debug_menu_description">Settings for more efficient development</string>

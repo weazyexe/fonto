@@ -1,11 +1,18 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
@@ -19,7 +26,10 @@ import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
 import dev.weazyexe.fonto.util.handleResults
-import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @BottomBarNavGraph
 @Destination
@@ -32,6 +42,7 @@ fun SettingsScreen(
     themePickerResults: ThemePickerResults,
     colorPickerResults: ColorPickerResults
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     val state by viewModel.uiState.collectAsState()
 
     themePickerResults.invoke().handleResults { result ->
@@ -42,7 +53,40 @@ fun SettingsScreen(
         viewModel.saveColor(result)
     }
 
-    ReceiveEffect(viewModel.effects) {
+    HandleEffects(
+        effects = viewModel.effects,
+        navigateTo = navigateTo,
+        navigateWithResult = navigateWithResult,
+        snackbarHostState = snackbarHostState,
+        saveFile = viewModel::saveFile
+    )
+
+    SettingsBody(
+        settings = state.preferences,
+        hiddenPreferences = state.hiddenPreferences,
+        rootPaddingValues = rootPaddingValues,
+        snackbarHostState = snackbarHostState,
+        onTextPreferenceClick = viewModel::onTextPreferenceClick,
+        onSwitchPreferenceClick = viewModel::onSwitchPreferenceClick,
+        onCustomPreferenceClick = viewModel::onCustomPreferenceClick
+    )
+}
+
+@Composable
+private fun HandleEffects(
+    effects: Flow<SettingsEffect>,
+    navigateTo: NavigateTo,
+    navigateWithResult: NavigateWithResult,
+    snackbarHostState: SnackbarHostState,
+    saveFile: (uri: Uri) -> Unit
+) {
+    val context = LocalContext.current
+    val exportFontoSaver = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json"),
+        onResult = { it?.let { saveFile(it) } }
+    )
+
+    ReceiveEffect(effects) {
         when (this) {
             is SettingsEffect.OpenManageFeedScreen -> navigateTo(ManageFeedScreenDestination())
             is SettingsEffect.OpenCategoriesScreen -> navigateTo(CategoriesScreenDestination())
@@ -59,8 +103,8 @@ fun SettingsScreen(
                     )
                 )
             }
+
             is SettingsEffect.OpenColorPickerDialog -> {
-                Napier.d { possibleValues.toString() }
                 navigateWithResult(
                     ColorPickerDialogDestination(
                         args = ColorPickerArgs(
@@ -70,15 +114,21 @@ fun SettingsScreen(
                     )
                 )
             }
+
+            is SettingsEffect.ShowMessage -> {
+                snackbarHostState.showSnackbar(context.getString(message))
+            }
+
+            is SettingsEffect.ExportFonto -> {
+                exportFontoSaver.launch(
+                    context.getString(
+                        StringResources.settings_export_fonto_default_file_name,
+                        Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                            .toString()
+                    )
+                )
+            }
         }
     }
-
-    SettingsBody(
-        settings = state.preferences,
-        hiddenPreferences = state.hiddenPreferences,
-        rootPaddingValues = rootPaddingValues,
-        onTextPreferenceClick = viewModel::onTextPreferenceClick,
-        onSwitchPreferenceClick = viewModel::onSwitchPreferenceClick,
-        onCustomPreferenceClick = viewModel::onCustomPreferenceClick
-    )
 }

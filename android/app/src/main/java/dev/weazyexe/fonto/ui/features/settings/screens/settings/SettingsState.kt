@@ -24,6 +24,10 @@ sealed interface SettingsEffect : Effect {
 
     object OpenDebugScreen : SettingsEffect
 
+    data class ShowMessage(@StringRes val message: Int) : SettingsEffect
+
+    object ExportFonto : SettingsEffect
+
     data class OpenThemePickerDialog(
         val id: Preference.Identifier,
         @StringRes val title: Int,

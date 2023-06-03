@@ -18,7 +18,7 @@ import dev.weazyexe.fonto.common.data.repository.IconRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
-import dev.weazyexe.fonto.common.data.usecase.backup.GetBackupDataUseCase
+import dev.weazyexe.fonto.common.data.usecase.backup.GetExportDataUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
@@ -137,7 +137,7 @@ internal val postModule = module {
 
 internal val backupModule = module {
     includes(coreModule, feedModule, categoryModule, postModule)
-    single { GetBackupDataUseCase(get(), get(), get()) }
+    single { GetExportDataUseCase(get(), get(), get()) }
 }
 
 internal val initializerModule = module {
