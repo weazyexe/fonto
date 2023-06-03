@@ -163,6 +163,16 @@
     <string name="settings_debug_menu_title">Debug menu</string>
     <string name="settings_debug_menu_description">Settings for more efficient development</string>
 
+    <string name="export_strategy_picker_title">Export strategy</string>
+    <string name="export_strategy_picker_description">
+        Pick what you want to export, keeping in mind that you can\'t export posts without a feed and you can\'t export feeds without categories.
+    </string>
+    <string name="export_strategy_picker_export">Export</string>
+    <string name="export_strategy_picker_cancel">Cancel</string>
+    <string name="export_strategy_picker_categories">Categories</string>
+    <string name="export_strategy_picker_feeds">Feeds</string>
+    <string name="export_strategy_picker_posts">Posts</string>
+
     <string name="value_picker_save">Save</string>
     <string name="value_picker_ok">Ok</string>
     <string name="value_picker_cancel">Cancel</string>

@@ -10,6 +10,7 @@ import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.backup.GetExportDataUseCase
 import dev.weazyexe.fonto.common.feature.backup.AndroidFileSaver
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
+import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
@@ -117,7 +118,7 @@ class SettingsViewModel(
         when (preference.id) {
             Preference.Identifier.MANAGE_FEED -> SettingsEffect.OpenManageFeedScreen.emit()
             Preference.Identifier.MANAGE_CATEGORIES -> SettingsEffect.OpenCategoriesScreen.emit()
-            Preference.Identifier.EXPORT_FONTO -> SettingsEffect.ExportFonto.emit()
+            Preference.Identifier.EXPORT_FONTO -> SettingsEffect.OpenExportStrategyPicker.emit()
             Preference.Identifier.DEBUG_MENU -> SettingsEffect.OpenDebugScreen.emit()
             else -> {
                 // Do nothing
@@ -192,10 +193,15 @@ class SettingsViewModel(
         update(preference.copy(value = colorValue))
     }
 
+    fun startExporting(exportStrategy: ExportStrategy) {
+        setState { copy(exportStrategy = exportStrategy) }
+        SettingsEffect.ExportFonto.emit()
+    }
+
     fun saveFile(uri: Uri) = viewModelScope.launch {
         setState { copy(isLoading = true) }
 
-        val exportData = request { getExportData() }
+        val exportData = request { getExportData(state.exportStrategy) }
             .withErrorHandling {
                 setState { copy(isLoading = false) }
                 SettingsEffect.ShowMessage(StringResources.settings_export_fonto_data_preparation_failed).emit()

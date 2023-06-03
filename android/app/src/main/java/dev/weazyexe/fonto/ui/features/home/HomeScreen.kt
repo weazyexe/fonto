@@ -16,6 +16,7 @@ import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
+import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
@@ -27,11 +28,13 @@ import dev.weazyexe.fonto.ui.features.home.bottombar.BottomBar
 import dev.weazyexe.fonto.ui.features.home.dependencies.CategoryPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
+import dev.weazyexe.fonto.ui.features.home.dependencies.ExportStrategyPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
+import dev.weazyexe.fonto.ui.features.settings.screens.exportstrategypicker.ExportStrategyResults
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,6 +49,7 @@ fun HomeScreen(
     dateRangePickerResultRecipient: ResultRecipient<DateRangePickerDialogDestination, DateRangeResults?>,
     feedPickerResultRecipient: ResultRecipient<FeedPickerDialogDestination, FeedPickerResult?>,
     categoryPickerResultRecipient: ResultRecipient<CategoryPickerDialogDestination, CategoryPickerResult?>,
+    exportStrategyPickerResultsRecipient: ResultRecipient<ExportStrategyPickerDialogDestination, ExportStrategyResults?>,
 ) {
     val feedViewModel = koinViewModel<FeedViewModel>()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
@@ -102,6 +106,13 @@ fun HomeScreen(
                     object : ColorPickerResults {
                         override fun invoke(): ResultRecipient<ColorPickerDialogDestination, Long> {
                             return colorPickerResultRecipient
+                        }
+                    }
+                )
+                dependency(
+                    object : ExportStrategyPickerResults {
+                        override fun invoke(): ResultRecipient<ExportStrategyPickerDialogDestination, ExportStrategyResults?> {
+                            return exportStrategyPickerResultsRecipient
                         }
                     }
                 )

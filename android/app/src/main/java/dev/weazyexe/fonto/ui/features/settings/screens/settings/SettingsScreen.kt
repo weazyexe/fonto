@@ -17,13 +17,16 @@ import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
+import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
+import dev.weazyexe.fonto.ui.features.home.dependencies.ExportStrategyPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
+import dev.weazyexe.fonto.ui.features.settings.screens.exportstrategypicker.toExportStrategy
 import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
@@ -40,7 +43,8 @@ fun SettingsScreen(
     navigateTo: NavigateTo,
     navigateWithResult: NavigateWithResult,
     themePickerResults: ThemePickerResults,
-    colorPickerResults: ColorPickerResults
+    colorPickerResults: ColorPickerResults,
+    exportStrategyResults: ExportStrategyPickerResults
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val state by viewModel.uiState.collectAsState()
@@ -51,6 +55,10 @@ fun SettingsScreen(
 
     colorPickerResults.invoke().handleResults { result ->
         viewModel.saveColor(result)
+    }
+
+    exportStrategyResults.invoke().handleResults { result ->
+        result?.let { viewModel.startExporting(result.toExportStrategy()) }
     }
 
     HandleEffects(
@@ -129,6 +137,10 @@ private fun HandleEffects(
                             .toString()
                     )
                 )
+            }
+
+            is SettingsEffect.OpenExportStrategyPicker -> {
+                navigateTo(ExportStrategyPickerDialogDestination())
             }
         }
     }

@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
@@ -14,7 +15,8 @@ data class SettingsState(
     val preferences: List<Group> = emptyList(),
     val openPostPreference: OpenPostPreference = OpenPostPreference.INTERNAL,
     val hiddenPreferences: List<Preference.Identifier> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val exportStrategy: ExportStrategy = ExportStrategy(categories = true, feeds = true, posts = true),
 ) : State
 
 sealed interface SettingsEffect : Effect {
@@ -26,6 +28,8 @@ sealed interface SettingsEffect : Effect {
     object OpenDebugScreen : SettingsEffect
 
     data class ShowMessage(@StringRes val message: Int) : SettingsEffect
+
+    object OpenExportStrategyPicker : SettingsEffect
 
     object ExportFonto : SettingsEffect
 

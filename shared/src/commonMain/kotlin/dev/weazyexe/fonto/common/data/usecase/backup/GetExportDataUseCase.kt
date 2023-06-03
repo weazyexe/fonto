@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.common.data.usecase.backup
 import dev.weazyexe.fonto.common.data.repository.CategoryRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
+import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.common.model.backup.FontoBackupModel
 import dev.weazyexe.fonto.common.model.backup.JsonString
 import dev.weazyexe.fonto.common.model.backup.asBackupModel
@@ -16,10 +17,24 @@ class GetExportDataUseCase(
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    suspend operator fun invoke(): JsonString {
-        val feeds = feedRepository.getAll()
-        val posts = postRepository.getAll()
-        val categories = categoryRepository.getAll()
+    suspend operator fun invoke(exportStrategy: ExportStrategy): JsonString {
+        val categories = if (exportStrategy.categories) {
+            categoryRepository.getAll()
+        } else {
+            emptyList()
+        }
+
+        val feeds = if (exportStrategy.feeds) {
+            feedRepository.getAll()
+        } else {
+            emptyList()
+        }
+
+        val posts = if (exportStrategy.posts) {
+            postRepository.getAll()
+        } else {
+            emptyList()
+        }
 
         return FontoBackupModel(
             feeds = feeds.map { it.asBackupModel() },
