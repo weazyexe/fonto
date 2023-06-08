@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.data.PaginationState
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.PaginationFooter
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
@@ -22,7 +23,7 @@ fun LazyListScope.buildPosts(
     paginationState: PaginationState,
     paddingBottom: Dp,
     onManageFeed: () -> Unit,
-    onPostClick: (PostViewState) -> Unit,
+    onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (PostViewState) -> Unit,
     loadMore: () -> Unit
 ) {
@@ -42,7 +43,7 @@ fun LazyListScope.buildPosts(
         items(items = posts, key = { it.id.origin }) {
             PostItem(
                 post = it,
-                onPostClick = { onPostClick(it) },
+                onPostClick = { onPostClick(it.id) },
                 onSaveClick = { onPostSaveClick(it) },
                 modifier = Modifier.padding(vertical = 4.dp)
             )

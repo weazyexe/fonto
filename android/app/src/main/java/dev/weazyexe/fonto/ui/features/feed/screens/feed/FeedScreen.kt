@@ -11,7 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
-import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.features.feed.FeedEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
@@ -42,6 +43,8 @@ fun FeedScreen(
     val state by viewModel.state.collectAsState(FeedViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
+    HandleEffects(viewModel.effects)
+
     /*manageFeedResultRecipientProvider.invoke().handleResults { result ->
         if (result) {
             viewModel.loadNewsline()
@@ -62,7 +65,7 @@ fun FeedScreen(
             paginationState = state.paginationState,
             isSwipeRefreshing = state.isSwipeRefreshing,
             isSearchBarActive = state.isSearchBarActive,
-            onPostClick = { /*viewModel::openPost*/ },
+            onPostClick = { viewModel.openPost(it) },
             onPostSaveClick = { /*viewModel::savePost*/ },
             onScroll = { /*viewModel::onScroll*/ },
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
@@ -75,16 +78,11 @@ fun FeedScreen(
 
 @Composable
 private fun HandleEffects(
-    effects: Flow<FeedEffect>,
-    snackbarHostState: SnackbarHostState
+    effects: Flow<FeedEffect>
 ) {
     val context = LocalContext.current
-    ReceiveEffect(effects) {
+    ReceiveNewEffect(effects) {
         when (this) {
-            is FeedEffect.ShowMessage -> {
-                snackbarHostState.showSnackbar(context.getString(message, *args))
-            }
-
             is FeedEffect.OpenPostInApp -> {
                 InAppBrowser.openPost(context, link, theme)
             }

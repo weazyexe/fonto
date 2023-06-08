@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.map
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.features.feed.FeedDependencies
 import dev.weazyexe.fonto.features.feed.FeedDomainState
 import dev.weazyexe.fonto.features.feed.FeedPresentation
@@ -20,12 +21,18 @@ class FeedViewModel(dependencies: FeedDependencies) : ViewModel() {
     val state: Flow<FeedViewState>
         get() = presentation.domainState.map { it.asViewState()  }
 
+    val effects = presentation.effects
+
     init {
         presentation.onCreate()
     }
 
     fun loadMorePosts() {
         presentation.loadMorePosts()
+    }
+
+    fun openPost(id: Post.Id) {
+        presentation.openPost(id)
     }
 
     private fun FeedDomainState.asViewState(): FeedViewState =
@@ -36,43 +43,6 @@ class FeedViewModel(dependencies: FeedDependencies) : ViewModel() {
             isSearchBarActive = isSearchBarActive
         )
     /*
-
-    fun getNextPostsBatch() = viewModelScope.launch {
-        setState { copy(newslinePaginationState = PaginationState.LOADING) }
-
-        val newslineBatch = request {
-            getPaginatedNewsline(state.limit, state.offset)
-        }.withErrorHandling {
-            setState { copy(newslinePaginationState = PaginationState.ERROR) }
-        } ?: return@launch
-
-        when (val data = newslineBatch.data) {
-            is Newsline.Success -> {
-                val currentPosts =
-                    (state.newslineLoadState as? LoadState.Data)?.data?.posts ?: return@launch
-                val newPosts = data.posts.map { it.asViewState() }
-
-                val updatedNewsline = LoadState.Data(currentPosts + newPosts)
-                    .asViewState { NewslineViewState(it) }
-
-                setState {
-                    copy(
-                        newslineLoadState = updatedNewsline,
-                        newslinePaginationState = if (newPosts.isNotEmpty()) {
-                            PaginationState.IDLE
-                        } else {
-                            PaginationState.PAGINATION_EXHAUST
-                        },
-                        offset = state.offset + DEFAULT_LIMIT
-                    )
-                }
-            }
-
-            is Newsline.Error -> {
-                setState { copy(newslinePaginationState = PaginationState.ERROR) }
-            }
-        }
-    }
 
     fun savePost(post: PostViewState) = viewModelScope.launch {
         val updatedPost = post.copy(isSaved = !post.isSaved)
@@ -97,25 +67,6 @@ class FeedViewModel(dependencies: FeedDependencies) : ViewModel() {
                 StringResources.feed_post_removed_from_bookmarks
             }
         ).emit()
-    }
-
-    fun openPost(post: PostViewState) = viewModelScope.launch {
-        if (!state.isBenchmarking) {
-            when (settingsStorage.getOpenPostPreference()) {
-                OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(
-                    link = post.link,
-                    theme = settingsStorage.getTheme()
-                )
-
-                OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link)
-            }.emit()
-
-            val updatedPost = post.copy(isRead = true)
-            request { updatePost(post = updatedPost.asPost()) }
-                .withErrorHandling {  }?.data ?: return@launch
-
-            setState { copy(newslineLoadState = state.newslineLoadState.update(updatedPost)) }
-        }
     }
 
     fun onScroll(state: ScrollState) {

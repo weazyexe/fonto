@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.PaginationState
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
@@ -38,7 +39,7 @@ fun FeedBody(
     paginationState: PaginationState,
     isSwipeRefreshing: Boolean,
     isSearchBarActive: Boolean,
-    onPostClick: (PostViewState) -> Unit,
+    onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (PostViewState) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeedClick: () -> Unit,

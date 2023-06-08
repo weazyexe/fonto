@@ -28,6 +28,7 @@ import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.search.SearchOverlay
@@ -40,7 +41,7 @@ fun FeedScaffold(
     isSearchBarActive: Boolean,
     onRefresh: () -> Unit,
     onSearchBarActiveChange: (Boolean) -> Unit,
-    onPostClick: (PostViewState) -> Unit,
+    onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (PostViewState) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),

@@ -16,3 +16,13 @@ fun <E : Effect> ReceiveEffect(effects: Flow<E>, block: suspend E.() -> Unit) {
         effects.onEach { block(it) }.collect()
     }
 }
+
+/**
+ * Receive side effects from [effects] flow
+ */
+@Composable
+fun <E : dev.weazyexe.fonto.arch.Effect> ReceiveNewEffect(effects: Flow<E>, block: suspend E.() -> Unit) {
+    LaunchedEffect(Unit) {
+        effects.onEach { block(it) }.collect()
+    }
+}

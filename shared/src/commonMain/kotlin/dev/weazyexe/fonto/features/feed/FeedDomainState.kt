@@ -14,4 +14,8 @@ data class FeedDomainState(
     val offset: Int = 0,
     val isSearchBarActive: Boolean = false,
     val isBenchmarking: Boolean = false
-) : DomainState
+) : DomainState {
+
+    val postsList: Posts?
+        get() = (posts as? AsyncResult.Success)?.data
+}

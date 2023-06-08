@@ -3,11 +3,18 @@ package dev.weazyexe.fonto.features.feed
 import dev.weazyexe.fonto.arch.Presentation
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.PaginationState
+import dev.weazyexe.fonto.common.data.map
+import dev.weazyexe.fonto.common.data.onError
+import dev.weazyexe.fonto.common.data.onLoading
+import dev.weazyexe.fonto.common.data.onSuccess
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
+import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
 class FeedPresentation(
     override val scope: CoroutineScope,
@@ -23,7 +30,7 @@ class FeedPresentation(
 
     fun startPostsLoading() {
         dependencies.getPosts(limit = state.limit, offset = state.offset, useCache = false)
-            .map { setState { copy(posts = it) } }
+            .onEach { setState { copy(posts = it) } }
             .onStart { setState { dependencies.initialState } }
             .launchIn(scope)
     }
@@ -31,42 +38,60 @@ class FeedPresentation(
     fun loadMorePosts() {
         val newOffset = state.offset + state.limit
         dependencies.getPosts(limit = state.limit, offset = newOffset, useCache = true)
-            .map { result ->
+            .onLoading { setState { copy(paginationState = PaginationState.LOADING) } }
+            .onError { setState { copy(paginationState = PaginationState.ERROR) } }
+            .onSuccess {  result ->
                 setState {
-                    when (result) {
-                        is AsyncResult.Loading -> copy(
-                            paginationState = PaginationState.LOADING
-                        )
-
-                        is AsyncResult.Error -> copy(
-                            paginationState = PaginationState.ERROR
-                        )
-
-                        is AsyncResult.Success -> copy(
-                            posts = result.mergeWithOldPosts(posts),
-                            paginationState = if (result.data.isNotEmpty()) {
-                                PaginationState.IDLE
-                            } else {
-                                PaginationState.PAGINATION_EXHAUST
-                            },
-                            offset = newOffset
-                        )
-                    }
+                    copy(
+                        posts = result.map {
+                            Posts(
+                                posts = state.postsList?.posts.orEmpty() + it.posts,
+                                loadedWithError = it.loadedWithError
+                            )
+                        },
+                        paginationState = if (result.data.isNotEmpty()) {
+                            PaginationState.IDLE
+                        } else {
+                            PaginationState.PAGINATION_EXHAUST
+                        },
+                        offset = newOffset
+                    )
                 }
             }
             .launchIn(scope)
     }
 
-    private fun AsyncResult.Success<Posts>.mergeWithOldPosts(oldPosts: AsyncResult<Posts>): AsyncResult<Posts> {
-        return when (oldPosts) {
-            is AsyncResult.Error -> oldPosts
-            is AsyncResult.Loading -> oldPosts
-            is AsyncResult.Success -> AsyncResult.Success(
-                Posts(
-                    posts = oldPosts.data.posts + data.posts,
-                    loadedWithError = data.loadedWithError
-                )
-            )
+    fun openPost(id: Post.Id) = scope.launch {
+        if (!state.isBenchmarking) {
+            val post = state.postsList?.posts?.firstOrNull { it.id == id } ?: return@launch
+            val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
+            val theme = dependencies.settingsStorage.getTheme()
+
+            when (openPostPreference) {
+                OpenPostPreference.INTERNAL -> {
+                    FeedEffect.OpenPostInApp(
+                        link = post.link,
+                        theme = theme
+                    )
+                }
+
+                OpenPostPreference.DEFAULT_BROWSER -> {
+                    FeedEffect.OpenPostInBrowser(post.link)
+                }
+            }.emit()
+
+            val updatedPost = post.copy(isRead = true)
+
+            dependencies.updatePost(updatedPost)
+                .onSuccess { setState { copy(posts = posts.update(updatedPost)) } }
+                .launchIn(this)
         }
+    }
+
+    private fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> = map { posts ->
+        Posts(
+            posts = posts.map { if (it.id == post.id) post else it },
+            loadedWithError = posts.loadedWithError
+        )
     }
 }
