@@ -40,6 +40,7 @@ import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
@@ -130,6 +131,7 @@ internal val postModule = module {
     single { PostDataSource(get()) }
     single { PostRepository(get(), get(), get()) }
     single { GetNewslineUseCase(get(), get(), get(), get()) }
+    single { GetPostsUseCase(get(), get(), get(), get()) }
     single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
     single { GetPaginatedNewslineUseCase(get()) }

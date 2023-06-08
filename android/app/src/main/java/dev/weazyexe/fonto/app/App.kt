@@ -6,6 +6,7 @@ import dev.weazyexe.fonto.common.di.appModules
 import dev.weazyexe.fonto.debug.di.debugModule
 import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.ui.features.feed.di.feedModule
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.feedScreenModule
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
 import dev.weazyexe.fonto.util.AppHelper
 import io.github.aakira.napier.DebugAntilog
@@ -34,7 +35,8 @@ class App : Application() {
             modules(
                 appModule,
                 feedModule,
-                settingsModule
+                settingsModule,
+                feedScreenModule
             )
 
             if (!AppHelper.isReleaseBuild()) {

@@ -1,25 +1,22 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.annotation.StringRes
-import dev.weazyexe.fonto.BuildConfig
-import dev.weazyexe.fonto.common.DEFAULT_LIMIT
+import androidx.compose.runtime.Immutable
+import dev.weazyexe.fonto.common.data.AsyncResult
+import dev.weazyexe.fonto.common.data.PaginationState
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.ScrollState
-import dev.weazyexe.fonto.core.ui.pagination.PaginationState
 import dev.weazyexe.fonto.core.ui.presentation.Effect
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.presentation.State
-import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
+import dev.weazyexe.fonto.ui.features.feed.viewstates.PostsViewState
 
-data class FeedState(
-    val newslineLoadState: LoadState<NewslineViewState> = LoadState.Loading(),
-    val newslinePaginationState: PaginationState = PaginationState.IDLE,
+@Immutable
+data class FeedViewState(
+    val posts: AsyncResult<PostsViewState> = AsyncResult.Loading(),
+    val paginationState: PaginationState = PaginationState.IDLE,
     val scrollState: ScrollState = ScrollState(),
     val isSwipeRefreshing: Boolean = false,
-    val limit: Int = DEFAULT_LIMIT,
-    val offset: Int = 0,
-    val isSearchBarActive: Boolean = false,
-    val isBenchmarking: Boolean = BuildConfig.BUILD_TYPE == "benchmark"
+    val isSearchBarActive: Boolean = false
 ) : State
 
 sealed interface FeedEffect : Effect {

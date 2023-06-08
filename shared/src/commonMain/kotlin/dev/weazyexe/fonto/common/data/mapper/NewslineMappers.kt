@@ -5,11 +5,12 @@ import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.datetime.Instant
+import java.util.UUID
 
 fun ParsedFeed.Success.toPosts(): List<Post> =
     posts.map {
         Post(
-            id = generateId(id, it.link),
+            id = generateId(),
             title = it.title,
             description = it.description,
             content = it.content,
@@ -50,5 +51,5 @@ fun PostDao.toPost(feed: Feed): Post =
         isRead = isRead.toBooleanStrict()
     )
 
-private fun generateId(feedId: Long, postId: String): Post.Id =
-    Post.Id("SOURCE:$feedId|LINK:$postId".hashCode().toString())
+private fun generateId(): Post.Id =
+    Post.Id(UUID.randomUUID().toString())

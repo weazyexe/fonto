@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
@@ -35,7 +36,6 @@ import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
@@ -185,7 +185,7 @@ private fun ManageFeedBodyEmptyPreview() = ThemedPreview {
 @Composable
 private fun ManageFeedBodyErrorPreview() = ThemedPreview {
     ManageFeedBody(
-        feedsLoadState = LoadState.Error(ResponseError.NoInternetError()),
+        feedsLoadState = LoadState.Error(ResponseError.NoInternetError),
         snackbarHostState = SnackbarHostState(),
         onAddClick = {},
         onBackClick = {},

@@ -2,8 +2,10 @@ package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.app.App
 import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.common.core.asLocalImage
+import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
@@ -15,19 +17,19 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.isUrlValid
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import kotlinx.coroutines.launch
 
 class AddEditFeedViewModel(
-    savedStateHandle: SavedStateHandle,
+    private val context: App,
     private val getFeed: GetFeedUseCase,
     private val createFeed: CreateFeedUseCase,
     private val updateFeed: UpdateFeedUseCase,
     private val getFaviconByUrl: GetFaviconByUrlUseCase,
     private val getFeedType: GetFeedTypeUseCase,
-    private val getAllCategories: GetAllCategoriesUseCase
+    private val getAllCategories: GetAllCategoriesUseCase,
+    savedStateHandle: SavedStateHandle
 ) : CoreViewModel<AddEditFeedState, AddEditFeedEffect>() {
 
     private val args = AddEditFeedScreenDestination.argsFrom(savedStateHandle)
@@ -80,7 +82,8 @@ class AddEditFeedViewModel(
                 rawBytesImage?.asBitmap()
             }.withErrorHandling {
                 setState { copy(iconLoadState = LoadState.Error(it)) }
-                AddEditFeedEffect.ShowMessage(it.errorMessage).emit()
+                // FIXME #35
+                AddEditFeedEffect.ShowMessage(StringResources.error_unknown_message).emit()
             } ?: return@launch
 
             setState { copy(iconLoadState = icon) }
@@ -99,9 +102,10 @@ class AddEditFeedViewModel(
         if (state.title.isEmpty()) {
             setState {
                 copy(
+                    // FIXME #35
                     finishLoadState = LoadState.Error(
                         ResponseError.FeedValidationError(
-                            StringResources.error_feed_invalid_title
+                            context.getString(StringResources.error_feed_invalid_title)
                         )
                     )
                 )
@@ -112,9 +116,10 @@ class AddEditFeedViewModel(
         if (state.link.isEmpty()) {
             setState {
                 copy(
+                    // FIXME #35
                     finishLoadState = LoadState.Error(
                         ResponseError.FeedValidationError(
-                            StringResources.error_feed_invalid_link
+                            context.getString(StringResources.error_feed_invalid_link)
                         )
                     )
                 )
@@ -130,7 +135,8 @@ class AddEditFeedViewModel(
 
         val data = feedType.data
         if (data == null) {
-            setState { copy(finishLoadState = LoadState.Error(ResponseError.InvalidRssFeed())) }
+            // FIXME #35
+            setState { copy(finishLoadState = LoadState.Error(ResponseError.InvalidRssFeed)) }
             return@launch
         }
 

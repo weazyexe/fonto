@@ -24,7 +24,6 @@ import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
-import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 
 @BottomBarNavGraph(start = true)
@@ -40,16 +39,14 @@ fun FeedScreen(
     categoryPickerResults: CategoryPickerResults,
 ) {
     val context = LocalContext.current
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState(FeedViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
-    manageFeedResultRecipientProvider.invoke().handleResults { result ->
+    /*manageFeedResultRecipientProvider.invoke().handleResults { result ->
         if (result) {
             viewModel.loadNewsline()
         }
-    }
-
-    HandleEffects(effects = viewModel.effects, snackbarHostState = snackbarHostState)
+    }*/
 
     CompositionLocalProvider(
         LocalNavigateTo provides navigateTo,
@@ -58,20 +55,20 @@ fun FeedScreen(
         LocalCategoryPickerResults provides categoryPickerResults
     ) {
         FeedBody(
-            newslineLoadState = state.newslineLoadState,
+            posts = state.posts,
             scrollState = state.scrollState,
             rootPaddingValues = rootPaddingValues,
             snackbarHostState = snackbarHostState,
-            paginationState = state.newslinePaginationState,
+            paginationState = state.paginationState,
             isSwipeRefreshing = state.isSwipeRefreshing,
             isSearchBarActive = state.isSearchBarActive,
-            onPostClick = viewModel::openPost,
-            onPostSaveClick = viewModel::savePost,
-            onScroll = viewModel::onScroll,
+            onPostClick = { /*viewModel::openPost*/ },
+            onPostSaveClick = { /*viewModel::savePost*/ },
+            onScroll = { /*viewModel::onScroll*/ },
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
-            onRefreshClick = viewModel::loadNewsline,
-            fetchNextBatch = viewModel::getNextPostsBatch,
-            onSearchBarActiveChange = viewModel::onSearchBarActiveChange
+            onRefreshClick = { /*viewModel::loadNewsline*/ },
+            fetchNextBatch = { viewModel.loadMorePosts() },
+            onSearchBarActiveChange = { /*viewModel::onSearchBarActiveChange*/ }
         )
     }
 }

@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.core.ui.pagination
+package dev.weazyexe.fonto.common.data
 
 enum class PaginationState {
     IDLE,

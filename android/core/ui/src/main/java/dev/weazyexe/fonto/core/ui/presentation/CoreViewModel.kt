@@ -2,7 +2,8 @@ package dev.weazyexe.fonto.core.ui.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.core.ui.utils.asResponseError
+import dev.weazyexe.fonto.common.data.ResponseError
+import dev.weazyexe.fonto.utils.asResponseError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow

@@ -1,91 +1,41 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.BuildConfig
-import dev.weazyexe.fonto.common.DEFAULT_LIMIT
-import dev.weazyexe.fonto.common.data.bus.AppEvent
-import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
-import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
-import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.model.feed.Newsline
-import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
-import dev.weazyexe.fonto.core.ui.ScrollState
-import dev.weazyexe.fonto.core.ui.pagination.PaginationState
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
-import dev.weazyexe.fonto.core.ui.presentation.asViewState
-import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
-import dev.weazyexe.fonto.ui.features.feed.components.post.asPost
-import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import dev.weazyexe.fonto.common.data.map
+import dev.weazyexe.fonto.features.feed.FeedDependencies
+import dev.weazyexe.fonto.features.feed.FeedDomainState
+import dev.weazyexe.fonto.features.feed.FeedPresentation
+import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class FeedViewModel(
-    private val getNewsline: GetNewslineUseCase,
-    private val updatePost: UpdatePostUseCase,
-    private val getPaginatedNewsline: GetPaginatedNewslineUseCase,
-    private val settingsStorage: SettingsStorage,
-    private val eventBus: EventBus
-) : CoreViewModel<FeedState, FeedEffect>() {
+class FeedViewModel(dependencies: FeedDependencies) : ViewModel() {
 
-    override val initialState: FeedState = FeedState()
+    private val presentation = FeedPresentation(
+        scope = viewModelScope,
+        dependencies = dependencies
+    )
+
+    val state: Flow<FeedViewState>
+        get() = presentation.domainState.map { it.asViewState()  }
 
     init {
-        loadNewsline()
-        listenToEventBus()
+        presentation.onCreate()
     }
 
-    fun loadNewsline(isSwipeRefreshing: Boolean = false) = viewModelScope.launch {
-        setState {
-            copy(
-                newslineLoadState = if (isSwipeRefreshing) {
-                    newslineLoadState
-                } else {
-                    LoadState.Loading()
-                },
-                scrollState = ScrollState(),
-                offset = 0,
-                isSwipeRefreshing = isSwipeRefreshing,
-                newslinePaginationState = PaginationState.IDLE
-            )
-        }
-
-        val shouldUseMockFeeds = BuildConfig.BUILD_TYPE == "benchmark"
-        val newsline = request { getNewsline(shouldUseMockFeeds) }
-            .withErrorHandling {
-                setState { copy(newslineLoadState = LoadState.Error(it)) }
-            } ?: return@launch
-
-        when (val data = newsline.data) {
-            is Newsline.Success -> {
-                setState {
-                    copy(
-                        newslineLoadState = LoadState.Data(data.asNewslineViewState()),
-                        offset = state.offset + DEFAULT_LIMIT,
-                        isSwipeRefreshing = false
-                    )
-                }
-                showNotLoadedSourcesError(data.loadedWithError.map { it.feed })
-            }
-
-            is Newsline.Error -> {
-                setState {
-                    copy(
-                        newslineLoadState = LoadState.Error(ResponseError.FetchNewslineError()),
-                        isSwipeRefreshing = false
-                    )
-                }
-            }
-        }
+    fun loadMorePosts() {
+        presentation.loadMorePosts()
     }
+
+    private fun FeedDomainState.asViewState(): FeedViewState =
+        FeedViewState(
+            posts = posts.map { it.asViewState() },
+            paginationState = paginationState,
+            isSwipeRefreshing = isSwipeRefreshing,
+            isSearchBarActive = isSearchBarActive
+        )
+    /*
 
     fun getNextPostsBatch() = viewModelScope.launch {
         setState { copy(newslinePaginationState = PaginationState.LOADING) }
@@ -208,5 +158,5 @@ class FeedViewModel(
                 it
             }
         }
-    }
+    }*/
 }

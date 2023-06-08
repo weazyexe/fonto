@@ -28,9 +28,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.core.ui.components.FontoTextButton
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
@@ -111,8 +111,9 @@ fun AddEditCategoryBody(
                 isError = savingLoadState is LoadState.Error,
                 supportingText = {
                     if (savingLoadState is LoadState.Error) {
+                        // FIXME #35
                         Text(
-                            text = savingLoadState.error.asLocalizedMessage(context),
+                            text = savingLoadState.error.localizedMessage.orEmpty(),
                             color = MaterialTheme.colorScheme.error,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -160,7 +161,7 @@ private fun AddEditCategoryErrorPreview() = ThemedPreview {
     AddEditCategoryBody(
         title = "",
         isEditMode = false,
-        savingLoadState = LoadState.Error(ResponseError.NoInternetError()),
+        savingLoadState = LoadState.Error(ResponseError.NoInternetError),
         initLoadState = LoadState.Data(Unit),
         onTitleChange = {},
         onCancelClick = {},
