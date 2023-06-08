@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.feed.FeedEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
@@ -43,7 +44,7 @@ fun FeedScreen(
     val state by viewModel.state.collectAsState(FeedViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
-    HandleEffects(viewModel.effects)
+    HandleEffects(viewModel.effects, snackbarHostState)
 
     /*manageFeedResultRecipientProvider.invoke().handleResults { result ->
         if (result) {
@@ -66,7 +67,7 @@ fun FeedScreen(
             isSwipeRefreshing = state.isSwipeRefreshing,
             isSearchBarActive = state.isSearchBarActive,
             onPostClick = { viewModel.openPost(it) },
-            onPostSaveClick = { /*viewModel::savePost*/ },
+            onPostSaveClick = { viewModel.savePost(it) },
             onScroll = { /*viewModel::onScroll*/ },
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
             onRefreshClick = { /*viewModel::loadNewsline*/ },
@@ -78,7 +79,8 @@ fun FeedScreen(
 
 @Composable
 private fun HandleEffects(
-    effects: Flow<FeedEffect>
+    effects: Flow<FeedEffect>,
+    snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
     ReceiveNewEffect(effects) {
@@ -90,6 +92,30 @@ private fun HandleEffects(
             is FeedEffect.OpenPostInBrowser -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                 context.startActivity(intent)
+            }
+
+            is FeedEffect.ShowPostSavingErrorMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        if (isSaving) {
+                            StringResources.feed_post_saving_error
+                        } else {
+                            StringResources.feed_post_removing_from_bookmarks_error
+                        }
+                    )
+                )
+            }
+
+            is FeedEffect.ShowPostSavedMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        if (isSaving) {
+                            StringResources.feed_post_saved_to_bookmarks
+                        } else {
+                            StringResources.feed_post_removed_from_bookmarks
+                        }
+                    )
+                )
             }
         }
     }

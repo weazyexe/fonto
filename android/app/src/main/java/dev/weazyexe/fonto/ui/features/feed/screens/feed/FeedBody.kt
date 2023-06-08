@@ -22,7 +22,6 @@ import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedScaffold
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.buildPosts
@@ -40,7 +39,7 @@ fun FeedBody(
     isSwipeRefreshing: Boolean,
     isSearchBarActive: Boolean,
     onPostClick: (Post.Id) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     onScroll: (ScrollState) -> Unit,
     onManageFeedClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
@@ -90,7 +89,7 @@ fun FeedBody(
         onSearchBarActiveChange = onSearchBarActiveChange,
         onPostClick = onPostClick,
         onPostSaveClick = onPostSaveClick,
-        contentPadding = rootPaddingValues
+        contentPadding = rootPaddingValues,
     ) {
         when (posts) {
             is AsyncResult.Loading -> {

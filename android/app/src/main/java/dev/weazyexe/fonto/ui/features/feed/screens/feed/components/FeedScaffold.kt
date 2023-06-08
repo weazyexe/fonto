@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -30,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.SwipeToRefresh
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.search.SearchOverlay
 
 @Composable
@@ -42,7 +42,7 @@ fun FeedScaffold(
     onRefresh: () -> Unit,
     onSearchBarActiveChange: (Boolean) -> Unit,
     onPostClick: (Post.Id) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     content: LazyListScope.() -> Unit
@@ -101,9 +101,14 @@ fun FeedScaffold(
 
             SnackbarHost(
                 hostState = snackbarHostState,
-                modifier = Modifier.align(Alignment.BottomCenter)
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = contentPadding.calculateBottomPadding())
             ) {
-                Snackbar(it)
+                Snackbar(
+                    snackbarData = it,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

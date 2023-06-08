@@ -8,4 +8,8 @@ sealed interface FeedEffect : Effect {
     data class OpenPostInApp(val link: String, val theme: Theme) : FeedEffect
 
     data class OpenPostInBrowser(val link: String) : FeedEffect
+
+    data class ShowPostSavingErrorMessage(val isSaving: Boolean) : FeedEffect
+
+    data class ShowPostSavedMessage(val isSaving: Boolean) : FeedEffect
 }

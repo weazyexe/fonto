@@ -54,7 +54,7 @@ fun SearchBody(
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit,
     onPostClick: (Post.Id) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
@@ -102,7 +102,7 @@ private fun SearchBarAndResults(
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit,
     onPostClick: (Post.Id) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
 ) {
     SearchBar(
@@ -193,7 +193,7 @@ private fun PostsList(
     posts: List<PostViewState>,
     contentPadding: PaddingValues,
     onPostClick: (Post.Id) -> Unit,
-    onSaveClick: (PostViewState) -> Unit
+    onSaveClick: (Post.Id) -> Unit
 ) {
     if (posts.isEmpty()) {
         NotFoundPane(modifier = Modifier.fillMaxSize())
@@ -206,7 +206,7 @@ private fun PostsList(
                 PostCompactItem(
                     post = post,
                     onPostClick = { onPostClick(post.id) },
-                    onSaveClick = { onSaveClick(post) }
+                    onSaveClick = { onSaveClick(post.id) }
                 )
             }
             item(key = "bottom_padding") {

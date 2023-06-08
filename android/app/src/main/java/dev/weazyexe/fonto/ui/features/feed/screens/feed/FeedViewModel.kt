@@ -35,6 +35,10 @@ class FeedViewModel(dependencies: FeedDependencies) : ViewModel() {
         presentation.openPost(id)
     }
 
+    fun savePost(id: Post.Id) {
+        presentation.savePost(id)
+    }
+
     private fun FeedDomainState.asViewState(): FeedViewState =
         FeedViewState(
             posts = posts.map { it.asViewState() },

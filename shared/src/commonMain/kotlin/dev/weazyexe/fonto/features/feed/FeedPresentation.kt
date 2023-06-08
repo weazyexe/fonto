@@ -40,7 +40,7 @@ class FeedPresentation(
         dependencies.getPosts(limit = state.limit, offset = newOffset, useCache = true)
             .onLoading { setState { copy(paginationState = PaginationState.LOADING) } }
             .onError { setState { copy(paginationState = PaginationState.ERROR) } }
-            .onSuccess {  result ->
+            .onSuccess { result ->
                 setState {
                     copy(
                         posts = result.map {
@@ -63,7 +63,7 @@ class FeedPresentation(
 
     fun openPost(id: Post.Id) = scope.launch {
         if (!state.isBenchmarking) {
-            val post = state.postsList?.posts?.firstOrNull { it.id == id } ?: return@launch
+            val post = state.postsList?.getById(id) ?: return@launch
             val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
             val theme = dependencies.settingsStorage.getTheme()
 
@@ -81,12 +81,28 @@ class FeedPresentation(
             }.emit()
 
             val updatedPost = post.copy(isRead = true)
-
             dependencies.updatePost(updatedPost)
                 .onSuccess { setState { copy(posts = posts.update(updatedPost)) } }
                 .launchIn(this)
         }
     }
+
+    fun savePost(id: Post.Id) = scope.launch {
+        val post = state.postsList?.getById(id) ?: return@launch
+        val updatedPost = post.copy(isSaved = !post.isSaved)
+
+        dependencies.updatePost(updatedPost)
+            .onError {
+                FeedEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit()
+            }
+            .onSuccess {
+                setState { copy(posts = posts.update(updatedPost)) }
+                FeedEffect.ShowPostSavedMessage(isSaving = updatedPost.isSaved).emit()
+            }
+            .launchIn(this)
+    }
+
+    private fun Posts.getById(id: Post.Id): Post = posts.first { it.id == id }
 
     private fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> = map { posts ->
         Posts(
