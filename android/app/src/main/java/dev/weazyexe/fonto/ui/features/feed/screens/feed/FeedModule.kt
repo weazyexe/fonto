@@ -7,6 +7,6 @@ import org.koin.dsl.module
 
 val feedScreenModule = module {
     factory { FeedDomainState() }
-    factory { FeedDependencies(get(), get(), get(), get()) }
+    factory { FeedDependencies(get(), get(), get(), get(), get()) }
     viewModel { FeedViewModel(get()) }
 }

@@ -72,7 +72,7 @@ fun FeedScreen(
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
             onRefreshClick = { /*viewModel::loadNewsline*/ },
             fetchNextBatch = { viewModel.loadMorePosts() },
-            onSearchBarActiveChange = { /*viewModel::onSearchBarActiveChange*/ }
+            onSearchBarActiveChange = { viewModel.onSearchBarActiveChange(it) }
         )
     }
 }

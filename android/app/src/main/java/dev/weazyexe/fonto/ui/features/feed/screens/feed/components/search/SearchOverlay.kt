@@ -62,7 +62,10 @@ fun SearchOverlay(
         onFilterChange = viewModel::applyFilters,
         openDateRangePickerDialog = viewModel::openDateRangePicker,
         openMultiplePickerDialog = viewModel::openMultiplePicker,
-        onPostClick = onPostClick,
+        onPostClick = {
+            onPostClick(it)
+            viewModel.onPostRead(it)
+        },
         onPostSaveClick = {
             onPostSaveClick(it)
             viewModel.onPostSave(it)

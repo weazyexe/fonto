@@ -12,8 +12,8 @@ class UpdatePostUseCase(
     private val postRepository: PostRepository
 ) {
 
-    operator fun invoke(post: Post): Flow<AsyncResult<Unit>> = flow<AsyncResult<Unit>> {
+    operator fun invoke(post: Post): Flow<AsyncResult<Post>> = flow<AsyncResult<Post>> {
         postRepository.insertOrUpdate(post)
-        emit(AsyncResult.Success(Unit))
+        emit(AsyncResult.Success(post))
     }.catch { emit(AsyncResult.Error(it.asResponseError())) }
 }

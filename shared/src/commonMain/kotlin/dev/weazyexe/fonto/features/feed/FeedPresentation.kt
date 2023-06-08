@@ -11,6 +11,9 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -26,6 +29,10 @@ class FeedPresentation(
 
     override fun onCreate() {
         startPostsLoading()
+    }
+
+    fun onSearchBarActiveChange(isActive: Boolean) {
+        setState { copy(isSearchBarActive = isActive) }
     }
 
     fun startPostsLoading() {
@@ -61,43 +68,52 @@ class FeedPresentation(
             .launchIn(scope)
     }
 
-    fun openPost(id: Post.Id) = scope.launch {
-        if (!state.isBenchmarking) {
-            val post = state.postsList?.getById(id) ?: return@launch
-            val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
-            val theme = dependencies.settingsStorage.getTheme()
+    fun openPost(id: Post.Id) {
+        dependencies.getPost(id)
+            .filterNot { state.isBenchmarking }
+            .filterIsInstance<AsyncResult.Success<Post>>()
+            .onEach {
+                val post = it.data
+                val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
+                val theme = dependencies.settingsStorage.getTheme()
 
-            when (openPostPreference) {
-                OpenPostPreference.INTERNAL -> {
-                    FeedEffect.OpenPostInApp(
-                        link = post.link,
-                        theme = theme
-                    )
-                }
+                when (openPostPreference) {
+                    OpenPostPreference.INTERNAL -> {
+                        FeedEffect.OpenPostInApp(
+                            link = post.link,
+                            theme = theme
+                        )
+                    }
 
-                OpenPostPreference.DEFAULT_BROWSER -> {
-                    FeedEffect.OpenPostInBrowser(post.link)
-                }
-            }.emit()
-
-            val updatedPost = post.copy(isRead = true)
-            dependencies.updatePost(updatedPost)
-                .onSuccess { setState { copy(posts = posts.update(updatedPost)) } }
-                .launchIn(this)
-        }
+                    OpenPostPreference.DEFAULT_BROWSER -> {
+                        FeedEffect.OpenPostInBrowser(post.link)
+                    }
+                }.emit()
+            }
+            .flatMapLatest {
+                val updatedPost = it.data.copy(isRead = true)
+                dependencies.updatePost(updatedPost)
+            }
+            .onSuccess { setState { copy(posts = posts.update(it.data)) } }
+            .launchIn(scope)
     }
 
     fun savePost(id: Post.Id) = scope.launch {
-        val post = state.postsList?.getById(id) ?: return@launch
-        val updatedPost = post.copy(isSaved = !post.isSaved)
+        var isSaving = false
 
-        dependencies.updatePost(updatedPost)
+        dependencies.getPost(id)
+            .filterIsInstance<AsyncResult.Success<Post>>()
+            .flatMapLatest {
+                isSaving = !it.data.isSaved
+                val updatedPost = it.data.copy(isSaved = !it.data.isSaved)
+                dependencies.updatePost(updatedPost)
+            }
             .onError {
-                FeedEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit()
+                FeedEffect.ShowPostSavingErrorMessage(isSaving = isSaving).emit()
             }
             .onSuccess {
-                setState { copy(posts = posts.update(updatedPost)) }
-                FeedEffect.ShowPostSavedMessage(isSaving = updatedPost.isSaved).emit()
+                setState { copy(posts = posts.update(it.data)) }
+                FeedEffect.ShowPostSavedMessage(isSaving = isSaving).emit()
             }
             .launchIn(this)
     }

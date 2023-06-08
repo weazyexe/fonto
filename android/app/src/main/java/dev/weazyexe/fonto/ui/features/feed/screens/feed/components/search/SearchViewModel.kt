@@ -88,6 +88,20 @@ class SearchViewModel(
         }
     }
 
+    fun onPostRead(id: Post.Id) {
+        (state.postsLoadState as? LoadState.Data)?.data?.let { posts ->
+            val post = posts.firstOrNull { it.id == id } ?: return
+            val updatedPosts = posts.map {
+                if (it.id == post.id) {
+                    it.copy(isRead = true)
+                } else {
+                    it
+                }
+            }
+            setState { copy(postsLoadState = LoadState.Data(updatedPosts)) }
+        }
+    }
+
     private fun loadFilters() = viewModelScope.launch {
         val filters = getFilters()
         setState {

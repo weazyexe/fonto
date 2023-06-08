@@ -27,6 +27,10 @@ class FeedViewModel(dependencies: FeedDependencies) : ViewModel() {
         presentation.onCreate()
     }
 
+    fun onSearchBarActiveChange(isActive: Boolean) {
+        presentation.onSearchBarActiveChange(isActive)
+    }
+
     fun loadMorePosts() {
         presentation.loadMorePosts()
     }
@@ -47,31 +51,6 @@ class FeedViewModel(dependencies: FeedDependencies) : ViewModel() {
             isSearchBarActive = isSearchBarActive
         )
     /*
-
-    fun savePost(post: PostViewState) = viewModelScope.launch {
-        val updatedPost = post.copy(isSaved = !post.isSaved)
-        request { updatePost(post = updatedPost.asPost()) }
-            .withErrorHandling {
-                FeedEffect.ShowMessage(
-                    message = if (updatedPost.isSaved) {
-                        StringResources.feed_post_saving_error
-                    } else {
-                        StringResources.feed_post_removing_from_bookmarks_error
-                    }
-                ).emit()
-            } ?: return@launch
-
-        val loadState = state.newslineLoadState as? LoadState.Data ?: return@launch
-        setState { copy(newslineLoadState = loadState.update(updatedPost)) }
-
-        FeedEffect.ShowMessage(
-            message = if (updatedPost.isSaved) {
-                StringResources.feed_post_saved_to_bookmarks
-            } else {
-                StringResources.feed_post_removed_from_bookmarks
-            }
-        ).emit()
-    }
 
     fun onScroll(state: ScrollState) {
         setState { copy(scrollState = state) }

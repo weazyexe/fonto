@@ -135,7 +135,7 @@ internal val postModule = module {
     single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
     single { GetPaginatedNewslineUseCase(get()) }
-    single { GetPostUseCase(get(), get()) }
+    single { GetPostUseCase(get()) }
     single { UpdatePostUseCase(get()) }
 }
 

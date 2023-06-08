@@ -9,7 +9,9 @@ sealed interface AsyncResult<out T> {
 
     data class Success<T>(val data: T) : AsyncResult<T>
 
-    data class Error<T>(val error: ResponseError) : AsyncResult<T>
+    data class Error<T>(
+        val error: ResponseError
+    ) : AsyncResult<T>
 }
 
 fun <T, R> AsyncResult<T>.map(transform: (T) -> R): AsyncResult<R> =
@@ -19,7 +21,7 @@ fun <T, R> AsyncResult<T>.map(transform: (T) -> R): AsyncResult<R> =
         is AsyncResult.Error -> AsyncResult.Error(error)
     }
 
-fun <T> Flow<AsyncResult<T>>.onSuccess(block: (AsyncResult.Success<T>) -> Unit): Flow<AsyncResult<T>> =
+fun <T> Flow<AsyncResult<T>>.onSuccess(block: suspend (AsyncResult.Success<T>) -> Unit): Flow<AsyncResult<T>> =
     onEach {
         if (it is AsyncResult.Success) {
             block(it)
