@@ -1,7 +1,6 @@
 package dev.weazyexe.fonto.arch
 
 import androidx.annotation.CallSuper
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +11,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 /**
- * Base [ViewModel] for all the screens in the app
+ * Presentation entities contains all the screen logic
+ * and provides the screen state and side-effects
  */
 abstract class Presentation<S : DomainState, E : Effect> {
 
@@ -23,9 +23,17 @@ abstract class Presentation<S : DomainState, E : Effect> {
     /**
      * UI state
      */
-    private val _uiState by lazy { MutableStateFlow(initialState) }
+    private val _state by lazy { MutableStateFlow(initialState) }
+
+    /**
+     * Domain state for external usage
+     */
     val domainState: StateFlow<S>
-        get() = _uiState.asStateFlow()
+        get() = _state.asStateFlow()
+
+    /**
+     * Domain state for internal usage
+     */
     protected val state: S
         get() = domainState.value
 
@@ -50,7 +58,7 @@ abstract class Presentation<S : DomainState, E : Effect> {
      * Updates the screen state
      */
     protected fun setState(stateBuilder: S.() -> S) {
-        _uiState.value = stateBuilder(domainState.value)
+        _state.value = stateBuilder(domainState.value)
     }
 
     /**

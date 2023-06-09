@@ -26,6 +26,7 @@ import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
+import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 
 @BottomBarNavGraph(start = true)
@@ -40,17 +41,16 @@ fun FeedScreen(
     feedPickerResults: FeedPickerResults,
     categoryPickerResults: CategoryPickerResults,
 ) {
-    val context = LocalContext.current
     val state by viewModel.state.collectAsState(FeedViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleEffects(viewModel.effects, snackbarHostState)
 
-    /*manageFeedResultRecipientProvider.invoke().handleResults { result ->
+    manageFeedResultRecipientProvider.invoke().handleResults { result ->
         if (result) {
-            viewModel.loadNewsline()
+            viewModel.loadPosts(isSwipeRefreshing = false)
         }
-    }*/
+    }
 
     CompositionLocalProvider(
         LocalNavigateTo provides navigateTo,
