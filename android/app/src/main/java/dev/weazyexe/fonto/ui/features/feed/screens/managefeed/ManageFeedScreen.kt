@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
@@ -13,10 +14,13 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.features.managefeed.ManageFeedEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedDeleteConfirmationDialogDestination
 import dev.weazyexe.fonto.util.handleResults
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
@@ -27,8 +31,9 @@ fun ManageFeedScreen(
     feedDeleteRecipient: ResultRecipient<FeedDeleteConfirmationDialogDestination, Long?>,
     resultBackNavigator: ResultBackNavigator<Boolean>
 ) {
+    val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<ManageFeedViewModel>()
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState(ManageFeedViewState())
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -36,8 +41,13 @@ fun ManageFeedScreen(
     addEditFeedRecipient.handleResults { isFeedUpdated ->
         if (isFeedUpdated) {
             viewModel.loadFeed()
-            viewModel.showSavedMessage()
             viewModel.updateChangesStatus()
+
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.manage_feed_changes_saved)
+                )
+            }
         }
     }
 
@@ -49,16 +59,24 @@ fun ManageFeedScreen(
         resultBackNavigator.navigateBack(result = state.hasChanges)
     }
 
-    ReceiveEffect(viewModel.effects) {
+    ReceiveNewEffect(viewModel.effects) {
         when (this) {
-            is ManageFeedEffect.ShowMessage -> {
-                snackbarHostState.showSnackbar(context.getString(message))
+            is ManageFeedEffect.ShowDeletedSuccessfullyMessage -> {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.manage_feed_feed_deleted_successfully)
+                )
+            }
+
+            is ManageFeedEffect.ShowDeletionFailedMessage -> {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.manage_feed_feed_deletion_failure)
+                )
             }
         }
     }
 
     ManageFeedBody(
-        feedsLoadState = state.feedLoadState,
+        feeds = state.feeds,
         snackbarHostState = snackbarHostState,
         onAddClick = {
             navController.navigate(AddEditFeedScreenDestination())

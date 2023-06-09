@@ -1,6 +1,8 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.categories
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.common.data.onError
+import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
@@ -9,6 +11,7 @@ import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.category.asViewState
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
 class CategoriesViewModel(
@@ -24,27 +27,30 @@ class CategoriesViewModel(
     }
 
     fun loadCategories() = viewModelScope.launch {
-        val feeds = request { getAllFeeds() }
-            .withErrorHandling {
-                setState { copy(categoriesLoadState = LoadState.Error(it)) }
-            }?.data ?: return@launch
+        getAllFeeds()
+            .onError {
+                // TODO: handle error
+            }
+            .onSuccess {
+                val categories = request { getAllCategories() }
+                    .withErrorHandling {
+                        setState { copy(categoriesLoadState = LoadState.Error(it)) }
+                    }?.data ?: return@onSuccess
 
-        val categories = request { getAllCategories() }
-            .withErrorHandling {
-                setState { copy(categoriesLoadState = LoadState.Error(it)) }
-            }?.data ?: return@launch
-
-        val viewState = categories.map { category ->
-            val amountOfFeeds = feeds.count { it.category == category }
-            category.asViewState(amountOfFeeds)
-        }
-        setState { copy(categoriesLoadState = LoadState.Data(viewState)) }
+                val viewState = categories.map { category ->
+                    val amountOfFeeds = it.data.count { it.category == category }
+                    category.asViewState(amountOfFeeds)
+                }
+                setState { copy(categoriesLoadState = LoadState.Data(viewState)) }
+            }
+            .launchIn(this)
     }
 
     fun deleteCategoryWithId(id: Category.Id) = viewModelScope.launch {
-        request { deleteCategory(id) }
+        request { deleteCategory(id, this) }
             .withErrorHandling {
-                CategoriesEffect.ShowMessage(StringResources.categories_category_delete_failure).emit()
+                CategoriesEffect.ShowMessage(StringResources.categories_category_delete_failure)
+                    .emit()
             }?.data ?: return@launch
 
         CategoriesEffect.ShowMessage(StringResources.categories_category_has_been_deleted).emit()
