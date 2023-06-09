@@ -7,14 +7,14 @@ import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 
-val LocalNavigateTo: ProvidableCompositionLocal<NavigateTo?> =
-    staticCompositionLocalOf { null }
+val LocalNavigateTo: ProvidableCompositionLocal<NavigateTo> =
+    staticCompositionLocalOf { error("No NavigateTo provided") }
 
-val LocalDateRangePickerResults: ProvidableCompositionLocal<DateRangePickerResults?> =
-    staticCompositionLocalOf { null }
+val LocalDateRangePickerResults: ProvidableCompositionLocal<DateRangePickerResults> =
+    staticCompositionLocalOf { error("No DateRangePickerResults provided") }
 
-val LocalFeedPickerResults: ProvidableCompositionLocal<FeedPickerResults?> =
-    staticCompositionLocalOf { null }
+val LocalFeedPickerResults: ProvidableCompositionLocal<FeedPickerResults> =
+    staticCompositionLocalOf { error("No FeedPickerResults provided") }
 
-val LocalCategoryPickerResults: ProvidableCompositionLocal<CategoryPickerResults?> =
-    staticCompositionLocalOf { null }
+val LocalCategoryPickerResults: ProvidableCompositionLocal<CategoryPickerResults> =
+    staticCompositionLocalOf { error("No CategoryPickerResults provided") }

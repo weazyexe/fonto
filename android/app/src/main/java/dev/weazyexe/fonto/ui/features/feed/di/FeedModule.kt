@@ -13,7 +13,7 @@ import org.koin.dsl.module
 
 val feedModule = module {
     viewModel { FeedViewModel(get()) }
-    viewModel { SearchViewModel(get(), get()) }
+    viewModel { SearchViewModel(get(), androidContext() as App) }
     viewModel { ManageFeedViewModel(get(), get()) }
     viewModel { AddEditFeedViewModel(androidContext() as App, get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoriesViewModel(get(), get(), get()) }

@@ -12,13 +12,11 @@ import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
-import dev.weazyexe.fonto.utils.asResponseError
 import dev.weazyexe.fonto.utils.flowIo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 
 class GetPostsUseCase(
     private val feedRepository: FeedRepository,
@@ -47,7 +45,7 @@ class GetPostsUseCase(
                 loadPostsFromInternet(limit, offset)
             }
         )
-    }.catch { emit(AsyncResult.Error(it.asResponseError())) }
+    }
 
     private suspend fun loadPostsFromInternet(limit: Int, offset: Int): AsyncResult<Posts> {
         val feeds = feedRepository.getAll()

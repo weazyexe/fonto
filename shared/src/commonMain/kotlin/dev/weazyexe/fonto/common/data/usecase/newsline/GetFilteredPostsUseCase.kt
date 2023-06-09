@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.common.data.usecase.newsline
 
+import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.newsline.ByCategory
@@ -11,19 +12,22 @@ import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
+import dev.weazyexe.fonto.utils.flowIo
+import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration.Companion.days
 
 class GetFilteredPostsUseCase(
     private val postRepository: PostRepository
 ) {
 
-    suspend operator fun invoke(
+    operator fun invoke(
         query: String,
         filters: List<NewslineFilter>
-    ): List<Post> {
-        val posts = postRepository.getAll()
+    ): Flow<AsyncResult<List<Post>>> = flowIo {
+        emit(AsyncResult.Loading())
 
-        return posts.filter { post ->
+        val posts = postRepository.getAll()
+        val filteredPosts = posts.filter { post ->
             filters.all { filter ->
                 when (filter) {
                     is BySaved -> post.filterBySaved(filter.isEnabled)
@@ -34,6 +38,8 @@ class GetFilteredPostsUseCase(
                 }
             } && post.containsQuery(query)
         }
+
+        emit(AsyncResult.Success(filteredPosts))
     }
 
     private fun Post.filterBySaved(isFilterEnabled: Boolean): Boolean =
@@ -52,7 +58,7 @@ class GetFilteredPostsUseCase(
         val isTheSameDate = range?.from == range?.to
         return range == null
                 || isTheSameDate && publishedAt in range.from..(range.to + 1.days)
-                || publishedAt in range.from..range.to
+                || publishedAt in range.from..(range.to + 1.days)
     }
 
     private fun Post.containsQuery(query: String): Boolean =

@@ -24,26 +24,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Post
+import dev.weazyexe.fonto.core.ui.components.filters.FilterViewState
 import dev.weazyexe.fonto.core.ui.components.filters.FiltersRow
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.panes.EmptyQueryPane
 import dev.weazyexe.fonto.ui.features.feed.components.panes.NotFoundPane
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostCompactItem
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewStates
 
 @Composable
 fun SearchBody(
     query: String,
-    postsLoadState: LoadState<List<PostViewState>>,
-    filters: List<NewslineFilter>,
+    posts: AsyncResult<List<PostViewState>>,
+    filters: List<FilterViewState<NewslineFilter>>,
     isActive: Boolean,
     areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
@@ -64,7 +64,7 @@ fun SearchBody(
 
         SearchBarAndResults(
             query = query,
-            postsLoadState = postsLoadState,
+            posts = posts,
             filters = filters,
             isActive = isActive,
             areFiltersChanged = areFiltersChanged,
@@ -91,8 +91,8 @@ fun SearchBody(
 private fun SearchBarAndResults(
     query: String,
     isActive: Boolean,
-    postsLoadState: LoadState<List<PostViewState>>,
-    filters: List<NewslineFilter>,
+    posts: AsyncResult<List<PostViewState>>,
+    filters: List<FilterViewState<NewslineFilter>>,
     areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
     onQueryChange: (String) -> Unit,
@@ -145,17 +145,17 @@ private fun SearchBarAndResults(
     ) {
         Column(modifier = Modifier.imePadding()) {
             FiltersRow(
-                filters = filters.asViewStates(),
+                filters = filters,
                 onFilterChange = { onFilterChange(it as NewslineFilter) },
                 openDateRangePickerDialog = { openDateRangePickerDialog(it as NewslineFilter) },
                 openMultiplePickerDialog = { openMultiplePickerDialog(it as NewslineFilter) }
             )
 
-            when (postsLoadState) {
-                is LoadState.Loading -> LoadingPane(modifier = Modifier.fillMaxSize())
-                is LoadState.Error -> ErrorPane(params = postsLoadState.error.asErrorPaneParams())
-                is LoadState.Data -> {
-                    val posts = postsLoadState.data
+            when (posts) {
+                is AsyncResult.Loading -> LoadingPane(modifier = Modifier.fillMaxSize())
+                is AsyncResult.Error -> ErrorPane(params = posts.error.asErrorPaneParams())
+                is AsyncResult.Success -> {
+                    val posts = posts.data
                     when {
                         query.isEmpty() && !areFiltersChanged -> {
                             EmptyQueryPane(
