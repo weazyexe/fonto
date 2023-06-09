@@ -4,6 +4,10 @@ import dev.weazyexe.fonto.features.feed.FeedDependencies
 import dev.weazyexe.fonto.features.feed.FeedDomainState
 import dev.weazyexe.fonto.features.feed.FeedPresentation
 import dev.weazyexe.fonto.features.feed.FeedPresentationImpl
+import dev.weazyexe.fonto.features.managefeed.ManageFeedDependencies
+import dev.weazyexe.fonto.features.managefeed.ManageFeedDomainState
+import dev.weazyexe.fonto.features.managefeed.ManageFeedPresentation
+import dev.weazyexe.fonto.features.managefeed.ManageFeedPresentationImpl
 import dev.weazyexe.fonto.features.search.SearchDependencies
 import dev.weazyexe.fonto.features.search.SearchDomainState
 import dev.weazyexe.fonto.features.search.SearchPresentation
@@ -13,7 +17,8 @@ import org.koin.dsl.module
 
 fun screenModules(): List<Module> = listOf(
     feedScreenModule,
-    searchScreenModule
+    searchScreenModule,
+    manageFeedScreenModule
 )
 
 val feedScreenModule = module {
@@ -43,5 +48,20 @@ val searchScreenModule = module {
             getFilteredPosts = get()
         )
     }
+
     factory<SearchPresentation> { SearchPresentationImpl(dependencies = get()) }
+}
+
+val manageFeedScreenModule = module {
+    factory { ManageFeedDomainState() }
+
+    factory {
+        ManageFeedDependencies(
+            initialState = get(),
+            getAllFeeds = get(),
+            deleteFeed = get()
+        )
+    }
+
+    factory<ManageFeedPresentation> { ManageFeedPresentationImpl(dependencies = get()) }
 }

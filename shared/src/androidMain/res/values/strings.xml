@@ -33,8 +33,6 @@
     <string name="error_invalid_rss_feed">Feed link is invalid. Supported feed types: RSS, Atom</string>
     <string name="error_feed_invalid_title">Title can\'t be empty</string>
     <string name="error_feed_invalid_link">Link can\'t be empty</string>
-    <string name="error_feed_can_not_delete_feed">Error while deletion the feed. Please try again</string>
-    <string name="error_feed_deleted_successfully">Feed has been deleted successfully</string>
     <string name="error_unknown_title">Something went wrong</string>
     <string name="error_unknown_message">We faced with unexpected error. Please try to refresh the page</string>
     <string name="error_empty_default_title">Such an emptiness</string>,
@@ -71,7 +69,9 @@
 
     <string name="manage_feed_title">Manage feed</string>
     <string name="manage_feed_empty_feed">There are no even single one feed for you</string>
-    <string name="manage_feed_changes_saved">Saved</string>
+    <string name="manage_feed_changes_saved">Changes have been saved</string>
+    <string name="manage_feed_feed_deleted_successfully">Feed has been deleted successfully</string>
+    <string name="manage_feed_feed_deletion_failure">Error while deletion the feed. Please try again</string>
 
     <string name="add_edit_feed_new_feed">New feed</string>
     <string name="add_edit_feed_edit_feed">Edit feed</string>

@@ -1,56 +1,39 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
+import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.asViewState
-import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.features.managefeed.ManageFeedDomainState
+import dev.weazyexe.fonto.features.managefeed.ManageFeedPresentation
 import dev.weazyexe.fonto.ui.features.feed.components.feed.asViewState
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 
-class ManageFeedViewModel(
-    private val getFeed: GetAllFeedsUseCase,
-    private val deleteFeed: DeleteFeedUseCase
-) : CoreViewModel<ManageFeedState, ManageFeedEffect>() {
+class ManageFeedViewModel(private val presentation: ManageFeedPresentation) : ViewModel() {
 
-    override val initialState: ManageFeedState = ManageFeedState()
+    val state = presentation.domainState.map { it.asViewState() }
+    val effects = presentation.effects
 
     init {
-        loadFeed()
+        presentation.onCreate(viewModelScope)
     }
 
-    fun loadFeed() = viewModelScope.launch {
-        setState { copy(feedLoadState = LoadState.Loading()) }
-        val feedResponse = request { getFeed() }
-            .withErrorHandling {
-                setState { copy(feedLoadState = LoadState.Error(it)) }
-            } ?: return@launch
-
-        val preparedViewState = feedResponse.asViewState { data ->
-            data.map { it.asViewState() }
-        }
-        setState { copy(feedLoadState = preparedViewState) }
+    fun loadFeed() {
+        presentation.loadFeed()
     }
 
-    fun deleteFeedById(id: Feed.Id) = viewModelScope.launch {
-        request { deleteFeed(id) }
-            .withErrorHandling {
-                ManageFeedEffect.ShowMessage(StringResources.error_feed_can_not_delete_feed).emit()
-            } ?: return@launch
-
-        ManageFeedEffect.ShowMessage(StringResources.error_feed_deleted_successfully).emit()
-        updateChangesStatus()
-        loadFeed()
+    fun deleteFeedById(id: Feed.Id) {
+        presentation.deleteFeedById(id)
     }
 
     fun updateChangesStatus() {
-        setState { copy(hasChanges = true) }
+        presentation.updateChangesStatus()
     }
 
-    fun showSavedMessage() {
-        ManageFeedEffect.ShowMessage(StringResources.manage_feed_changes_saved).emit()
+    private fun ManageFeedDomainState.asViewState(): ManageFeedViewState {
+        return ManageFeedViewState(
+            feeds = feeds.map { feeds -> feeds.map { it.asViewState() } },
+            hasChanges = hasChanges
+        )
     }
 }
