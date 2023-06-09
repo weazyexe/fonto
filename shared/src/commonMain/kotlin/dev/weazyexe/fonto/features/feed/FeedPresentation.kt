@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.features.feed
 import dev.weazyexe.fonto.arch.Presentation
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.PaginationState
+import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onLoading
@@ -11,6 +12,7 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flatMapLatest
@@ -20,29 +22,50 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class FeedPresentation(
-    override val scope: CoroutineScope,
     private val dependencies: FeedDependencies
 ) : Presentation<FeedDomainState, FeedEffect>() {
 
     override val initialState: FeedDomainState
         get() = dependencies.initialState
 
-    override fun onCreate() {
-        startPostsLoading()
+    override fun onCreate(scope: CoroutineScope) {
+        super.onCreate(scope)
+        loadPosts(isSwipeRefreshing = false)
+        listenToEventBus()
     }
 
     fun onSearchBarActiveChange(isActive: Boolean) {
         setState { copy(isSearchBarActive = isActive) }
     }
 
-    fun startPostsLoading() {
-        dependencies.getPosts(limit = state.limit, offset = state.offset, useCache = false)
-            .onEach { setState { copy(posts = it) } }
-            .onStart { setState { dependencies.initialState } }
+    fun loadPosts(isSwipeRefreshing: Boolean) {
+        dependencies.getPosts(
+            limit = state.limit,
+            offset = state.offset,
+            shouldShowLoading = !isSwipeRefreshing,
+            useCache = false
+        )
+            .onError { setState { copy(posts = it) } }
+            .onLoading { setState { copy(posts = it) } }
+            .onSuccess { setState { copy(posts = it, isSwipeRefreshing = false) } }
+            .onStart {
+                setState {
+                    if (isSwipeRefreshing) {
+                        dependencies.initialState.copy(
+                            isSwipeRefreshing = true,
+                            posts = state.posts
+                        )
+                    } else {
+                        dependencies.initialState
+                    }
+                }
+            }
             .launchIn(scope)
     }
 
     fun loadMorePosts() {
+        if (state.posts !is AsyncResult.Success) return
+
         val newOffset = state.offset + state.limit
         dependencies.getPosts(limit = state.limit, offset = newOffset, useCache = true)
             .onLoading { setState { copy(paginationState = PaginationState.LOADING) } }
@@ -118,7 +141,12 @@ class FeedPresentation(
             .launchIn(this)
     }
 
-    private fun Posts.getById(id: Post.Id): Post = posts.first { it.id == id }
+    private fun listenToEventBus() {
+        dependencies.eventBus.observe()
+            .filter { it is AppEvent.RefreshFeed }
+            .onEach { loadPosts(isSwipeRefreshing = false) }
+            .launchIn(scope)
+    }
 
     private fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> = map { posts ->
         Posts(

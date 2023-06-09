@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.features.feed
 
+import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
@@ -12,5 +13,6 @@ data class FeedDependencies(
     val updatePost: UpdatePostUseCase,
     val getPost: GetPostUseCase,
 
-    val settingsStorage: SettingsStorage
+    val settingsStorage: SettingsStorage,
+    val eventBus: EventBus
 )

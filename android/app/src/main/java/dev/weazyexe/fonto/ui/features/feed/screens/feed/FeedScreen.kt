@@ -60,7 +60,6 @@ fun FeedScreen(
     ) {
         FeedBody(
             posts = state.posts,
-            scrollState = state.scrollState,
             rootPaddingValues = rootPaddingValues,
             snackbarHostState = snackbarHostState,
             paginationState = state.paginationState,
@@ -68,10 +67,9 @@ fun FeedScreen(
             isSearchBarActive = state.isSearchBarActive,
             onPostClick = { viewModel.openPost(it) },
             onPostSaveClick = { viewModel.savePost(it) },
-            onScroll = { /*viewModel::onScroll*/ },
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
-            onRefreshClick = { /*viewModel::loadNewsline*/ },
-            fetchNextBatch = { viewModel.loadMorePosts() },
+            onRefreshClick = { viewModel.loadPosts(it) },
+            loadMorePosts = { viewModel.loadMorePosts() },
             onSearchBarActiveChange = { viewModel.onSearchBarActiveChange(it) }
         )
     }

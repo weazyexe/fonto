@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.arch
 
+import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +16,9 @@ import kotlinx.coroutines.launch
  */
 abstract class Presentation<S : DomainState, E : Effect> {
 
-    abstract val scope: CoroutineScope
+    private var _scope: CoroutineScope? = null
+    protected val scope: CoroutineScope
+        get() = _scope ?: error("Presentation layer wasn't initialized")
 
     /**
      * UI state
@@ -38,7 +41,10 @@ abstract class Presentation<S : DomainState, E : Effect> {
      */
     protected abstract val initialState: S
 
-    abstract fun onCreate()
+    @CallSuper
+    open fun onCreate(scope: CoroutineScope) {
+        _scope = scope
+    }
 
     /**
      * Updates the screen state

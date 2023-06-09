@@ -9,13 +9,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.PaginationState
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.core.ui.ScrollState
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
@@ -26,13 +24,10 @@ import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedScaffold
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.buildPosts
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostsViewState
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun FeedBody(
     posts: AsyncResult<PostsViewState>,
-    scrollState: ScrollState,
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
     paginationState: PaginationState,
@@ -40,10 +35,9 @@ fun FeedBody(
     isSearchBarActive: Boolean,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
-    onScroll: (ScrollState) -> Unit,
     onManageFeedClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
-    fetchNextBatch: () -> Unit,
+    loadMorePosts: () -> Unit,
     onSearchBarActiveChange: (Boolean) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
@@ -53,31 +47,17 @@ fun FeedBody(
             val lastVisibleItemIndex =
                 lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val indexToStartPaginate = lazyListState.layoutInfo.totalItemsCount - 5
-            paginationState == PaginationState.IDLE && lastVisibleItemIndex >= indexToStartPaginate
+            paginationState == PaginationState.IDLE
+                    && posts is AsyncResult.Success
+                    && lastVisibleItemIndex != 0
+                    && lastVisibleItemIndex >= indexToStartPaginate
         }
     }
 
     LaunchedEffect(shouldStartPaginate) {
         if (shouldStartPaginate) {
-            fetchNextBatch()
+            loadMorePosts()
         }
-    }
-
-    LaunchedEffect(lazyListState) {
-        snapshotFlow { lazyListState.firstVisibleItemScrollOffset }
-            .map {
-                onScroll(
-                    ScrollState(
-                        item = lazyListState.firstVisibleItemIndex,
-                        offset = lazyListState.firstVisibleItemScrollOffset
-                    )
-                )
-            }
-            .collect()
-    }
-
-    LaunchedEffect(Unit) {
-        lazyListState.scrollToItem(scrollState.item, scrollState.offset)
     }
 
     FeedScaffold(
@@ -120,7 +100,7 @@ fun FeedBody(
                     onPostClick = onPostClick,
                     onPostSaveClick = onPostSaveClick,
                     onManageFeed = onManageFeedClick,
-                    loadMore = fetchNextBatch,
+                    loadMore = loadMorePosts,
                 )
             }
         }
@@ -140,7 +120,6 @@ private fun FeedBodyPreview() = ThemedPreview {
                 )
             )
         ),
-        scrollState = ScrollState(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,
@@ -148,10 +127,9 @@ private fun FeedBodyPreview() = ThemedPreview {
         isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
-        onScroll = {},
         onManageFeedClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {},
+        loadMorePosts = {},
         onSearchBarActiveChange = {}
     )
 }
@@ -161,7 +139,6 @@ private fun FeedBodyPreview() = ThemedPreview {
 private fun FeedBodyLoadingPreview() = ThemedPreview {
     FeedBody(
         posts = AsyncResult.Loading(),
-        scrollState = ScrollState(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,
@@ -169,10 +146,9 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
-        onScroll = {},
         onManageFeedClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {},
+        loadMorePosts = {},
         onSearchBarActiveChange = {}
     )
 }

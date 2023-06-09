@@ -2,11 +2,11 @@ package dev.weazyexe.fonto.app
 
 import android.app.Application
 import dev.weazyexe.fonto.common.app.AppInitializer
-import dev.weazyexe.fonto.common.di.appModules
 import dev.weazyexe.fonto.debug.di.debugModule
 import dev.weazyexe.fonto.di.appModule
+import dev.weazyexe.fonto.di.dataModules
+import dev.weazyexe.fonto.di.screenModules
 import dev.weazyexe.fonto.ui.features.feed.di.feedModule
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.feedScreenModule
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
 import dev.weazyexe.fonto.util.AppHelper
 import io.github.aakira.napier.DebugAntilog
@@ -31,12 +31,12 @@ class App : Application() {
 
         startKoin {
             androidContext(this@App)
-            modules(appModules())
+            modules(dataModules())
+            modules(screenModules())
             modules(
                 appModule,
                 feedModule,
-                settingsModule,
-                feedScreenModule
+                settingsModule
             )
 
             if (!AppHelper.isReleaseBuild()) {
