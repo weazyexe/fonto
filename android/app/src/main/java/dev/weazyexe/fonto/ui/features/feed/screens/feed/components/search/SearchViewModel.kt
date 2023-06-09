@@ -7,10 +7,10 @@ import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
 import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
@@ -74,11 +74,26 @@ class SearchViewModel(
         }
     }
 
-    fun onPostSave(post: PostViewState) {
+    fun onPostSave(id: Post.Id) {
         (state.postsLoadState as? LoadState.Data)?.data?.let { posts ->
+            val post = posts.firstOrNull { it.id == id } ?: return
             val updatedPosts = posts.map {
                 if (it.id == post.id) {
                     it.copy(isSaved = !post.isSaved)
+                } else {
+                    it
+                }
+            }
+            setState { copy(postsLoadState = LoadState.Data(updatedPosts)) }
+        }
+    }
+
+    fun onPostRead(id: Post.Id) {
+        (state.postsLoadState as? LoadState.Data)?.data?.let { posts ->
+            val post = posts.firstOrNull { it.id == id } ?: return
+            val updatedPosts = posts.map {
+                if (it.id == post.id) {
+                    it.copy(isRead = true)
                 } else {
                     it
                 }

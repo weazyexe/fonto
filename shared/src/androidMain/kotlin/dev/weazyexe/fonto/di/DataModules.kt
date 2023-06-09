@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.di
+package dev.weazyexe.fonto.di
 
 import dev.weazyexe.fonto.common.db.DriverFactory
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorageFactory

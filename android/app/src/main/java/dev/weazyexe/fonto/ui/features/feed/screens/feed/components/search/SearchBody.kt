@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.filters.FiltersRow
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
@@ -52,8 +53,8 @@ fun SearchBody(
     onFilterChange: (NewslineFilter) -> Unit,
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit,
-    onPostClick: (PostViewState) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
+    onPostClick: (Post.Id) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
@@ -100,8 +101,8 @@ private fun SearchBarAndResults(
     onFilterChange: (NewslineFilter) -> Unit,
     openDateRangePickerDialog: (NewslineFilter) -> Unit,
     openMultiplePickerDialog: (NewslineFilter) -> Unit,
-    onPostClick: (PostViewState) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
+    onPostClick: (Post.Id) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
 ) {
     SearchBar(
@@ -191,8 +192,8 @@ private fun SearchBarAndResults(
 private fun PostsList(
     posts: List<PostViewState>,
     contentPadding: PaddingValues,
-    onPostClick: (PostViewState) -> Unit,
-    onSaveClick: (PostViewState) -> Unit
+    onPostClick: (Post.Id) -> Unit,
+    onSaveClick: (Post.Id) -> Unit
 ) {
     if (posts.isEmpty()) {
         NotFoundPane(modifier = Modifier.fillMaxSize())
@@ -204,8 +205,8 @@ private fun PostsList(
             ) { post ->
                 PostCompactItem(
                     post = post,
-                    onPostClick = { onPostClick(post) },
-                    onSaveClick = { onSaveClick(post) }
+                    onPostClick = { onPostClick(post.id) },
+                    onSaveClick = { onSaveClick(post.id) }
                 )
             }
             item(key = "bottom_padding") {

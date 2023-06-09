@@ -1,212 +1,51 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.BuildConfig
-import dev.weazyexe.fonto.common.DEFAULT_LIMIT
-import dev.weazyexe.fonto.common.data.bus.AppEvent
-import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
-import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
-import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.model.feed.Newsline
-import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
-import dev.weazyexe.fonto.core.ui.ScrollState
-import dev.weazyexe.fonto.core.ui.pagination.PaginationState
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
-import dev.weazyexe.fonto.core.ui.presentation.asViewState
-import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
-import dev.weazyexe.fonto.ui.features.feed.components.post.asPost
-import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
-import dev.weazyexe.fonto.ui.features.feed.viewstates.asNewslineViewState
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import dev.weazyexe.fonto.common.data.map
+import dev.weazyexe.fonto.common.model.feed.Post
+import dev.weazyexe.fonto.features.feed.FeedDomainState
+import dev.weazyexe.fonto.features.feed.FeedPresentation
+import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class FeedViewModel(
-    private val getNewsline: GetNewslineUseCase,
-    private val updatePost: UpdatePostUseCase,
-    private val getPaginatedNewsline: GetPaginatedNewslineUseCase,
-    private val settingsStorage: SettingsStorage,
-    private val eventBus: EventBus
-) : CoreViewModel<FeedState, FeedEffect>() {
+class FeedViewModel(private val presentation: FeedPresentation) : ViewModel() {
 
-    override val initialState: FeedState = FeedState()
+    val state: Flow<FeedViewState>
+        get() = presentation.domainState.map { it.asViewState() }
+
+    val effects = presentation.effects
 
     init {
-        loadNewsline()
-        listenToEventBus()
-    }
-
-    fun loadNewsline(isSwipeRefreshing: Boolean = false) = viewModelScope.launch {
-        setState {
-            copy(
-                newslineLoadState = if (isSwipeRefreshing) {
-                    newslineLoadState
-                } else {
-                    LoadState.Loading()
-                },
-                scrollState = ScrollState(),
-                offset = 0,
-                isSwipeRefreshing = isSwipeRefreshing,
-                newslinePaginationState = PaginationState.IDLE
-            )
-        }
-
-        val shouldUseMockFeeds = BuildConfig.BUILD_TYPE == "benchmark"
-        val newsline = request { getNewsline(shouldUseMockFeeds) }
-            .withErrorHandling {
-                setState { copy(newslineLoadState = LoadState.Error(it)) }
-            } ?: return@launch
-
-        when (val data = newsline.data) {
-            is Newsline.Success -> {
-                setState {
-                    copy(
-                        newslineLoadState = LoadState.Data(data.asNewslineViewState()),
-                        offset = state.offset + DEFAULT_LIMIT,
-                        isSwipeRefreshing = false
-                    )
-                }
-                showNotLoadedSourcesError(data.loadedWithError.map { it.feed })
-            }
-
-            is Newsline.Error -> {
-                setState {
-                    copy(
-                        newslineLoadState = LoadState.Error(ResponseError.FetchNewslineError()),
-                        isSwipeRefreshing = false
-                    )
-                }
-            }
-        }
-    }
-
-    fun getNextPostsBatch() = viewModelScope.launch {
-        setState { copy(newslinePaginationState = PaginationState.LOADING) }
-
-        val newslineBatch = request {
-            getPaginatedNewsline(state.limit, state.offset)
-        }.withErrorHandling {
-            setState { copy(newslinePaginationState = PaginationState.ERROR) }
-        } ?: return@launch
-
-        when (val data = newslineBatch.data) {
-            is Newsline.Success -> {
-                val currentPosts =
-                    (state.newslineLoadState as? LoadState.Data)?.data?.posts ?: return@launch
-                val newPosts = data.posts.map { it.asViewState() }
-
-                val updatedNewsline = LoadState.Data(currentPosts + newPosts)
-                    .asViewState { NewslineViewState(it) }
-
-                setState {
-                    copy(
-                        newslineLoadState = updatedNewsline,
-                        newslinePaginationState = if (newPosts.isNotEmpty()) {
-                            PaginationState.IDLE
-                        } else {
-                            PaginationState.PAGINATION_EXHAUST
-                        },
-                        offset = state.offset + DEFAULT_LIMIT
-                    )
-                }
-            }
-
-            is Newsline.Error -> {
-                setState { copy(newslinePaginationState = PaginationState.ERROR) }
-            }
-        }
-    }
-
-    fun savePost(post: PostViewState) = viewModelScope.launch {
-        val updatedPost = post.copy(isSaved = !post.isSaved)
-        request { updatePost(post = updatedPost.asPost()) }
-            .withErrorHandling {
-                FeedEffect.ShowMessage(
-                    message = if (updatedPost.isSaved) {
-                        StringResources.feed_post_saving_error
-                    } else {
-                        StringResources.feed_post_removing_from_bookmarks_error
-                    }
-                ).emit()
-            } ?: return@launch
-
-        val loadState = state.newslineLoadState as? LoadState.Data ?: return@launch
-        setState { copy(newslineLoadState = loadState.update(updatedPost)) }
-
-        FeedEffect.ShowMessage(
-            message = if (updatedPost.isSaved) {
-                StringResources.feed_post_saved_to_bookmarks
-            } else {
-                StringResources.feed_post_removed_from_bookmarks
-            }
-        ).emit()
-    }
-
-    fun openPost(post: PostViewState) = viewModelScope.launch {
-        if (!state.isBenchmarking) {
-            when (settingsStorage.getOpenPostPreference()) {
-                OpenPostPreference.INTERNAL -> FeedEffect.OpenPostInApp(
-                    link = post.link,
-                    theme = settingsStorage.getTheme()
-                )
-
-                OpenPostPreference.DEFAULT_BROWSER -> FeedEffect.OpenPostInBrowser(post.link)
-            }.emit()
-
-            val updatedPost = post.copy(isRead = true)
-            request { updatePost(post = updatedPost.asPost()) }
-                .withErrorHandling {  }?.data ?: return@launch
-
-            setState { copy(newslineLoadState = state.newslineLoadState.update(updatedPost)) }
-        }
-    }
-
-    fun onScroll(state: ScrollState) {
-        setState { copy(scrollState = state) }
+        presentation.onCreate(viewModelScope)
     }
 
     fun onSearchBarActiveChange(isActive: Boolean) {
-        setState { copy(isSearchBarActive = isActive) }
+        presentation.onSearchBarActiveChange(isActive)
     }
 
-    private fun showNotLoadedSourcesError(problematicFeedList: List<Feed>) {
-        if (problematicFeedList.isNotEmpty()) {
-            val feedListString = problematicFeedList.joinToString { it.title }
-            FeedEffect.ShowMessage(StringResources.feed_error_sources, feedListString).emit()
-        }
+    fun loadPosts(isSwipeRefreshing: Boolean) {
+        presentation.loadPosts(isSwipeRefreshing)
     }
 
-    private fun listenToEventBus() {
-        eventBus.observe()
-            .filter { it is AppEvent.RefreshFeed }
-            .onEach { loadNewsline() }
-            .launchInViewModelScope()
+    fun loadMorePosts() {
+        presentation.loadMorePosts()
     }
 
-    private fun LoadState<NewslineViewState>.update(post: PostViewState): LoadState<NewslineViewState> {
-        val data = (this as? LoadState.Data)?.data ?: return this
-        val updatedPosts = data.posts.updatePost(post)
-        return update(updatedPosts)
+    fun openPost(id: Post.Id) {
+        presentation.openPost(id)
     }
 
-    private fun LoadState.Data<NewslineViewState>.update(posts: List<PostViewState>): LoadState.Data<NewslineViewState> {
-        return copy(data = data.copy(posts = posts))
+    fun savePost(id: Post.Id) {
+        presentation.savePost(id)
     }
 
-    private fun List<PostViewState>.updatePost(post: PostViewState): List<PostViewState> {
-        return map {
-            if (it.id == post.id) {
-                post
-            } else {
-                it
-            }
-        }
-    }
+    private fun FeedDomainState.asViewState(): FeedViewState =
+        FeedViewState(
+            posts = posts.map { it.asViewState() },
+            paginationState = paginationState,
+            isSwipeRefreshing = isSwipeRefreshing,
+            isSearchBarActive = isSearchBarActive
+        )
 }

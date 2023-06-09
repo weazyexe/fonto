@@ -79,7 +79,8 @@ fun AddEditFeedBody(
 
     LaunchedEffect(finishLoadState) {
         (finishLoadState as? LoadState.Error)?.let {
-            snackbarHostState.showSnackbar(it.error.asLocalizedMessage(context))
+            // FIXME #35
+            snackbarHostState.showSnackbar(it.error.localizedMessage.orEmpty())
         }
     }
 

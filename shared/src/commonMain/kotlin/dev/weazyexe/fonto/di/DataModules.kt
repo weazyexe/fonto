@@ -1,8 +1,9 @@
-@file:JvmName("CommonModules")
+@file:JvmName("CommonDataModules")
 
-package dev.weazyexe.fonto.common.di
+package dev.weazyexe.fonto.di
 
 import dev.weazyexe.fonto.common.app.AppInitializer
+import dev.weazyexe.fonto.common.app.AppInitializerImpl
 import dev.weazyexe.fonto.common.app.CategoriesInitializer
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
@@ -37,9 +38,8 @@ import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
+import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
@@ -53,6 +53,18 @@ import org.koin.dsl.module
 
 expect fun platformModule(): Module
 
+fun dataModules(): List<Module> =
+    listOf(
+        initializerDataModule,
+        feedDataModule,
+        iconDataModule,
+        rssDataModule,
+        atomDataModule,
+        postDataModule,
+        categoryDataModule,
+        backupDataModule
+    )
+
 internal val coreModule = module {
     includes(platformModule())
 
@@ -64,7 +76,7 @@ internal val coreModule = module {
     single { EventBus() }
 }
 
-internal val rssModule = module {
+internal val rssDataModule = module {
     includes(coreModule)
 
     single { RssParser() }
@@ -73,7 +85,7 @@ internal val rssModule = module {
     single { IsRssValidUseCase(get()) }
 }
 
-internal val atomModule = module {
+internal val atomDataModule = module {
     includes(coreModule)
 
     single { AtomParser() }
@@ -82,7 +94,7 @@ internal val atomModule = module {
     single { IsAtomValidUseCase(get()) }
 }
 
-internal val iconModule = module {
+internal val iconDataModule = module {
     includes(coreModule)
 
     single { IconDataSource(get()) }
@@ -90,7 +102,7 @@ internal val iconModule = module {
     single { GetFaviconByUrlUseCase(get()) }
 }
 
-internal val categoryModule = module {
+internal val categoryDataModule = module {
     includes(coreModule)
 
     single { CategoryDataSource(get()) }
@@ -103,11 +115,11 @@ internal val categoryModule = module {
     single { ChangeFeedCategoryUseCase(get()) }
 }
 
-internal val feedModule = module {
+internal val feedDataModule = module {
     includes(coreModule)
-    includes(rssModule)
-    includes(atomModule)
-    includes(categoryModule)
+    includes(rssDataModule)
+    includes(atomDataModule)
+    includes(categoryDataModule)
 
     single { FeedDataSource(get()) }
     single { FeedRepository(get(), get()) }
@@ -121,45 +133,32 @@ internal val feedModule = module {
     single { GetFeedTypeUseCase(get(), get()) }
 }
 
-internal val postModule = module {
+internal val postDataModule = module {
     includes(coreModule)
-    includes(rssModule)
-    includes(atomModule)
-    includes(feedModule)
+    includes(rssDataModule)
+    includes(atomDataModule)
+    includes(feedDataModule)
 
     single { PostDataSource(get()) }
     single { PostRepository(get(), get(), get()) }
-    single { GetNewslineUseCase(get(), get(), get(), get()) }
+    single { GetPostsUseCase(get(), get(), get(), get()) }
     single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
-    single { GetPaginatedNewslineUseCase(get()) }
-    single { GetPostUseCase(get(), get()) }
+    single { GetPostUseCase(get()) }
     single { UpdatePostUseCase(get()) }
 }
 
-internal val backupModule = module {
-    includes(coreModule, feedModule, categoryModule, postModule, iconModule)
+internal val backupDataModule = module {
+    includes(coreModule, feedDataModule, categoryDataModule, postDataModule, iconDataModule)
     single { GetExportDataUseCase(get(), get(), get()) }
     single { ParseBackupDataUseCase() }
     single { ImportDataUseCase(get(), get(), get(), get()) }
 }
 
-internal val initializerModule = module {
+internal val initializerDataModule = module {
     includes(coreModule)
-    includes(categoryModule)
+    includes(categoryDataModule)
 
     single { CategoriesInitializer(get(), get(), get()) }
-    single { AppInitializer(get()) }
+    single<AppInitializer> { AppInitializerImpl(get()) }
 }
-
-fun appModules(): List<Module> =
-    listOf(
-        initializerModule,
-        feedModule,
-        iconModule,
-        rssModule,
-        atomModule,
-        postModule,
-        categoryModule,
-        backupModule
-    )

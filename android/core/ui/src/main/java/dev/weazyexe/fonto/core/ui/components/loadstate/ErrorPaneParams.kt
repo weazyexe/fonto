@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
+import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Immutable

@@ -1,5 +1,7 @@
 package dev.weazyexe.fonto.core.ui.presentation
 
+import dev.weazyexe.fonto.common.data.ResponseError
+
 sealed interface LoadState<T> {
 
     sealed interface HasResult<T>

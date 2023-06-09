@@ -1,6 +1,6 @@
-package dev.weazyexe.fonto.core.ui.utils
+package dev.weazyexe.fonto.utils
 
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
+import dev.weazyexe.fonto.common.data.ResponseError
 import io.github.aakira.napier.Napier
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -10,8 +10,9 @@ fun Throwable.asResponseError(): ResponseError {
     Napier.e(throwable = this, message = message ?: "Error")
     return when (this) {
         is UnknownHostException,
-        is ConnectException -> ResponseError.NoInternetError()
-        is TimeoutException -> ResponseError.TimeoutError()
+        is ConnectException -> ResponseError.NoInternetError
+
+        is TimeoutException -> ResponseError.TimeoutError
 
         // FIXME
         /*is HttpException -> {
@@ -21,7 +22,7 @@ fun Throwable.asResponseError(): ResponseError {
         is RssParseException -> ResponseError.InvalidRssFeed()*/
 
         else -> {
-            ResponseError.UnknownError()
+            ResponseError.UnknownError
         }
     }
 }

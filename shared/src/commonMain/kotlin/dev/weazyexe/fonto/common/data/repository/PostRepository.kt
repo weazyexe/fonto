@@ -37,8 +37,11 @@ class PostRepository(
         return postDaos.mergeWithFeeds(feeds)
     }
 
-    fun getPostById(id: Post.Id, feed: Feed): Post =
-        postDataSource.getPostById(id.origin).toPost(feed)
+    fun getPostById(id: Post.Id): Post {
+        val post = postDataSource.getPostById(id.origin)
+        val feed = feedRepository.getById(Feed.Id(post.feedId))
+        return postDataSource.getPostById(id.origin).toPost(feed)
+    }
 
     fun insert(
         post: Post,
