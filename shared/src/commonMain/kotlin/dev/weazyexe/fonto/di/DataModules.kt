@@ -3,6 +3,7 @@
 package dev.weazyexe.fonto.di
 
 import dev.weazyexe.fonto.common.app.AppInitializer
+import dev.weazyexe.fonto.common.app.AppInitializerImpl
 import dev.weazyexe.fonto.common.app.CategoriesInitializer
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
@@ -37,8 +38,6 @@ import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetNewslineUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPaginatedNewslineUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
@@ -142,11 +141,9 @@ internal val postDataModule = module {
 
     single { PostDataSource(get()) }
     single { PostRepository(get(), get(), get()) }
-    single { GetNewslineUseCase(get(), get(), get(), get()) }
     single { GetPostsUseCase(get(), get(), get(), get()) }
     single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
-    single { GetPaginatedNewslineUseCase(get()) }
     single { GetPostUseCase(get()) }
     single { UpdatePostUseCase(get()) }
 }
@@ -163,5 +160,5 @@ internal val initializerDataModule = module {
     includes(categoryDataModule)
 
     single { CategoriesInitializer(get(), get(), get()) }
-    single { AppInitializer(get()) }
+    single<AppInitializer> { AppInitializerImpl(get()) }
 }

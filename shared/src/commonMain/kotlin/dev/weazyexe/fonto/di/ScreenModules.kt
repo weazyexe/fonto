@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.di
 import dev.weazyexe.fonto.features.feed.FeedDependencies
 import dev.weazyexe.fonto.features.feed.FeedDomainState
 import dev.weazyexe.fonto.features.feed.FeedPresentation
+import dev.weazyexe.fonto.features.feed.FeedPresentationImpl
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -24,5 +25,5 @@ val feedScreenModule = module {
         )
     }
 
-    factory { FeedPresentation(dependencies = get()) }
+    factory<FeedPresentation> { FeedPresentationImpl(dependencies = get()) }
 }

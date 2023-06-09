@@ -6,7 +6,7 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.datetime.Instant
 
-fun ParsedFeed.Success.toPosts(): List<Post> =
+internal fun ParsedFeed.Success.toPosts(): List<Post> =
     posts.map {
         Post(
             id = generateId(id, it.link),
@@ -22,7 +22,7 @@ fun ParsedFeed.Success.toPosts(): List<Post> =
         )
     }
 
-fun Post.toDao(): PostDao =
+internal fun Post.toDao(): PostDao =
     PostDao(
         id = id.origin,
         title = title,
@@ -36,7 +36,7 @@ fun Post.toDao(): PostDao =
         isRead = isRead.toString()
     )
 
-fun PostDao.toPost(feed: Feed): Post =
+internal fun PostDao.toPost(feed: Feed): Post =
     Post(
         id = Post.Id(id),
         title = title,
