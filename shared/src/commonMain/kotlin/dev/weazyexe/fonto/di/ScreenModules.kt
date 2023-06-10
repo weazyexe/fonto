@@ -1,5 +1,11 @@
 package dev.weazyexe.fonto.di
 
+import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedDependencies
+import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedDomainState
+import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentation
+import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentationImpl
+import dev.weazyexe.fonto.features.addeditfeed.validator.TitleValidator
+import dev.weazyexe.fonto.features.addeditfeed.validator.UrlValidator
 import dev.weazyexe.fonto.features.feed.FeedDependencies
 import dev.weazyexe.fonto.features.feed.FeedDomainState
 import dev.weazyexe.fonto.features.feed.FeedPresentation
@@ -18,7 +24,8 @@ import org.koin.dsl.module
 fun screenModules(): List<Module> = listOf(
     feedScreenModule,
     searchScreenModule,
-    manageFeedScreenModule
+    manageFeedScreenModule,
+    addEditFeedScreenModule
 )
 
 val feedScreenModule = module {
@@ -64,4 +71,27 @@ val manageFeedScreenModule = module {
     }
 
     factory<ManageFeedPresentation> { ManageFeedPresentationImpl(dependencies = get()) }
+}
+
+val addEditFeedScreenModule = module {
+    factory { TitleValidator() }
+    factory { UrlValidator() }
+
+    factory { AddEditFeedDomainState() }
+
+    factory {
+        AddEditFeedDependencies(
+            initialState = get(),
+            getFeed = get(),
+            createFeed = get(),
+            updateFeed = get(),
+            getFaviconByUrl = get(),
+            getFeedType = get(),
+            getAllCategories = get(),
+            titleValidator = get(),
+            urlValidator = get()
+        )
+    }
+
+    factory<AddEditFeedPresentation> { AddEditFeedPresentationImpl(dependencies = get()) }
 }

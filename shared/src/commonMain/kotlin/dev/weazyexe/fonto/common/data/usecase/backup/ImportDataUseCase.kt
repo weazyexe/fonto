@@ -11,6 +11,7 @@ import dev.weazyexe.fonto.common.model.backup.asPost
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.asFlow
 
 class ImportDataUseCase(
     private val feedRepository: FeedRepository,
@@ -28,6 +29,7 @@ class ImportDataUseCase(
             categoryRepository.insert(categoryBackupModel.asCategory())
         }
 
+        backup.feeds.asFlow()
         val feedIcons = coroutineScope {
             backup.feeds.map { feedBackupModel ->
                async { feedBackupModel.id to getFaviconByUrl(feedBackupModel.link) }
@@ -39,7 +41,7 @@ class ImportDataUseCase(
             feedRepository.insertOrIgnore(
                 feedBackupModel.asFeed(
                     category = categories.firstOrNull { it.id == feedBackupModel.category },
-                    icon = feedIcons[feedBackupModel.id]
+                    icon = null // FIXME #44 feedIcons[feedBackupModel.id]
                 )
             )
         }
