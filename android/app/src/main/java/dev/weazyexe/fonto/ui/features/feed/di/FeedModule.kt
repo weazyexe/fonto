@@ -16,6 +16,6 @@ val feedModule = module {
     viewModel { SearchViewModel(get(), androidContext() as App) }
     viewModel { ManageFeedViewModel(get()) }
     viewModel { AddEditFeedViewModel(get(), get()) }
-    viewModel { CategoriesViewModel(get(), get(), get()) }
+    viewModel { CategoriesViewModel(get()) }
     viewModel { AddEditCategoryViewModel(get(), get(), get(), get()) }
 }

@@ -1,51 +1,41 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.categories
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.common.data.AsyncResult
-import dev.weazyexe.fonto.common.data.onError
-import dev.weazyexe.fonto.common.data.onSuccess
-import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
-import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
-import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
+import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.model.feed.Category
-import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.features.categories.CategoriesDomainState
+import dev.weazyexe.fonto.features.categories.CategoriesPresentation
 import dev.weazyexe.fonto.ui.features.feed.components.category.asViewState
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 
-class CategoriesViewModel(
-    private val getAllCategories: GetAllCategoriesUseCase,
-    private val getAllFeeds: GetAllFeedsUseCase,
-    private val deleteCategory: DeleteCategoryUseCase
-) : CoreViewModel<CategoriesState, CategoriesEffect>() {
+class CategoriesViewModel(private val presentation: CategoriesPresentation) : ViewModel() {
 
-    override val initialState: CategoriesState = CategoriesState()
+    val state = presentation.domainState.map { it.asViewState() }
+    val effects = presentation.effects
 
     init {
-        loadCategories()
+        presentation.onCreate(viewModelScope)
     }
 
-    fun loadCategories() = viewModelScope.launch {
-        getAllFeeds()
-            .onError {
-                // TODO: handle error
-            }
-            .filterIsInstance<AsyncResult.Success<List<Feed>>>()
-            .flatMapLatest { getAllCategories() }
-            .onError { setState { copy(categoriesLoadState = AsyncResult.Error(it.error)) } }
-            .onSuccess { result ->
-                val viewState = result.data.map { category ->
-                    val amountOfFeeds = result.data.count { it == category }
-                    category.asViewState(amountOfFeeds)
-                }
-                setState { copy(categoriesLoadState = AsyncResult.Success(viewState)) }
-            }
-            .launchIn(this)
+    fun loadFeedAndCategories() {
+        presentation.loadFeedsAndCategories()
     }
+
+    fun deleteById(id: Category.Id) {
+        presentation.deleteById(id)
+    }
+
+    private fun CategoriesDomainState.asViewState() = CategoriesViewState(
+        categories = categories.map { categories ->
+            categories.map { category ->
+                val amountOfFeeds = feeds.count { it.category == category }
+                category.asViewState(amountOfFeeds)
+            }
+        }
+    )
+
+    /*
 
     fun deleteCategoryWithId(id: Category.Id) = viewModelScope.launch {
         request { deleteCategory(id, this) }
@@ -60,5 +50,5 @@ class CategoriesViewModel(
 
     fun showCategorySavedDialog() {
         CategoriesEffect.ShowMessage(StringResources.categories_category_has_been_saved).emit()
-    }
+    }*/
 }

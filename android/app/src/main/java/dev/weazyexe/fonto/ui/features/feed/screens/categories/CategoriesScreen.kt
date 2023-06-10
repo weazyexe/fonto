@@ -11,7 +11,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.common.model.feed.Category
-import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.features.categories.CategoriesEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.CategoryDeleteConfirmationDialogDestination
 import dev.weazyexe.fonto.util.handleResults
@@ -24,35 +26,47 @@ fun CategoriesScreen(
     addEditResultRecipient: ResultRecipient<AddEditCategoryDialogDestination, Boolean>,
     deleteResultRecipient: ResultRecipient<CategoryDeleteConfirmationDialogDestination, Long?>
 ) {
-    val viewModel = koinViewModel<CategoriesViewModel>()
-    val state by viewModel.uiState.collectAsState()
-
     val context = LocalContext.current
+    val viewModel = koinViewModel<CategoriesViewModel>()
+    val state by viewModel.state.collectAsState(CategoriesViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
     addEditResultRecipient.handleResults { isSavedSuccessfully ->
         if (isSavedSuccessfully) {
-            viewModel.loadCategories()
-            viewModel.showCategorySavedDialog()
+            viewModel.loadFeedAndCategories()
+//            viewModel.showCategorySavedDialog()
         }
     }
 
     deleteResultRecipient.handleResults { id ->
         if (id != null) {
-            viewModel.deleteCategoryWithId(Category.Id(id))
+            viewModel.deleteById(Category.Id(id))
         }
     }
 
-    ReceiveEffect(viewModel.effects) {
+    ReceiveNewEffect(viewModel.effects) {
         when (this) {
+            CategoriesEffect.ShowCategoryDeletionFailureMessage -> {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.categories_category_delete_failure)
+                )
+            }
+
+            CategoriesEffect.ShowCategoryDeletionSuccessMessage -> {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.categories_category_has_been_deleted)
+                )
+            }
+        }
+        /*when (this) {
             is CategoriesEffect.ShowMessage -> {
                 snackbarHostState.showSnackbar(context.getString(message))
             }
-        }
+        }*/
     }
 
     CategoriesBody(
-        categoriesLoadState = state.categoriesLoadState,
+        categories = state.categories,
         snackbarHostState = snackbarHostState,
         onBackClick = navController::navigateUp,
         onCategoryClick = { navController.navigate(AddEditCategoryDialogDestination(it.id)) },

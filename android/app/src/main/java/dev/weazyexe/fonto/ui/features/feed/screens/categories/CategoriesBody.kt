@@ -44,7 +44,7 @@ import dev.weazyexe.fonto.ui.features.feed.preview.CategoryViewStatePreview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesBody(
-    categoriesLoadState: AsyncResult<List<CategoryViewState>>,
+    categories: AsyncResult<List<CategoryViewState>>,
     snackbarHostState: SnackbarHostState,
     onCategoryClick: (CategoryViewState) -> Unit,
     onDeleteClick: (CategoryViewState) -> Unit,
@@ -77,17 +77,17 @@ fun CategoriesBody(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        when (categoriesLoadState) {
+        when (categories) {
             is AsyncResult.Success -> {
                 CategoriesList(
-                    list = categoriesLoadState.data,
+                    list = categories.data,
                     padding = padding,
                     onClick = onCategoryClick,
                     onDeleteClick = onDeleteClick
                 )
             }
             is AsyncResult.Error -> {
-                ErrorPane(categoriesLoadState.error.asErrorPaneParams())
+                ErrorPane(categories.error.asErrorPaneParams())
             }
             is AsyncResult.Loading -> {
                 LoadingPane(modifier = Modifier.fillMaxSize())
@@ -138,7 +138,7 @@ private fun CategoriesList(
 @Composable
 private fun CategoriesBodyPreview() = ThemedPreview {
     CategoriesBody(
-        categoriesLoadState = AsyncResult.Success(
+        categories = AsyncResult.Success(
             listOf(
                 CategoryViewStatePreview.default,
                 CategoryViewStatePreview.noFeeds,
