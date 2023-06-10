@@ -34,21 +34,4 @@ class CategoriesViewModel(private val presentation: CategoriesPresentation) : Vi
             }
         }
     )
-
-    /*
-
-    fun deleteCategoryWithId(id: Category.Id) = viewModelScope.launch {
-        request { deleteCategory(id, this) }
-            .withErrorHandling {
-                CategoriesEffect.ShowMessage(StringResources.categories_category_delete_failure)
-                    .emit()
-            }?.data ?: return@launch
-
-        CategoriesEffect.ShowMessage(StringResources.categories_category_has_been_deleted).emit()
-        loadCategories()
-    }
-
-    fun showCategorySavedDialog() {
-        CategoriesEffect.ShowMessage(StringResources.categories_category_has_been_saved).emit()
-    }*/
 }

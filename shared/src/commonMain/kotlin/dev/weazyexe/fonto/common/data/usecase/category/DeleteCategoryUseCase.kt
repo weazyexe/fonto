@@ -14,16 +14,6 @@ class DeleteCategoryUseCase(
     private val changeFeedCategory: ChangeFeedCategoryUseCase
 ) {
 
-    /*operator fun invoke(id: Category.Id, scope: CoroutineScope): Flow<AsyncResult<Unit>> = flowIo {
-
-        getAllFeeds().onSuccess { result ->
-            result.data.forEach {
-                changeFeedCategory(feed = it, category = null)
-            }
-            categoryRepository.delete(id)
-        }.launchIn(scope)
-    }*/
-
     operator fun invoke(id: Category.Id): Flow<AsyncResult<Unit>> = flowIo {
         emit(AsyncResult.Loading())
         val feeds = feedRepository.getAll()
