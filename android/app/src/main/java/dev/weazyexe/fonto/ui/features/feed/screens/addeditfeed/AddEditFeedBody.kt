@@ -1,6 +1,5 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 
-import android.graphics.Bitmap
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -28,7 +27,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -47,11 +46,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.core.ui.components.Rotatable
-import dev.weazyexe.fonto.core.ui.components.loadstate.LoadStateComponent
 import dev.weazyexe.fonto.core.ui.components.toolbar.FullScreenDialogToolbar
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 
@@ -64,8 +62,8 @@ fun AddEditFeedBody(
     categories: List<Category>,
     isEditMode: Boolean = false,
     snackbarHostState: SnackbarHostState,
-    iconLoadState: LoadState<Bitmap?>,
-    finishLoadState: LoadState<Unit>,
+    icon: AsyncResult<ImageBitmap?>,
+    finishResult: AsyncResult<Unit>,
     onTitleChange: (String) -> Unit,
     onLinkChange: (String) -> Unit,
     onCategoryChange: (Category?) -> Unit,
@@ -73,16 +71,8 @@ fun AddEditFeedBody(
     onBackClick: () -> Unit,
     onFinishClick: () -> Unit
 ) {
-    val context = LocalContext.current
     val titleFocusRequester = remember { FocusRequester() }
-    var isCategoriesExpanded by remember { mutableStateOf(false) }
-
-    LaunchedEffect(finishLoadState) {
-        (finishLoadState as? LoadState.Error)?.let {
-            // FIXME #35
-            snackbarHostState.showSnackbar(it.error.localizedMessage.orEmpty())
-        }
-    }
+    var areCategoriesExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.imePadding(),
@@ -102,15 +92,14 @@ fun AddEditFeedBody(
                         StringResources.add_edit_feed_create
                     }
                 ),
+                isLoading = finishResult is AsyncResult.Loading,
                 onBackClick = onBackClick,
                 onDoneClick = onFinishClick
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
-        Column(
-            modifier = Modifier.padding(padding)
-        ) {
+        Column(modifier = Modifier.padding(padding)) {
             Spacer(modifier = Modifier.size(8.dp))
 
             OutlinedTextField(
@@ -121,7 +110,7 @@ fun AddEditFeedBody(
                     .padding(horizontal = 16.dp),
                 label = { Text(text = stringResource(id = StringResources.add_edit_feed_link)) },
                 placeholder = { Text(text = stringResource(id = StringResources.add_edit_feed_link_hint)) },
-                trailingIcon = { FeedIcon(iconLoadState = iconLoadState) },
+                trailingIcon = { FeedIcon(icon = icon) },
                 maxLines = 1,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(
@@ -154,15 +143,15 @@ fun AddEditFeedBody(
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { isCategoriesExpanded = true }
+                    onDone = { areCategoriesExpanded = true }
                 )
             )
 
             Spacer(modifier = Modifier.size(16.dp))
 
             ExposedDropdownMenuBox(
-                expanded = isCategoriesExpanded,
-                onExpandedChange = { isCategoriesExpanded = it },
+                expanded = areCategoriesExpanded,
+                onExpandedChange = { areCategoriesExpanded = it },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -177,7 +166,7 @@ fun AddEditFeedBody(
                     readOnly = true,
                     label = { Text(text = stringResource(id = StringResources.add_edit_feed_category)) },
                     trailingIcon = {
-                        Rotatable(isRotated = isCategoriesExpanded) {
+                        Rotatable(isRotated = areCategoriesExpanded) {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = true)
                         }
                     },
@@ -186,8 +175,8 @@ fun AddEditFeedBody(
                 )
 
                 DropdownMenu(
-                    expanded = isCategoriesExpanded,
-                    onDismissRequest = { isCategoriesExpanded = false },
+                    expanded = areCategoriesExpanded,
+                    onDismissRequest = { areCategoriesExpanded = false },
                     modifier = Modifier.exposedDropdownSize()
                 ) {
                     CategoryDropdownItem(
@@ -196,7 +185,7 @@ fun AddEditFeedBody(
                         isAddItem = true,
                         onClick = {
                             onAddCategoryClick()
-                            isCategoriesExpanded = false
+                            areCategoriesExpanded = false
                         }
                     )
 
@@ -206,7 +195,7 @@ fun AddEditFeedBody(
                         isAddItem = false,
                         onClick = {
                             onCategoryChange(null)
-                            isCategoriesExpanded = false
+                            areCategoriesExpanded = false
                         }
                     )
 
@@ -217,7 +206,7 @@ fun AddEditFeedBody(
                             isAddItem = false,
                             onClick = {
                                 onCategoryChange(it)
-                                isCategoriesExpanded = false
+                                areCategoriesExpanded = false
                             }
                         )
                     }
@@ -229,30 +218,30 @@ fun AddEditFeedBody(
 
 @Composable
 private fun FeedIcon(
-    iconLoadState: LoadState<Bitmap?>
+    icon: AsyncResult<ImageBitmap?>
 ) {
-    LoadStateComponent(
-        loadState = iconLoadState,
-        onSuccess = {
-            val icon = it
-            if (icon != null) {
+    when (icon) {
+        is AsyncResult.Success -> {
+            icon.data?.let {
                 Image(
-                    bitmap = icon.asImageBitmap(),
+                    bitmap = it,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp)
                 )
             }
-        },
-        onError = {
+        }
+
+        is AsyncResult.Error -> {
             // Do nothing
-        },
-        onLoading = {
+        }
+
+        is AsyncResult.Loading -> {
             CircularProgressIndicator(
                 modifier = Modifier.size(16.dp),
                 strokeWidth = 2.dp
             )
         }
-    )
+    }
 }
 
 @Composable
@@ -304,7 +293,10 @@ private fun CategoryDropdownItem(
 @Composable
 private fun AddEditFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
     val context = LocalContext.current
-    val icon = AppCompatResources.getDrawable(context, DrawableResources.preview_favicon)?.toBitmap()
+    val icon =
+        AppCompatResources.getDrawable(context, DrawableResources.preview_favicon)
+            ?.toBitmap()
+            ?.asImageBitmap()
 
     AddEditFeedBody(
         title = "Rozetked",
@@ -313,8 +305,8 @@ private fun AddEditFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPr
         category = null,
         categories = listOf(),
         snackbarHostState = SnackbarHostState(),
-        iconLoadState = LoadState.Data(icon),
-        finishLoadState = LoadState.Data(Unit),
+        icon = AsyncResult.Success(icon),
+        finishResult = AsyncResult.Success(Unit),
         onTitleChange = {},
         onCategoryChange = {},
         onLinkChange = {},

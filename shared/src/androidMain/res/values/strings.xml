@@ -30,9 +30,6 @@
     <string name="error_feed_icon_error">Error while getting icon for the feed</string>
     <string name="error_feed_fetching_feeds">Something get wrong while getting your feeds. Please try again later</string>
     <string name="error_feed_fetching_newsline">Something get wrong while getting your news line. Please try again later</string>
-    <string name="error_invalid_rss_feed">Feed link is invalid. Supported feed types: RSS, Atom</string>
-    <string name="error_feed_invalid_title">Title can\'t be empty</string>
-    <string name="error_feed_invalid_link">Link can\'t be empty</string>
     <string name="error_unknown_title">Something went wrong</string>
     <string name="error_unknown_message">We faced with unexpected error. Please try to refresh the page</string>
     <string name="error_empty_default_title">Such an emptiness</string>,
@@ -88,6 +85,11 @@
     <string name="add_edit_feed_add_new_category">Add new category</string>
     <string name="add_edit_feed_categories_loading_failure">Failed to load categories</string>
     <string name="add_edit_feed_feed_loading_failure">Failed to load feed</string>
+    <string name="add_edit_feed_feed_icon_loading_failure">Failed to load feed icon</string>
+    <string name="add_edit_feed_invalid_title">Title can\'t be empty</string>
+    <string name="add_edit_feed_invalid_link">Link can\'t be empty</string>
+    <string name="add_edit_feed_feed_link_is_invalid">Feed link is invalid. Supported feed types: RSS, Atom</string>
+    <string name="add_edit_feed_feed_saving_error">Error while saving the feed</string>
 
     <string name="feed_delete_confirmation_title">Delete the feed?</string>
     <string name="feed_delete_confirmation_description_first">You are about to delete</string>

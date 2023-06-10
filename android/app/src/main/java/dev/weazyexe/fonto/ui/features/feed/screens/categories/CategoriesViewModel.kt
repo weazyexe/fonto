@@ -1,16 +1,19 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.categories
 
 import androidx.lifecycle.viewModelScope
+import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.data.usecase.category.DeleteCategoryUseCase
 import dev.weazyexe.fonto.common.data.usecase.category.GetAllCategoriesUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
 import dev.weazyexe.fonto.common.model.feed.Category
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.category.asViewState
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 
@@ -31,17 +34,15 @@ class CategoriesViewModel(
             .onError {
                 // TODO: handle error
             }
-            .onSuccess {
-                val categories = request { getAllCategories() }
-                    .withErrorHandling {
-                        setState { copy(categoriesLoadState = LoadState.Error(it)) }
-                    }?.data ?: return@onSuccess
-
-                val viewState = categories.map { category ->
-                    val amountOfFeeds = it.data.count { it.category == category }
+            .filterIsInstance<AsyncResult.Success<List<Feed>>>()
+            .flatMapLatest { getAllCategories() }
+            .onError { setState { copy(categoriesLoadState = AsyncResult.Error(it.error)) } }
+            .onSuccess { result ->
+                val viewState = result.data.map { category ->
+                    val amountOfFeeds = result.data.count { it == category }
                     category.asViewState(amountOfFeeds)
                 }
-                setState { copy(categoriesLoadState = LoadState.Data(viewState)) }
+                setState { copy(categoriesLoadState = AsyncResult.Success(viewState)) }
             }
             .launchIn(this)
     }
