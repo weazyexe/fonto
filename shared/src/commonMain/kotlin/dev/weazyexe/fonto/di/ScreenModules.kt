@@ -6,6 +6,10 @@ import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentation
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentationImpl
 import dev.weazyexe.fonto.features.addeditfeed.validator.TitleValidator
 import dev.weazyexe.fonto.features.addeditfeed.validator.UrlValidator
+import dev.weazyexe.fonto.features.categories.CategoriesDependencies
+import dev.weazyexe.fonto.features.categories.CategoriesDomainState
+import dev.weazyexe.fonto.features.categories.CategoriesPresentation
+import dev.weazyexe.fonto.features.categories.CategoriesPresentationImpl
 import dev.weazyexe.fonto.features.feed.FeedDependencies
 import dev.weazyexe.fonto.features.feed.FeedDomainState
 import dev.weazyexe.fonto.features.feed.FeedPresentation
@@ -25,7 +29,8 @@ fun screenModules(): List<Module> = listOf(
     feedScreenModule,
     searchScreenModule,
     manageFeedScreenModule,
-    addEditFeedScreenModule
+    addEditFeedScreenModule,
+    categoriesScreenModule
 )
 
 val feedScreenModule = module {
@@ -94,4 +99,19 @@ val addEditFeedScreenModule = module {
     }
 
     factory<AddEditFeedPresentation> { AddEditFeedPresentationImpl(dependencies = get()) }
+}
+
+val categoriesScreenModule = module {
+    factory { CategoriesDomainState() }
+
+    factory {
+        CategoriesDependencies(
+            initialState = get(),
+            getAllCategories = get(),
+            getAllFeeds = get(),
+            deleteCategory = get()
+        )
+    }
+
+    factory<CategoriesPresentation> { CategoriesPresentationImpl(dependencies = get()) }
 }
