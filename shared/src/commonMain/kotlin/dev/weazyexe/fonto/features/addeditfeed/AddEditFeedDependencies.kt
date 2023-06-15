@@ -6,8 +6,8 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
-import dev.weazyexe.fonto.features.addeditfeed.validator.TitleValidator
-import dev.weazyexe.fonto.features.addeditfeed.validator.UrlValidator
+import dev.weazyexe.fonto.utils.validator.TitleValidator
+import dev.weazyexe.fonto.utils.validator.UrlValidator
 
 internal data class AddEditFeedDependencies(
     val initialState: AddEditFeedDomainState,

@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.features.addeditfeed.validator
+package dev.weazyexe.fonto.utils.validator
 
 import dev.weazyexe.fonto.common.data.Validator
 

@@ -130,6 +130,8 @@
     <string name="add_edit_category_create">Create</string>
     <string name="add_edit_category_title">Title</string>
     <string name="add_edit_category_title_hint">News, technologies or games</string>
+    <string name="add_edit_category_invalid_title">Title can\'t be empty</string>
+    <string name="add_edit_category_save_failure">Error while saving the category. Please try again</string>
 
     <string name="post_title">Post</string>
 

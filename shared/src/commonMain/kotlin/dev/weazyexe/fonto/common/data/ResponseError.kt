@@ -11,7 +11,7 @@ sealed class ResponseError : Throwable() {
 
     object TimeoutError : ResponseError()
 
-    data class FeedValidationError(override val message: String) : ResponseError()
-
     object InvalidRssFeed : ResponseError()
+
+    object InvalidTitle : ResponseError()
 }
