@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
@@ -17,6 +18,7 @@ import dev.weazyexe.fonto.features.categories.CategoriesEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.CategoryDeleteConfirmationDialogDestination
 import dev.weazyexe.fonto.util.handleResults
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
@@ -27,6 +29,7 @@ fun CategoriesScreen(
     deleteResultRecipient: ResultRecipient<CategoryDeleteConfirmationDialogDestination, Long?>
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<CategoriesViewModel>()
     val state by viewModel.state.collectAsState(CategoriesViewState())
     val snackbarHostState = remember { SnackbarHostState() }
@@ -34,7 +37,11 @@ fun CategoriesScreen(
     addEditResultRecipient.handleResults { isSavedSuccessfully ->
         if (isSavedSuccessfully) {
             viewModel.loadFeedAndCategories()
-//            viewModel.showCategorySavedDialog()
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.categories_category_has_been_saved)
+                )
+            }
         }
     }
 
@@ -58,11 +65,6 @@ fun CategoriesScreen(
                 )
             }
         }
-        /*when (this) {
-            is CategoriesEffect.ShowMessage -> {
-                snackbarHostState.showSnackbar(context.getString(message))
-            }
-        }*/
     }
 
     CategoriesBody(

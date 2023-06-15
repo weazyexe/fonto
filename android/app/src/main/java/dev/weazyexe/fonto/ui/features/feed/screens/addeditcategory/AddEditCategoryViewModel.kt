@@ -1,61 +1,41 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.addeditcategory
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
-import dev.weazyexe.fonto.common.data.usecase.category.GetCategoryUseCase
-import dev.weazyexe.fonto.common.data.usecase.category.UpdateCategoryUseCase
-import dev.weazyexe.fonto.common.model.feed.Category
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.ui.features.navArgs
-import kotlinx.coroutines.launch
+import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryArgs
+import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryDomainState
+import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryPresentation
+import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
+import kotlinx.coroutines.flow.map
 
 class AddEditCategoryViewModel(
     savedStateHandle: SavedStateHandle,
-    private val getCategory: GetCategoryUseCase,
-    private val createCategory: CreateCategoryUseCase,
-    private val updateCategory: UpdateCategoryUseCase
-) : CoreViewModel<AddEditCategoryState, AddEditCategoryEffect>() {
+    private val presentation: AddEditCategoryPresentation
+) : ViewModel() {
 
-    private val args = savedStateHandle.navArgs<AddEditCategoryArgs>()
-    override val initialState: AddEditCategoryState = AddEditCategoryState(id = args.id)
+    private val args = AddEditCategoryDialogDestination.argsFrom(savedStateHandle)
+
+    val state = presentation.domainState.map { it.asViewState() }
+    val effects = presentation.effects
 
     init {
-        loadCategory()
+        presentation.onCreate(viewModelScope, AddEditCategoryArgs(args.id))
     }
 
     fun onTitleChange(title: String) {
-        setState { copy(title = title, savingLoadState = LoadState.Data(Unit)) }
+        presentation.onTitleChange(title)
     }
 
-    fun onSaveClick() = viewModelScope.launch {
-        setState { copy(savingLoadState = LoadState.Loading()) }
-        val id = state.id
-
-        request {
-            if (id != null) {
-                updateCategory(Category(id = id, title = state.title))
-            } else {
-                createCategory(state.title)
-            }
-        }.withErrorHandling {
-            setState { copy(savingLoadState = LoadState.Error(it)) }
-        } ?: return@launch
-
-        setState { copy(savingLoadState = LoadState.Data(Unit)) }
-        AddEditCategoryEffect.NavigateUp.emit()
+    fun onSaveClick() {
+        presentation.saveChanges()
     }
 
-    private fun loadCategory() = viewModelScope.launch {
-        state.id?.let {
-            setState { copy(initLoadState = LoadState.Loading()) }
-            val category = request { getCategory(it) }
-                .withErrorHandling {
-                    setState { copy(initLoadState = LoadState.Error(it)) }
-                }?.data ?: return@launch
-
-            setState { copy(title = category.title, initLoadState = LoadState.Data(Unit)) }
-        }
-    }
+    private fun AddEditCategoryDomainState.asViewState() =
+        AddEditCategoryViewState(
+            title = title,
+            isEditMode = id != null,
+            savingResult = savingResult,
+            initResult = initResult
+        )
 }

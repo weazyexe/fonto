@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -28,9 +27,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.core.ui.components.FontoTextButton
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
@@ -40,21 +39,20 @@ import kotlinx.coroutines.delay
 fun AddEditCategoryBody(
     title: String,
     isEditMode: Boolean,
-    savingLoadState: LoadState<Unit>,
-    initLoadState: LoadState<Unit>,
+    savingResult: AsyncResult<Unit>,
+    initResult: AsyncResult<Unit>,
     onTitleChange: (String) -> Unit,
     onCancelClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
-    val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(text = title))
     }
 
-    LaunchedEffect(initLoadState) {
-        if (initLoadState is LoadState.Data) {
+    LaunchedEffect(initResult) {
+        if (initResult is AsyncResult.Success) {
             if (title.isNotEmpty()) {
                 textFieldValue = TextFieldValue(text = title, TextRange(index = title.length))
             }
@@ -75,7 +73,7 @@ fun AddEditCategoryBody(
                     }
                 ),
                 onClick = onSaveClick,
-                isLoading = savingLoadState is LoadState.Loading
+                isLoading = savingResult is AsyncResult.Loading
             )
         },
         dismissButton = {
@@ -108,12 +106,15 @@ fun AddEditCategoryBody(
                 placeholder = { Text(text = stringResource(id = StringResources.add_edit_category_title_hint)) },
                 maxLines = 1,
                 singleLine = true,
-                isError = savingLoadState is LoadState.Error,
+                isError = savingResult is AsyncResult.Error,
                 supportingText = {
-                    if (savingLoadState is LoadState.Error) {
-                        // FIXME #35
+                    if (savingResult is AsyncResult.Error) {
                         Text(
-                            text = savingLoadState.error.localizedMessage.orEmpty(),
+                            text = if (savingResult.error is ResponseError.InvalidTitle) {
+                                stringResource(id = StringResources.add_edit_category_invalid_title)
+                            } else {
+                                stringResource(id = StringResources.add_edit_category_save_failure)
+                            },
                             color = MaterialTheme.colorScheme.error,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -147,8 +148,8 @@ private fun AddEditCategoryPreview() = ThemedPreview {
     AddEditCategoryBody(
         title = "",
         isEditMode = true,
-        savingLoadState = LoadState.Data(Unit),
-        initLoadState = LoadState.Data(Unit),
+        savingResult = AsyncResult.Success(Unit),
+        initResult = AsyncResult.Success(Unit),
         onTitleChange = {},
         onCancelClick = {},
         onSaveClick = {}
@@ -161,8 +162,8 @@ private fun AddEditCategoryErrorPreview() = ThemedPreview {
     AddEditCategoryBody(
         title = "",
         isEditMode = false,
-        savingLoadState = LoadState.Error(ResponseError.NoInternetError),
-        initLoadState = LoadState.Data(Unit),
+        savingResult = AsyncResult.Error(ResponseError.NoInternetError),
+        initResult = AsyncResult.Success(Unit),
         onTitleChange = {},
         onCancelClick = {},
         onSaveClick = {}

@@ -1,11 +1,13 @@
 package dev.weazyexe.fonto.di
 
+import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryDependencies
+import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryDomainState
+import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryPresentation
+import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryPresentationImpl
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedDependencies
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedDomainState
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentation
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentationImpl
-import dev.weazyexe.fonto.features.addeditfeed.validator.TitleValidator
-import dev.weazyexe.fonto.features.addeditfeed.validator.UrlValidator
 import dev.weazyexe.fonto.features.categories.CategoriesDependencies
 import dev.weazyexe.fonto.features.categories.CategoriesDomainState
 import dev.weazyexe.fonto.features.categories.CategoriesPresentation
@@ -22,6 +24,8 @@ import dev.weazyexe.fonto.features.search.SearchDependencies
 import dev.weazyexe.fonto.features.search.SearchDomainState
 import dev.weazyexe.fonto.features.search.SearchPresentation
 import dev.weazyexe.fonto.features.search.SearchPresentationImpl
+import dev.weazyexe.fonto.utils.validator.TitleValidator
+import dev.weazyexe.fonto.utils.validator.UrlValidator
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -30,7 +34,8 @@ fun screenModules(): List<Module> = listOf(
     searchScreenModule,
     manageFeedScreenModule,
     addEditFeedScreenModule,
-    categoriesScreenModule
+    categoriesScreenModule,
+    addEditCategoryScreenModule
 )
 
 val feedScreenModule = module {
@@ -114,4 +119,21 @@ val categoriesScreenModule = module {
     }
 
     factory<CategoriesPresentation> { CategoriesPresentationImpl(dependencies = get()) }
+}
+
+val addEditCategoryScreenModule = module {
+    factory { TitleValidator() }
+    factory { AddEditCategoryDomainState() }
+
+    factory {
+        AddEditCategoryDependencies(
+            initialState = get(),
+            getCategory = get(),
+            createCategory = get(),
+            updateCategory = get(),
+            titleValidator = get()
+        )
+    }
+
+    factory<AddEditCategoryPresentation> { AddEditCategoryPresentationImpl(dependencies = get()) }
 }
