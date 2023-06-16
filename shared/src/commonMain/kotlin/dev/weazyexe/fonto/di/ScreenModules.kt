@@ -12,6 +12,10 @@ import dev.weazyexe.fonto.features.categories.CategoriesDependencies
 import dev.weazyexe.fonto.features.categories.CategoriesDomainState
 import dev.weazyexe.fonto.features.categories.CategoriesPresentation
 import dev.weazyexe.fonto.features.categories.CategoriesPresentationImpl
+import dev.weazyexe.fonto.features.debug.DebugDependencies
+import dev.weazyexe.fonto.features.debug.DebugDomainState
+import dev.weazyexe.fonto.features.debug.DebugPresentation
+import dev.weazyexe.fonto.features.debug.DebugPresentationImpl
 import dev.weazyexe.fonto.features.feed.FeedDependencies
 import dev.weazyexe.fonto.features.feed.FeedDomainState
 import dev.weazyexe.fonto.features.feed.FeedPresentation
@@ -40,7 +44,8 @@ fun screenModules(): List<Module> = listOf(
     addEditFeedScreenModule,
     categoriesScreenModule,
     addEditCategoryScreenModule,
-    settingsScreenModule
+    settingsScreenModule,
+    debugScreenModule
 )
 
 val feedScreenModule = module {
@@ -159,4 +164,19 @@ val settingsScreenModule = module {
     }
 
     factory<SettingsPresentation> { SettingsPresentationImpl(dependencies = get()) }
+}
+
+val debugScreenModule = module {
+    factory { DebugDomainState() }
+
+    factory {
+        DebugDependencies(
+            initialState = get(),
+            deleteAllFeeds = get(),
+            createFeed = get(),
+            eventBus = get()
+        )
+    }
+
+    factory<DebugPresentation> { DebugPresentationImpl(dependencies = get()) }
 }

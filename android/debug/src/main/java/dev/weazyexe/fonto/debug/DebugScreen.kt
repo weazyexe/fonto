@@ -7,7 +7,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
-import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.features.debug.DebugEffect
 import org.koin.androidx.compose.koinViewModel
 
 @RootNavGraph(start = true)
@@ -20,10 +22,10 @@ fun DebugScreen(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    ReceiveEffect(viewModel.effects) {
+    ReceiveNewEffect(viewModel.effects) {
         when (this) {
-            is DebugEffect.ShowMessage -> {
-                snackbarHostState.showSnackbar(context.getString(message))
+            is DebugEffect.ShowFeedsAddedSuccessfullyMessage -> {
+                snackbarHostState.showSnackbar(context.getString(StringResources.debug_feed_storage_updated))
             }
         }
     }
@@ -31,6 +33,8 @@ fun DebugScreen(
     DebugBody(
         snackbarHostState = snackbarHostState,
         onBackClick = { navController.navigateUp() },
-        onMockFeedClick = viewModel::addMockFeeds
+        onAddMockFeedsClick = viewModel::addMockFeeds,
+        onAddPartialInvalidMockFeedsClick = viewModel::addPartialInvalidMockFeeds,
+        onAddInvalidMockFeedsClick = viewModel::addInvalidMockFeeds
     )
 }
