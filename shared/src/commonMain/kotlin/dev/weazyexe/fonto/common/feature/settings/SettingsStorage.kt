@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.common.feature.settings
 
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
 
@@ -17,9 +18,9 @@ interface SettingsStorage {
 
     suspend fun saveDynamicColorsEnabled(isEnabled: Boolean)
 
-    suspend fun getAccentColor(): Long?
+    suspend fun getAccentColor(): ColorScheme
 
-    suspend fun saveAccentColor(color: Long)
+    suspend fun saveAccentColor(color: ColorScheme)
 
     suspend fun isAppInitialized(): Boolean
 

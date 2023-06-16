@@ -24,6 +24,10 @@ import dev.weazyexe.fonto.features.search.SearchDependencies
 import dev.weazyexe.fonto.features.search.SearchDomainState
 import dev.weazyexe.fonto.features.search.SearchPresentation
 import dev.weazyexe.fonto.features.search.SearchPresentationImpl
+import dev.weazyexe.fonto.features.settings.SettingsDependencies
+import dev.weazyexe.fonto.features.settings.SettingsDomainState
+import dev.weazyexe.fonto.features.settings.SettingsPresentation
+import dev.weazyexe.fonto.features.settings.SettingsPresentationImpl
 import dev.weazyexe.fonto.utils.validator.TitleValidator
 import dev.weazyexe.fonto.utils.validator.UrlValidator
 import org.koin.core.module.Module
@@ -35,7 +39,8 @@ fun screenModules(): List<Module> = listOf(
     manageFeedScreenModule,
     addEditFeedScreenModule,
     categoriesScreenModule,
-    addEditCategoryScreenModule
+    addEditCategoryScreenModule,
+    settingsScreenModule
 )
 
 val feedScreenModule = module {
@@ -136,4 +141,22 @@ val addEditCategoryScreenModule = module {
     }
 
     factory<AddEditCategoryPresentation> { AddEditCategoryPresentationImpl(dependencies = get()) }
+}
+
+val settingsScreenModule = module {
+    factory { SettingsDomainState() }
+
+    factory {
+        SettingsDependencies(
+            initialState = get(),
+            exportData = get(),
+            importData = get(),
+            savePreference = get(),
+            getSettings = get(),
+            eventBus = get(),
+            featureAvailabilityChecker = get()
+        )
+    }
+
+    factory<SettingsPresentation> { SettingsPresentationImpl(dependencies = get()) }
 }

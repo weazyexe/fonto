@@ -4,7 +4,7 @@ import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.utils.flowIo
+import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
 class GetFeedTypeUseCase(

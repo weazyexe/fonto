@@ -1,7 +1,5 @@
 package dev.weazyexe.fonto.core.ui.components.preferences
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,20 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
-import dev.weazyexe.fonto.core.ui.utils.StringResources
 
 @Composable
-fun <T> CustomValuePreferenceItem(
+fun CustomValuePreferenceItem(
     title: String,
     description: String,
     @DrawableRes icon: Int,
-    value: Value<T>,
+    displayValue: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -66,7 +61,7 @@ fun <T> CustomValuePreferenceItem(
         }
 
         Text(
-            text = value.title,
+            text = displayValue,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -80,18 +75,7 @@ private fun CustomValuePreferenceItemPreview() = ThemedPreview {
         title = "Theme",
         description = "Color scheme for the app",
         icon = DrawableResources.ic_lightbulb_24,
-        value = Value(
-            object : Parcelable {
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                override fun writeToParcel(dest: Parcel, flags: Int) {
-                    // Do nothing
-                }
-            },
-            stringResource(StringResources.settings_display_theme_value_light)
-        ),
+        displayValue = "Light",
         onClick = {},
         modifier = Modifier.fillMaxWidth()
     )

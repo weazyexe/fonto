@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.core.ui.components.BottomSheetLayout
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 
@@ -32,7 +33,7 @@ import dev.weazyexe.fonto.core.ui.utils.StringResources
 fun ColorPickerDialog(
     args: ColorPickerArgs,
     navController: NavController,
-    resultBackNavigator: ResultBackNavigator<Long>
+    resultBackNavigator: ResultBackNavigator<ColorScheme>
 ) {
     BottomSheetLayout(onBackClick = navController::navigateUp) {
         Spacer(modifier = Modifier.size(8.dp))
@@ -55,16 +56,16 @@ fun ColorPickerDialog(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(count = args.colors.size) {
-                val color = Color(args.colors[it].data)
+                val color = Color(args.colors[it].argb)
                 Box(contentAlignment = Alignment.Center) {
                     Box(
                         modifier = Modifier
                             .size(48.dp)
                             .clip(CircleShape)
                             .background(color)
-                            .clickable { resultBackNavigator.navigateBack(result = args.colors[it].data) }
+                            .clickable { resultBackNavigator.navigateBack(result = args.colors[it]) }
                             .then(
-                                if (args.colors[it].data == args.selectedColor.data) {
+                                if (args.colors[it] == args.selectedColor) {
                                     Modifier
                                         .border(width = 1.dp, color = color, shape = CircleShape)
                                         .border(

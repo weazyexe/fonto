@@ -11,9 +11,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
-import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
+import dev.weazyexe.fonto.common.model.preference.Theme
+import dev.weazyexe.fonto.core.ui.utils.DrawableResources
+import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
+import dev.weazyexe.fonto.features.settings.SettingsEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
@@ -23,16 +27,12 @@ import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ExportStrategyPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
-import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.exportstrategypicker.toExportStrategy
 import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 @BottomBarNavGraph
 @Destination
@@ -41,117 +41,117 @@ fun SettingsScreen(
     rootPaddingValues: PaddingValues,
     viewModel: SettingsViewModel,
     navigateTo: NavigateTo,
-    navigateWithResult: NavigateWithResult,
     themePickerResults: ThemePickerResults,
     colorPickerResults: ColorPickerResults,
     exportStrategyResults: ExportStrategyPickerResults
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState(SettingsViewState())
 
     themePickerResults.invoke().handleResults { result ->
-        result?.let { viewModel.saveTheme(it) }
+        result?.let { viewModel.onThemePicked(it) }
     }
 
     colorPickerResults.invoke().handleResults { result ->
-        viewModel.saveColor(result)
+        viewModel.onColorSchemePicked(result)
     }
 
     exportStrategyResults.invoke().handleResults { result ->
-        result?.let { viewModel.startExporting(result.toExportStrategy()) }
+        result?.let { viewModel.chooseExportFileDestination(result.toExportStrategy()) }
     }
 
     HandleEffects(
         effects = viewModel.effects,
         navigateTo = navigateTo,
-        navigateWithResult = navigateWithResult,
         snackbarHostState = snackbarHostState,
-        saveFontoBackupFile = viewModel::saveFontoBackupFile,
-        readFontoBackupFile = viewModel::readFontoBackupFile
+        export = viewModel::export,
+        import = viewModel::import
     )
 
     SettingsBody(
         settings = state.preferences,
         isLoading = state.isLoading,
-        hiddenPreferences = state.hiddenPreferences,
         rootPaddingValues = rootPaddingValues,
         snackbarHostState = snackbarHostState,
-        onTextPreferenceClick = viewModel::onTextPreferenceClick,
-        onSwitchPreferenceClick = viewModel::onSwitchPreferenceClick,
-        onCustomPreferenceClick = viewModel::onCustomPreferenceClick
+        onPreferenceClick = viewModel::onPreferenceClick,
     )
 }
+
 
 @Composable
 private fun HandleEffects(
     effects: Flow<SettingsEffect>,
     navigateTo: NavigateTo,
-    navigateWithResult: NavigateWithResult,
     snackbarHostState: SnackbarHostState,
-    saveFontoBackupFile: (uri: Uri) -> Unit,
-    readFontoBackupFile: (uri: Uri) -> Unit,
+    export: (uri: Uri) -> Unit,
+    import: (uri: Uri) -> Unit,
 ) {
     val context = LocalContext.current
     val exportFontoSaver = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json"),
-        onResult = { it?.let { saveFontoBackupFile(it) } }
+        onResult = { it?.let { export(it) } }
     )
 
     val openDocumentPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
-        onResult = { it?.let { readFontoBackupFile(it) } }
+        onResult = { it?.let { import(it) } }
     )
 
-    ReceiveEffect(effects) {
+    ReceiveNewEffect(effects) {
         when (this) {
             is SettingsEffect.OpenManageFeedScreen -> navigateTo(ManageFeedScreenDestination())
-            is SettingsEffect.OpenCategoriesScreen -> navigateTo(CategoriesScreenDestination())
+            is SettingsEffect.OpenManageCategoriesScreen -> navigateTo(CategoriesScreenDestination())
             is SettingsEffect.OpenDebugScreen -> navigateTo(DebugScreenDestination())
-            is SettingsEffect.OpenThemePickerDialog -> {
-                navigateWithResult(
+            is SettingsEffect.OpenThemePicker -> {
+                navigateTo(
                     ThemePickerDialogDestination(
                         args = ThemePickerArgs(
-                            value = value,
-                            possibleValues = possibleValues,
-                            icon = icon,
-                            title = title
+                            value = currentTheme,
+                            possibleValues = Theme.values().toList(),
+                            icon = DrawableResources.ic_lightbulb_24,
+                            title = StringResources.settings_appearance_theme_title,
                         )
                     )
                 )
             }
 
-            is SettingsEffect.OpenColorPickerDialog -> {
-                navigateWithResult(
+            is SettingsEffect.OpenColorSchemePicker -> {
+                navigateTo(
                     ColorPickerDialogDestination(
                         args = ColorPickerArgs(
-                            selectedColor = value,
-                            colors = possibleValues
+                            selectedColor = currentColorScheme,
+                            colors = ColorScheme.values().toList()
                         )
                     )
                 )
             }
 
-            is SettingsEffect.ShowMessage -> {
-                snackbarHostState.showSnackbar(context.getString(message))
-            }
-
-            is SettingsEffect.ExportFonto -> {
-                exportFontoSaver.launch(
-                    context.getString(
-                        StringResources.settings_export_fonto_default_file_name,
-                        Clock.System.now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                            .toString()
-                    )
-                )
+            is SettingsEffect.OpenExportFilePicker -> {
+                exportFontoSaver.launch(fileName)
             }
 
             is SettingsEffect.OpenExportStrategyPicker -> {
                 navigateTo(ExportStrategyPickerDialogDestination())
             }
 
-            is SettingsEffect.OpenFilePicker -> {
-                openDocumentPicker.launch(arrayOf(mimeType))
+            is SettingsEffect.OpenImportFilePicker -> {
+                openDocumentPicker.launch(arrayOf(fileMimeType))
+            }
+
+            is SettingsEffect.ShowExportFailureMessage -> {
+                snackbarHostState.showSnackbar(context.getString(StringResources.settings_export_fonto_file_saving_failed))
+            }
+
+            is SettingsEffect.ShowExportSuccessMessage -> {
+                snackbarHostState.showSnackbar(context.getString(StringResources.settings_export_fonto_successful))
+            }
+
+            is SettingsEffect.ShowImportFailureMessage -> {
+                snackbarHostState.showSnackbar(context.getString(StringResources.settings_import_fonto_data_import_failed))
+            }
+
+            is SettingsEffect.ShowImportSuccessMessage -> {
+                snackbarHostState.showSnackbar(context.getString(StringResources.settings_import_fonto_successful))
             }
         }
     }

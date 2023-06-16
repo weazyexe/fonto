@@ -8,9 +8,9 @@ import dev.weazyexe.fonto.core.ui.utils.StringResources
 val Theme.stringRes : Int
     @StringRes
     get() = when (this) {
-        Theme.LIGHT -> StringResources.settings_display_theme_value_light
-        Theme.DARK -> StringResources.settings_display_theme_value_dark
-        Theme.SYSTEM -> StringResources.settings_display_theme_value_system
+        Theme.LIGHT -> StringResources.settings_appearance_theme_value_light
+        Theme.DARK -> StringResources.settings_appearance_theme_value_dark
+        Theme.SYSTEM -> StringResources.settings_appearance_theme_value_system
     }
 
 val Theme.customTabsColorScheme : Int

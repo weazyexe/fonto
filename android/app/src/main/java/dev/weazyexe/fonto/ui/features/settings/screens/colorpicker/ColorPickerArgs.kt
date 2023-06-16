@@ -1,10 +1,10 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.colorpicker
 
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ColorPickerArgs(
-    val selectedColor: Value<Long>,
-    val colors: List<Value<Long>>
+    val selectedColor: ColorScheme,
+    val colors: List<ColorScheme>
 )
