@@ -12,7 +12,7 @@ import dev.weazyexe.fonto.common.feature.newsline.ByCategory
 import dev.weazyexe.fonto.common.feature.newsline.ByFeed
 import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.search.SearchEffect
 import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
@@ -83,7 +83,7 @@ private fun HandleEffects(
     effects: Flow<SearchEffect>,
     navigateTo: NavigateTo
 ) {
-    ReceiveNewEffect(effects) {
+    ReceiveEffect(effects) {
         when (this) {
             is SearchEffect.OpenFeedPicker -> {
                 navigateTo.invoke(

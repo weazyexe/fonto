@@ -8,6 +8,10 @@ import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedDependencies
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedDomainState
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentation
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentationImpl
+import dev.weazyexe.fonto.features.app.AppDependencies
+import dev.weazyexe.fonto.features.app.AppDomainState
+import dev.weazyexe.fonto.features.app.AppPresentation
+import dev.weazyexe.fonto.features.app.AppPresentationImpl
 import dev.weazyexe.fonto.features.categories.CategoriesDependencies
 import dev.weazyexe.fonto.features.categories.CategoriesDomainState
 import dev.weazyexe.fonto.features.categories.CategoriesPresentation
@@ -38,6 +42,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 fun screenModules(): List<Module> = listOf(
+    appScreenModule,
     feedScreenModule,
     searchScreenModule,
     manageFeedScreenModule,
@@ -47,6 +52,20 @@ fun screenModules(): List<Module> = listOf(
     settingsScreenModule,
     debugScreenModule
 )
+
+val appScreenModule = module {
+    factory { AppDomainState() }
+
+    factory {
+        AppDependencies(
+            initialState = get(),
+            settingsStorage = get(),
+            eventBus = get()
+        )
+    }
+
+    factory<AppPresentation> { AppPresentationImpl(dependencies = get()) }
+}
 
 val feedScreenModule = module {
     factory { FeedDomainState() }

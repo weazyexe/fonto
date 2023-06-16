@@ -14,7 +14,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.features.settings.SettingsEffect
@@ -97,7 +97,7 @@ private fun HandleEffects(
         onResult = { it?.let { import(it) } }
     )
 
-    ReceiveNewEffect(effects) {
+    ReceiveEffect(effects) {
         when (this) {
             is SettingsEffect.OpenManageFeedScreen -> navigateTo(ManageFeedScreenDestination())
             is SettingsEffect.OpenManageCategoriesScreen -> navigateTo(CategoriesScreenDestination())

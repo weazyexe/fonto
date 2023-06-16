@@ -12,7 +12,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.common.model.feed.Category
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.categories.CategoriesEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
@@ -51,7 +51,7 @@ fun CategoriesScreen(
         }
     }
 
-    ReceiveNewEffect(viewModel.effects) {
+    ReceiveEffect(viewModel.effects) {
         when (this) {
             CategoriesEffect.ShowCategoryDeletionFailureMessage -> {
                 snackbarHostState.showSnackbar(

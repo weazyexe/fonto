@@ -14,7 +14,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.managefeed.ManageFeedEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
@@ -59,7 +59,7 @@ fun ManageFeedScreen(
         resultBackNavigator.navigateBack(result = state.hasChanges)
     }
 
-    ReceiveNewEffect(viewModel.effects) {
+    ReceiveEffect(viewModel.effects) {
         when (this) {
             is ManageFeedEffect.ShowDeletedSuccessfullyMessage -> {
                 snackbarHostState.showSnackbar(

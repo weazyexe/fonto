@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.spec.DestinationStyle
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryEffect
 import org.koin.androidx.compose.koinViewModel
 
@@ -21,7 +21,7 @@ fun AddEditCategoryDialog(
     val viewModel = koinViewModel<AddEditCategoryViewModel>()
     val state by viewModel.state.collectAsState(AddEditCategoryViewState())
 
-    ReceiveNewEffect(viewModel.effects) {
+    ReceiveEffect(viewModel.effects) {
         when (this) {
             is AddEditCategoryEffect.NavigateUp -> {
                 resultBackNavigator.navigateBack(result = true)
