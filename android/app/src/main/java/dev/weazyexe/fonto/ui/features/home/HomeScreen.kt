@@ -33,7 +33,6 @@ import dev.weazyexe.fonto.ui.features.home.dependencies.ExportStrategyPickerResu
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
-import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
 import dev.weazyexe.fonto.ui.features.settings.screens.exportstrategypicker.ExportStrategyResults
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.SettingsViewModel
@@ -119,13 +118,6 @@ fun HomeScreen(
                 )
                 dependency(
                     object : NavigateTo {
-                        override fun invoke(direction: Direction) {
-                            navController.navigate(direction)
-                        }
-                    }
-                )
-                dependency(
-                    object : NavigateWithResult {
                         override fun invoke(direction: Direction) {
                             navController.navigate(direction)
                         }

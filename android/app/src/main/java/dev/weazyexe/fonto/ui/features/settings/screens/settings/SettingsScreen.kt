@@ -27,7 +27,6 @@ import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.ExportStrategyPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
-import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateWithResult
 import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.exportstrategypicker.toExportStrategy
@@ -42,7 +41,6 @@ fun SettingsScreen(
     rootPaddingValues: PaddingValues,
     viewModel: SettingsViewModel,
     navigateTo: NavigateTo,
-    navigateWithResult: NavigateWithResult,
     themePickerResults: ThemePickerResults,
     colorPickerResults: ColorPickerResults,
     exportStrategyResults: ExportStrategyPickerResults
@@ -65,7 +63,6 @@ fun SettingsScreen(
     HandleEffects(
         effects = viewModel.effects,
         navigateTo = navigateTo,
-        navigateWithResult = navigateWithResult,
         snackbarHostState = snackbarHostState,
         export = viewModel::export,
         import = viewModel::import
@@ -85,7 +82,6 @@ fun SettingsScreen(
 private fun HandleEffects(
     effects: Flow<SettingsEffect>,
     navigateTo: NavigateTo,
-    navigateWithResult: NavigateWithResult,
     snackbarHostState: SnackbarHostState,
     export: (uri: Uri) -> Unit,
     import: (uri: Uri) -> Unit,
@@ -107,7 +103,7 @@ private fun HandleEffects(
             is SettingsEffect.OpenManageCategoriesScreen -> navigateTo(CategoriesScreenDestination())
             is SettingsEffect.OpenDebugScreen -> navigateTo(DebugScreenDestination())
             is SettingsEffect.OpenThemePicker -> {
-                navigateWithResult(
+                navigateTo(
                     ThemePickerDialogDestination(
                         args = ThemePickerArgs(
                             value = currentTheme,
@@ -120,7 +116,7 @@ private fun HandleEffects(
             }
 
             is SettingsEffect.OpenColorSchemePicker -> {
-                navigateWithResult(
+                navigateTo(
                     ColorPickerDialogDestination(
                         args = ColorPickerArgs(
                             selectedColor = currentColorScheme,

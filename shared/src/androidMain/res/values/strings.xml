@@ -25,11 +25,6 @@
 
     <string name="error_no_internet_title">No Internet</string>
     <string name="error_no_internet_message">There is no Internet connection, please try again</string>
-    <string name="error_timed_out">Request was timed out, please try again</string>
-    <string name="error_http">Bad request: %s</string>
-    <string name="error_feed_icon_error">Error while getting icon for the feed</string>
-    <string name="error_feed_fetching_feeds">Something get wrong while getting your feeds. Please try again later</string>
-    <string name="error_feed_fetching_newsline">Something get wrong while getting your news line. Please try again later</string>
     <string name="error_unknown_title">Something went wrong</string>
     <string name="error_unknown_message">We faced with unexpected error. Please try to refresh the page</string>
     <string name="error_empty_default_title">Such an emptiness</string>,
@@ -49,7 +44,6 @@
 
     <string name="feed_empty_newsline">Your feed is empty. You probably want to add feed sources</string>
     <string name="feed_empty_newsline_manage_feed">Manage feed</string>
-    <string name="feed_error_sources">Failed to load news from the following sources: %s</string>
     <string name="feed_post_saved_to_bookmarks">Post has been saved to your bookmarks</string>
     <string name="feed_post_removed_from_bookmarks">Post has been removed from bookmarks</string>
     <string name="feed_post_saving_error">Failed to save the post to bookmarks. Please try again</string>
@@ -65,7 +59,6 @@
     <string name="feed_search_hint">Search posts</string>
 
     <string name="manage_feed_title">Manage feed</string>
-    <string name="manage_feed_empty_feed">There are no even single one feed for you</string>
     <string name="manage_feed_changes_saved">Changes have been saved</string>
     <string name="manage_feed_feed_deleted_successfully">Feed has been deleted successfully</string>
     <string name="manage_feed_feed_deletion_failure">Error while deletion the feed. Please try again</string>
@@ -77,7 +70,6 @@
     <string name="add_edit_feed_category">Category</string>
     <string name="add_edit_feed_link">Feed link</string>
     <string name="add_edit_feed_link_hint">https://example.com</string>
-    <string name="add_edit_feed_select">Select</string>
     <string name="add_edit_feed_delete">Delete</string>
     <string name="add_edit_feed_save">Save</string>
     <string name="add_edit_feed_create">Create</string>
@@ -119,7 +111,6 @@
         <item quantity="many">%d feeds</item>
         <item quantity="other">%d feeds</item>
     </plurals>
-    <string name="categories_delete">Delete</string>
     <string name="categories_category_has_been_saved">Category has been saved</string>
     <string name="categories_category_has_been_deleted">Category has been deleted</string>
     <string name="categories_category_delete_failure">Failed to delete the category</string>
@@ -132,8 +123,6 @@
     <string name="add_edit_category_title_hint">News, technologies or games</string>
     <string name="add_edit_category_invalid_title">Title can\'t be empty</string>
     <string name="add_edit_category_save_failure">Error while saving the category. Please try again</string>
-
-    <string name="post_title">Post</string>
 
     <string name="settings_feed_group">Feed</string>
     <string name="settings_feed_manage_title">Manage feed</string>
@@ -180,17 +169,9 @@
     <string name="export_strategy_picker_feeds">Feeds</string>
     <string name="export_strategy_picker_posts">Posts</string>
 
-    <string name="import_strategy_picker_title">Import strategy</string>
-    <string name="import_strategy_picker_description">It is possible to combine this backup data with the local data or completely replace the local data with the backup</string>
-    <string name="import_strategy_picker_import">Import</string>
-    <string name="import_strategy_picker_cancel">Cancel</string>
-    <string name="import_strategy_picker_merge">Merge</string>
-    <string name="import_strategy_picker_replace">Replace</string>
-
     <string name="value_picker_save">Save</string>
     <string name="value_picker_ok">Ok</string>
     <string name="value_picker_cancel">Cancel</string>
-    <string name="value_picker_no_possible_values">There are no any values to pick</string>
 
     <string name="color_picker_pick_color">Pick color</string>
 
