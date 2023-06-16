@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.common.data.usecase.newsline
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.utils.flowIo
+import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
 class UpdatePostUseCase(

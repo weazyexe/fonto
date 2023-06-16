@@ -51,7 +51,7 @@ class AppActivity : ComponentActivity() {
             val state by viewModel.uiState.collectAsState()
 
             FontoTheme(
-                accentColor = state.accentColor,
+                accentColor = state.accentColor.argb,
                 darkTheme = when (state.theme) {
                     Theme.LIGHT -> false
                     Theme.DARK -> true

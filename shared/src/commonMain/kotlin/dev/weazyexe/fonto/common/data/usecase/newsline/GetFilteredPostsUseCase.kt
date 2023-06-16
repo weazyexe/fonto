@@ -12,7 +12,7 @@ import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.utils.flowIo
+import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration.Companion.days
 

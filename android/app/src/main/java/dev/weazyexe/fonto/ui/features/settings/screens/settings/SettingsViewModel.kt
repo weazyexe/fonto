@@ -1,43 +1,60 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
-import android.content.Context
 import android.net.Uri
-import android.os.Build
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.app.App
-import dev.weazyexe.fonto.common.data.bus.AppEvent
-import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.backup.GetExportDataUseCase
-import dev.weazyexe.fonto.common.data.usecase.backup.ImportDataUseCase
-import dev.weazyexe.fonto.common.data.usecase.backup.ParseBackupDataUseCase
 import dev.weazyexe.fonto.common.feature.backup.AndroidFileReader
 import dev.weazyexe.fonto.common.feature.backup.AndroidFileSaver
-import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.model.backup.ExportStrategy
-import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
-import dev.weazyexe.fonto.core.ui.components.preferences.model.findPreference
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.utils.DrawableResources
-import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.util.AppHelper
-import dev.weazyexe.fonto.util.stringRes
-import io.github.aakira.napier.Napier
-import kotlinx.coroutines.launch
+import dev.weazyexe.fonto.features.settings.SettingsPresentation
+import dev.weazyexe.fonto.ui.features.settings.screens.settings.mapper.asDomainState
+import dev.weazyexe.fonto.ui.features.settings.screens.settings.mapper.asViewState
+import dev.weazyexe.fonto.ui.features.settings.screens.settings.viewstate.PreferenceViewState
+import kotlinx.coroutines.flow.map
 
 class SettingsViewModel(
-    private val settingsStorage: SettingsStorage,
-    private val eventBus: EventBus,
-    private val context: App,
-    private val getExportData: GetExportDataUseCase,
-    private val parseBackupData: ParseBackupDataUseCase,
-    private val importData: ImportDataUseCase
-) : CoreViewModel<SettingsState, SettingsEffect>() {
+    private val presentation: SettingsPresentation,
+    private val context: App
+) : ViewModel() {
 
-    override val initialState: SettingsState = SettingsState()
+    val state = presentation.domainState.map { it.asViewState(context) }
+    val effects = presentation.effects
+
+    init {
+        presentation.onCreate(viewModelScope)
+    }
+
+    fun onPreferenceClick(preferenceViewState: PreferenceViewState) {
+        val preference = preferenceViewState.asDomainState()
+        presentation.onPreferenceClick(preference)
+    }
+
+    fun onThemePicked(theme: Theme) {
+        presentation.onThemePicked(theme)
+    }
+
+    fun onColorSchemePicked(colorScheme: ColorScheme) {
+        presentation.onColorSchemePicked(colorScheme)
+    }
+
+    fun chooseExportFileDestination(strategy: ExportStrategy) {
+        presentation.chooseExportFileDestination(strategy)
+    }
+
+    fun export(uri: Uri) {
+        val saver = AndroidFileSaver(context, uri)
+        presentation.export(saver)
+    }
+
+    fun import(uri: Uri) {
+        val reader = AndroidFileReader(context, uri)
+        presentation.import(reader)
+    }
+
+    /*override val initialState: SettingsState = SettingsState()
 
     init {
         loadSettings()
@@ -262,161 +279,5 @@ class SettingsViewModel(
         settingsStorage.saveDynamicColorsEnabled(value)
         eventBus.emit(AppEvent.DynamicColorsChanged(value))
         update(preference.copy(value = value))
-    }
-
-    private fun update(preference: Preference) {
-        val updatedPreferences = state.preferences
-            .map { group ->
-                Group(
-                    title = group.title,
-                    preferences = group.preferences.map {
-                        if (it.id == preference.id) {
-                            preference
-                        } else {
-                            it
-                        }
-                    }
-                )
-            }
-
-        setState {
-            copy(
-                preferences = updatedPreferences,
-                hiddenPreferences = buildHiddenPreferences(updatedPreferences)
-            )
-        }
-    }
-
-    private fun buildHiddenPreferences(preferences: List<Group>): List<Preference.Identifier> {
-        val isDynamicColorEnabled = (preferences
-            .findPreference(Preference.Identifier.DYNAMIC_COLORS) as Preference.Switch)
-            .value
-
-        val isAndroid12OrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-
-        val isReleaseBuild = AppHelper.isReleaseBuild()
-
-        return buildList {
-            if (!isAndroid12OrAbove) {
-                add(Preference.Identifier.DYNAMIC_COLORS)
-            }
-            if (isDynamicColorEnabled && isAndroid12OrAbove) {
-                add(Preference.Identifier.COLOR_SCHEME)
-            }
-            if (isReleaseBuild) {
-                add(Preference.Identifier.DEBUG_MENU)
-            }
-        }
-    }
-}
-
-private fun buildPreferences(context: Context): List<Group> = listOf(
-    Group(
-        title = StringResources.settings_feed_group,
-        preferences = listOf(
-            Preference.Text(
-                id = Preference.Identifier.MANAGE_FEED,
-                title = StringResources.settings_feed_manage_title,
-                subtitle = StringResources.settings_feed_manage_description,
-                icon = DrawableResources.ic_feed_24
-            ),
-            Preference.Text(
-                id = Preference.Identifier.MANAGE_CATEGORIES,
-                title = StringResources.settings_category_manage_title,
-                subtitle = StringResources.settings_category_manage_description,
-                icon = DrawableResources.ic_category_24
-            ),
-            Preference.Switch(
-                id = Preference.Identifier.OPEN_POST,
-                title = StringResources.settings_feed_open_post_title,
-                subtitle = StringResources.settings_feed_open_post_description,
-                icon = DrawableResources.ic_language_24,
-                value = true
-            )
-        )
-    ),
-    Group(
-        title = StringResources.settings_display_group,
-        preferences = listOf(
-            Preference.CustomValue(
-                id = Preference.Identifier.THEME,
-                title = StringResources.settings_display_theme_title,
-                subtitle = StringResources.settings_display_theme_description,
-                icon = DrawableResources.ic_lightbulb_24,
-                value = Value(Theme.SYSTEM, context.getString(Theme.SYSTEM.stringRes)),
-                possibleValues = Theme.values().map { Value(it, context.getString(it.stringRes)) }
-            ),
-            Preference.Switch(
-                id = Preference.Identifier.DYNAMIC_COLORS,
-                title = StringResources.settings_display_dynamic_colors_title,
-                subtitle = StringResources.settings_display_dynamic_colors_description,
-                icon = DrawableResources.ic_palette_24,
-                value = true
-            ),
-            Preference.CustomValue(
-                id = Preference.Identifier.COLOR_SCHEME,
-                title = StringResources.settings_display_color_scheme_title,
-                subtitle = StringResources.settings_display_color_scheme_description,
-                icon = DrawableResources.ic_format_paint_24,
-                value = buildColors(context).first(),
-                possibleValues = buildColors(context)
-            ),
-        )
-    ),
-    Group(
-        title = StringResources.settings_backup_group,
-        preferences = listOf(
-            Preference.Text(
-                id = Preference.Identifier.EXPORT_FONTO,
-                title = StringResources.settings_export_fonto_title,
-                subtitle = StringResources.settings_export_fonto_description,
-                icon = DrawableResources.ic_upload_24
-            ),
-            Preference.Text(
-                id = Preference.Identifier.IMPORT_FONTO,
-                title = StringResources.settings_import_fonto_title,
-                subtitle = StringResources.settings_import_fonto_description,
-                icon = DrawableResources.ic_download_24
-            )
-        )
-    ),
-    Group(
-        title = StringResources.settings_debug_group,
-        preferences = listOf(
-            Preference.Text(
-                id = Preference.Identifier.DEBUG_MENU,
-                title = StringResources.settings_debug_menu_title,
-                subtitle = StringResources.settings_debug_menu_description,
-                icon = DrawableResources.ic_bug_24
-            )
-        )
-    )
-)
-
-private fun buildColors(context: Context): List<Value<Long>> = listOf(
-    Value(
-        data = 0xFF6383F8,
-        title = context.getString(StringResources.settings_display_color_scheme_value_blue)
-    ),
-    Value(
-        data = 0xFF88CF9B,
-        title = context.getString(StringResources.settings_display_color_scheme_value_green)
-    ),
-    Value(
-        data = 0xFFDFA576,
-        title = context.getString(StringResources.settings_display_color_scheme_value_orange)
-    ),
-    Value(
-        data = 0xFFCE6E6E,
-        title = context.getString(StringResources.settings_display_color_scheme_value_red)
-    ),
-    Value(
-        data = 0xFFFF96EA,
-        title = context.getString(StringResources.settings_display_color_scheme_value_pink)
-    ),
-)
-
-private fun Long?.asColorValue(context: Context): Value<Long> {
-    val allColors = buildColors(context)
-    return allColors.firstOrNull { it.data == this } ?: allColors.first()
+    }*/
 }

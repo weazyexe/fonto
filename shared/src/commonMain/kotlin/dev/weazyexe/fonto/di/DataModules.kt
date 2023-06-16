@@ -19,6 +19,7 @@ import dev.weazyexe.fonto.common.data.repository.IconRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.backup.ExportDataUseCase
 import dev.weazyexe.fonto.common.data.usecase.backup.GetExportDataUseCase
 import dev.weazyexe.fonto.common.data.usecase.backup.ImportDataUseCase
 import dev.weazyexe.fonto.common.data.usecase.backup.ParseBackupDataUseCase
@@ -42,12 +43,16 @@ import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.settings.GetDefaultSettingsUseCase
+import dev.weazyexe.fonto.common.data.usecase.settings.GetSettingsUseCase
+import dev.weazyexe.fonto.common.data.usecase.settings.SavePreferenceUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.feature.parser.atom.AtomParser
 import dev.weazyexe.fonto.common.feature.parser.rss.RssParser
 import dev.weazyexe.fonto.common.feature.settings.createSettingsStorage
 import dev.weazyexe.fonto.common.network.createHttpClient
 import dev.weazyexe.fonto.common.resources.createStringsProvider
+import dev.weazyexe.fonto.utils.feature.FeatureAvailabilityChecker
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -62,7 +67,8 @@ fun dataModules(): List<Module> =
         atomDataModule,
         postDataModule,
         categoryDataModule,
-        backupDataModule
+        backupDataModule,
+        settingsDataModule
     )
 
 internal val coreModule = module {
@@ -71,7 +77,9 @@ internal val coreModule = module {
     single { createDatabase(get()) }
     single { createHttpClient() }
     single { createSettingsStorage(get()) }
-    single { createStringsProvider(get())  }
+    single { createStringsProvider(get()) }
+
+    single { FeatureAvailabilityChecker() }
 
     single { EventBus() }
 }
@@ -152,7 +160,15 @@ internal val backupDataModule = module {
     includes(coreModule, feedDataModule, categoryDataModule, postDataModule, iconDataModule)
     single { GetExportDataUseCase(get(), get(), get()) }
     single { ParseBackupDataUseCase() }
-    single { ImportDataUseCase(get(), get(), get(), get()) }
+    single { ImportDataUseCase(get(), get(), get(), get(), get()) }
+    single { ExportDataUseCase(get()) }
+}
+
+internal val settingsDataModule = module {
+    includes(coreModule)
+    single { GetDefaultSettingsUseCase() }
+    single { GetSettingsUseCase(get(), get()) }
+    single { SavePreferenceUseCase(get()) }
 }
 
 internal val initializerDataModule = module {

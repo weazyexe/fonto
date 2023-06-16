@@ -11,6 +11,7 @@ import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.spec.Direction
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.ui.features.NavGraphs
 import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
@@ -45,7 +46,7 @@ fun HomeScreen(
     navController: NavController,
     manageFeedResultRecipient: ResultRecipient<ManageFeedScreenDestination, Boolean>,
     themePickerResultRecepient: ResultRecipient<ThemePickerDialogDestination, Theme?>,
-    colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, Long>,
+    colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, ColorScheme>,
     dateRangePickerResultRecipient: ResultRecipient<DateRangePickerDialogDestination, DateRangeResults?>,
     feedPickerResultRecipient: ResultRecipient<FeedPickerDialogDestination, FeedPickerResult?>,
     categoryPickerResultRecipient: ResultRecipient<CategoryPickerDialogDestination, CategoryPickerResult?>,
@@ -104,7 +105,7 @@ fun HomeScreen(
                 )
                 dependency(
                     object : ColorPickerResults {
-                        override fun invoke(): ResultRecipient<ColorPickerDialogDestination, Long> {
+                        override fun invoke(): ResultRecipient<ColorPickerDialogDestination, ColorScheme> {
                             return colorPickerResultRecipient
                         }
                     }

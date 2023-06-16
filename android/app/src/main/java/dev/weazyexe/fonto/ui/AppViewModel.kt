@@ -41,7 +41,7 @@ class AppViewModel(
                 when (it) {
                     is AppEvent.ThemeChanged -> setState { copy(theme = it.theme) }
                     is AppEvent.DynamicColorsChanged -> setState { copy(isDynamicColorsEnabled = it.isEnabled) }
-                    is AppEvent.AccentColorChanged -> setState { copy(accentColor = it.color) }
+                    is AppEvent.ColorSchemeChanged -> setState { copy(accentColor = it.color) }
                     else -> {
                         // Do nothing
                     }

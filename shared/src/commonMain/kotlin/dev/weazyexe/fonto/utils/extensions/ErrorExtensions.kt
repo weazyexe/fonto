@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.utils
+package dev.weazyexe.fonto.utils.extensions
 
 import dev.weazyexe.fonto.common.data.ResponseError
 import io.github.aakira.napier.Napier

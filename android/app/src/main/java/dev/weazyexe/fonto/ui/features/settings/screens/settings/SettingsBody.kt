@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -24,38 +23,21 @@ import dev.weazyexe.fonto.core.ui.components.preferences.CustomValuePreferenceIt
 import dev.weazyexe.fonto.core.ui.components.preferences.PreferencesGroup
 import dev.weazyexe.fonto.core.ui.components.preferences.SwitchPreferenceItem
 import dev.weazyexe.fonto.core.ui.components.preferences.TextPreferenceItem
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Group
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Preference
-import dev.weazyexe.fonto.core.ui.components.preferences.model.Value
 import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.ui.features.settings.screens.settings.viewstate.GroupsViewState
+import dev.weazyexe.fonto.ui.features.settings.screens.settings.viewstate.PreferenceViewState
 
-@Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBody(
-    settings: List<Group>,
+    settings: GroupsViewState,
     isLoading: Boolean,
-    hiddenPreferences: List<Preference.Identifier>,
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
-    onTextPreferenceClick: (Preference.Text) -> Unit,
-    onSwitchPreferenceClick: (Preference.Switch, Boolean) -> Unit,
-    onCustomPreferenceClick: (Preference.CustomValue<Value<*>>) -> Unit,
+    onPreferenceClick: (PreferenceViewState) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val lazyListState = rememberLazyListState()
-    val groups = remember(settings) {
-        settings
-            .filter { group ->
-                group.preferences.any { it.id !in hiddenPreferences }
-            }
-            .map { group ->
-                group.copy(
-                    preferences = group.preferences
-                        .filter { it.id !in hiddenPreferences }
-                )
-            }
-    }
 
     Scaffold(
         modifier = Modifier
@@ -79,38 +61,42 @@ fun SettingsBody(
             state = lazyListState
         ) {
             items(
-                items = groups,
-                key = { it.hashCode() }
+                items = settings.groups,
+                key = { it.key }
             ) { group ->
-                PreferencesGroup(title = stringResource(group.title)) {
+                PreferencesGroup(title = group.title) {
                     group.preferences.forEach { pref ->
-                        when (pref) {
-                            is Preference.Text ->
-                                TextPreferenceItem(
-                                    title = stringResource(id = pref.title),
-                                    description = stringResource(id = pref.subtitle),
-                                    icon = pref.icon,
-                                    onClick = { onTextPreferenceClick(pref) },
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                        if (pref.isVisible) {
+                            when (pref) {
+                                is PreferenceViewState.Switch -> {
+                                    SwitchPreferenceItem(
+                                        title = pref.title,
+                                        description = pref.description,
+                                        value = pref.value,
+                                        icon = pref.icon,
+                                        onValueChange = { onPreferenceClick(pref.copy(value = it)) }
+                                    )
+                                }
 
-                            is Preference.Switch ->
-                                SwitchPreferenceItem(
-                                    title = stringResource(id = pref.title),
-                                    description = stringResource(id = pref.subtitle),
-                                    value = pref.value,
-                                    icon = pref.icon,
-                                    onValueChange = { onSwitchPreferenceClick(pref, it) }
-                                )
+                                is PreferenceViewState.Text -> {
+                                    TextPreferenceItem(
+                                        title = pref.title,
+                                        description = pref.description,
+                                        icon = pref.icon,
+                                        onClick = { onPreferenceClick(pref) },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
 
-                            is Preference.CustomValue<*> -> {
-                                CustomValuePreferenceItem(
-                                    title = stringResource(id = pref.title),
-                                    description = stringResource(id = pref.subtitle),
-                                    value = pref.value,
-                                    icon = pref.icon,
-                                    onClick = { onCustomPreferenceClick(pref as Preference.CustomValue<Value<*>>) },
-                                )
+                                is PreferenceViewState.Value<*> -> {
+                                    CustomValuePreferenceItem(
+                                        title = pref.title,
+                                        description = pref.description,
+                                        displayValue = pref.displayValue,
+                                        icon = pref.icon,
+                                        onClick = { onPreferenceClick(pref) },
+                                    )
+                                }
                             }
                         }
                     }

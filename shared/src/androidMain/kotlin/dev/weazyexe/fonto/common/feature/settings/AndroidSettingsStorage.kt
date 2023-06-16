@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
 import kotlinx.coroutines.flow.firstOrNull
@@ -50,14 +51,13 @@ class AndroidSettingsStorage(
         save(key = dynamicColorsPreferenceKey, value = isEnabled)
     }
 
-    override suspend fun getAccentColor(): Long? {
-        val color = get(key = accentColorPreferenceKey, default = -1L)
-        if (color == -1L) return null
-        return color
+    override suspend fun getAccentColor(): ColorScheme {
+        val color = get(key = accentColorPreferenceKey, default = ColorScheme.BLUE.argb)
+        return ColorScheme.byArgb(color)
     }
 
-    override suspend fun saveAccentColor(color: Long) {
-        save(key = accentColorPreferenceKey, value = color)
+    override suspend fun saveAccentColor(color: ColorScheme) {
+        save(key = accentColorPreferenceKey, value = color.argb)
     }
 
     override suspend fun isAppInitialized(): Boolean {

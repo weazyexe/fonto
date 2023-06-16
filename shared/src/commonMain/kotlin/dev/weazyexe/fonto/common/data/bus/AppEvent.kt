@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.common.data.bus
 
+import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
 
 sealed interface AppEvent {
@@ -10,5 +11,5 @@ sealed interface AppEvent {
 
     data class DynamicColorsChanged(val isEnabled: Boolean) : AppEvent
 
-    data class AccentColorChanged(val color: Long) : AppEvent
+    data class ColorSchemeChanged(val color: ColorScheme) : AppEvent
 }
