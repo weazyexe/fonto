@@ -150,7 +150,6 @@ val settingsScreenModule = module {
         SettingsDependencies(
             initialState = get(),
             exportData = get(),
-            parseBackupData = get(),
             importData = get(),
             savePreference = get(),
             getSettings = get(),

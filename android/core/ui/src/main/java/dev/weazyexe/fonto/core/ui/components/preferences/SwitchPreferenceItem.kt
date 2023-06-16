@@ -94,24 +94,6 @@ fun SwitchPreferenceItem(
             }
         )
 
-        /*var isChecked by remember {
-            mutableStateOf(false)
-        }
-        Switch(
-            checked = isChecked,
-            onCheckedChange = { isChecked = it },
-            colors = SwitchDefaults.colors(checkedIconColor = MaterialTheme.colorScheme.primary),
-            thumbContent = {
-                if (value) {
-                    Icon(
-                        painter = painterResource(id = DrawableResources.ic_done_24),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        )*/
-
         Spacer(modifier = Modifier.size(8.dp))
     }
 }

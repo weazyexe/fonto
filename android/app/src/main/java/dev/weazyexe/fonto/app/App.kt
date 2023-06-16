@@ -8,7 +8,7 @@ import dev.weazyexe.fonto.di.dataModules
 import dev.weazyexe.fonto.di.screenModules
 import dev.weazyexe.fonto.ui.features.feed.di.feedModule
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
-import dev.weazyexe.fonto.util.AppHelper
+import dev.weazyexe.fonto.utils.isReleaseBuild
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -39,7 +39,7 @@ class App : Application() {
                 settingsModule
             )
 
-            if (!AppHelper.isReleaseBuild()) {
+            if (isReleaseBuild()) {
                 modules(debugModule)
             }
         }
