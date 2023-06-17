@@ -43,8 +43,8 @@ internal class FeedPresentationImpl(
             shouldShowLoading = !isSwipeRefreshing,
             useCache = false
         )
-            .onError { setState { copy(posts = it) } }
             .onLoading { setState { copy(posts = it) } }
+            .onError { setState { copy(posts = it, isSwipeRefreshing = false) } }
             .onSuccess { setState { copy(posts = it, isSwipeRefreshing = false) } }
             .onStart {
                 setState {
