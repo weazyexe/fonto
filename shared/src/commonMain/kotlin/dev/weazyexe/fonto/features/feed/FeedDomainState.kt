@@ -12,8 +12,7 @@ data class FeedDomainState(
     val isSwipeRefreshing: Boolean = false,
     val limit: Int = DEFAULT_LIMIT,
     val offset: Int = 0,
-    val isSearchBarActive: Boolean = false,
-    val isBenchmarking: Boolean = false
+    val isSearchBarActive: Boolean = false
 ) : DomainState {
 
     val postsList: Posts?

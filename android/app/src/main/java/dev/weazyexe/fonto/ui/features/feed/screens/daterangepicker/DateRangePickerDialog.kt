@@ -11,8 +11,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.result.ResultBackNavigator
@@ -31,9 +29,6 @@ fun DateRangePickerDialog(
 ) {
     val state = rememberDateRangePickerState()
     Scaffold(
-        modifier = Modifier.semantics {
-            testTagsAsResourceId = true
-        },
         topBar = {
             FullScreenDialogToolbar(
                 title = stringResource(StringResources.date_range_picker_dialog_title),

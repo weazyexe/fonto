@@ -5,6 +5,7 @@ package dev.weazyexe.fonto.di
 import dev.weazyexe.fonto.common.app.AppInitializer
 import dev.weazyexe.fonto.common.app.AppInitializerImpl
 import dev.weazyexe.fonto.common.app.CategoriesInitializer
+import dev.weazyexe.fonto.common.app.MockFeedInitializer
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
 import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
@@ -174,7 +175,9 @@ internal val settingsDataModule = module {
 internal val initializerDataModule = module {
     includes(coreModule)
     includes(categoryDataModule)
+    includes(feedDataModule)
 
     single { CategoriesInitializer(get(), get(), get()) }
-    single<AppInitializer> { AppInitializerImpl(get()) }
+    single { MockFeedInitializer(get(), get()) }
+    single<AppInitializer> { AppInitializerImpl(get(), get()) }
 }

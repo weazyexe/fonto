@@ -7,7 +7,6 @@ import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
-import dev.weazyexe.fonto.common.feature.debug.VALID_FEED
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
@@ -30,14 +29,11 @@ internal class GetPostsUseCase(
         limit: Int,
         offset: Int,
         useCache: Boolean,
-        shouldShowLoading: Boolean = true,
-        useMockFeeds: Boolean = false
+        shouldShowLoading: Boolean = true
     ): Flow<AsyncResult<Posts>> = flowIo {
         if (shouldShowLoading) {
             emit(AsyncResult.Loading())
         }
-
-        addMockFeedsIfNeed(useMockFeeds)
 
         emit(
             if (useCache) {
@@ -75,14 +71,6 @@ internal class GetPostsUseCase(
                 posts = postRepository.getPosts(limit = limit, offset = offset)
             )
         )
-    }
-
-    private fun addMockFeedsIfNeed(useMockFeeds: Boolean) {
-        if (useMockFeeds) {
-            VALID_FEED.forEach {
-                feedRepository.insertOrIgnore(it)
-            }
-        }
     }
 
     private suspend fun getPostsFromFeeds(feeds: List<Feed>): List<ParsedFeed> =

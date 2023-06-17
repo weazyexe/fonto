@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.data.PaginationState
@@ -44,7 +45,9 @@ fun LazyListScope.buildPosts(
                 post = it,
                 onPostClick = { onPostClick(it.id) },
                 onSaveClick = { onPostSaveClick(it.id) },
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .testTag("post_item")
             )
         }
 

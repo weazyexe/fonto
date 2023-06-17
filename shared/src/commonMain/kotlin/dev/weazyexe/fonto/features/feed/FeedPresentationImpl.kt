@@ -13,7 +13,6 @@ import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -90,7 +89,6 @@ internal class FeedPresentationImpl(
 
     override fun openPost(id: Post.Id) {
         dependencies.getPost(id)
-            .filterNot { state.isBenchmarking }
             .filterIsInstance<AsyncResult.Success<Post>>()
             .onEach {
                 val post = it.data

@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.app
 
-interface Initializer {
+interface Initializer<T> {
 
-    suspend fun initialize()
+    suspend fun initialize(arguments: T)
 }
