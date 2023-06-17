@@ -10,7 +10,7 @@ import dev.weazyexe.fonto.common.model.backup.asBackupModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class GetExportDataUseCase(
+internal class GetExportDataUseCase(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val categoryRepository: CategoryRepository

@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.common.utils.flowList
 import dev.weazyexe.fonto.db.FontoDatabase
 import kotlinx.coroutines.flow.Flow
 
-class FeedDataSource(database: FontoDatabase) {
+internal class FeedDataSource(database: FontoDatabase) {
 
     private val queries = database.feedDaoQueries
 

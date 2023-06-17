@@ -1,7 +1,7 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feedpicker
 
 import androidx.annotation.StringRes
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
 import kotlinx.serialization.Serializable
 
 @Serializable

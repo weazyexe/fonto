@@ -1,9 +1,9 @@
 package dev.weazyexe.fonto.features.feed
 
 import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostsUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCase
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 
 internal data class FeedDependencies(

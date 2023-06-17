@@ -6,7 +6,7 @@ import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class GetAllCategoriesUseCase(
+internal class GetAllCategoriesUseCase(
     private val categoryRepository: CategoryRepository
 ) {
 

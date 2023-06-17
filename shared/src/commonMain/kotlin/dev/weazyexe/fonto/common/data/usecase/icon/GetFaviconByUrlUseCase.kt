@@ -7,7 +7,7 @@ import dev.weazyexe.fonto.common.utils.getHostnameWithScheme
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class GetFaviconByUrlUseCase(
+internal class GetFaviconByUrlUseCase(
     private val iconRepository: IconRepository
 ) {
 

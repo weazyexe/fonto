@@ -1,7 +1,7 @@
 package dev.weazyexe.fonto.features.search
 
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
 
 internal data class SearchDependencies(
     val initialState: SearchDomainState,

@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.common.feature.parser.jsonfeed
 
 import io.ktor.client.HttpClient
 
-class JsonFeedParser(
+internal class JsonFeedParser(
     private val httpClient: HttpClient
 ) {
 

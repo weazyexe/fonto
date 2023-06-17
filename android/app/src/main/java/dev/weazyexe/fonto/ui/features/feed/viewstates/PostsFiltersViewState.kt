@@ -2,18 +2,18 @@ package dev.weazyexe.fonto.ui.features.feed.viewstates
 
 import android.content.Context
 import dev.weazyexe.fonto.common.feature.filter.Multiple
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
-import dev.weazyexe.fonto.common.feature.newsline.ByRead
-import dev.weazyexe.fonto.common.feature.newsline.BySaved
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.feature.posts.ByCategory
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.ByPostDates
+import dev.weazyexe.fonto.common.feature.posts.ByRead
+import dev.weazyexe.fonto.common.feature.posts.BySaved
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
 import dev.weazyexe.fonto.common.utils.HUMAN_READABLE_DATE_FORMAT
 import dev.weazyexe.fonto.common.utils.format
 import dev.weazyexe.fonto.core.ui.components.filters.FilterViewState
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 
-fun List<NewslineFilter>.asViewStates(context: Context): List<FilterViewState<NewslineFilter>> = map { filter ->
+fun List<PostsFilter>.asViewStates(context: Context): List<FilterViewState<PostsFilter>> = map { filter ->
     FilterViewState(
         filter = filter,
         title = when (filter) {

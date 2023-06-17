@@ -6,7 +6,7 @@ import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class DeleteAllFeedsUseCase(
+internal class DeleteAllFeedsUseCase(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository
 ) {

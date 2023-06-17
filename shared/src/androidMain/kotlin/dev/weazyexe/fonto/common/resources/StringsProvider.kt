@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 
 @SuppressLint("DiscouragedApi")
-class AndroidStringsProvider(
+internal class AndroidStringsProvider(
     private val context: Context
 ) : StringsProvider {
 

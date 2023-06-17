@@ -7,7 +7,7 @@ import dev.weazyexe.fonto.common.data.mapper.toDao
 import dev.weazyexe.fonto.common.model.feed.Category
 import kotlinx.coroutines.flow.first
 
-class CategoryRepository(
+internal class CategoryRepository(
     private val categoryDataSource: CategoryDataSource
 ) {
 

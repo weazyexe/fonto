@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.app
 
-class AppInitializerImpl(
+internal class AppInitializerImpl(
     private val categoriesInitializer: CategoriesInitializer
 ) : AppInitializer {
 

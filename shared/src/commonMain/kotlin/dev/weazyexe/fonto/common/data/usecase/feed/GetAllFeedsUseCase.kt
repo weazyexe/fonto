@@ -6,7 +6,7 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class GetAllFeedsUseCase(
+internal class GetAllFeedsUseCase(
     private val feedRepository: FeedRepository
 ) {
 

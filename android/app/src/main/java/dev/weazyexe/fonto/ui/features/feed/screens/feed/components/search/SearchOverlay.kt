@@ -8,9 +8,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import dev.weazyexe.fonto.common.feature.filter.Dates
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
+import dev.weazyexe.fonto.common.feature.posts.ByCategory
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.ByPostDates
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources

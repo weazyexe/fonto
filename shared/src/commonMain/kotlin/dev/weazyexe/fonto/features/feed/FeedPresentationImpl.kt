@@ -73,8 +73,7 @@ internal class FeedPresentationImpl(
                     copy(
                         posts = result.map {
                             Posts(
-                                posts = state.postsList?.posts.orEmpty() + it.posts,
-                                loadedWithError = it.loadedWithError
+                                posts = state.postsList?.posts.orEmpty() + it.posts
                             )
                         },
                         paginationState = if (result.data.isNotEmpty()) {
@@ -147,8 +146,7 @@ internal class FeedPresentationImpl(
 
     private fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> = map { posts ->
         Posts(
-            posts = posts.map { if (it.id == post.id) post else it },
-            loadedWithError = posts.loadedWithError
+            posts = posts.map { if (it.id == post.id) post else it }
         )
     }
 }
