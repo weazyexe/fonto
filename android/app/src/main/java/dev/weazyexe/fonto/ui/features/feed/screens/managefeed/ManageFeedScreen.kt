@@ -1,6 +1,5 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.managefeed
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,7 +10,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
-import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
@@ -29,17 +27,12 @@ import org.koin.androidx.compose.koinViewModel
 fun ManageFeedScreen(
     navController: NavController,
     addEditFeedRecipient: ResultRecipient<AddEditFeedScreenDestination, Boolean>,
-    feedDeleteRecipient: ResultRecipient<FeedDeleteConfirmationDialogDestination, Long?>,
-    resultBackNavigator: ResultBackNavigator<Boolean>
+    feedDeleteRecipient: ResultRecipient<FeedDeleteConfirmationDialogDestination, Long?>
 ) {
     val viewModel = koinViewModel<ManageFeedViewModel>()
     val state by viewModel.state.collectAsState(ManageFeedViewState())
 
     val snackbarHostState = remember { SnackbarHostState() }
-
-    BackHandler {
-        resultBackNavigator.navigateBack(result = state.hasChanges)
-    }
 
     HandleNavigationResults(
         addEditFeedRecipient = addEditFeedRecipient,
@@ -59,7 +52,7 @@ fun ManageFeedScreen(
         onAddClick = {
             navController.navigate(AddEditFeedScreenDestination())
         },
-        onBackClick = { resultBackNavigator.navigateBack(result = state.hasChanges) },
+        onBackClick = { navController.navigateUp() },
         onClick = {
             navController.navigate(
                 AddEditFeedScreenDestination(feedId = it.id)

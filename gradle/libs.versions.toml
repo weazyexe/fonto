@@ -44,8 +44,6 @@ coil = "2.3.0"
 
 koin = "3.4.0"
 
-syndication = "2.1.1"
-
 xmlutil = "0.86.0"
 
 junit = "4.13.2"
@@ -90,9 +88,6 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-
-syndication = { module = "com.ouattararomuald:syndication", version.ref = "syndication" }
-syndication-coroutines = { module = "com.ouattararomuald:syndication-kotlin-coroutines-adapter", version.ref = "syndication" }
 
 xmlutil-core = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlutil" }
 xmlutil-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }

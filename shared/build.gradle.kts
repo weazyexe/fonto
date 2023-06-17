@@ -34,8 +34,6 @@ kotlin {
                 implementation(libs.sqldelight.android)
                 implementation(libs.koin.android)
                 implementation(libs.androidx.datastore)
-                implementation(libs.syndication)
-                implementation(libs.syndication.coroutines)
             }
         }
         /*val iosMain by creating {
