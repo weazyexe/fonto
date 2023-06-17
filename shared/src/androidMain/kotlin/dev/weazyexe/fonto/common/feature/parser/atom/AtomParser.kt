@@ -33,7 +33,6 @@ internal actual class AtomParser {
                     ParsedPost(
                         title = it.title,
                         link = it.links?.firstOrNull()?.href.orEmpty().replaceHttp(),
-                        content = it.content?.value,
                         description = (it.summary?.value
                             ?: it.content?.value.orEmpty())
                             .cleanUpText(),

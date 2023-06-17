@@ -7,6 +7,6 @@ import dev.weazyexe.fonto.db.FontoDatabase
 
 internal actual class DriverFactory(private val context: Context) {
     actual fun createDriver(): SqlDriver {
-        return AndroidSqliteDriver(FontoDatabase.Schema, context, "fonto2.db")
+        return AndroidSqliteDriver(FontoDatabase.Schema, context, "fonto3.db")
     }
 }

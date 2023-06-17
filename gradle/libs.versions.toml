@@ -44,8 +44,9 @@ coil = "2.3.0"
 
 koin = "3.4.0"
 
-rssParser = "5.0.2"
 syndication = "2.1.1"
+
+xmlutil = "0.86.0"
 
 junit = "4.13.2"
 junitAndroid = "1.1.5"
@@ -90,9 +91,11 @@ koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
-rss-parser = { module = "com.prof18.rssparser:rssparser", version.ref = "rssParser" }
 syndication = { module = "com.ouattararomuald:syndication", version.ref = "syndication" }
 syndication-coroutines = { module = "com.ouattararomuald:syndication-kotlin-coroutines-adapter", version.ref = "syndication" }
+
+xmlutil-core = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlutil" }
+xmlutil-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 junit-android = { module = "androidx.test.ext:junit", version.ref = "junitAndroid" }

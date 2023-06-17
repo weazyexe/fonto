@@ -34,7 +34,6 @@ object PostViewStatePreview {
                 category = Category(Category.Id(0), "News")
             ),
             isSaved = false,
-            content = null,
             isRead = false
         )
 
@@ -57,7 +56,6 @@ object PostViewStatePreview {
                 category = Category(Category.Id(1), "Technologies")
             ),
             isSaved = false,
-            content = null,
             isRead = true
         )
 
@@ -83,7 +81,6 @@ object PostViewStatePreview {
                 category = Category(Category.Id(2), "Technologies")
             ),
             isSaved = true,
-            content = null,
             isRead = true
         )
 }

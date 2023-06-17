@@ -13,6 +13,7 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.utils.extensions.flowIo
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -58,14 +59,13 @@ internal class GetPostsUseCase(
         return when {
             feeds.isEmpty() -> AsyncResult.Success(Posts.EMPTY)
             areAllFeedsFailed -> AsyncResult.Error(ResponseError.UnknownError)
-            else -> AsyncResult.Success(
-                Posts(
-                    posts = postRepository.getPosts(
-                        limit = limit,
-                        offset = offset
-                    )
+            else -> {
+                val posts = postRepository.getPosts(
+                    limit = limit,
+                    offset = offset
                 )
-            )
+                AsyncResult.Success(Posts(posts = posts))
+            }
         }
     }
 
@@ -104,6 +104,7 @@ internal class GetPostsUseCase(
                 is ParsedFeed.Success -> it.toPosts()
                 is ParsedFeed.Error -> {
                     problematicFeedList.add(it)
+                    Napier.e(it.throwable) { "Failed to load a feed from ${it.feed.link}" }
                     emptyList()
                 }
             }

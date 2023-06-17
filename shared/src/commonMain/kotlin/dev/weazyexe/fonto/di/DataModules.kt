@@ -87,7 +87,7 @@ internal val coreModule = module {
 internal val rssDataModule = module {
     includes(coreModule)
 
-    single { RssParser() }
+    single { RssParser(get()) }
     single { RssDataSource(get()) }
     single { RssRepository(get()) }
     single { IsRssValidUseCase(get()) }
