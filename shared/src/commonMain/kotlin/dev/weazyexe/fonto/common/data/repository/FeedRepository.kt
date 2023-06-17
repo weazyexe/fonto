@@ -10,7 +10,7 @@ import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import kotlinx.coroutines.flow.first
 
-class FeedRepository(
+internal class FeedRepository(
     private val feedDataSource: FeedDataSource,
     private val categoryDataSource: CategoryDataSource
 ) {

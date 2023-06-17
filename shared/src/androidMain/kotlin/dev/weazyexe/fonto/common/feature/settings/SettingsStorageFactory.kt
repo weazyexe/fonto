@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.common.feature.settings
 
 import android.content.Context
 
-actual class SettingsStorageFactory(
+internal actual class SettingsStorageFactory(
     private val context: Context
 ) {
 

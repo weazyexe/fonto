@@ -1,14 +1,14 @@
 package dev.weazyexe.fonto.common.data.datasource
 
 import dev.weazyexe.fonto.common.db.PostDao
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilters
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
+import dev.weazyexe.fonto.common.feature.posts.PostsFilters
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.utils.flowList
 import dev.weazyexe.fonto.db.FontoDatabase
 import kotlinx.coroutines.flow.Flow
 
-class PostDataSource(database: FontoDatabase) {
+internal class PostDataSource(database: FontoDatabase) {
 
     private val queries = database.postDaoQueries
 
@@ -37,5 +37,5 @@ class PostDataSource(database: FontoDatabase) {
 
     fun deleteAll() = queries.deleteAll()
 
-    fun getDefaultFilters(): List<NewslineFilter> = NewslineFilters
+    fun getDefaultFilters(): List<PostsFilter> = PostsFilters
 }

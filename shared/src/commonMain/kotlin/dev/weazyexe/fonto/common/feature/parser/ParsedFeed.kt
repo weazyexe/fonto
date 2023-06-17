@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.common.feature.parser
 import dev.weazyexe.fonto.common.model.base.LocalImage
 import dev.weazyexe.fonto.common.model.feed.Feed
 
-sealed interface ParsedFeed {
+internal sealed interface ParsedFeed {
 
     data class Success(
         val id: Long,

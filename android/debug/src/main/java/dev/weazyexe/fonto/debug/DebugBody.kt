@@ -13,10 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import dev.weazyexe.fonto.common.feature.debug.FULLY_INVALID_FEED
-import dev.weazyexe.fonto.common.feature.debug.PARTIALLY_INVALID_FEED
-import dev.weazyexe.fonto.common.feature.debug.VALID_FEED
-import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.preferences.PreferencesGroup
 import dev.weazyexe.fonto.core.ui.components.preferences.TextPreferenceItem
@@ -28,7 +24,9 @@ import dev.weazyexe.fonto.core.ui.utils.StringResources
 fun DebugBody(
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
-    onMockFeedClick: (List<Feed>) -> Unit,
+    onAddMockFeedsClick: () -> Unit,
+    onAddPartialInvalidMockFeedsClick: () -> Unit,
+    onAddInvalidMockFeedsClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
@@ -50,7 +48,7 @@ fun DebugBody(
                 title = stringResource(id = StringResources.debug_add_mock_feeds_title),
                 description = stringResource(id = StringResources.debug_add_mock_feeds_description),
                 icon = DrawableResources.ic_feed_24,
-                onClick = { onMockFeedClick(VALID_FEED) },
+                onClick = onAddMockFeedsClick,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -58,7 +56,7 @@ fun DebugBody(
                 title = stringResource(id = StringResources.debug_add_mock_partially_valid_feeds_title),
                 description = stringResource(id = StringResources.debug_add_mock_partially_valid_feeds_description),
                 icon = DrawableResources.ic_rule_24,
-                onClick = { onMockFeedClick(PARTIALLY_INVALID_FEED) },
+                onClick = onAddPartialInvalidMockFeedsClick,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -66,7 +64,7 @@ fun DebugBody(
                 title = stringResource(id = StringResources.debug_add_mock_invalid_feeds_title),
                 description = stringResource(id = StringResources.debug_add_mock_invalid_feeds_description),
                 icon = DrawableResources.ic_warning_24,
-                onClick = { onMockFeedClick(FULLY_INVALID_FEED) },
+                onClick = onAddInvalidMockFeedsClick,
                 modifier = Modifier.fillMaxWidth()
             )
         }

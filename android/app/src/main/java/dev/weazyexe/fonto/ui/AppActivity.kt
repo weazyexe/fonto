@@ -39,7 +39,7 @@ class AppActivity : ComponentActivity() {
 
         if (BuildConfig.BUILD_TYPE != "benchmark") {
             splashScreen.setKeepOnScreenCondition {
-                !viewModel.uiState.value.isInitialized
+                !viewModel.state.value.isInitialized
             }
         }
 
@@ -48,10 +48,10 @@ class AppActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            val state by viewModel.uiState.collectAsState()
+            val state by viewModel.state.collectAsState()
 
             FontoTheme(
-                accentColor = state.accentColor,
+                accentColor = state.accentColor.argb,
                 darkTheme = when (state.theme) {
                     Theme.LIGHT -> false
                     Theme.DARK -> true

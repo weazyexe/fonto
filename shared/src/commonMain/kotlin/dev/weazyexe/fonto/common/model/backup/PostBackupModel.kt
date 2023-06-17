@@ -7,7 +7,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PostBackupModel(
+internal data class PostBackupModel(
     @SerialName("id") val id: Post.Id,
     @SerialName("title") val title: String,
     @SerialName("description") val description: String,
@@ -20,7 +20,7 @@ data class PostBackupModel(
     @SerialName("imageUrl") val imageUrl: String?
 )
 
-fun Post.asBackupModel(): PostBackupModel =
+internal fun Post.asBackupModel(): PostBackupModel =
     PostBackupModel(
         id = id,
         title = title,
@@ -34,7 +34,7 @@ fun Post.asBackupModel(): PostBackupModel =
         isSaved = isSaved
     )
 
-fun PostBackupModel.asPost(feed: Feed): Post =
+internal fun PostBackupModel.asPost(feed: Feed): Post =
     Post(
         id = id,
         title = title,

@@ -78,7 +78,10 @@ fun SwitchPreferenceItem(
 
         Switch(
             checked = value,
-            onCheckedChange = onValueChange,
+            onCheckedChange = {
+                context.vibrate()
+                onValueChange(it)
+            },
             colors = SwitchDefaults.colors(checkedIconColor = MaterialTheme.colorScheme.primary),
             thumbContent = {
                 if (value) {

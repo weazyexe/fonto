@@ -1,72 +1,66 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed.components.search
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
+import dev.weazyexe.fonto.app.App
+import dev.weazyexe.fonto.common.data.map
+import dev.weazyexe.fonto.common.feature.posts.ByCategory
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
+import dev.weazyexe.fonto.common.model.feed.Post
+import dev.weazyexe.fonto.features.search.SearchDomainState
+import dev.weazyexe.fonto.features.search.SearchEffect
+import dev.weazyexe.fonto.features.search.SearchPresentation
 import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewStates
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SearchViewModel(
-    private val getFilters: GetFiltersUseCase,
-    private val getFilteredPosts: GetFilteredPostsUseCase
-) : CoreViewModel<SearchState, SearchEffect>() {
+    private val presentation: SearchPresentation,
+    private val context: App,
+) : ViewModel() {
 
-    override val initialState: SearchState = SearchState()
+    val state: Flow<SearchViewState>
+        get() = presentation.domainState.map { it.asViewState() }
+
+    val effects = presentation.effects
 
     init {
-        loadFilters()
-        subscribeOnQueryChange()
+        presentation.onCreate(viewModelScope)
     }
 
     fun onQueryChange(query: String) {
-        setState { copy(query = query) }
-        state.debouncedQuery.value = query
+        presentation.onQueryChange(query)
     }
 
-    fun applyFilters(updatedFilter: NewslineFilter) {
-        val newFilters = state.filters.map {
-            when (it.javaClass) {
-                updatedFilter.javaClass -> updatedFilter
-                else -> it
-            }
-        }
-        setState { copy(filters = newFilters) }
-        loadFilteredPosts()
+    fun applyFilters(updatedFilter: PostsFilter) {
+        presentation.applyFilters(updatedFilter)
     }
 
-    fun openDateRangePicker(filter: NewslineFilter) {
+    fun onPostRead(id: Post.Id) {
+        presentation.onPostRead(id)
+    }
+
+    fun onPostSave(id: Post.Id) {
+        presentation.onPostSave(id)
+    }
+
+    fun openMultiplePicker(filter: PostsFilter) {
         when (filter) {
-            is ByPostDates -> SearchEffect.OpenDateRangePicker.emit()
-            else -> {
-                // do nothing
-            }
-        }
-    }
+            is ByFeed -> presentation.emit(
+                SearchEffect.OpenFeedPicker(
+                    values = filter.values,
+                    possibleValues = filter.possibleValues
+                )
+            )
 
-    fun openMultiplePicker(filter: NewslineFilter) {
-        when (filter) {
-            is ByFeed -> SearchEffect.OpenFeedPicker(
-                values = filter.values,
-                possibleValues = filter.possibleValues,
-                title = StringResources.feed_filters_sources
-            ).emit()
-
-            is ByCategory -> SearchEffect.OpenCategoryPicker(
-                values = filter.values,
-                possibleValues = filter.possibleValues,
-                title = StringResources.feed_filters_categories
-            ).emit()
+            is ByCategory -> presentation.emit(
+                SearchEffect.OpenCategoryPicker(
+                    values = filter.values,
+                    possibleValues = filter.possibleValues
+                )
+            )
 
             else -> {
                 // Do nothing
@@ -74,46 +68,11 @@ class SearchViewModel(
         }
     }
 
-    fun onPostSave(post: PostViewState) {
-        (state.postsLoadState as? LoadState.Data)?.data?.let { posts ->
-            val updatedPosts = posts.map {
-                if (it.id == post.id) {
-                    it.copy(isSaved = !post.isSaved)
-                } else {
-                    it
-                }
-            }
-            setState { copy(postsLoadState = LoadState.Data(updatedPosts)) }
-        }
-    }
-
-    private fun loadFilters() = viewModelScope.launch {
-        val filters = getFilters()
-        setState {
-            copy(
-                filters = filters,
-                initialFilters = filters
-            )
-        }
-    }
-
-    private fun loadFilteredPosts() = viewModelScope.launch {
-        setState { copy(postsLoadState = LoadState.Loading()) }
-
-        val posts = request { getFilteredPosts(state.query, state.filters) }
-            .withErrorHandling {
-                setState { copy(postsLoadState = LoadState.Error(it)) }
-            }?.data ?: return@launch
-
-        setState { copy(postsLoadState = LoadState.Data(posts.map { it.asViewState() })) }
-    }
-
-    private fun subscribeOnQueryChange() {
-        state.debouncedQuery
-            .filter { it.isNotEmpty() }
-            .onEach { setState { copy(postsLoadState = LoadState.Loading()) } }
-            .debounce(500L)
-            .onEach { loadFilteredPosts() }
-            .launchInViewModelScope()
-    }
+    private fun SearchDomainState.asViewState(): SearchViewState =
+        SearchViewState(
+            query = query,
+            posts = posts.map { posts -> posts.map { it.asViewState() } },
+            filters = filters.asViewStates(context),
+            initialFilters = initialFilters.asViewStates(context)
+        )
 }

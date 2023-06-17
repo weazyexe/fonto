@@ -14,7 +14,7 @@ import dev.weazyexe.fonto.common.utils.replaceHttp
 import kotlinx.coroutines.Deferred
 import kotlinx.datetime.Clock
 
-actual class AtomParser {
+internal actual class AtomParser {
 
     actual suspend fun parse(feed: Feed): ParsedFeed {
         return try {

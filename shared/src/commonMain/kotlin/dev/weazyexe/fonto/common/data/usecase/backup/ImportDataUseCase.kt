@@ -1,25 +1,35 @@
 package dev.weazyexe.fonto.common.data.usecase.backup
 
+import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.repository.CategoryRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
-import dev.weazyexe.fonto.common.model.backup.FontoBackupModel
+import dev.weazyexe.fonto.common.feature.backup.FileReader
 import dev.weazyexe.fonto.common.model.backup.asCategory
 import dev.weazyexe.fonto.common.model.backup.asFeed
 import dev.weazyexe.fonto.common.model.backup.asPost
+import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.firstOrNull
 
-class ImportDataUseCase(
+internal class ImportDataUseCase(
     private val feedRepository: FeedRepository,
     private val categoryRepository: CategoryRepository,
     private val postRepository: PostRepository,
-    private val getFaviconByUrl: GetFaviconByUrlUseCase
+    private val getFaviconByUrl: GetFaviconByUrlUseCase,
+    private val parseBackupData: ParseBackupDataUseCase
 ) {
 
-    suspend operator fun invoke(backup: FontoBackupModel) {
+    operator fun invoke(reader: FileReader): Flow<AsyncResult<Unit>> = flowIo {
+        emit(AsyncResult.Loading())
+
+        val backup = parseBackupData(reader)
+
         postRepository.deleteAll()
         feedRepository.deleteAll()
         categoryRepository.deleteAll()
@@ -30,7 +40,7 @@ class ImportDataUseCase(
 
         val feedIcons = coroutineScope {
             backup.feeds.map { feedBackupModel ->
-               async { feedBackupModel.id to getFaviconByUrl(feedBackupModel.link) }
+                async { feedBackupModel.id to getFaviconByUrl(feedBackupModel.link).getValue() }
             }.awaitAll().toMap()
         }
 
@@ -50,5 +60,10 @@ class ImportDataUseCase(
                 postBackupModel.asPost(feed = feeds.first { it.id == postBackupModel.feedId })
             )
         }
+
+        emit(AsyncResult.Success(Unit))
     }
+
+    private suspend fun <T> Flow<AsyncResult<T>>.getValue(): T? =
+        filterIsInstance<AsyncResult.Success<T>>().firstOrNull()?.data
 }

@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.model.preference
 
-enum class Theme(val key: String) {
+enum class Theme(val key: String) : ValuePreference {
     LIGHT("LIGHT"),
     DARK("DARK"),
     SYSTEM("SYSTEM");

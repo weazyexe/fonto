@@ -5,7 +5,7 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import dev.weazyexe.fonto.db.FontoDatabase
 
-actual class DriverFactory(private val context: Context) {
+internal actual class DriverFactory(private val context: Context) {
     actual fun createDriver(): SqlDriver {
         return AndroidSqliteDriver(FontoDatabase.Schema, context, "fonto2.db")
     }

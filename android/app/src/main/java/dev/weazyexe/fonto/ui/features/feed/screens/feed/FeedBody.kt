@@ -9,41 +9,35 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.weazyexe.fonto.core.ui.ScrollState
+import dev.weazyexe.fonto.common.data.AsyncResult
+import dev.weazyexe.fonto.common.data.PaginationState
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
-import dev.weazyexe.fonto.core.ui.pagination.PaginationState
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.StringResources
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedScaffold
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.buildNewsline
-import dev.weazyexe.fonto.ui.features.feed.viewstates.NewslineViewState
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.buildPosts
+import dev.weazyexe.fonto.ui.features.feed.viewstates.PostsViewState
 
 @Composable
 fun FeedBody(
-    newslineLoadState: LoadState<NewslineViewState>,
-    scrollState: ScrollState,
+    posts: AsyncResult<PostsViewState>,
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
     paginationState: PaginationState,
     isSwipeRefreshing: Boolean,
     isSearchBarActive: Boolean,
-    onPostClick: (PostViewState) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
-    onScroll: (ScrollState) -> Unit,
+    onPostClick: (Post.Id) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     onManageFeedClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
-    fetchNextBatch: () -> Unit,
+    loadMorePosts: () -> Unit,
     onSearchBarActiveChange: (Boolean) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
@@ -53,31 +47,17 @@ fun FeedBody(
             val lastVisibleItemIndex =
                 lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val indexToStartPaginate = lazyListState.layoutInfo.totalItemsCount - 5
-            paginationState == PaginationState.IDLE && lastVisibleItemIndex >= indexToStartPaginate
+            paginationState == PaginationState.IDLE
+                    && posts is AsyncResult.Success
+                    && lastVisibleItemIndex != 0
+                    && lastVisibleItemIndex >= indexToStartPaginate
         }
     }
 
     LaunchedEffect(shouldStartPaginate) {
         if (shouldStartPaginate) {
-            fetchNextBatch()
+            loadMorePosts()
         }
-    }
-
-    LaunchedEffect(lazyListState) {
-        snapshotFlow { lazyListState.firstVisibleItemScrollOffset }
-            .map {
-                onScroll(
-                    ScrollState(
-                        item = lazyListState.firstVisibleItemIndex,
-                        offset = lazyListState.firstVisibleItemScrollOffset
-                    )
-                )
-            }
-            .collect()
-    }
-
-    LaunchedEffect(Unit) {
-        lazyListState.scrollToItem(scrollState.item, scrollState.offset)
     }
 
     FeedScaffold(
@@ -89,19 +69,19 @@ fun FeedBody(
         onSearchBarActiveChange = onSearchBarActiveChange,
         onPostClick = onPostClick,
         onPostSaveClick = onPostSaveClick,
-        contentPadding = rootPaddingValues
+        contentPadding = rootPaddingValues,
     ) {
-        when (newslineLoadState) {
-            is LoadState.Loading -> {
+        when (posts) {
+            is AsyncResult.Loading -> {
                 item("loading") {
                     LoadingPane(modifier = Modifier.fillMaxSize())
                 }
             }
 
-            is LoadState.Error -> {
+            is AsyncResult.Error -> {
                 item("error") {
                     ErrorPane(
-                        params = newslineLoadState.error.asErrorPaneParams(
+                        params = posts.error.asErrorPaneParams(
                             action = ErrorPaneParams.Action(
                                 title = StringResources.error_pane_refresh,
                                 onClick = { onRefreshClick(false) }
@@ -112,14 +92,15 @@ fun FeedBody(
                 }
             }
 
-            is LoadState.Data -> {
-                buildNewsline(
-                    newsline = newslineLoadState.data,
+            is AsyncResult.Success -> {
+                buildPosts(
+                    posts = posts.data,
                     paginationState = paginationState,
+                    paddingBottom = rootPaddingValues.calculateBottomPadding(),
                     onPostClick = onPostClick,
                     onPostSaveClick = onPostSaveClick,
                     onManageFeed = onManageFeedClick,
-                    fetchNextBatch = fetchNextBatch,
+                    loadMore = loadMorePosts,
                 )
             }
         }
@@ -130,8 +111,8 @@ fun FeedBody(
 @Composable
 private fun FeedBodyPreview() = ThemedPreview {
     FeedBody(
-        newslineLoadState = LoadState.Data(
-            data = NewslineViewState(
+        posts = AsyncResult.Success(
+            data = PostsViewState(
                 posts = listOf(
                     PostViewStatePreview.default,
                     PostViewStatePreview.saved,
@@ -139,7 +120,6 @@ private fun FeedBodyPreview() = ThemedPreview {
                 )
             )
         ),
-        scrollState = ScrollState(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,
@@ -147,10 +127,9 @@ private fun FeedBodyPreview() = ThemedPreview {
         isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
-        onScroll = {},
         onManageFeedClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {},
+        loadMorePosts = {},
         onSearchBarActiveChange = {}
     )
 }
@@ -159,8 +138,7 @@ private fun FeedBodyPreview() = ThemedPreview {
 @Composable
 private fun FeedBodyLoadingPreview() = ThemedPreview {
     FeedBody(
-        newslineLoadState = LoadState.Loading(),
-        scrollState = ScrollState(),
+        posts = AsyncResult.Loading(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,
@@ -168,10 +146,9 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
-        onScroll = {},
         onManageFeedClick = {},
         onRefreshClick = {},
-        fetchNextBatch = {},
+        loadMorePosts = {},
         onSearchBarActiveChange = {}
     )
 }

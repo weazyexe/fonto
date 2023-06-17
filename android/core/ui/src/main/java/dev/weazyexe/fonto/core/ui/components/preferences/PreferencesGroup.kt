@@ -15,7 +15,7 @@ fun PreferencesGroup(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(bottom = 16.dp)) {
         Text(
             text = title,
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp),

@@ -8,20 +8,23 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import dev.weazyexe.fonto.common.feature.filter.Dates
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
+import dev.weazyexe.fonto.common.feature.posts.ByCategory
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.ByPostDates
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.features.search.SearchEffect
 import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerArgs
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavigateTo
 import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerArgs
+import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
@@ -31,17 +34,18 @@ import org.koin.androidx.compose.koinViewModel
 fun SearchOverlay(
     isActive: Boolean,
     onSearchBarActiveChange: (Boolean) -> Unit,
-    onPostClick: (PostViewState) -> Unit,
-    onPostSaveClick: (PostViewState) -> Unit,
+    onPostClick: (Post.Id) -> Unit,
+    onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val viewModel = koinViewModel<SearchViewModel>()
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState(SearchViewState())
+    val navigateTo = LocalNavigateTo.current
 
-    HandleEffects(viewModel.effects)
+    HandleEffects(viewModel.effects, navigateTo)
 
     HandleNavigationResults(
         onDateRangeReceived = viewModel::applyFilters,
@@ -51,7 +55,7 @@ fun SearchOverlay(
 
     SearchBody(
         query = state.query,
-        postsLoadState = state.postsLoadState,
+        posts = state.posts,
         filters = state.filters,
         isActive = isActive,
         areFiltersChanged = state.areFiltersChanged,
@@ -60,9 +64,12 @@ fun SearchOverlay(
         onSearch = { keyboardController?.hide() },
         onActiveChange = onSearchBarActiveChange,
         onFilterChange = viewModel::applyFilters,
-        openDateRangePickerDialog = viewModel::openDateRangePicker,
-        openMultiplePickerDialog = viewModel::openMultiplePicker,
-        onPostClick = onPostClick,
+        openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) },
+        openMultiplePickerDialog = { viewModel.openMultiplePicker(it) },
+        onPostClick = {
+            onPostClick(it)
+            viewModel.onPostRead(it)
+        },
         onPostSaveClick = {
             onPostSaveClick(it)
             viewModel.onPostSave(it)
@@ -72,33 +79,31 @@ fun SearchOverlay(
 }
 
 @Composable
-private fun HandleEffects(effects: Flow<SearchEffect>) {
-    val navigateTo = LocalNavigateTo.current
+private fun HandleEffects(
+    effects: Flow<SearchEffect>,
+    navigateTo: NavigateTo
+) {
     ReceiveEffect(effects) {
         when (this) {
-            is SearchEffect.OpenDateRangePicker -> {
-                navigateTo?.invoke(DateRangePickerDialogDestination())
-            }
-
             is SearchEffect.OpenFeedPicker -> {
-                navigateTo?.invoke(
+                navigateTo.invoke(
                     FeedPickerDialogDestination(
                         args = FeedPickerArgs(
                             values = values,
                             possibleValues = possibleValues,
-                            title = title
+                            title = StringResources.feed_filters_sources
                         )
                     )
                 )
             }
 
             is SearchEffect.OpenCategoryPicker -> {
-                navigateTo?.invoke(
+                navigateTo.invoke(
                     CategoryPickerDialogDestination(
                         args = CategoryPickerArgs(
                             values = values,
                             possibleValues = possibleValues,
-                            title = title
+                            title = StringResources.feed_filters_categories
                         )
                     )
                 )
@@ -113,7 +118,7 @@ private fun HandleNavigationResults(
     onFeedReceived: (ByFeed) -> Unit,
     onCategoryReceived: (ByCategory) -> Unit,
 ) {
-    LocalDateRangePickerResults.current?.invoke()?.handleResults { result ->
+    LocalDateRangePickerResults.current.invoke().handleResults { result ->
         result?.let {
             onDateRangeReceived(
                 ByPostDates(
@@ -126,7 +131,7 @@ private fun HandleNavigationResults(
         }
     }
 
-    LocalFeedPickerResults.current?.invoke()?.handleResults { result ->
+    LocalFeedPickerResults.current.invoke().handleResults { result ->
         result?.let {
             onFeedReceived(
                 ByFeed(
@@ -137,7 +142,7 @@ private fun HandleNavigationResults(
         }
     }
 
-    LocalCategoryPickerResults.current?.invoke()?.handleResults { result ->
+    LocalCategoryPickerResults.current.invoke().handleResults { result ->
         result?.let {
             onCategoryReceived(
                 ByCategory(

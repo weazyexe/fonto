@@ -4,7 +4,7 @@ import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.resources.StringsProvider
 
-class CategoriesInitializer(
+internal class CategoriesInitializer(
     private val settings: SettingsStorage,
     private val createCategory: CreateCategoryUseCase,
     private val stringsProvider: StringsProvider

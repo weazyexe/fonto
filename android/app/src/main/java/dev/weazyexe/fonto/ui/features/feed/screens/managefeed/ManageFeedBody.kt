@@ -28,14 +28,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.weazyexe.fonto.common.data.AsyncResult
+import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
-import dev.weazyexe.fonto.core.ui.presentation.LoadState
-import dev.weazyexe.fonto.core.ui.presentation.ResponseError
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
@@ -46,7 +46,7 @@ import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageFeedBody(
-    feedsLoadState: LoadState<List<FeedViewState>>,
+    feeds: AsyncResult<List<FeedViewState>>,
     snackbarHostState: SnackbarHostState,
     onAddClick: () -> Unit,
     onBackClick: () -> Unit,
@@ -79,17 +79,17 @@ fun ManageFeedBody(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        when (feedsLoadState) {
-            is LoadState.Error -> {
+        when (feeds) {
+            is AsyncResult.Error -> {
                 ErrorPane(
-                    params = feedsLoadState.error.asErrorPaneParams(),
+                    params = feeds.error.asErrorPaneParams(),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
                 )
             }
 
-            is LoadState.Loading -> {
+            is AsyncResult.Loading -> {
                 LoadingPane(
                     modifier = Modifier
                         .fillMaxSize()
@@ -97,9 +97,9 @@ fun ManageFeedBody(
                 )
             }
 
-            is LoadState.Data -> {
+            is AsyncResult.Success -> {
                 FeedList(
-                    list = feedsLoadState.data,
+                    list = feeds.data,
                     onClick = onClick,
                     onDeleteClick = onDeleteClick,
                     padding = padding
@@ -154,7 +154,7 @@ private fun FeedList(
 @Composable
 private fun ManageFeedBodyPreview() = ThemedPreview {
     ManageFeedBody(
-        feedsLoadState = LoadState.Data(
+        feeds = AsyncResult.Success(
             listOf(
                 FeedViewStatePreview.default,
                 FeedViewStatePreview.noIcon,
@@ -172,7 +172,7 @@ private fun ManageFeedBodyPreview() = ThemedPreview {
 @Composable
 private fun ManageFeedBodyEmptyPreview() = ThemedPreview {
     ManageFeedBody(
-        feedsLoadState = LoadState.Data(emptyList()),
+        feeds = AsyncResult.Success(emptyList()),
         snackbarHostState = SnackbarHostState(),
         onAddClick = {},
         onBackClick = {},
@@ -185,7 +185,7 @@ private fun ManageFeedBodyEmptyPreview() = ThemedPreview {
 @Composable
 private fun ManageFeedBodyErrorPreview() = ThemedPreview {
     ManageFeedBody(
-        feedsLoadState = LoadState.Error(ResponseError.NoInternetError()),
+        feeds = AsyncResult.Error(ResponseError.NoInternetError),
         snackbarHostState = SnackbarHostState(),
         onAddClick = {},
         onBackClick = {},

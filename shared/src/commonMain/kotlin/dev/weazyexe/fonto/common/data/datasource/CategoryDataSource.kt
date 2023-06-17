@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.common.utils.flowList
 import dev.weazyexe.fonto.db.FontoDatabase
 import kotlinx.coroutines.flow.Flow
 
-class CategoryDataSource(database: FontoDatabase) {
+internal class CategoryDataSource(database: FontoDatabase) {
 
     private val queries = database.categoryDaoQueries
 

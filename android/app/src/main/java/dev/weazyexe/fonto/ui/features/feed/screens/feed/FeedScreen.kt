@@ -12,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
+import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.features.feed.FeedEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
@@ -39,17 +41,12 @@ fun FeedScreen(
     feedPickerResults: FeedPickerResults,
     categoryPickerResults: CategoryPickerResults,
 ) {
-    val context = LocalContext.current
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.state.collectAsState(FeedViewState())
     val snackbarHostState = remember { SnackbarHostState() }
 
-    manageFeedResultRecipientProvider.invoke().handleResults { result ->
-        if (result) {
-            viewModel.loadNewsline()
-        }
-    }
+    HandleEffects(viewModel.effects, snackbarHostState)
 
-    HandleEffects(effects = viewModel.effects, snackbarHostState = snackbarHostState)
+    HandleNavigationResults(manageFeedResultRecipientProvider, viewModel)
 
     CompositionLocalProvider(
         LocalNavigateTo provides navigateTo,
@@ -58,20 +55,18 @@ fun FeedScreen(
         LocalCategoryPickerResults provides categoryPickerResults
     ) {
         FeedBody(
-            newslineLoadState = state.newslineLoadState,
-            scrollState = state.scrollState,
+            posts = state.posts,
             rootPaddingValues = rootPaddingValues,
             snackbarHostState = snackbarHostState,
-            paginationState = state.newslinePaginationState,
+            paginationState = state.paginationState,
             isSwipeRefreshing = state.isSwipeRefreshing,
             isSearchBarActive = state.isSearchBarActive,
-            onPostClick = viewModel::openPost,
-            onPostSaveClick = viewModel::savePost,
-            onScroll = viewModel::onScroll,
+            onPostClick = { viewModel.openPost(it) },
+            onPostSaveClick = { viewModel.savePost(it) },
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
-            onRefreshClick = viewModel::loadNewsline,
-            fetchNextBatch = viewModel::getNextPostsBatch,
-            onSearchBarActiveChange = viewModel::onSearchBarActiveChange
+            onRefreshClick = { viewModel.loadPosts(it) },
+            loadMorePosts = { viewModel.loadMorePosts() },
+            onSearchBarActiveChange = { viewModel.onSearchBarActiveChange(it) }
         )
     }
 }
@@ -84,10 +79,6 @@ private fun HandleEffects(
     val context = LocalContext.current
     ReceiveEffect(effects) {
         when (this) {
-            is FeedEffect.ShowMessage -> {
-                snackbarHostState.showSnackbar(context.getString(message, *args))
-            }
-
             is FeedEffect.OpenPostInApp -> {
                 InAppBrowser.openPost(context, link, theme)
             }
@@ -96,6 +87,42 @@ private fun HandleEffects(
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                 context.startActivity(intent)
             }
+
+            is FeedEffect.ShowPostSavingErrorMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        if (isSaving) {
+                            StringResources.feed_post_saving_error
+                        } else {
+                            StringResources.feed_post_removing_from_bookmarks_error
+                        }
+                    )
+                )
+            }
+
+            is FeedEffect.ShowPostSavedMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        if (isSaving) {
+                            StringResources.feed_post_saved_to_bookmarks
+                        } else {
+                            StringResources.feed_post_removed_from_bookmarks
+                        }
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HandleNavigationResults(
+    manageFeedResultRecipientProvider: ManageFeedResults,
+    viewModel: FeedViewModel
+) {
+    manageFeedResultRecipientProvider.invoke().handleResults { result ->
+        if (result) {
+            viewModel.loadPosts(isSwipeRefreshing = false)
         }
     }
 }

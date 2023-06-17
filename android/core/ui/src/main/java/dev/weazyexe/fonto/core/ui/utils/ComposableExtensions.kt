@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.core.ui.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import dev.weazyexe.fonto.core.ui.presentation.Effect
+import dev.weazyexe.fonto.arch.Effect
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach

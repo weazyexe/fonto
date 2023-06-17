@@ -4,14 +4,14 @@ import dev.weazyexe.fonto.common.data.datasource.PostDataSource
 import dev.weazyexe.fonto.common.data.mapper.toDao
 import dev.weazyexe.fonto.common.data.mapper.toPost
 import dev.weazyexe.fonto.common.db.PostDao
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.feature.posts.ByCategory
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.coroutines.flow.first
 
-class PostRepository(
+internal class PostRepository(
     private val postDataSource: PostDataSource,
     private val feedRepository: FeedRepository,
     private val categoryRepository: CategoryRepository,
@@ -37,13 +37,13 @@ class PostRepository(
         return postDaos.mergeWithFeeds(feeds)
     }
 
-    fun getPostById(id: Post.Id, feed: Feed): Post =
-        postDataSource.getPostById(id.origin).toPost(feed)
+    fun getPostById(id: Post.Id): Post {
+        val post = postDataSource.getPostById(id.origin)
+        val feed = feedRepository.getById(Feed.Id(post.feedId))
+        return postDataSource.getPostById(id.origin).toPost(feed)
+    }
 
-    fun insert(
-        post: Post,
-        feed: Feed
-    ) = postDataSource.insertOrUpdate(post.toDao())
+    fun insert(post: Post) = postDataSource.insertOrUpdate(post.toDao())
 
     fun insertOrUpdate(post: Post) = postDataSource.insertOrUpdate(post.toDao())
 
@@ -55,7 +55,7 @@ class PostRepository(
 
     fun deleteAll() = postDataSource.deleteAll()
 
-    suspend fun composeFilters(): List<NewslineFilter> {
+    suspend fun composeFilters(): List<PostsFilter> {
         val feeds = feedRepository.getAll()
         val categories = categoryRepository.getAll()
         return postDataSource
