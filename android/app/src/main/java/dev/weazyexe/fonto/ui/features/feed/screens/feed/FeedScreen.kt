@@ -46,11 +46,7 @@ fun FeedScreen(
 
     HandleEffects(viewModel.effects, snackbarHostState)
 
-    manageFeedResultRecipientProvider.invoke().handleResults { result ->
-        if (result) {
-            viewModel.loadPosts(isSwipeRefreshing = false)
-        }
-    }
+    HandleNavigationResults(manageFeedResultRecipientProvider, viewModel)
 
     CompositionLocalProvider(
         LocalNavigateTo provides navigateTo,
@@ -115,6 +111,18 @@ private fun HandleEffects(
                     )
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun HandleNavigationResults(
+    manageFeedResultRecipientProvider: ManageFeedResults,
+    viewModel: FeedViewModel
+) {
+    manageFeedResultRecipientProvider.invoke().handleResults { result ->
+        if (result) {
+            viewModel.loadPosts(isSwipeRefreshing = false)
         }
     }
 }

@@ -48,17 +48,12 @@ fun SettingsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val state by viewModel.state.collectAsState(SettingsViewState())
 
-    themePickerResults.invoke().handleResults { result ->
-        result?.let { viewModel.onThemePicked(it) }
-    }
-
-    colorPickerResults.invoke().handleResults { result ->
-        viewModel.onColorSchemePicked(result)
-    }
-
-    exportStrategyResults.invoke().handleResults { result ->
-        result?.let { viewModel.chooseExportFileDestination(result.toExportStrategy()) }
-    }
+    HandleNavigationResults(
+        themePickerResults = themePickerResults,
+        colorPickerResults = colorPickerResults,
+        exportStrategyResults = exportStrategyResults,
+        viewModel = viewModel
+    )
 
     HandleEffects(
         effects = viewModel.effects,
@@ -154,5 +149,25 @@ private fun HandleEffects(
                 snackbarHostState.showSnackbar(context.getString(StringResources.settings_import_fonto_successful))
             }
         }
+    }
+}
+
+@Composable
+private fun HandleNavigationResults(
+    themePickerResults: ThemePickerResults,
+    colorPickerResults: ColorPickerResults,
+    exportStrategyResults: ExportStrategyPickerResults,
+    viewModel: SettingsViewModel
+) {
+    themePickerResults.invoke().handleResults { result ->
+        result?.let { viewModel.onThemePicked(it) }
+    }
+
+    colorPickerResults.invoke().handleResults { result ->
+        viewModel.onColorSchemePicked(result)
+    }
+
+    exportStrategyResults.invoke().handleResults { result ->
+        result?.let { viewModel.chooseExportFileDestination(result.toExportStrategy()) }
     }
 }

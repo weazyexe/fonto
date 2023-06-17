@@ -38,6 +38,10 @@ internal class CategoriesPresentationImpl(
             .launchIn(scope)
     }
 
+    override fun updateHasChanges(hasChanges: Boolean) {
+        setState { copy(hasChanges = hasChanges) }
+    }
+
     private fun loadFeeds() =
         dependencies.getAllFeeds()
             .onError { setState { copy(categories = AsyncResult.Error(it.error)) } }

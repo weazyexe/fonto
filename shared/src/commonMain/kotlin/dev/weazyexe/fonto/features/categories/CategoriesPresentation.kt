@@ -8,4 +8,6 @@ abstract class CategoriesPresentation : Presentation<CategoriesDomainState, Cate
     abstract fun loadFeedsAndCategories()
 
     abstract fun deleteById(id: Category.Id)
+
+    abstract fun updateHasChanges(hasChanges: Boolean)
 }

@@ -20,6 +20,7 @@ import dev.weazyexe.fonto.features.managefeed.ManageFeedEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedDeleteConfirmationDialogDestination
 import dev.weazyexe.fonto.util.handleResults
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -31,49 +32,26 @@ fun ManageFeedScreen(
     feedDeleteRecipient: ResultRecipient<FeedDeleteConfirmationDialogDestination, Long?>,
     resultBackNavigator: ResultBackNavigator<Boolean>
 ) {
-    val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<ManageFeedViewModel>()
     val state by viewModel.state.collectAsState(ManageFeedViewState())
 
-    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
-
-    addEditFeedRecipient.handleResults { isFeedUpdated ->
-        if (isFeedUpdated) {
-            viewModel.loadFeed()
-            viewModel.updateChangesStatus()
-
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    context.getString(StringResources.manage_feed_changes_saved)
-                )
-            }
-        }
-    }
-
-    feedDeleteRecipient.handleResults { id ->
-        id?.let { viewModel.deleteFeedById(Feed.Id(it)) }
-    }
 
     BackHandler {
         resultBackNavigator.navigateBack(result = state.hasChanges)
     }
 
-    ReceiveEffect(viewModel.effects) {
-        when (this) {
-            is ManageFeedEffect.ShowDeletedSuccessfullyMessage -> {
-                snackbarHostState.showSnackbar(
-                    context.getString(StringResources.manage_feed_feed_deleted_successfully)
-                )
-            }
+    HandleNavigationResults(
+        addEditFeedRecipient = addEditFeedRecipient,
+        feedDeleteRecipient = feedDeleteRecipient,
+        snackbarHostState = snackbarHostState,
+        viewModel = viewModel
+    )
 
-            is ManageFeedEffect.ShowDeletionFailedMessage -> {
-                snackbarHostState.showSnackbar(
-                    context.getString(StringResources.manage_feed_feed_deletion_failure)
-                )
-            }
-        }
-    }
+    HandleEffects(
+        effects = viewModel.effects,
+        snackbarHostState = snackbarHostState
+    )
 
     ManageFeedBody(
         feeds = state.feeds,
@@ -96,4 +74,55 @@ fun ManageFeedScreen(
             )
         }
     )
+}
+
+@Composable
+private fun HandleEffects(
+    effects: Flow<ManageFeedEffect>,
+    snackbarHostState: SnackbarHostState
+) {
+    val context = LocalContext.current
+    ReceiveEffect(effects) {
+        when (this) {
+            is ManageFeedEffect.ShowDeletedSuccessfullyMessage -> {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.manage_feed_feed_deleted_successfully)
+                )
+            }
+
+            is ManageFeedEffect.ShowDeletionFailedMessage -> {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.manage_feed_feed_deletion_failure)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HandleNavigationResults(
+    addEditFeedRecipient: ResultRecipient<AddEditFeedScreenDestination, Boolean>,
+    feedDeleteRecipient: ResultRecipient<FeedDeleteConfirmationDialogDestination, Long?>,
+    snackbarHostState: SnackbarHostState,
+    viewModel: ManageFeedViewModel
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    addEditFeedRecipient.handleResults { isFeedUpdated ->
+        if (isFeedUpdated) {
+            viewModel.loadFeed()
+            viewModel.updateChangesStatus()
+
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.manage_feed_changes_saved)
+                )
+            }
+        }
+    }
+
+    feedDeleteRecipient.handleResults { id ->
+        id?.let { viewModel.deleteFeedById(Feed.Id(it)) }
+    }
 }
