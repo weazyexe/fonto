@@ -24,9 +24,7 @@ import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavigat
 import dev.weazyexe.fonto.ui.features.home.dependencies.CategoryPickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
-import dev.weazyexe.fonto.ui.features.home.dependencies.ManageFeedResults
 import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
-import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 
 @BottomBarNavGraph(start = true)
@@ -36,7 +34,6 @@ fun FeedScreen(
     rootPaddingValues: PaddingValues,
     viewModel: FeedViewModel,
     navigateTo: NavigateTo,
-    manageFeedResultRecipientProvider: ManageFeedResults,
     dateRangePickerResultRecipientProvider: DateRangePickerResults,
     feedPickerResults: FeedPickerResults,
     categoryPickerResults: CategoryPickerResults,
@@ -45,8 +42,6 @@ fun FeedScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleEffects(viewModel.effects, snackbarHostState)
-
-    HandleNavigationResults(manageFeedResultRecipientProvider, viewModel)
 
     CompositionLocalProvider(
         LocalNavigateTo provides navigateTo,
@@ -111,18 +106,6 @@ private fun HandleEffects(
                     )
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun HandleNavigationResults(
-    manageFeedResultRecipientProvider: ManageFeedResults,
-    viewModel: FeedViewModel
-) {
-    manageFeedResultRecipientProvider.invoke().handleResults { result ->
-        if (result) {
-            viewModel.loadPosts(isSwipeRefreshing = false)
         }
     }
 }

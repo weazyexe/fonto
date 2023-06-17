@@ -2,7 +2,6 @@ CREATE TABLE PostDao (
     id TEXT NOT NULL PRIMARY KEY,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    content TEXT,
     imageUrl TEXT,
     publishedAt INTEGER NOT NULL,
     feedId INTEGER NOT NULL,

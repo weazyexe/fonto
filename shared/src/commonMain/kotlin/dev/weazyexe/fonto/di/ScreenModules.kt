@@ -91,7 +91,8 @@ val searchScreenModule = module {
         SearchDependencies(
             initialState = get(),
             getFilters = get(),
-            getFilteredPosts = get()
+            getFilteredPosts = get(),
+            eventBus = get()
         )
     }
 
@@ -105,7 +106,8 @@ val manageFeedScreenModule = module {
         ManageFeedDependencies(
             initialState = get(),
             getAllFeeds = get(),
-            deleteFeed = get()
+            deleteFeed = get(),
+            eventBus = get()
         )
     }
 

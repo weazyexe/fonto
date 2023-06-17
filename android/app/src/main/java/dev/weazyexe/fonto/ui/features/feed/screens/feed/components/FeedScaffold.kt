@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -91,7 +92,10 @@ fun FeedScaffold(
                 )
             }
 
-            LazyColumn(state = lazyListState) {
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier.testTag("posts_list")
+            ) {
                 item {
                     Spacer(modifier = Modifier.height(searchBarPadding))
                 }

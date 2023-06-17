@@ -7,12 +7,12 @@ import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
-import dev.weazyexe.fonto.common.feature.debug.VALID_FEED
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.utils.extensions.flowIo
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -29,14 +29,11 @@ internal class GetPostsUseCase(
         limit: Int,
         offset: Int,
         useCache: Boolean,
-        shouldShowLoading: Boolean = true,
-        useMockFeeds: Boolean = false
+        shouldShowLoading: Boolean = true
     ): Flow<AsyncResult<Posts>> = flowIo {
         if (shouldShowLoading) {
             emit(AsyncResult.Loading())
         }
-
-        addMockFeedsIfNeed(useMockFeeds)
 
         emit(
             if (useCache) {
@@ -58,14 +55,13 @@ internal class GetPostsUseCase(
         return when {
             feeds.isEmpty() -> AsyncResult.Success(Posts.EMPTY)
             areAllFeedsFailed -> AsyncResult.Error(ResponseError.UnknownError)
-            else -> AsyncResult.Success(
-                Posts(
-                    posts = postRepository.getPosts(
-                        limit = limit,
-                        offset = offset
-                    )
+            else -> {
+                val posts = postRepository.getPosts(
+                    limit = limit,
+                    offset = offset
                 )
-            )
+                AsyncResult.Success(Posts(posts = posts))
+            }
         }
     }
 
@@ -75,14 +71,6 @@ internal class GetPostsUseCase(
                 posts = postRepository.getPosts(limit = limit, offset = offset)
             )
         )
-    }
-
-    private fun addMockFeedsIfNeed(useMockFeeds: Boolean) {
-        if (useMockFeeds) {
-            VALID_FEED.forEach {
-                feedRepository.insertOrIgnore(it)
-            }
-        }
     }
 
     private suspend fun getPostsFromFeeds(feeds: List<Feed>): List<ParsedFeed> =
@@ -104,6 +92,7 @@ internal class GetPostsUseCase(
                 is ParsedFeed.Success -> it.toPosts()
                 is ParsedFeed.Error -> {
                     problematicFeedList.add(it)
+                    Napier.e(it.throwable) { "Failed to load a feed from ${it.feed.link}" }
                     emptyList()
                 }
             }

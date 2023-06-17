@@ -11,7 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -33,7 +36,9 @@ class AppActivity : ComponentActivity() {
 
     private val viewModel by viewModel<AppViewModel>()
 
-    @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
+    @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class,
+        ExperimentalComposeUiApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
 
@@ -70,7 +75,11 @@ class AppActivity : ComponentActivity() {
                     )
                 )
 
-                Surface {
+                Surface(
+                    modifier = Modifier.semantics {
+                        testTagsAsResourceId = true
+                    }
+                ) {
                     ModalBottomSheetLayout(
                         bottomSheetNavigator = bottomSheetNavigator,
                         sheetShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),

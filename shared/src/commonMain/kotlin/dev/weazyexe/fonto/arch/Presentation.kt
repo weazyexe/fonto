@@ -54,6 +54,11 @@ abstract class Presentation<S : DomainState, E : Effect> {
         _scope = scope
     }
 
+    @CallSuper
+    open fun onDestroy() {
+        _scope = null
+    }
+
     /**
      * Updates the screen state
      */

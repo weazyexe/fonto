@@ -24,17 +24,16 @@ kotlin {
                 implementation(libs.ktor.logging)
                 implementation(libs.koin.core)
                 implementation(libs.sqldelight.coroutines)
+                implementation(libs.xmlutil.core)
+                implementation(libs.xmlutil.serialization)
             }
         }
         val androidMain by getting {
             dependencies {
                 implementation(libs.ktor.okhttp)
                 implementation(libs.sqldelight.android)
-                implementation(libs.rss.parser)
                 implementation(libs.koin.android)
                 implementation(libs.androidx.datastore)
-                implementation(libs.syndication)
-                implementation(libs.syndication.coroutines)
             }
         }
         /*val iosMain by creating {

@@ -8,10 +8,10 @@ internal class CategoriesInitializer(
     private val settings: SettingsStorage,
     private val createCategory: CreateCategoryUseCase,
     private val stringsProvider: StringsProvider
-) : Initializer {
+) : Initializer<Unit> {
 
 
-    override suspend fun initialize() {
+    override suspend fun initialize(arguments: Unit) {
         if (!settings.isAppInitialized()) {
             buildDefaultCategories().forEach {
                 createCategory(it)

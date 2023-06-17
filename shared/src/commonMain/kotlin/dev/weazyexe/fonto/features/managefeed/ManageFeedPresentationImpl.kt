@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.features.managefeed
 
+import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -17,6 +18,13 @@ internal class ManageFeedPresentationImpl(
     override fun onCreate(scope: CoroutineScope) {
         super.onCreate(scope)
         loadFeed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (state.hasChanges) {
+            dependencies.eventBus.emit(AppEvent.RefreshFeed)
+        }
     }
 
     override fun loadFeed() {

@@ -64,6 +64,5 @@ internal class GetFilteredPostsUseCase(
     private fun Post.containsQuery(query: String): Boolean =
         title.contains(query, ignoreCase = true)
                 || description.contains(query, ignoreCase = true)
-                || content?.contains(query, ignoreCase = true) == true
                 || feed.title.contains(query, ignoreCase = true)
 }

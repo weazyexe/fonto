@@ -8,7 +8,6 @@ data class Post(
     val id: Id,
     val title: String,
     val description: String,
-    val content: String?,
     val imageUrl: String?,
     val publishedAt: Instant,
     val feed: Feed,

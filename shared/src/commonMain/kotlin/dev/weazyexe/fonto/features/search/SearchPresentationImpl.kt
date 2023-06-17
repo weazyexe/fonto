@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.features.search
 
 import dev.weazyexe.fonto.common.data.AsyncResult
+import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.feature.posts.PostsFilter
@@ -8,6 +9,7 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -20,6 +22,7 @@ internal class SearchPresentationImpl(private val dependencies: SearchDependenci
         super.onCreate(scope)
         loadFilters()
         subscribeOnQueryChange()
+        listenToEventBus()
     }
 
     override fun onQueryChange(query: String) {
@@ -77,6 +80,13 @@ internal class SearchPresentationImpl(private val dependencies: SearchDependenci
             .onEach { setState { copy(posts = AsyncResult.Loading()) } }
             .debounce(500L)
             .onEach { loadFilteredPosts() }
+            .launchIn(scope)
+    }
+
+    private fun listenToEventBus() {
+        dependencies.eventBus.observe()
+            .filterIsInstance<AppEvent.RefreshFeed>()
+            .onEach { loadFilters() }
             .launchIn(scope)
     }
 

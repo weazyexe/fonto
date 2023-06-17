@@ -42,14 +42,14 @@ fun FeedBody(
 ) {
     val lazyListState = rememberLazyListState()
 
-    val shouldStartPaginate by remember {
+    val shouldStartPaginate by remember(posts, paginationState) {
         derivedStateOf {
             val lastVisibleItemIndex =
                 lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             val indexToStartPaginate = lazyListState.layoutInfo.totalItemsCount - 5
             paginationState == PaginationState.IDLE
                     && posts is AsyncResult.Success
-                    && lastVisibleItemIndex != 0
+                    && lastVisibleItemIndex > 1
                     && lastVisibleItemIndex >= indexToStartPaginate
         }
     }

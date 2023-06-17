@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.app
 
 import android.app.Application
+import dev.weazyexe.fonto.BuildConfig
 import dev.weazyexe.fonto.common.app.AppInitializer
 import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.di.dataModules
@@ -41,7 +42,11 @@ class App : Application() {
         }
 
         appScope.launch {
-            appInitializer.initialize()
+            appInitializer.initialize(
+                arguments = AppInitializer.Args(
+                    areMockFeedsEnabled = BuildConfig.BUILD_TYPE == "benchmark"
+                )
+            )
         }
     }
 }

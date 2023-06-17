@@ -21,6 +21,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -115,7 +116,10 @@ private fun SearchBarAndResults(
         placeholder = { Text(stringResource(id = StringResources.feed_search_hint)) },
         leadingIcon = {
             ScaleAnimatedVisibility(isVisible = isActive) {
-                IconButton(onClick = { onActiveChange(false) }) {
+                IconButton(
+                    onClick = { onActiveChange(false) },
+                    modifier = Modifier.testTag("close_search_button")
+                ) {
                     Icon(
                         painter = painterResource(id = DrawableResources.ic_arrow_back_24),
                         contentDescription = null
@@ -124,7 +128,10 @@ private fun SearchBarAndResults(
             }
 
             ScaleAnimatedVisibility(isVisible = !isActive) {
-                IconButton(onClick = { onActiveChange(true) }) {
+                IconButton(
+                    onClick = { onActiveChange(true) },
+                    modifier = Modifier.testTag("search_button")
+                ) {
                     Icon(
                         painter = painterResource(id = DrawableResources.ic_search_24),
                         contentDescription = null

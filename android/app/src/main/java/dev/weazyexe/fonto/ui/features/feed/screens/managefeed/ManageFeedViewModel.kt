@@ -18,6 +18,11 @@ class ManageFeedViewModel(private val presentation: ManageFeedPresentation) : Vi
         presentation.onCreate(viewModelScope)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        presentation.onDestroy()
+    }
+
     fun loadFeed() {
         presentation.loadFeed()
     }
