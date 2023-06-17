@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FontoBackupModel(
+internal data class FontoBackupModel(
     @SerialName("version") val version: Int = 1,
     @SerialName("feeds") val feeds: List<FeedBackupModel>,
     @SerialName("posts") val posts: List<PostBackupModel>,

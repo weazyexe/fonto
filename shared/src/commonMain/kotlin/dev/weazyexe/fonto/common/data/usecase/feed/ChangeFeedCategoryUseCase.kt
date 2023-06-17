@@ -4,7 +4,7 @@ import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 
-class ChangeFeedCategoryUseCase(
+internal class ChangeFeedCategoryUseCase(
     private val feedRepository: FeedRepository
 ) {
 

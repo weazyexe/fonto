@@ -6,7 +6,7 @@ import java.net.ConnectException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeoutException
 
-fun Throwable.asResponseError(): ResponseError {
+internal fun Throwable.asResponseError(): ResponseError {
     Napier.e(throwable = this, message = message ?: "Error")
     return when (this) {
         is UnknownHostException,

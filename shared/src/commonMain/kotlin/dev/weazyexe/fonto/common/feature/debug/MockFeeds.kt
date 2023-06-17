@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.common.feature.debug
 
 import dev.weazyexe.fonto.common.model.feed.Feed
 
-val VALID_FEED = listOf(
+internal val VALID_FEED = listOf(
     Feed(
         id = Feed.Id(1),
         title = "TechCrunch",
@@ -85,7 +85,7 @@ val VALID_FEED = listOf(
     ),
 )
 
-val PARTIALLY_INVALID_FEED = listOf(
+internal val PARTIALLY_INVALID_FEED = listOf(
     Feed(
         id = Feed.Id(1),
         title = "TechCrunch",
@@ -168,7 +168,7 @@ val PARTIALLY_INVALID_FEED = listOf(
     ),
 )
 
-val FULLY_INVALID_FEED = listOf(
+internal val FULLY_INVALID_FEED = listOf(
     Feed(
         id = Feed.Id(1),
         title = "ya.ru",

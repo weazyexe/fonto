@@ -1,7 +1,7 @@
 package dev.weazyexe.fonto.features.search
 
 import dev.weazyexe.fonto.arch.Effect
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
 import dev.weazyexe.fonto.common.model.feed.Category
 
 sealed interface SearchEffect : Effect {

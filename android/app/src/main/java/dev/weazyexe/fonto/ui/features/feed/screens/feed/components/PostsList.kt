@@ -30,9 +30,9 @@ fun LazyListScope.buildPosts(
         item(key = "error pane") {
             ErrorPane(
                 params = ErrorPaneParams.empty(
-                    message = StringResources.feed_empty_newsline,
+                    message = StringResources.feed_empty_posts,
                     action = ErrorPaneParams.Action(
-                        title = StringResources.feed_empty_newsline_manage_feed,
+                        title = StringResources.feed_empty_posts_manage_feed,
                         onClick = onManageFeed
                     )
                 )

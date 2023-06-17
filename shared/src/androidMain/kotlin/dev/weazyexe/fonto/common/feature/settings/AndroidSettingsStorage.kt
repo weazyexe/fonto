@@ -14,7 +14,7 @@ import dev.weazyexe.fonto.common.model.preference.Theme
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-class AndroidSettingsStorage(
+internal class AndroidSettingsStorage(
     private val context: Context
 ) : SettingsStorage {
 

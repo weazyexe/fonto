@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.app.App
 import dev.weazyexe.fonto.common.data.map
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.feature.posts.ByCategory
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.features.search.SearchDomainState
 import dev.weazyexe.fonto.features.search.SearchEffect
@@ -34,7 +34,7 @@ class SearchViewModel(
         presentation.onQueryChange(query)
     }
 
-    fun applyFilters(updatedFilter: NewslineFilter) {
+    fun applyFilters(updatedFilter: PostsFilter) {
         presentation.applyFilters(updatedFilter)
     }
 
@@ -46,7 +46,7 @@ class SearchViewModel(
         presentation.onPostSave(id)
     }
 
-    fun openMultiplePicker(filter: NewslineFilter) {
+    fun openMultiplePicker(filter: PostsFilter) {
         when (filter) {
             is ByFeed -> presentation.emit(
                 SearchEffect.OpenFeedPicker(

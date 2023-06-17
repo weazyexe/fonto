@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.data.AsyncResult
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.filters.FilterViewState
 import dev.weazyexe.fonto.core.ui.components.filters.FiltersRow
@@ -43,16 +43,16 @@ import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 fun SearchBody(
     query: String,
     posts: AsyncResult<List<PostViewState>>,
-    filters: List<FilterViewState<NewslineFilter>>,
+    filters: List<FilterViewState<PostsFilter>>,
     isActive: Boolean,
     areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onActiveChange: (Boolean) -> Unit,
-    onFilterChange: (NewslineFilter) -> Unit,
-    openDateRangePickerDialog: (NewslineFilter) -> Unit,
-    openMultiplePickerDialog: (NewslineFilter) -> Unit,
+    onFilterChange: (PostsFilter) -> Unit,
+    openDateRangePickerDialog: (PostsFilter) -> Unit,
+    openMultiplePickerDialog: (PostsFilter) -> Unit,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
@@ -92,15 +92,15 @@ private fun SearchBarAndResults(
     query: String,
     isActive: Boolean,
     posts: AsyncResult<List<PostViewState>>,
-    filters: List<FilterViewState<NewslineFilter>>,
+    filters: List<FilterViewState<PostsFilter>>,
     areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onActiveChange: (Boolean) -> Unit,
-    onFilterChange: (NewslineFilter) -> Unit,
-    openDateRangePickerDialog: (NewslineFilter) -> Unit,
-    openMultiplePickerDialog: (NewslineFilter) -> Unit,
+    onFilterChange: (PostsFilter) -> Unit,
+    openDateRangePickerDialog: (PostsFilter) -> Unit,
+    openMultiplePickerDialog: (PostsFilter) -> Unit,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
@@ -146,9 +146,9 @@ private fun SearchBarAndResults(
         Column(modifier = Modifier.imePadding()) {
             FiltersRow(
                 filters = filters,
-                onFilterChange = { onFilterChange(it as NewslineFilter) },
-                openDateRangePickerDialog = { openDateRangePickerDialog(it as NewslineFilter) },
-                openMultiplePickerDialog = { openMultiplePickerDialog(it as NewslineFilter) }
+                onFilterChange = { onFilterChange(it as PostsFilter) },
+                openDateRangePickerDialog = { openDateRangePickerDialog(it as PostsFilter) },
+                openMultiplePickerDialog = { openMultiplePickerDialog(it as PostsFilter) }
             )
 
             when (posts) {

@@ -10,7 +10,7 @@ import dev.weazyexe.fonto.common.utils.parseDateTime
 import dev.weazyexe.fonto.common.utils.replaceHttp
 import kotlinx.datetime.Clock
 
-actual class RssParser {
+internal actual class RssParser {
 
     private val parser = Parser.Builder()
         .charset(Charsets.UTF_8)

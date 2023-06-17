@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class EventBus {
+internal class EventBus {
 
     private val _events = MutableSharedFlow<AppEvent>()
     private val events: SharedFlow<AppEvent>

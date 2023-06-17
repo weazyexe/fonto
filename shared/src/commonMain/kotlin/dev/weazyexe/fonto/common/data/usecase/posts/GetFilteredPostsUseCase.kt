@@ -1,14 +1,14 @@
-package dev.weazyexe.fonto.common.data.usecase.newsline
+package dev.weazyexe.fonto.common.data.usecase.posts
 
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.feature.filter.Dates
-import dev.weazyexe.fonto.common.feature.newsline.ByCategory
-import dev.weazyexe.fonto.common.feature.newsline.ByFeed
-import dev.weazyexe.fonto.common.feature.newsline.ByPostDates
-import dev.weazyexe.fonto.common.feature.newsline.ByRead
-import dev.weazyexe.fonto.common.feature.newsline.BySaved
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.feature.posts.ByCategory
+import dev.weazyexe.fonto.common.feature.posts.ByFeed
+import dev.weazyexe.fonto.common.feature.posts.ByPostDates
+import dev.weazyexe.fonto.common.feature.posts.ByRead
+import dev.weazyexe.fonto.common.feature.posts.BySaved
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
@@ -16,13 +16,13 @@ import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration.Companion.days
 
-class GetFilteredPostsUseCase(
+internal class GetFilteredPostsUseCase(
     private val postRepository: PostRepository
 ) {
 
     operator fun invoke(
         query: String,
-        filters: List<NewslineFilter>
+        filters: List<PostsFilter>
     ): Flow<AsyncResult<List<Post>>> = flowIo {
         emit(AsyncResult.Loading())
 

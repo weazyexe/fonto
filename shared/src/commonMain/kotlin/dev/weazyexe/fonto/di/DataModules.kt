@@ -37,11 +37,11 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetFilteredPostsUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetFiltersUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.GetPostsUseCase
-import dev.weazyexe.fonto.common.data.usecase.newsline.UpdatePostUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.settings.GetDefaultSettingsUseCase
 import dev.weazyexe.fonto.common.data.usecase.settings.GetSettingsUseCase

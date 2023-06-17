@@ -8,7 +8,7 @@ import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class DeleteCategoryUseCase(
+internal class DeleteCategoryUseCase(
     private val categoryRepository: CategoryRepository,
     private val feedRepository: FeedRepository,
     private val changeFeedCategory: ChangeFeedCategoryUseCase

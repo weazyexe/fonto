@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.common.data.repository.CategoryRepository
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class CreateCategoryUseCase(private val categoryRepository: CategoryRepository) {
+internal class CreateCategoryUseCase(private val categoryRepository: CategoryRepository) {
 
     operator fun invoke(title: String): Flow<AsyncResult<Unit>> = flowIo {
         emit(AsyncResult.Loading())

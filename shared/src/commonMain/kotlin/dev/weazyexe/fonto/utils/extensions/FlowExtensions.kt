@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-inline fun <T> flowIo(crossinline block: suspend FlowCollector<AsyncResult<T>>.() -> Unit) =
+internal inline fun <T> flowIo(crossinline block: suspend FlowCollector<AsyncResult<T>>.() -> Unit) =
     flow { block() }
         .flowOn(Dispatchers.IO)
         .catch {

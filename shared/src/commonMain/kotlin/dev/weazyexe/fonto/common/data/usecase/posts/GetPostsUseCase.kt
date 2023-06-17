@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.data.usecase.newsline
+package dev.weazyexe.fonto.common.data.usecase.posts
 
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.ResponseError
@@ -18,7 +18,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 
-class GetPostsUseCase(
+internal class GetPostsUseCase(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val rssRepository: RssRepository,
@@ -63,8 +63,7 @@ class GetPostsUseCase(
                     posts = postRepository.getPosts(
                         limit = limit,
                         offset = offset
-                    ),
-                    loadedWithError = loadedPosts.loadedWithError
+                    )
                 )
             )
         }
@@ -73,8 +72,7 @@ class GetPostsUseCase(
     private suspend fun loadPostsFromCache(limit: Int, offset: Int): AsyncResult<Posts> {
         return AsyncResult.Success(
             Posts(
-                posts = postRepository.getPosts(limit = limit, offset = offset),
-                loadedWithError = emptyList()
+                posts = postRepository.getPosts(limit = limit, offset = offset)
             )
         )
     }

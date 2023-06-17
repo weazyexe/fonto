@@ -5,7 +5,7 @@ import dev.weazyexe.fonto.common.model.preference.Group
 import dev.weazyexe.fonto.common.model.preference.Preference
 import dev.weazyexe.fonto.common.model.preference.Theme
 
-class GetDefaultSettingsUseCase {
+internal class GetDefaultSettingsUseCase {
 
     operator fun invoke(): List<Group> = listOf(
         Group(

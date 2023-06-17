@@ -7,5 +7,6 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 
 data class CategoriesDomainState(
     val categories: AsyncResult<List<Category>> = AsyncResult.Loading(),
-    val feeds: List<Feed> = emptyList()
+    val feeds: List<Feed> = emptyList(),
+    val hasChanges: Boolean = false
 ) : DomainState

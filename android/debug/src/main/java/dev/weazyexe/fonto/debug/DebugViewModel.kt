@@ -1,31 +1,28 @@
 package dev.weazyexe.fonto.debug
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.common.data.bus.AppEvent
-import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
-import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
-import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.core.ui.presentation.CoreViewModel
-import dev.weazyexe.fonto.core.ui.utils.StringResources
-import kotlinx.coroutines.launch
+import dev.weazyexe.fonto.features.debug.DebugPresentation
 
 class DebugViewModel(
-    private val deleteAllFeeds: DeleteAllFeedsUseCase,
-    private val createFeed: CreateFeedUseCase,
-    private val eventBus: EventBus
-) : CoreViewModel<DebugState, DebugEffect>() {
+    private val presentation: DebugPresentation
+) : ViewModel() {
 
-    override val initialState: DebugState = DebugState()
+    val effects = presentation.effects
 
-    fun addMockFeeds(feed: List<Feed>) = viewModelScope.launch {
-        deleteAllFeeds()
+    init {
+        presentation.onCreate(viewModelScope)
+    }
 
-        feed.forEach {
-            createFeed(it.title, it.link, it.icon, it.type, it.category)
-        }
+    fun addMockFeeds() {
+        presentation.addMockFeeds()
+    }
 
-        DebugEffect.ShowMessage(StringResources.debug_feed_storage_updated).emit()
-        eventBus.emit(AppEvent.RefreshFeed)
+    fun addPartialInvalidMockFeeds() {
+        presentation.addPartialInvalidMockFeeds()
+    }
+
+    fun addInvalidMockFeeds() {
+        presentation.addInvalidMockFeeds()
     }
 }

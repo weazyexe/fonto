@@ -2,10 +2,9 @@ package dev.weazyexe.fonto.common.data.usecase.backup
 
 import dev.weazyexe.fonto.common.feature.backup.FileReader
 import dev.weazyexe.fonto.common.model.backup.FontoBackupModel
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class ParseBackupDataUseCase {
+internal class ParseBackupDataUseCase {
 
     private val json = Json { ignoreUnknownKeys = true }
 

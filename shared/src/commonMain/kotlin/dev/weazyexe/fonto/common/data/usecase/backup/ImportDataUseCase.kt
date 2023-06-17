@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 
-class ImportDataUseCase(
+internal class ImportDataUseCase(
     private val feedRepository: FeedRepository,
     private val categoryRepository: CategoryRepository,
     private val postRepository: PostRepository,

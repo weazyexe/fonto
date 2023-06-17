@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.utils.feature
 
 import android.os.Build
 
-actual class FeatureAvailabilityChecker {
+internal actual class FeatureAvailabilityChecker {
 
     actual fun isFeatureAvailable(feature: Feature): Boolean =
         when(feature) {

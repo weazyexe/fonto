@@ -7,7 +7,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FeedBackupModel(
+internal data class FeedBackupModel(
     @SerialName("id") val id: Feed.Id,
     @SerialName("title") val title: String,
     @SerialName("link") val link: String,
@@ -15,7 +15,7 @@ data class FeedBackupModel(
     @SerialName("categoryId") val category: Category.Id?
 )
 
-fun Feed.asBackupModel(): FeedBackupModel =
+internal fun Feed.asBackupModel(): FeedBackupModel =
     FeedBackupModel(
         id = id,
         title = title,
@@ -24,7 +24,7 @@ fun Feed.asBackupModel(): FeedBackupModel =
         category = category?.id
     )
 
-fun FeedBackupModel.asFeed(
+internal fun FeedBackupModel.asFeed(
     category: Category?,
     icon: LocalImage?
 ): Feed =

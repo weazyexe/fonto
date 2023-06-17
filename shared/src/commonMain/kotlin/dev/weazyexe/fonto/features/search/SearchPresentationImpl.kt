@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.features.search
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.data.onSuccess
-import dev.weazyexe.fonto.common.feature.newsline.NewslineFilter
+import dev.weazyexe.fonto.common.feature.posts.PostsFilter
 import dev.weazyexe.fonto.common.model.feed.Post
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.debounce
@@ -27,7 +27,7 @@ internal class SearchPresentationImpl(private val dependencies: SearchDependenci
         state.debouncedQuery.value = query
     }
 
-    override fun applyFilters(updatedFilter: NewslineFilter) {
+    override fun applyFilters(updatedFilter: PostsFilter) {
         val newFilters = state.filters.map {
             when (it.javaClass) {
                 updatedFilter.javaClass -> updatedFilter

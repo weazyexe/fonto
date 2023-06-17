@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.feature.newsline
+package dev.weazyexe.fonto.common.feature.posts
 
 import dev.weazyexe.fonto.common.feature.filter.Bool
 import dev.weazyexe.fonto.common.feature.filter.Dates
@@ -8,11 +8,11 @@ import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
 import kotlinx.serialization.Serializable
 
-sealed interface NewslineFilter : Filter
+sealed interface PostsFilter : Filter
 
 data class BySaved(
     override val isEnabled: Boolean
-) : Bool<BySaved>, NewslineFilter {
+) : Bool<BySaved>, PostsFilter {
 
     override fun toggle(): BySaved {
         return BySaved(!isEnabled)
@@ -21,7 +21,7 @@ data class BySaved(
 
 data class ByRead(
     override val isEnabled: Boolean
-) : Bool<ByRead>, NewslineFilter {
+) : Bool<ByRead>, PostsFilter {
 
     override fun toggle(): ByRead {
         return ByRead(!isEnabled)
@@ -30,7 +30,7 @@ data class ByRead(
 
 data class ByPostDates(
     override val range: Dates.Range?
-) : Dates<ByPostDates>, NewslineFilter {
+) : Dates<ByPostDates>, PostsFilter {
 
     override fun change(range: Dates.Range?): ByPostDates {
         return ByPostDates(range)
@@ -40,7 +40,7 @@ data class ByPostDates(
 data class ByFeed(
     override val values: List<Data>,
     override val possibleValues: List<Data>
-) : Multiple<ByFeed.Data, ByFeed>, NewslineFilter {
+) : Multiple<ByFeed.Data, ByFeed>, PostsFilter {
 
     override fun change(newValue: List<Data>, newPossibleValues: List<Data>): ByFeed {
         return ByFeed(newValue, newPossibleValues)
@@ -56,14 +56,14 @@ data class ByFeed(
 data class ByCategory(
     override val values: List<Category>,
     override val possibleValues: List<Category>
-) : Multiple<Category, ByCategory>, NewslineFilter {
+) : Multiple<Category, ByCategory>, PostsFilter {
 
     override fun change(newValue: List<Category>, newPossibleValues: List<Category>): ByCategory {
         return ByCategory(newValue, newPossibleValues)
     }
 }
 
-val NewslineFilters = listOf(
+internal val PostsFilters = listOf(
     BySaved(isEnabled = false),
     ByRead(isEnabled = false),
     ByPostDates(range = null),

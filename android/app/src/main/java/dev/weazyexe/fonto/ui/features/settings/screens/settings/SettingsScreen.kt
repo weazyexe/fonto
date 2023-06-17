@@ -14,7 +14,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.features.settings.SettingsEffect
@@ -48,17 +48,12 @@ fun SettingsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val state by viewModel.state.collectAsState(SettingsViewState())
 
-    themePickerResults.invoke().handleResults { result ->
-        result?.let { viewModel.onThemePicked(it) }
-    }
-
-    colorPickerResults.invoke().handleResults { result ->
-        viewModel.onColorSchemePicked(result)
-    }
-
-    exportStrategyResults.invoke().handleResults { result ->
-        result?.let { viewModel.chooseExportFileDestination(result.toExportStrategy()) }
-    }
+    HandleNavigationResults(
+        themePickerResults = themePickerResults,
+        colorPickerResults = colorPickerResults,
+        exportStrategyResults = exportStrategyResults,
+        viewModel = viewModel
+    )
 
     HandleEffects(
         effects = viewModel.effects,
@@ -97,7 +92,7 @@ private fun HandleEffects(
         onResult = { it?.let { import(it) } }
     )
 
-    ReceiveNewEffect(effects) {
+    ReceiveEffect(effects) {
         when (this) {
             is SettingsEffect.OpenManageFeedScreen -> navigateTo(ManageFeedScreenDestination())
             is SettingsEffect.OpenManageCategoriesScreen -> navigateTo(CategoriesScreenDestination())
@@ -154,5 +149,25 @@ private fun HandleEffects(
                 snackbarHostState.showSnackbar(context.getString(StringResources.settings_import_fonto_successful))
             }
         }
+    }
+}
+
+@Composable
+private fun HandleNavigationResults(
+    themePickerResults: ThemePickerResults,
+    colorPickerResults: ColorPickerResults,
+    exportStrategyResults: ExportStrategyPickerResults,
+    viewModel: SettingsViewModel
+) {
+    themePickerResults.invoke().handleResults { result ->
+        result?.let { viewModel.onThemePicked(it) }
+    }
+
+    colorPickerResults.invoke().handleResults { result ->
+        viewModel.onColorSchemePicked(result)
+    }
+
+    exportStrategyResults.invoke().handleResults { result ->
+        result?.let { viewModel.chooseExportFileDestination(result.toExportStrategy()) }
     }
 }

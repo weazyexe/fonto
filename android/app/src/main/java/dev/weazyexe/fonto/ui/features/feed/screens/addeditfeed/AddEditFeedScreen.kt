@@ -13,11 +13,12 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.core.ui.animation.FullScreenDialogAnimationStyle
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
 import dev.weazyexe.fonto.util.handleResults
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -31,26 +32,49 @@ fun AddEditFeedScreen(
     resultBackNavigator: ResultBackNavigator<Boolean>,
     resultRecipient: ResultRecipient<AddEditCategoryDialogDestination, Boolean>
 ) {
-    val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<AddEditFeedViewModel>()
     val state by viewModel.state.collectAsState(AddEditFeedViewState())
 
-    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    resultRecipient.handleResults { isCategoryAdded ->
-        if (isCategoryAdded) {
-            viewModel.loadCategories()
+    HandleNavigationResults(
+        addEditResultRecipient = resultRecipient,
+        snackbarHostState = snackbarHostState,
+        viewModel = viewModel
+    )
 
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    context.getString(StringResources.categories_category_has_been_saved)
-                )
-            }
-        }
-    }
+    HandleEffects(
+        effects = viewModel.effects,
+        resultBackNavigator = resultBackNavigator,
+        snackbarHostState = snackbarHostState
+    )
 
-    ReceiveNewEffect(viewModel.effects) {
+    AddEditFeedBody(
+        title = state.title,
+        link = state.link,
+        isEditMode = state.isEditMode,
+        category = state.category,
+        categories = state.categories,
+        snackbarHostState = snackbarHostState,
+        icon = state.icon,
+        finishResult = state.finishResult,
+        onTitleChange = viewModel::updateTitle,
+        onLinkChange = viewModel::updateLink,
+        onCategoryChange = viewModel::updateCategory,
+        onFinishClick = viewModel::finish,
+        onBackClick = { resultBackNavigator.navigateBack(result = false) },
+        onAddCategoryClick = { navController.navigate(AddEditCategoryDialogDestination()) }
+    )
+}
+
+@Composable
+private fun HandleEffects(
+    effects: Flow<AddEditFeedEffect>,
+    resultBackNavigator: ResultBackNavigator<Boolean>,
+    snackbarHostState: SnackbarHostState
+) {
+    val context = LocalContext.current
+    ReceiveEffect(effects) {
         when (this) {
             is AddEditFeedEffect.NavigateUp -> {
                 resultBackNavigator.navigateBack(result = isSuccessful)
@@ -85,21 +109,26 @@ fun AddEditFeedScreen(
             }
         }
     }
+}
 
-    AddEditFeedBody(
-        title = state.title,
-        link = state.link,
-        isEditMode = state.isEditMode,
-        category = state.category,
-        categories = state.categories,
-        snackbarHostState = snackbarHostState,
-        icon = state.icon,
-        finishResult = state.finishResult,
-        onTitleChange = viewModel::updateTitle,
-        onLinkChange = viewModel::updateLink,
-        onCategoryChange = viewModel::updateCategory,
-        onFinishClick = viewModel::finish,
-        onBackClick = { resultBackNavigator.navigateBack(result = false) },
-        onAddCategoryClick = { navController.navigate(AddEditCategoryDialogDestination()) }
-    )
+@Composable
+private fun HandleNavigationResults(
+    addEditResultRecipient: ResultRecipient<AddEditCategoryDialogDestination, Boolean>,
+    snackbarHostState: SnackbarHostState,
+    viewModel: AddEditFeedViewModel
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    addEditResultRecipient.handleResults { isCategoryAdded ->
+        if (isCategoryAdded) {
+            viewModel.loadCategories()
+
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    context.getString(StringResources.categories_category_has_been_saved)
+                )
+            }
+        }
+    }
 }

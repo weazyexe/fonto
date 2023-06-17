@@ -2,13 +2,11 @@ package dev.weazyexe.fonto.app
 
 import android.app.Application
 import dev.weazyexe.fonto.common.app.AppInitializer
-import dev.weazyexe.fonto.debug.di.debugModule
 import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.di.dataModules
 import dev.weazyexe.fonto.di.screenModules
 import dev.weazyexe.fonto.ui.features.feed.di.feedModule
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
-import dev.weazyexe.fonto.utils.isReleaseBuild
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -31,17 +29,15 @@ class App : Application() {
 
         startKoin {
             androidContext(this@App)
+
             modules(dataModules())
             modules(screenModules())
+
             modules(
                 appModule,
                 feedModule,
                 settingsModule
             )
-
-            if (isReleaseBuild()) {
-                modules(debugModule)
-            }
         }
 
         appScope.launch {

@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.ramcosta.composedestinations.annotation.Destination
-import dev.weazyexe.fonto.core.ui.utils.ReceiveNewEffect
+import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.feed.FeedEffect
 import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
@@ -46,11 +46,7 @@ fun FeedScreen(
 
     HandleEffects(viewModel.effects, snackbarHostState)
 
-    manageFeedResultRecipientProvider.invoke().handleResults { result ->
-        if (result) {
-            viewModel.loadPosts(isSwipeRefreshing = false)
-        }
-    }
+    HandleNavigationResults(manageFeedResultRecipientProvider, viewModel)
 
     CompositionLocalProvider(
         LocalNavigateTo provides navigateTo,
@@ -81,7 +77,7 @@ private fun HandleEffects(
     snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
-    ReceiveNewEffect(effects) {
+    ReceiveEffect(effects) {
         when (this) {
             is FeedEffect.OpenPostInApp -> {
                 InAppBrowser.openPost(context, link, theme)
@@ -115,6 +111,18 @@ private fun HandleEffects(
                     )
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun HandleNavigationResults(
+    manageFeedResultRecipientProvider: ManageFeedResults,
+    viewModel: FeedViewModel
+) {
+    manageFeedResultRecipientProvider.invoke().handleResults { result ->
+        if (result) {
+            viewModel.loadPosts(isSwipeRefreshing = false)
         }
     }
 }

@@ -26,12 +26,17 @@ class CategoriesViewModel(private val presentation: CategoriesPresentation) : Vi
         presentation.deleteById(id)
     }
 
+    fun updateHasChanges(hasChanges: Boolean) {
+        presentation.updateHasChanges(hasChanges)
+    }
+
     private fun CategoriesDomainState.asViewState() = CategoriesViewState(
         categories = categories.map { categories ->
             categories.map { category ->
                 val amountOfFeeds = feeds.count { it.category == category }
                 category.asViewState(amountOfFeeds)
             }
-        }
+        },
+        hasChanges = hasChanges
     )
 }

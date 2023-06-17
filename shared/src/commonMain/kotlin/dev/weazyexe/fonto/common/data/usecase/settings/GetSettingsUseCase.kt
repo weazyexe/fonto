@@ -10,7 +10,7 @@ import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class GetSettingsUseCase(
+internal class GetSettingsUseCase(
     private val settingsStorage: SettingsStorage,
     private val getDefaultSettings: GetDefaultSettingsUseCase
 ) {

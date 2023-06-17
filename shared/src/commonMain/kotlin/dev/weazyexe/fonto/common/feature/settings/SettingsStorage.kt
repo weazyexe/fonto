@@ -4,7 +4,7 @@ import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
 
-interface SettingsStorage {
+internal interface SettingsStorage {
 
     suspend fun getOpenPostPreference(): OpenPostPreference
 

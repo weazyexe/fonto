@@ -6,7 +6,7 @@ import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 
-class ExportDataUseCase(
+internal class ExportDataUseCase(
     private val getExportData: GetExportDataUseCase
 ) {
 
