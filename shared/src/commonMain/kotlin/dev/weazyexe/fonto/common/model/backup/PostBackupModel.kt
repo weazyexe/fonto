@@ -42,5 +42,6 @@ internal fun PostBackupModel.asPost(feed: Feed): Post =
         feed = feed,
         publishedAt = Instant.fromEpochSeconds(publishedAt),
         isRead = isRead,
-        isSaved = isSaved
+        isSaved = isSaved,
+        hasTriedToLoadImage = imageUrl != null
     )

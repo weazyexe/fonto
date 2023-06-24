@@ -76,6 +76,7 @@ val feedScreenModule = module {
             getPosts = get(),
             updatePost = get(),
             getPost = get(),
+            getImageFromHtmlMeta = get(),
             urlValidator = get(),
             settingsStorage = get(),
             eventBus = get()

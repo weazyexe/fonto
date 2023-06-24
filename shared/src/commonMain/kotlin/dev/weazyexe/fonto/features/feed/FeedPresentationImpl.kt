@@ -11,13 +11,16 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.withContext
 
 internal class FeedPresentationImpl(
     private val dependencies: FeedDependencies
@@ -120,7 +123,10 @@ internal class FeedPresentationImpl(
                 val updatedPost = it.data.copy(isRead = true)
                 dependencies.updatePost(updatedPost)
             }
-            .onSuccess { setState { copy(posts = posts.update(it.data)) } }
+            .onSuccess {
+                val newPosts = state.posts.update(it.data)
+                setState { copy(posts = newPosts) }
+            }
             .launchIn(scope)
     }
 
@@ -137,9 +143,26 @@ internal class FeedPresentationImpl(
                 FeedEffect.ShowPostSavingErrorMessage(isSaving = isSaving).emit()
             }
             .onSuccess {
-                setState { copy(posts = posts.update(it.data)) }
+                val newPosts = state.posts.update(it.data)
+                setState { copy(posts = newPosts) }
                 FeedEffect.ShowPostSavedMessage(isSaving = isSaving).emit()
             }
+            .launchIn(scope)
+    }
+
+    override fun loadImageIfNeeds(id: Post.Id) {
+        val post = state.posts.firstOrNull { it.id == id } ?: return
+        if (post.link == null || post.imageUrl != null) return
+
+        dependencies.getImageFromHtmlMeta(post.link)
+            .filterIsInstance<AsyncResult.Success<String>>()
+            .map {
+                val newPost = post.copy(imageUrl = it.data, hasTriedToLoadImage = true)
+                val newPosts = state.posts.update(newPost)
+                setState { copy(posts = newPosts) }
+                newPost
+            }
+            .flatMapLatest { dependencies.updatePost(it) }
             .launchIn(scope)
     }
 
@@ -150,9 +173,18 @@ internal class FeedPresentationImpl(
             .launchIn(scope)
     }
 
-    private fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> = map { posts ->
-        Posts(
-            posts = posts.map { if (it.id == post.id) post else it }
-        )
+    private suspend fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> {
+        return withContext(Dispatchers.Default) {
+            map { posts ->
+                Posts(
+                    posts = posts.map { if (it.id == post.id) post else it }
+                )
+            }
+        }
+    }
+
+    private fun AsyncResult<Posts>.firstOrNull(predicate: (Post) -> Boolean): Post? {
+        val postsResult = this as? AsyncResult.Success ?: return null
+        return postsResult.data.posts.firstOrNull { predicate(it) }
     }
 }

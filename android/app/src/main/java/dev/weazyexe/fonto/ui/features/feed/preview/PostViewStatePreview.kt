@@ -33,7 +33,8 @@ object PostViewStatePreview {
                 category = Category(Category.Id(0), "News")
             ),
             isSaved = false,
-            isRead = false
+            isRead = false,
+            shouldTryToLoadImage = false
         )
 
     val noPictures: PostViewState
@@ -54,7 +55,8 @@ object PostViewStatePreview {
                 category = Category(Category.Id(1), "Technologies")
             ),
             isSaved = false,
-            isRead = true
+            isRead = true,
+            shouldTryToLoadImage = false
         )
 
     val saved: PostViewState
@@ -78,6 +80,7 @@ object PostViewStatePreview {
                 category = Category(Category.Id(2), "Technologies")
             ),
             isSaved = true,
-            isRead = true
+            isRead = true,
+            shouldTryToLoadImage = false
         )
 }

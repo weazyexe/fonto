@@ -25,6 +25,7 @@ fun LazyListScope.buildPosts(
     onManageFeed: () -> Unit,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
+    onPostLoadImage: (Post.Id) -> Unit,
     loadMore: () -> Unit
 ) {
     if (posts.isEmpty()) {
@@ -47,7 +48,8 @@ fun LazyListScope.buildPosts(
                 onSaveClick = { onPostSaveClick(it.id) },
                 modifier = Modifier
                     .padding(vertical = 4.dp)
-                    .testTag("post_item")
+                    .testTag("post_item"),
+                onPostLoadImage = onPostLoadImage
             )
         }
 

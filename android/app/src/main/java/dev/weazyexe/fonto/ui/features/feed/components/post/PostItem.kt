@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -30,19 +32,30 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dev.weazyexe.fonto.common.core.asBitmap
+import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedIcon
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
+import io.github.aakira.napier.Napier
 
 @Composable
 fun PostItem(
     post: PostViewState,
     onPostClick: () -> Unit,
     onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onPostLoadImage: (Post.Id) -> Unit = {}
 ) {
+
+    LaunchedEffect(post.imageUrl) {
+        if (post.imageUrl == null && post.shouldTryToLoadImage) {
+            Napier.d { "KEKEK load image" }
+            onPostLoadImage(post.id)
+        }
+    }
+
     Column(
         modifier = modifier
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
@@ -168,6 +181,7 @@ fun ColumnScope.PostImage(imageUrl: String?) {
                 .build(),
             contentDescription = null,
             modifier = Modifier
+                .aspectRatio(ratio = 1200f / 630f) // og:image recommended aspect ratio
                 .heightIn(max = 384.dp)
                 .fillMaxWidth()
                 .padding(top = 12.dp),

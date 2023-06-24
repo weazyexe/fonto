@@ -13,7 +13,8 @@ data class Post(
     val feed: Feed,
     val isSaved: Boolean,
     val link: String?,
-    val isRead: Boolean
+    val isRead: Boolean,
+    val hasTriedToLoadImage: Boolean
 ) {
 
     @Serializable
