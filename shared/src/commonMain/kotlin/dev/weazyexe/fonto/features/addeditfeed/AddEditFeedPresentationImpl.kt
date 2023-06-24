@@ -7,8 +7,9 @@ import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.model.base.LocalImage
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
-import dev.weazyexe.fonto.common.utils.isUrlValid
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
@@ -25,6 +26,7 @@ internal class AddEditFeedPresentationImpl(
         super.onCreate(scope, navigationArguments)
         loadFeed(navigationArguments.id)
         loadCategories()
+        subscribeOnLinkChange()
     }
 
     override fun loadCategories() {
@@ -44,13 +46,7 @@ internal class AddEditFeedPresentationImpl(
 
     override fun updateLink(link: String) {
         setState { copy(link = link) }
-
-        if (link.isUrlValid()) {
-            dependencies.getFaviconByUrl(link)
-                .onError { AddEditFeedEffect.ShowFaviconLoadingFailureMessage.emit() }
-                .onEach { setState { copy(icon = it) } }
-                .launchIn(scope)
-        }
+        state.debouncedLink.value = link
     }
 
     override fun finish() {
@@ -86,10 +82,29 @@ internal class AddEditFeedPresentationImpl(
         }
     }
 
+    private fun subscribeOnLinkChange() {
+        state.debouncedLink
+            .filter { it.isNotEmpty() && dependencies.urlValidator.validate(it) }
+            .onEach { setState { copy(icon = AsyncResult.Loading()) } }
+            .debounce(500L)
+            .onEach { loadIcon(it) }
+            .launchIn(scope)
+    }
+
+    private fun loadIcon(link: String) {
+        dependencies.getFaviconByUrl(link)
+            .onError { AddEditFeedEffect.ShowFaviconLoadingFailureMessage.emit() }
+            .onEach { setState { copy(icon = it) } }
+            .launchIn(scope)
+    }
+
     private fun saveFeed(feed: Feed) {
         dependencies.updateFeed(feed)
             .onEach { setState { copy(finishResult = it) } }
-            .onError { AddEditFeedEffect.ShowFeedSavingError.emit() }
+            .onError {
+                setState { copy(finishResult = it) }
+                AddEditFeedEffect.ShowFeedSavingError.emit()
+            }
             .onSuccess { AddEditFeedEffect.NavigateUp(isSuccessful = true).emit() }
             .launchIn(scope)
     }
@@ -102,11 +117,17 @@ internal class AddEditFeedPresentationImpl(
     ) {
         dependencies.getFeedType(link)
             .onLoading { setState { copy(finishResult = AsyncResult.Loading()) } }
-            .onError { AddEditFeedEffect.ShowFeedValidationError.emit() }
+            .onError {
+                setState { copy(finishResult = AsyncResult.Error(it.error)) }
+                AddEditFeedEffect.ShowFeedValidationError.emit()
+            }
             .filterIsInstance<AsyncResult.Success<Feed.Type>>()
             .flatMapLatest { dependencies.createFeed(title, link, icon, it.data, category) }
             .onEach { setState { copy(finishResult = it) } }
-            .onError { AddEditFeedEffect.ShowFeedSavingError.emit() }
+            .onError {
+                setState { copy(finishResult = it) }
+                AddEditFeedEffect.ShowFeedSavingError.emit()
+            }
             .onSuccess { AddEditFeedEffect.NavigateUp(isSuccessful = true).emit() }
             .launchIn(scope)
     }

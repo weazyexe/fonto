@@ -11,7 +11,7 @@ internal data class PostBackupModel(
     @SerialName("id") val id: Post.Id,
     @SerialName("title") val title: String,
     @SerialName("description") val description: String,
-    @SerialName("link") val link: String,
+    @SerialName("link") val link: String?,
     @SerialName("feedId") val feedId: Feed.Id,
     @SerialName("publishedAt") val publishedAt: Long,
     @SerialName("isRead") val isRead: Boolean,

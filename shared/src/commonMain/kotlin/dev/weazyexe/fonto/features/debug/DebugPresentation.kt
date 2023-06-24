@@ -9,4 +9,6 @@ abstract class DebugPresentation : Presentation<DebugDomainState, DebugEffect>()
     abstract fun addPartialInvalidMockFeeds()
 
     abstract fun addInvalidMockFeeds()
+
+    abstract fun deleteAllPosts()
 }

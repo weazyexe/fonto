@@ -25,4 +25,8 @@ class DebugViewModel(
     fun addInvalidMockFeeds() {
         presentation.addInvalidMockFeeds()
     }
+
+    fun deletePosts() {
+        presentation.deleteAllPosts()
+    }
 }

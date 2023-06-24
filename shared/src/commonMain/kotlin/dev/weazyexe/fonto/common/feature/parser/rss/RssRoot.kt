@@ -30,7 +30,7 @@ internal data class RssRoot(
         val description: String,
 
         @XmlElement(true)
-        val items: List<RssItem>
+        val items: List<RssItem>?
     ) {
 
         @Serializable

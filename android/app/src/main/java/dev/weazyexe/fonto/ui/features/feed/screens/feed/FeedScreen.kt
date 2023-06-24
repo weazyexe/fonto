@@ -106,6 +106,14 @@ private fun HandleEffects(
                     )
                 )
             }
+
+            is FeedEffect.ShowInvalidLinkMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        StringResources.feed_invalid_link
+                    )
+                )
+            }
         }
     }
 }
