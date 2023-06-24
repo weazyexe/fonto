@@ -5,11 +5,13 @@ import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.model.base.LocalImage
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.common.model.feed.Feed
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class AddEditFeedDomainState(
     val id: Feed.Id? = null,
     val title: String = "",
     val link: String = "",
+    val debouncedLink: MutableStateFlow<String> = MutableStateFlow(""),
     val type: Feed.Type = Feed.Type.RSS,
     val category: Category? = null,
     val categories: List<Category> = emptyList(),

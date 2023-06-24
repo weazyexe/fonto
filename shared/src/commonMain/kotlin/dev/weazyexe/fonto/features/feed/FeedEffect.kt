@@ -12,4 +12,6 @@ sealed interface FeedEffect : Effect {
     data class ShowPostSavingErrorMessage(val isSaving: Boolean) : FeedEffect
 
     data class ShowPostSavedMessage(val isSaving: Boolean) : FeedEffect
+
+    object ShowInvalidLinkMessage : FeedEffect
 }

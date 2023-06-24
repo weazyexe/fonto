@@ -34,6 +34,12 @@ internal class DebugPresentationImpl(
         addMockFeeds(FULLY_INVALID_FEED)
     }
 
+    override fun deleteAllPosts() {
+        dependencies.deleteAllPosts()
+            .onSuccess { DebugEffect.ShowPostsDeletedSuccessfullyMessage.emit() }
+            .launchIn(scope)
+    }
+
     private fun addMockFeeds(feed: List<Feed>) = scope.launch {
         dependencies.deleteAllFeeds()
             .filterIsInstance<AsyncResult.Success<*>>()

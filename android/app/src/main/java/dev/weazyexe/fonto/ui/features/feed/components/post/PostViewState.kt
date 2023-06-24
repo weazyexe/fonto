@@ -11,7 +11,6 @@ data class PostViewState(
     val id: Post.Id,
     val title: String,
     val description: String,
-    val link: String,
     val imageUrl: String?,
     val publishedAt: Instant,
     val feed: Feed,
@@ -24,20 +23,6 @@ fun Post.asViewState() = PostViewState(
     id = id,
     title = title,
     description = description,
-    link = link,
-    imageUrl = imageUrl,
-    publishedAt = publishedAt,
-    feed = feed,
-    isSaved = isSaved,
-    isRead = isRead
-)
-
-@Stable
-fun PostViewState.asPost() = Post(
-    id = id,
-    title = title,
-    description = description,
-    link = link,
     imageUrl = imageUrl,
     publishedAt = publishedAt,
     feed = feed,

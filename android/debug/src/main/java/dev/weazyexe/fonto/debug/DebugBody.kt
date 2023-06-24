@@ -27,6 +27,7 @@ fun DebugBody(
     onAddMockFeedsClick: () -> Unit,
     onAddPartialInvalidMockFeedsClick: () -> Unit,
     onAddInvalidMockFeedsClick: () -> Unit,
+    onDeletePostsClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
@@ -65,6 +66,13 @@ fun DebugBody(
                 description = stringResource(id = StringResources.debug_add_mock_invalid_feeds_description),
                 icon = DrawableResources.ic_warning_24,
                 onClick = onAddInvalidMockFeedsClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+            TextPreferenceItem(
+                title = stringResource(id = StringResources.debug_delete_posts_title),
+                description = stringResource(id = StringResources.debug_delete_posts_description),
+                icon = DrawableResources.ic_delete_24,
+                onClick = onDeletePostsClick,
                 modifier = Modifier.fillMaxWidth()
             )
         }

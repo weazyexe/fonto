@@ -76,6 +76,7 @@ val feedScreenModule = module {
             getPosts = get(),
             updatePost = get(),
             getPost = get(),
+            urlValidator = get(),
             settingsStorage = get(),
             eventBus = get()
         )
@@ -195,6 +196,7 @@ val debugScreenModule = module {
             initialState = get(),
             deleteAllFeeds = get(),
             createFeed = get(),
+            deleteAllPosts = get(),
             eventBus = get()
         )
     }

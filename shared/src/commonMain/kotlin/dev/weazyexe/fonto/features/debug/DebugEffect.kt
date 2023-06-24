@@ -5,4 +5,6 @@ import dev.weazyexe.fonto.arch.Effect
 interface DebugEffect : Effect {
 
     object ShowFeedsAddedSuccessfullyMessage : DebugEffect
+
+    object ShowPostsDeletedSuccessfullyMessage: DebugEffect
 }

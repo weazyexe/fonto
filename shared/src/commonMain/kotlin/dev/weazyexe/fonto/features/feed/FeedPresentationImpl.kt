@@ -11,6 +11,7 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
@@ -92,6 +93,12 @@ internal class FeedPresentationImpl(
             .filterIsInstance<AsyncResult.Success<Post>>()
             .onEach {
                 val post = it.data
+
+                if (post.link == null || !dependencies.urlValidator.validate(post.link)) {
+                    FeedEffect.ShowInvalidLinkMessage.emit()
+                    error("Post link is invalid: ${post.link}")
+                }
+
                 val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
                 val theme = dependencies.settingsStorage.getTheme()
 
@@ -108,6 +115,7 @@ internal class FeedPresentationImpl(
                     }
                 }.emit()
             }
+            .catch { it.printStackTrace() }
             .flatMapLatest {
                 val updatedPost = it.data.copy(isRead = true)
                 dependencies.updatePost(updatedPost)

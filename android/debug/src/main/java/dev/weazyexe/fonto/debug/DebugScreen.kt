@@ -27,6 +27,9 @@ fun DebugScreen(
             is DebugEffect.ShowFeedsAddedSuccessfullyMessage -> {
                 snackbarHostState.showSnackbar(context.getString(StringResources.debug_feed_storage_updated))
             }
+            is DebugEffect.ShowPostsDeletedSuccessfullyMessage -> {
+                snackbarHostState.showSnackbar(context.getString(StringResources.debug_delete_posts_successful_message))
+            }
         }
     }
 
@@ -35,6 +38,7 @@ fun DebugScreen(
         onBackClick = { navController.navigateUp() },
         onAddMockFeedsClick = viewModel::addMockFeeds,
         onAddPartialInvalidMockFeedsClick = viewModel::addPartialInvalidMockFeeds,
-        onAddInvalidMockFeedsClick = viewModel::addInvalidMockFeeds
+        onAddInvalidMockFeedsClick = viewModel::addInvalidMockFeeds,
+        onDeletePostsClick = viewModel::deletePosts
     )
 }
