@@ -34,7 +34,7 @@ object PostViewStatePreview {
             ),
             isSaved = false,
             isRead = false,
-            shouldTryToLoadImage = false
+            shouldTryToLoadMetadata = false
         )
 
     val noPictures: PostViewState
@@ -56,7 +56,7 @@ object PostViewStatePreview {
             ),
             isSaved = false,
             isRead = true,
-            shouldTryToLoadImage = false
+            shouldTryToLoadMetadata = false
         )
 
     val saved: PostViewState
@@ -81,6 +81,6 @@ object PostViewStatePreview {
             ),
             isSaved = true,
             isRead = true,
-            shouldTryToLoadImage = false
+            shouldTryToLoadMetadata = false
         )
 }

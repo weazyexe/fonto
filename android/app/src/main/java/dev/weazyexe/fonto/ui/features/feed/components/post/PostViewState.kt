@@ -16,7 +16,7 @@ data class PostViewState(
     val feed: Feed,
     val isSaved: Boolean,
     val isRead: Boolean,
-    val shouldTryToLoadImage: Boolean
+    val shouldTryToLoadMetadata: Boolean
 )
 
 @Stable
@@ -29,5 +29,5 @@ fun Post.asViewState() = PostViewState(
     feed = feed,
     isSaved = isSaved,
     isRead = isRead,
-    shouldTryToLoadImage = !hasTriedToLoadImage
+    shouldTryToLoadMetadata = !hasTriedToLoadMetadata
 )

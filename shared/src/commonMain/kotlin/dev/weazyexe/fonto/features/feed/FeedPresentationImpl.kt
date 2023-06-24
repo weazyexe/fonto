@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onLoading
 import dev.weazyexe.fonto.common.data.onSuccess
+import dev.weazyexe.fonto.common.html.OgMetadata
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
@@ -155,9 +156,15 @@ internal class FeedPresentationImpl(
         if (post.link == null || post.imageUrl != null) return
 
         dependencies.getImageFromHtmlMeta(post.link)
-            .filterIsInstance<AsyncResult.Success<String>>()
+            .filterIsInstance<AsyncResult.Success<OgMetadata>>()
             .map {
-                val newPost = post.copy(imageUrl = it.data, hasTriedToLoadImage = true)
+                val newPost = post.copy(
+                    description = post.description.ifBlank {
+                        it.data.description.orEmpty()
+                    },
+                    imageUrl = it.data.imageUrl,
+                    hasTriedToLoadMetadata = true
+                )
                 val newPosts = state.posts.update(newPost)
                 setState { copy(posts = newPosts) }
                 newPost

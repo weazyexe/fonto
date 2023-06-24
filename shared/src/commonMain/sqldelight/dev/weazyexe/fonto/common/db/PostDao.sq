@@ -8,7 +8,7 @@ CREATE TABLE PostDao (
     isSaved TEXT NOT NULL,
     link TEXT,
     isRead TEXT NOT NULL,
-    hasTriedToLoadImage TEXT NOT NULL
+    hasTriedToLoadMetadata TEXT NOT NULL
 );
 
 getAll:

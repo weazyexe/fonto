@@ -44,7 +44,7 @@ import dev.weazyexe.fonto.common.data.usecase.jsonfeed.IsJsonFeedValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.DeleteAllPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
-import dev.weazyexe.fonto.common.data.usecase.posts.GetImageFromHtmlMetaUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostMetadataFromHtmlUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCase
@@ -181,7 +181,7 @@ internal val postDataModule = module {
     single { GetPostUseCase(get()) }
     single { UpdatePostUseCase(get()) }
     single { DeleteAllPostsUseCase(get()) }
-    single { GetImageFromHtmlMetaUseCase(get(), get()) }
+    single { GetPostMetadataFromHtmlUseCase(get(), get()) }
 }
 
 internal val backupDataModule = module {

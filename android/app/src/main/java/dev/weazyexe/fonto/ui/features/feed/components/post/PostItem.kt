@@ -38,7 +38,6 @@ import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedIcon
 import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
-import io.github.aakira.napier.Napier
 
 @Composable
 fun PostItem(
@@ -50,8 +49,7 @@ fun PostItem(
 ) {
 
     LaunchedEffect(post.imageUrl) {
-        if (post.imageUrl == null && post.shouldTryToLoadImage) {
-            Napier.d { "KEKEK load image" }
+        if (post.imageUrl == null && post.shouldTryToLoadMetadata) {
             onPostLoadImage(post.id)
         }
     }
