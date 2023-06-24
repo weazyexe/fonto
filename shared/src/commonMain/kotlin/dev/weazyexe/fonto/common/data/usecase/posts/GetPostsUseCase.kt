@@ -5,6 +5,7 @@ import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.common.data.mapper.toPosts
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
+import dev.weazyexe.fonto.common.data.repository.JsonFeedRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
@@ -22,7 +23,8 @@ internal class GetPostsUseCase(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
     private val rssRepository: RssRepository,
-    private val atomRepository: AtomRepository
+    private val atomRepository: AtomRepository,
+    private val jsonFeedRepository: JsonFeedRepository
 ) {
 
     operator fun invoke(
@@ -80,6 +82,7 @@ internal class GetPostsUseCase(
                     when (it.type) {
                         Feed.Type.RSS -> rssRepository.getRssFeed(it)
                         Feed.Type.ATOM -> atomRepository.getAtomFeed(it)
+                        Feed.Type.JSON_FEED -> jsonFeedRepository.getJsonFeed(it)
                     }
                 }
             }.awaitAll()

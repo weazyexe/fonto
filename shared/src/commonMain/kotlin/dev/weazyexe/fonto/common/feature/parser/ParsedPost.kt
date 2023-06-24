@@ -6,7 +6,7 @@ import kotlinx.datetime.Instant
 internal data class ParsedPost(
     val id: String,
     val title: String,
-    val link: String,
+    val link: String?,
     val description: String,
     val pubDate: Instant,
     val imageUrl: String?,

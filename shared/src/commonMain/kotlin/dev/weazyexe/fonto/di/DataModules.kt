@@ -11,12 +11,14 @@ import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
 import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
 import dev.weazyexe.fonto.common.data.datasource.FeedDataSource
 import dev.weazyexe.fonto.common.data.datasource.IconDataSource
+import dev.weazyexe.fonto.common.data.datasource.JsonFeedDataSource
 import dev.weazyexe.fonto.common.data.datasource.PostDataSource
 import dev.weazyexe.fonto.common.data.datasource.RssDataSource
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.CategoryRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.IconRepository
+import dev.weazyexe.fonto.common.data.repository.JsonFeedRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
@@ -38,6 +40,7 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
+import dev.weazyexe.fonto.common.data.usecase.jsonfeed.IsJsonFeedValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.DeleteAllPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
@@ -50,6 +53,7 @@ import dev.weazyexe.fonto.common.data.usecase.settings.GetSettingsUseCase
 import dev.weazyexe.fonto.common.data.usecase.settings.SavePreferenceUseCase
 import dev.weazyexe.fonto.common.db.createDatabase
 import dev.weazyexe.fonto.common.feature.parser.atom.AtomParser
+import dev.weazyexe.fonto.common.feature.parser.jsonfeed.JsonFeedParser
 import dev.weazyexe.fonto.common.feature.parser.rss.RssParser
 import dev.weazyexe.fonto.common.feature.settings.createSettingsStorage
 import dev.weazyexe.fonto.common.network.createHttpClient
@@ -69,6 +73,7 @@ fun dataModules(): List<Module> =
         iconDataModule,
         rssDataModule,
         atomDataModule,
+        jsonFeedDataModule,
         postDataModule,
         categoryDataModule,
         backupDataModule,
@@ -108,6 +113,15 @@ internal val atomDataModule = module {
     single { IsAtomValidUseCase(get()) }
 }
 
+internal val jsonFeedDataModule = module {
+    includes(coreModule)
+
+    single { JsonFeedParser(get(), get()) }
+    single { JsonFeedDataSource(get()) }
+    single { JsonFeedRepository(get()) }
+    single { IsJsonFeedValidUseCase(get()) }
+}
+
 internal val iconDataModule = module {
     includes(coreModule)
 
@@ -133,6 +147,7 @@ internal val feedDataModule = module {
     includes(coreModule)
     includes(rssDataModule)
     includes(atomDataModule)
+    includes(jsonFeedDataModule)
     includes(categoryDataModule)
 
     single { FeedDataSource(get()) }
@@ -144,18 +159,19 @@ internal val feedDataModule = module {
     single { UpdateFeedUseCase(get()) }
     single { DeleteFeedUseCase(get(), get()) }
     single { DeleteAllFeedsUseCase(get(), get()) }
-    single { GetFeedTypeUseCase(get(), get()) }
+    single { GetFeedTypeUseCase(get(), get(), get()) }
 }
 
 internal val postDataModule = module {
     includes(coreModule)
     includes(rssDataModule)
     includes(atomDataModule)
+    includes(jsonFeedDataModule)
     includes(feedDataModule)
 
     single { PostDataSource(get()) }
     single { PostRepository(get(), get(), get()) }
-    single { GetPostsUseCase(get(), get(), get(), get()) }
+    single { GetPostsUseCase(get(), get(), get(), get(), get()) }
     single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
     single { GetPostUseCase(get()) }

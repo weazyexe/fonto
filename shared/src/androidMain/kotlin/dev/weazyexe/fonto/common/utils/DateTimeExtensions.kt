@@ -9,10 +9,10 @@ import java.util.Locale
 actual fun String.parseDateTime(format: String): Instant? {
     val formatter = SimpleDateFormat(format, Locale.ENGLISH)
     val date = formatter.parse(this)
-    return date.toInstant().toKotlinInstant()
+    return date?.toInstant()?.toKotlinInstant()
 }
 
 actual fun Instant.format(pattern: String): String {
     val date = Date(this.toEpochMilliseconds())
-    return SimpleDateFormat(pattern).format(date)
+    return SimpleDateFormat(pattern, Locale.getDefault()).format(date)
 }

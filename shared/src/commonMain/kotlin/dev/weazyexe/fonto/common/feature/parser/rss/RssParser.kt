@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.common.utils.cleanUpText
 import dev.weazyexe.fonto.common.utils.getFirstImageUrlFromHtml
 import dev.weazyexe.fonto.common.utils.parseDateTime
 import dev.weazyexe.fonto.common.utils.replaceHttp
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -49,6 +50,7 @@ internal class RssParser(
                 icon = feed.icon
             )
         } catch (e: Exception) {
+            Napier.e(e) { "RSS parser error" }
             return ParsedFeed.Error(feed, e)
         }
     }

@@ -19,7 +19,8 @@ data class Feed(
 
     enum class Type(val id: Long) {
         RSS(0),
-        ATOM(1);
+        ATOM(1),
+        JSON_FEED(2);
 
         companion object {
 
