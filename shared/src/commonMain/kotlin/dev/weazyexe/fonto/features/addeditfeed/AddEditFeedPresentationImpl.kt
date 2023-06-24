@@ -89,7 +89,10 @@ internal class AddEditFeedPresentationImpl(
     private fun saveFeed(feed: Feed) {
         dependencies.updateFeed(feed)
             .onEach { setState { copy(finishResult = it) } }
-            .onError { AddEditFeedEffect.ShowFeedSavingError.emit() }
+            .onError {
+                setState { copy(finishResult = it) }
+                AddEditFeedEffect.ShowFeedSavingError.emit()
+            }
             .onSuccess { AddEditFeedEffect.NavigateUp(isSuccessful = true).emit() }
             .launchIn(scope)
     }
@@ -102,11 +105,17 @@ internal class AddEditFeedPresentationImpl(
     ) {
         dependencies.getFeedType(link)
             .onLoading { setState { copy(finishResult = AsyncResult.Loading()) } }
-            .onError { AddEditFeedEffect.ShowFeedValidationError.emit() }
+            .onError {
+                setState { copy(finishResult = AsyncResult.Error(it.error)) }
+                AddEditFeedEffect.ShowFeedValidationError.emit()
+            }
             .filterIsInstance<AsyncResult.Success<Feed.Type>>()
             .flatMapLatest { dependencies.createFeed(title, link, icon, it.data, category) }
             .onEach { setState { copy(finishResult = it) } }
-            .onError { AddEditFeedEffect.ShowFeedSavingError.emit() }
+            .onError {
+                setState { copy(finishResult = it) }
+                AddEditFeedEffect.ShowFeedSavingError.emit()
+            }
             .onSuccess { AddEditFeedEffect.NavigateUp(isSuccessful = true).emit() }
             .launchIn(scope)
     }

@@ -13,10 +13,9 @@ import kotlinx.serialization.json.Json
 internal class GetExportDataUseCase(
     private val feedRepository: FeedRepository,
     private val postRepository: PostRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val json: Json
 ) {
-
-    private val json = Json { ignoreUnknownKeys = true }
 
     suspend operator fun invoke(exportStrategy: ExportStrategy): JsonString {
         val categories = if (exportStrategy.categories) {

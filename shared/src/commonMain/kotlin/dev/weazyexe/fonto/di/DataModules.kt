@@ -38,6 +38,7 @@ import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.DeleteAllPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostUseCase
@@ -53,6 +54,8 @@ import dev.weazyexe.fonto.common.feature.parser.rss.RssParser
 import dev.weazyexe.fonto.common.feature.settings.createSettingsStorage
 import dev.weazyexe.fonto.common.network.createHttpClient
 import dev.weazyexe.fonto.common.resources.createStringsProvider
+import dev.weazyexe.fonto.common.serialization.createJson
+import dev.weazyexe.fonto.common.serialization.createXml
 import dev.weazyexe.fonto.utils.feature.FeatureAvailabilityChecker
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -79,6 +82,8 @@ internal val coreModule = module {
     single { createHttpClient() }
     single { createSettingsStorage(get()) }
     single { createStringsProvider(get()) }
+    single { createXml() }
+    single { createJson() }
 
     single { FeatureAvailabilityChecker() }
 
@@ -88,7 +93,7 @@ internal val coreModule = module {
 internal val rssDataModule = module {
     includes(coreModule)
 
-    single { RssParser(get()) }
+    single { RssParser(get(), get()) }
     single { RssDataSource(get()) }
     single { RssRepository(get()) }
     single { IsRssValidUseCase(get()) }
@@ -97,7 +102,7 @@ internal val rssDataModule = module {
 internal val atomDataModule = module {
     includes(coreModule)
 
-    single { AtomParser() }
+    single { AtomParser(get(), get()) }
     single { AtomDataSource(get()) }
     single { AtomRepository(get()) }
     single { IsAtomValidUseCase(get()) }
@@ -155,12 +160,13 @@ internal val postDataModule = module {
     single { GetFiltersUseCase(get()) }
     single { GetPostUseCase(get()) }
     single { UpdatePostUseCase(get()) }
+    single { DeleteAllPostsUseCase(get()) }
 }
 
 internal val backupDataModule = module {
     includes(coreModule, feedDataModule, categoryDataModule, postDataModule, iconDataModule)
-    single { GetExportDataUseCase(get(), get(), get()) }
-    single { ParseBackupDataUseCase() }
+    single { GetExportDataUseCase(get(), get(), get(), get()) }
+    single { ParseBackupDataUseCase(get()) }
     single { ImportDataUseCase(get(), get(), get(), get(), get()) }
     single { ExportDataUseCase(get()) }
 }
