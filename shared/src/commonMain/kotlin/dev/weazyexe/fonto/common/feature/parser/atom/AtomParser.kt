@@ -54,7 +54,7 @@ internal class AtomParser(
                 icon = feed.icon
             )
         } catch (e: Exception) {
-            Napier.e(e) { "haha" }
+            Napier.e(e) { "Atom parser error" }
             return ParsedFeed.Error(feed, e)
         }
     }

@@ -52,7 +52,7 @@ internal class JsonFeedParser(
                 icon = feed.icon
             )
         } catch (e: Exception) {
-            Napier.e(e) { "dssa" }
+            Napier.e(e) { "JSON Feed parser error" }
             return ParsedFeed.Error(feed, e)
         }
     }
