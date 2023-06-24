@@ -9,7 +9,7 @@ import kotlinx.datetime.Instant
 internal fun ParsedFeed.Success.toPosts(): List<Post> =
     posts.map {
         Post(
-            id = generateId(id, it.link),
+            id = Post.Id(it.id),
             title = it.title,
             description = it.description,
             imageUrl = it.imageUrl,
@@ -46,6 +46,3 @@ internal fun PostDao.toPost(feed: Feed): Post =
         link = link,
         isRead = isRead.toBooleanStrict()
     )
-
-private fun generateId(feedId: Long, postId: String): Post.Id =
-    Post.Id("SOURCE:$feedId|LINK:$postId".hashCode().toString())

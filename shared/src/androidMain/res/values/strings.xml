@@ -81,7 +81,7 @@
     <string name="add_edit_feed_feed_icon_loading_failure">Failed to load feed icon</string>
     <string name="add_edit_feed_invalid_title">Title can\'t be empty</string>
     <string name="add_edit_feed_invalid_link">Link can\'t be empty</string>
-    <string name="add_edit_feed_feed_link_is_invalid">Feed link is invalid. Supported feed types: RSS, Atom</string>
+    <string name="add_edit_feed_feed_link_is_invalid">Feed link is invalid. Supported feed types: RSS, Atom, JSON Feed</string>
     <string name="add_edit_feed_feed_saving_error">Error while saving the feed</string>
 
     <string name="feed_delete_confirmation_title">Delete the feed?</string>
