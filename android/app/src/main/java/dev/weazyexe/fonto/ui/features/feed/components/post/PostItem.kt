@@ -146,14 +146,16 @@ private fun ColumnScope.PostBody(
         )
     }
 
-    Text(
-        text = content,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        maxLines = 15,
-        overflow = TextOverflow.Ellipsis
-    )
+    if (content.isNotBlank()) {
+        Text(
+            text = content,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 15,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
 }
 
 @Composable
