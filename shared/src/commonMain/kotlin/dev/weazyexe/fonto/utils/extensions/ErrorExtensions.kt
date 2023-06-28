@@ -14,13 +14,6 @@ internal fun Throwable.asResponseError(): ResponseError {
 
         is TimeoutException -> ResponseError.TimeoutError
 
-        // FIXME
-        /*is HttpException -> {
-            ResponseError.HttpError(arguments = listOf(message.orEmpty()))
-        }
-
-        is RssParseException -> ResponseError.InvalidRssFeed()*/
-
         else -> {
             ResponseError.UnknownError
         }

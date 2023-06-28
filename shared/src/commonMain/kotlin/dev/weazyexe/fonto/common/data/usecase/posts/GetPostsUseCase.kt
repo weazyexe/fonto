@@ -1,7 +1,6 @@
 package dev.weazyexe.fonto.common.data.usecase.posts
 
 import dev.weazyexe.fonto.common.data.AsyncResult
-import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.common.data.mapper.toPosts
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
@@ -12,6 +11,7 @@ import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
+import dev.weazyexe.fonto.utils.extensions.asResponseError
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
@@ -56,7 +56,9 @@ internal class GetPostsUseCase(
         val areAllFeedsFailed = loadedPosts.loadedWithError.size == feeds.size
         return when {
             feeds.isEmpty() -> AsyncResult.Success(Posts.EMPTY)
-            areAllFeedsFailed -> AsyncResult.Error(ResponseError.UnknownError)
+            areAllFeedsFailed -> AsyncResult.Error(
+                loadedPosts.loadedWithError.first().throwable.asResponseError()
+            )
             else -> {
                 val posts = postRepository.getPosts(
                     limit = limit,
