@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.common.data.usecase.posts
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.html.OgMetadata
 import dev.weazyexe.fonto.common.html.OgMetadataExtractor
+import dev.weazyexe.fonto.common.utils.cleanUpText
 import dev.weazyexe.fonto.utils.extensions.flowIo
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -18,6 +19,10 @@ internal class GetPostMetadataFromHtmlUseCase(
         emit(AsyncResult.Loading())
         val html = httpClient.get(link).bodyAsText()
         val metadata = ogMetadataExtractor.extract(html)
-        emit(AsyncResult.Success(metadata))
+        emit(
+            AsyncResult.Success(
+                metadata.copy(description = metadata.description?.cleanUpText())
+            )
+        )
     }
 }
