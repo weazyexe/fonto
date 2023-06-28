@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,7 +11,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.ramcosta.composedestinations.annotation.Destination
+import androidx.navigation.NavController
+import com.ramcosta.composedestinations.navigation.navigate
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
@@ -18,46 +20,45 @@ import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
 import dev.weazyexe.fonto.features.settings.SettingsEffect
-import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
-import dev.weazyexe.fonto.ui.features.home.dependencies.ColorPickerResults
-import dev.weazyexe.fonto.ui.features.home.dependencies.ExportStrategyPickerResults
-import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
-import dev.weazyexe.fonto.ui.features.home.dependencies.ThemePickerResults
+import dev.weazyexe.fonto.ui.features.home.ColorPickerResult
+import dev.weazyexe.fonto.ui.features.home.ExportStrategyPickerResult
+import dev.weazyexe.fonto.ui.features.home.ThemePickerResult
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.exportstrategypicker.toExportStrategy
 import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 
-@BottomBarNavGraph
-@Destination
 @Composable
 fun SettingsScreen(
     rootPaddingValues: PaddingValues,
     viewModel: SettingsViewModel,
-    navigateTo: NavigateTo,
-    themePickerResults: ThemePickerResults,
-    colorPickerResults: ColorPickerResults,
-    exportStrategyResults: ExportStrategyPickerResults
+    navController: NavController,
+    themePickerResult: ThemePickerResult,
+    colorPickerResult: ColorPickerResult,
+    exportStrategyPickerResults: ExportStrategyPickerResult,
+    onBack: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val state by viewModel.state.collectAsState(SettingsViewState())
 
+    BackHandler { onBack() }
+
     HandleNavigationResults(
-        themePickerResults = themePickerResults,
-        colorPickerResults = colorPickerResults,
-        exportStrategyResults = exportStrategyResults,
+        themePickerResults = themePickerResult,
+        colorPickerResults = colorPickerResult,
+        exportStrategyPickerResults = exportStrategyPickerResults,
         viewModel = viewModel
     )
 
     HandleEffects(
         effects = viewModel.effects,
-        navigateTo = navigateTo,
+        navController = navController,
         snackbarHostState = snackbarHostState,
         export = viewModel::export,
         import = viewModel::import
@@ -76,7 +77,7 @@ fun SettingsScreen(
 @Composable
 private fun HandleEffects(
     effects: Flow<SettingsEffect>,
-    navigateTo: NavigateTo,
+    navController: NavController,
     snackbarHostState: SnackbarHostState,
     export: (uri: Uri) -> Unit,
     import: (uri: Uri) -> Unit,
@@ -94,11 +95,17 @@ private fun HandleEffects(
 
     ReceiveEffect(effects) {
         when (this) {
-            is SettingsEffect.OpenManageFeedScreen -> navigateTo(ManageFeedScreenDestination())
-            is SettingsEffect.OpenManageCategoriesScreen -> navigateTo(CategoriesScreenDestination())
-            is SettingsEffect.OpenDebugScreen -> navigateTo(DebugScreenDestination())
-            is SettingsEffect.OpenThemePicker -> {
-                navigateTo(
+            is SettingsEffect.OpenManageFeedScreen ->
+                navController.navigate(ManageFeedScreenDestination())
+
+            is SettingsEffect.OpenManageCategoriesScreen ->
+                navController.navigate(CategoriesScreenDestination())
+
+            is SettingsEffect.OpenDebugScreen ->
+                navController.navigate(DebugScreenDestination())
+
+            is SettingsEffect.OpenThemePicker ->
+                navController.navigate(
                     ThemePickerDialogDestination(
                         args = ThemePickerArgs(
                             value = currentTheme,
@@ -108,10 +115,9 @@ private fun HandleEffects(
                         )
                     )
                 )
-            }
 
-            is SettingsEffect.OpenColorSchemePicker -> {
-                navigateTo(
+            is SettingsEffect.OpenColorSchemePicker ->
+                navController.navigate(
                     ColorPickerDialogDestination(
                         args = ColorPickerArgs(
                             selectedColor = currentColorScheme,
@@ -119,55 +125,47 @@ private fun HandleEffects(
                         )
                     )
                 )
-            }
 
-            is SettingsEffect.OpenExportFilePicker -> {
+            is SettingsEffect.OpenExportFilePicker ->
                 exportFontoSaver.launch(fileName)
-            }
 
-            is SettingsEffect.OpenExportStrategyPicker -> {
-                navigateTo(ExportStrategyPickerDialogDestination())
-            }
+            is SettingsEffect.OpenExportStrategyPicker ->
+                navController.navigate(ExportStrategyPickerDialogDestination())
 
-            is SettingsEffect.OpenImportFilePicker -> {
+            is SettingsEffect.OpenImportFilePicker ->
                 openDocumentPicker.launch(arrayOf(fileMimeType))
-            }
 
-            is SettingsEffect.ShowExportFailureMessage -> {
+            is SettingsEffect.ShowExportFailureMessage ->
                 snackbarHostState.showSnackbar(context.getString(StringResources.settings_export_fonto_file_saving_failed))
-            }
 
-            is SettingsEffect.ShowExportSuccessMessage -> {
+            is SettingsEffect.ShowExportSuccessMessage ->
                 snackbarHostState.showSnackbar(context.getString(StringResources.settings_export_fonto_successful))
-            }
 
-            is SettingsEffect.ShowImportFailureMessage -> {
+            is SettingsEffect.ShowImportFailureMessage ->
                 snackbarHostState.showSnackbar(context.getString(StringResources.settings_import_fonto_data_import_failed))
-            }
 
-            is SettingsEffect.ShowImportSuccessMessage -> {
+            is SettingsEffect.ShowImportSuccessMessage ->
                 snackbarHostState.showSnackbar(context.getString(StringResources.settings_import_fonto_successful))
-            }
         }
     }
 }
 
 @Composable
 private fun HandleNavigationResults(
-    themePickerResults: ThemePickerResults,
-    colorPickerResults: ColorPickerResults,
-    exportStrategyResults: ExportStrategyPickerResults,
+    themePickerResults: ThemePickerResult,
+    colorPickerResults: ColorPickerResult,
+    exportStrategyPickerResults: ExportStrategyPickerResult,
     viewModel: SettingsViewModel
 ) {
-    themePickerResults.invoke().handleResults { result ->
+    themePickerResults.handleResults { result ->
         result?.let { viewModel.onThemePicked(it) }
     }
 
-    colorPickerResults.invoke().handleResults { result ->
+    colorPickerResults.handleResults { result ->
         viewModel.onColorSchemePicked(result)
     }
 
-    exportStrategyResults.invoke().handleResults { result ->
+    exportStrategyPickerResults.handleResults { result ->
         result?.let { viewModel.chooseExportFileDestination(result.toExportStrategy()) }
     }
 }

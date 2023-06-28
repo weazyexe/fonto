@@ -12,6 +12,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.navigation.NavController
+import com.ramcosta.composedestinations.navigation.navigate
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.posts.ByCategory
 import dev.weazyexe.fonto.common.feature.posts.ByFeed
@@ -24,12 +26,11 @@ import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestinat
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerArgs
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResults
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResults
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResults
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavigateTo
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResult
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResult
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResult
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavController
 import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerArgs
-import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
@@ -47,9 +48,13 @@ fun SearchOverlay(
 
     val viewModel = koinViewModel<SearchViewModel>()
     val state by viewModel.state.collectAsState(SearchViewState())
-    val navigateTo = LocalNavigateTo.current
+    val navController = LocalNavController.current
 
-    HandleEffects(viewModel.effects, navigateTo, snackbarHostState)
+    HandleEffects(
+        effects = viewModel.effects,
+        navController = navController,
+        snackbarHostState = snackbarHostState
+    )
 
     HandleNavigationResults(
         onDateRangeReceived = viewModel::applyFilters,
@@ -69,7 +74,7 @@ fun SearchOverlay(
         onSearch = { keyboardController?.hide() },
         onActiveChange = onSearchBarActiveChange,
         onFilterChange = viewModel::applyFilters,
-        openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) },
+        openDateRangePickerDialog = { navController.navigate(DateRangePickerDialogDestination()) },
         openMultiplePickerDialog = { viewModel.openMultiplePicker(it) },
         onPostClick = { viewModel.openPost(it) },
         onPostSaveClick = { viewModel.savePost(it) },
@@ -81,14 +86,14 @@ fun SearchOverlay(
 @Composable
 private fun HandleEffects(
     effects: Flow<SearchEffect>,
-    navigateTo: NavigateTo,
+    navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
     ReceiveEffect(effects) {
         when (this) {
             is SearchEffect.OpenFeedPicker -> {
-                navigateTo.invoke(
+                navController.navigate(
                     FeedPickerDialogDestination(
                         args = FeedPickerArgs(
                             values = values,
@@ -100,7 +105,7 @@ private fun HandleEffects(
             }
 
             is SearchEffect.OpenCategoryPicker -> {
-                navigateTo.invoke(
+                navController.navigate(
                     CategoryPickerDialogDestination(
                         args = CategoryPickerArgs(
                             values = values,
@@ -161,7 +166,7 @@ private fun HandleNavigationResults(
     onFeedReceived: (ByFeed) -> Unit,
     onCategoryReceived: (ByCategory) -> Unit,
 ) {
-    LocalDateRangePickerResults.current.invoke().handleResults { result ->
+    LocalDateRangePickerResult.current.handleResults { result ->
         result?.let {
             onDateRangeReceived(
                 ByPostDates(
@@ -174,7 +179,7 @@ private fun HandleNavigationResults(
         }
     }
 
-    LocalFeedPickerResults.current.invoke().handleResults { result ->
+    LocalFeedPickerResult.current.handleResults { result ->
         result?.let {
             onFeedReceived(
                 ByFeed(
@@ -185,7 +190,7 @@ private fun HandleNavigationResults(
         }
     }
 
-    LocalCategoryPickerResults.current.invoke().handleResults { result ->
+    LocalCategoryPickerResult.current.handleResults { result ->
         result?.let {
             onCategoryReceived(
                 ByCategory(

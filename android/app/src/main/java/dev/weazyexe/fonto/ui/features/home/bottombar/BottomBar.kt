@@ -7,26 +7,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
-import dev.weazyexe.fonto.ui.features.NavGraphs
-import dev.weazyexe.fonto.ui.features.appCurrentDestinationAsState
-import dev.weazyexe.fonto.ui.features.destinations.AppDestination
-import dev.weazyexe.fonto.ui.features.startAppDestination
 
 @Composable
-fun BottomBar(navController: NavController) {
-    val currentDestination: AppDestination = navController.appCurrentDestinationAsState().value
-        ?: NavGraphs.bottomBar.startAppDestination
-
+fun BottomBar(
+    currentDestination: BottomBarDestination,
+    onTabChanged: (BottomBarDestination) -> Unit
+) {
     NavigationBar {
         BottomBarDestination.values().forEach { destination ->
             NavigationBarItem(
-                selected = currentDestination == destination.direction,
-                onClick = {
-                    navController.navigate(destination.direction.route) {
-                        launchSingleTop = true
-                    }
-                },
+                selected = currentDestination == destination,
+                onClick = { onTabChanged(destination) },
                 icon = {
                     Icon(
                         painter = painterResource(id = destination.icon),

@@ -12,7 +12,7 @@ import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 @Composable
 fun CategoryPickerDialog(
     args: CategoryPickerArgs,
-    resultBackNavigator: ResultBackNavigator<CategoryPickerResult?>
+    resultBackNavigator: ResultBackNavigator<CategoryPickerResults?>
 ) {
     MultipleValuePickerDialog(
         values = args.values.map { Value(it, it.title) },
@@ -21,7 +21,7 @@ fun CategoryPickerDialog(
         title = args.title,
         onSave = { results ->
             resultBackNavigator.navigateBack(
-                result = CategoryPickerResult(
+                result = CategoryPickerResults(
                     values = results.map { it.data },
                     possibleValues = args.possibleValues
                 )

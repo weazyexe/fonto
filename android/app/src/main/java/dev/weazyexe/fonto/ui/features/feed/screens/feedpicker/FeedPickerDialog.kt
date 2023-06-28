@@ -12,7 +12,7 @@ import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 @Composable
 fun FeedPickerDialog(
     args: FeedPickerArgs,
-    resultBackNavigator: ResultBackNavigator<FeedPickerResult?>
+    resultBackNavigator: ResultBackNavigator<FeedPickerResults?>
 ) {
     MultipleValuePickerDialog(
         values = args.values.map { Value(it, it.title) },
@@ -21,7 +21,7 @@ fun FeedPickerDialog(
         title = args.title,
         onSave = { results ->
             resultBackNavigator.navigateBack(
-                result = FeedPickerResult(
+                result = FeedPickerResults(
                     values = results.map { it.data },
                     possibleValues = args.possibleValues
                 )

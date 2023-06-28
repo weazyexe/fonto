@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Parcelize
-data class CategoryPickerResult(
+data class CategoryPickerResults(
     val values: @RawValue List<Category>,
     val possibleValues: @RawValue List<Category>
 ) : Parcelable
