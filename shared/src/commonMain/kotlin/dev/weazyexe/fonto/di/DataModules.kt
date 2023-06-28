@@ -44,6 +44,7 @@ import dev.weazyexe.fonto.common.data.usecase.jsonfeed.IsJsonFeedValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.DeleteAllPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostMetadataFromHtmlUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCase
@@ -56,6 +57,7 @@ import dev.weazyexe.fonto.common.feature.parser.atom.AtomParser
 import dev.weazyexe.fonto.common.feature.parser.jsonfeed.JsonFeedParser
 import dev.weazyexe.fonto.common.feature.parser.rss.RssParser
 import dev.weazyexe.fonto.common.feature.settings.createSettingsStorage
+import dev.weazyexe.fonto.common.html.createOgImageExtractor
 import dev.weazyexe.fonto.common.network.createHttpClient
 import dev.weazyexe.fonto.common.resources.createStringsProvider
 import dev.weazyexe.fonto.common.serialization.createJson
@@ -87,6 +89,8 @@ internal val coreModule = module {
     single { createHttpClient() }
     single { createSettingsStorage(get()) }
     single { createStringsProvider(get()) }
+    single { createOgImageExtractor(get()) }
+
     single { createXml() }
     single { createJson() }
 
@@ -177,6 +181,7 @@ internal val postDataModule = module {
     single { GetPostUseCase(get()) }
     single { UpdatePostUseCase(get()) }
     single { DeleteAllPostsUseCase(get()) }
+    single { GetPostMetadataFromHtmlUseCase(get(), get()) }
 }
 
 internal val backupDataModule = module {

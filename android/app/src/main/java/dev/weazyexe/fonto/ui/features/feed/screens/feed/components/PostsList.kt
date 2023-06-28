@@ -16,6 +16,7 @@ import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostItem
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostItemType
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostsViewState
 
 fun LazyListScope.buildPosts(
@@ -25,6 +26,7 @@ fun LazyListScope.buildPosts(
     onManageFeed: () -> Unit,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
+    onPostLoadImage: (Post.Id) -> Unit,
     loadMore: () -> Unit
 ) {
     if (posts.isEmpty()) {
@@ -43,11 +45,13 @@ fun LazyListScope.buildPosts(
         items(items = posts, key = { it.id.origin }) {
             PostItem(
                 post = it,
+                type = PostItemType.REGULAR,
                 onPostClick = { onPostClick(it.id) },
                 onSaveClick = { onPostSaveClick(it.id) },
                 modifier = Modifier
                     .padding(vertical = 4.dp)
-                    .testTag("post_item")
+                    .testTag("post_item"),
+                loadPostMetadata = onPostLoadImage
             )
         }
 

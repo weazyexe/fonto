@@ -38,12 +38,16 @@ class SearchViewModel(
         presentation.applyFilters(updatedFilter)
     }
 
-    fun onPostRead(id: Post.Id) {
-        presentation.onPostRead(id)
+    fun openPost(id: Post.Id) {
+        presentation.openPost(id)
     }
 
-    fun onPostSave(id: Post.Id) {
-        presentation.onPostSave(id)
+    fun savePost(id: Post.Id) {
+        presentation.savePost(id)
+    }
+
+    fun loadPostMetadataIfNeeds(id: Post.Id) {
+        presentation.loadPostMetadataIfNeeds(id)
     }
 
     fun openMultiplePicker(filter: PostsFilter) {

@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.map
 class FeedViewModel(private val presentation: FeedPresentation) : ViewModel() {
 
     val state: Flow<FeedViewState>
-        get() = presentation.domainState.map { it.asViewState() }
+        get() = presentation.domainState
+            .map { it.asViewState() }
 
     val effects = presentation.effects
 
@@ -39,6 +40,10 @@ class FeedViewModel(private val presentation: FeedPresentation) : ViewModel() {
 
     fun savePost(id: Post.Id) {
         presentation.savePost(id)
+    }
+
+    fun loadMetadataIfNeeds(id: Post.Id) {
+        presentation.loadPostMetadataIfNeeds(id)
     }
 
     private fun FeedDomainState.asViewState(): FeedViewState =

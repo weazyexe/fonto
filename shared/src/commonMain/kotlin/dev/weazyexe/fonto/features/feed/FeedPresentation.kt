@@ -14,4 +14,6 @@ abstract class FeedPresentation : Presentation<FeedDomainState, FeedEffect>() {
     abstract fun openPost(id: Post.Id)
 
     abstract fun savePost(id: Post.Id)
+
+    abstract fun loadPostMetadataIfNeeds(id: Post.Id)
 }

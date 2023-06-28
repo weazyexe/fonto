@@ -20,7 +20,10 @@ class AddEditCategoryViewModel(
     val effects = presentation.effects
 
     init {
-        presentation.onCreate(viewModelScope, AddEditCategoryArgs(args.id))
+        presentation.onCreate(
+            scope = viewModelScope,
+            navigationArguments = AddEditCategoryArgs(args.id)
+        )
     }
 
     fun onTitleChange(title: String) {

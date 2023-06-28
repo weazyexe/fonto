@@ -34,6 +34,7 @@ kotlin {
                 implementation(libs.sqldelight.android)
                 implementation(libs.koin.android)
                 implementation(libs.androidx.datastore)
+                implementation(libs.jsoup)
             }
         }
         /*val iosMain by creating {

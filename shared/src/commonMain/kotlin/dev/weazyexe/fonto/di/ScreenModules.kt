@@ -75,7 +75,7 @@ val feedScreenModule = module {
             initialState = get(),
             getPosts = get(),
             updatePost = get(),
-            getPost = get(),
+            getPostMetadataFromHtml = get(),
             urlValidator = get(),
             settingsStorage = get(),
             eventBus = get()
@@ -91,8 +91,14 @@ val searchScreenModule = module {
     factory {
         SearchDependencies(
             initialState = get(),
+
             getFilters = get(),
             getFilteredPosts = get(),
+            updatePost = get(),
+            getPostMetadataFromHtml = get(),
+
+            urlValidator = get(),
+            settingsStorage = get(),
             eventBus = get()
         )
     }

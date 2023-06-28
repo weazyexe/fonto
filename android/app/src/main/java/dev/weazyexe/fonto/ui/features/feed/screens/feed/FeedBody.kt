@@ -35,6 +35,7 @@ fun FeedBody(
     isSearchBarActive: Boolean,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
+    onPostLoadImage: (Post.Id) -> Unit,
     onManageFeedClick: () -> Unit,
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
     loadMorePosts: () -> Unit,
@@ -67,8 +68,6 @@ fun FeedBody(
         isSearchBarActive = isSearchBarActive,
         onRefresh = { onRefreshClick(true) },
         onSearchBarActiveChange = onSearchBarActiveChange,
-        onPostClick = onPostClick,
-        onPostSaveClick = onPostSaveClick,
         contentPadding = rootPaddingValues,
     ) {
         when (posts) {
@@ -99,6 +98,7 @@ fun FeedBody(
                     paddingBottom = rootPaddingValues.calculateBottomPadding(),
                     onPostClick = onPostClick,
                     onPostSaveClick = onPostSaveClick,
+                    onPostLoadImage = onPostLoadImage,
                     onManageFeed = onManageFeedClick,
                     loadMore = loadMorePosts,
                 )
@@ -127,6 +127,7 @@ private fun FeedBodyPreview() = ThemedPreview {
         isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
+        onPostLoadImage = {},
         onManageFeedClick = {},
         onRefreshClick = {},
         loadMorePosts = {},
@@ -146,6 +147,7 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         isSearchBarActive = false,
         onPostClick = {},
         onPostSaveClick = {},
+        onPostLoadImage = {},
         onManageFeedClick = {},
         onRefreshClick = {},
         loadMorePosts = {},

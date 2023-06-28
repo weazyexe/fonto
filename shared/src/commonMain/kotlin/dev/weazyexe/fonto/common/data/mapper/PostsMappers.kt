@@ -17,7 +17,8 @@ internal fun ParsedFeed.Success.toPosts(): List<Post> =
             feed = it.feed,
             isSaved = false,
             link = it.link,
-            isRead = false
+            isRead = false,
+            hasTriedToLoadMetadata = it.imageUrl != null
         )
     }
 
@@ -31,7 +32,8 @@ internal fun Post.toDao(): PostDao =
         feedId = feed.id.origin,
         isSaved = isSaved.toString(),
         link = link,
-        isRead = isRead.toString()
+        isRead = isRead.toString(),
+        hasTriedToLoadMetadata = hasTriedToLoadMetadata.toString()
     )
 
 internal fun PostDao.toPost(feed: Feed): Post =
@@ -44,5 +46,6 @@ internal fun PostDao.toPost(feed: Feed): Post =
         feed = feed,
         isSaved = isSaved.toBooleanStrict(),
         link = link,
-        isRead = isRead.toBooleanStrict()
+        isRead = isRead.toBooleanStrict(),
+        hasTriedToLoadMetadata = hasTriedToLoadMetadata.toBooleanStrict()
     )
