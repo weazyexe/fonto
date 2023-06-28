@@ -5,7 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
@@ -54,7 +54,7 @@ fun HomeScreen(
     val feedViewModel = koinViewModel<FeedViewModel>()
     val settingsViewModel = koinViewModel<SettingsViewModel>()
 
-    var currentDestination by remember { mutableStateOf(BottomBarDestination.Feed) }
+    var currentDestination by rememberSaveable { mutableStateOf(BottomBarDestination.Feed) }
 
     Scaffold(
         bottomBar = {
