@@ -11,9 +11,5 @@ sealed class ResponseError : Throwable() {
 
     object TimeoutError : ResponseError()
 
-    object InvalidRssFeed : ResponseError()
-
     object InvalidTitle : ResponseError()
-
-    object NoOgImageMeta : ResponseError()
 }

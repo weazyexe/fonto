@@ -43,5 +43,5 @@ internal fun PostBackupModel.asPost(feed: Feed): Post =
         publishedAt = Instant.fromEpochSeconds(publishedAt),
         isRead = isRead,
         isSaved = isSaved,
-        hasTriedToLoadMetadata = imageUrl != null
+        hasTriedToLoadMetadata = imageUrl != null && description.isNotBlank()
     )
