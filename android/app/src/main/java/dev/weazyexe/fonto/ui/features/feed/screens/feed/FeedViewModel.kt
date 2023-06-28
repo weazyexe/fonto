@@ -42,8 +42,8 @@ class FeedViewModel(private val presentation: FeedPresentation) : ViewModel() {
         presentation.savePost(id)
     }
 
-    fun loadImageIfNeeds(id: Post.Id) {
-        presentation.loadImageIfNeeds(id)
+    fun loadMetadataIfNeeds(id: Post.Id) {
+        presentation.loadPostMetadataIfNeeds(id)
     }
 
     private fun FeedDomainState.asViewState(): FeedViewState =

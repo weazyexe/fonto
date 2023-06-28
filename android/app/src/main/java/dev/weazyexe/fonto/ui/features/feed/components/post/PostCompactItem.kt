@@ -85,7 +85,6 @@ fun PostCompactItem(
             .clip(RoundedCornerShape(4.dp))
 
         if (post.imageUrl != null) {
-
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(post.imageUrl)

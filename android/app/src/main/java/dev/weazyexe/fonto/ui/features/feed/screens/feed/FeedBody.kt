@@ -68,8 +68,6 @@ fun FeedBody(
         isSearchBarActive = isSearchBarActive,
         onRefresh = { onRefreshClick(true) },
         onSearchBarActiveChange = onSearchBarActiveChange,
-        onPostClick = onPostClick,
-        onPostSaveClick = onPostSaveClick,
         contentPadding = rootPaddingValues,
     ) {
         when (posts) {

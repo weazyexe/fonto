@@ -1,17 +1,21 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.feed.components.search
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import dev.weazyexe.fonto.common.feature.filter.Dates
 import dev.weazyexe.fonto.common.feature.posts.ByCategory
 import dev.weazyexe.fonto.common.feature.posts.ByFeed
 import dev.weazyexe.fonto.common.feature.posts.ByPostDates
-import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.search.SearchEffect
@@ -19,6 +23,7 @@ import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestinati
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerArgs
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResults
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResults
@@ -34,18 +39,17 @@ import org.koin.androidx.compose.koinViewModel
 fun SearchOverlay(
     isActive: Boolean,
     onSearchBarActiveChange: (Boolean) -> Unit,
-    onPostClick: (Post.Id) -> Unit,
-    onPostSaveClick: (Post.Id) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val viewModel = koinViewModel<SearchViewModel>()
     val state by viewModel.state.collectAsState(SearchViewState())
     val navigateTo = LocalNavigateTo.current
 
-    HandleEffects(viewModel.effects, navigateTo)
+    HandleEffects(viewModel.effects, navigateTo, snackbarHostState)
 
     HandleNavigationResults(
         onDateRangeReceived = viewModel::applyFilters,
@@ -60,20 +64,16 @@ fun SearchOverlay(
         isActive = isActive,
         areFiltersChanged = state.areFiltersChanged,
         contentPadding = contentPadding,
+        snackbarHostState = snackbarHostState,
         onQueryChange = viewModel::onQueryChange,
         onSearch = { keyboardController?.hide() },
         onActiveChange = onSearchBarActiveChange,
         onFilterChange = viewModel::applyFilters,
         openDateRangePickerDialog = { navigateTo(DateRangePickerDialogDestination()) },
         openMultiplePickerDialog = { viewModel.openMultiplePicker(it) },
-        onPostClick = {
-            onPostClick(it)
-            viewModel.onPostRead(it)
-        },
-        onPostSaveClick = {
-            onPostSaveClick(it)
-            viewModel.onPostSave(it)
-        },
+        onPostClick = { viewModel.openPost(it) },
+        onPostSaveClick = { viewModel.savePost(it) },
+        loadPostMetadata = { viewModel.loadPostMetadataIfNeeds(it) },
         modifier = modifier
     )
 }
@@ -81,8 +81,10 @@ fun SearchOverlay(
 @Composable
 private fun HandleEffects(
     effects: Flow<SearchEffect>,
-    navigateTo: NavigateTo
+    navigateTo: NavigateTo,
+    snackbarHostState: SnackbarHostState
 ) {
+    val context = LocalContext.current
     ReceiveEffect(effects) {
         when (this) {
             is SearchEffect.OpenFeedPicker -> {
@@ -105,6 +107,47 @@ private fun HandleEffects(
                             possibleValues = possibleValues,
                             title = StringResources.feed_filters_categories
                         )
+                    )
+                )
+            }
+
+            is SearchEffect.OpenPostInApp -> {
+                InAppBrowser.openPost(context, link, theme)
+            }
+
+            is SearchEffect.OpenPostInBrowser -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                context.startActivity(intent)
+            }
+
+            is SearchEffect.ShowPostSavingErrorMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        if (isSaving) {
+                            StringResources.feed_post_saving_error
+                        } else {
+                            StringResources.feed_post_removing_from_bookmarks_error
+                        }
+                    )
+                )
+            }
+
+            is SearchEffect.ShowPostSavedMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        if (isSaving) {
+                            StringResources.feed_post_saved_to_bookmarks
+                        } else {
+                            StringResources.feed_post_removed_from_bookmarks
+                        }
+                    )
+                )
+            }
+
+            is SearchEffect.ShowInvalidLinkMessage -> {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(
+                        StringResources.feed_invalid_link
                     )
                 )
             }

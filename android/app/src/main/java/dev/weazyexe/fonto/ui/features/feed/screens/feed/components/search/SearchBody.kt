@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,8 +19,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -37,7 +41,8 @@ import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.components.panes.EmptyQueryPane
 import dev.weazyexe.fonto.ui.features.feed.components.panes.NotFoundPane
-import dev.weazyexe.fonto.ui.features.feed.components.post.PostCompactItem
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostItem
+import dev.weazyexe.fonto.ui.features.feed.components.post.PostItemType
 import dev.weazyexe.fonto.ui.features.feed.components.post.PostViewState
 
 @Composable
@@ -48,6 +53,7 @@ fun SearchBody(
     isActive: Boolean,
     areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
+    snackbarHostState: SnackbarHostState,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onActiveChange: (Boolean) -> Unit,
@@ -56,6 +62,7 @@ fun SearchBody(
     openMultiplePickerDialog: (PostsFilter) -> Unit,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
+    loadPostMetadata: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
@@ -70,6 +77,7 @@ fun SearchBody(
             isActive = isActive,
             areFiltersChanged = areFiltersChanged,
             contentPadding = contentPadding,
+            snackbarHostState = snackbarHostState,
             onQueryChange = onQueryChange,
             onSearch = onSearch,
             onActiveChange = onActiveChange,
@@ -78,6 +86,7 @@ fun SearchBody(
             openMultiplePickerDialog = openMultiplePickerDialog,
             onPostClick = onPostClick,
             onPostSaveClick = onPostSaveClick,
+            loadPostMetadata = loadPostMetadata,
             modifier = Modifier.weight(1f)
         )
 
@@ -96,6 +105,7 @@ private fun SearchBarAndResults(
     filters: List<FilterViewState<PostsFilter>>,
     areFiltersChanged: Boolean,
     contentPadding: PaddingValues,
+    snackbarHostState: SnackbarHostState,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onActiveChange: (Boolean) -> Unit,
@@ -104,6 +114,7 @@ private fun SearchBarAndResults(
     openMultiplePickerDialog: (PostsFilter) -> Unit,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
+    loadPostMetadata: (Post.Id) -> Unit,
     modifier: Modifier = Modifier
 ) {
     SearchBar(
@@ -150,47 +161,55 @@ private fun SearchBarAndResults(
             }
         },
     ) {
-        Column(modifier = Modifier.imePadding()) {
-            FiltersRow(
-                filters = filters,
-                onFilterChange = { onFilterChange(it as PostsFilter) },
-                openDateRangePickerDialog = { openDateRangePickerDialog(it as PostsFilter) },
-                openMultiplePickerDialog = { openMultiplePickerDialog(it as PostsFilter) }
-            )
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.imePadding()) {
+                FiltersRow(
+                    filters = filters,
+                    onFilterChange = { onFilterChange(it as PostsFilter) },
+                    openDateRangePickerDialog = { openDateRangePickerDialog(it as PostsFilter) },
+                    openMultiplePickerDialog = { openMultiplePickerDialog(it as PostsFilter) }
+                )
 
-            when (posts) {
-                is AsyncResult.Loading -> LoadingPane(modifier = Modifier.fillMaxSize())
-                is AsyncResult.Error -> ErrorPane(params = posts.error.asErrorPaneParams())
-                is AsyncResult.Success -> {
-                    val posts = posts.data
-                    when {
-                        query.isEmpty() && !areFiltersChanged -> {
-                            EmptyQueryPane(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f)
+                when (posts) {
+                    is AsyncResult.Loading -> LoadingPane(modifier = Modifier.fillMaxSize())
+                    is AsyncResult.Error -> ErrorPane(params = posts.error.asErrorPaneParams())
+                    is AsyncResult.Success -> {
+                        val posts = posts.data
+                        when {
+                            query.isEmpty() && !areFiltersChanged -> {
+                                EmptyQueryPane(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                )
+                            }
+
+                            posts.isEmpty() -> {
+                                NotFoundPane(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                )
+                            }
+
+                            else -> PostsList(
+                                posts = posts,
+                                contentPadding = contentPadding,
+                                onPostClick = onPostClick,
+                                onSaveClick = onPostSaveClick,
+                                loadPostMetadata = loadPostMetadata
                             )
                         }
-
-                        posts.isEmpty() -> {
-                            NotFoundPane(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                            )
-                        }
-
-                        else -> PostsList(
-                            posts = posts,
-                            contentPadding = contentPadding,
-                            onPostClick = onPostClick,
-                            onSaveClick = onPostSaveClick
-                        )
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.size(contentPadding.calculateBottomPadding()))
+                Spacer(modifier = Modifier.size(contentPadding.calculateBottomPadding()))
+            }
+            
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
     }
 }
@@ -200,7 +219,8 @@ private fun PostsList(
     posts: List<PostViewState>,
     contentPadding: PaddingValues,
     onPostClick: (Post.Id) -> Unit,
-    onSaveClick: (Post.Id) -> Unit
+    onSaveClick: (Post.Id) -> Unit,
+    loadPostMetadata: (Post.Id) -> Unit,
 ) {
     if (posts.isEmpty()) {
         NotFoundPane(modifier = Modifier.fillMaxSize())
@@ -210,10 +230,12 @@ private fun PostsList(
                 items = posts,
                 key = { it.id.origin }
             ) { post ->
-                PostCompactItem(
+                PostItem(
                     post = post,
+                    type = PostItemType.COMPACT,
                     onPostClick = { onPostClick(post.id) },
-                    onSaveClick = { onSaveClick(post.id) }
+                    onSaveClick = { onSaveClick(post.id) },
+                    loadPostMetadata = loadPostMetadata
                 )
             }
             item(key = "bottom_padding") {

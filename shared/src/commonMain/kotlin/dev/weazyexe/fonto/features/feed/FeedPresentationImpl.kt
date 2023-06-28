@@ -2,7 +2,6 @@ package dev.weazyexe.fonto.features.feed
 
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.PaginationState
-import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onLoading
@@ -11,17 +10,15 @@ import dev.weazyexe.fonto.common.html.OgMetadata
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.utils.extensions.firstOrNull
+import dev.weazyexe.fonto.utils.extensions.update
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
 internal class FeedPresentationImpl(
     private val dependencies: FeedDependencies
@@ -33,7 +30,6 @@ internal class FeedPresentationImpl(
     override fun onCreate(scope: CoroutineScope) {
         super.onCreate(scope)
         loadPosts(isSwipeRefreshing = false)
-        listenToEventBus()
     }
 
     override fun onSearchBarActiveChange(isActive: Boolean) {
@@ -93,69 +89,45 @@ internal class FeedPresentationImpl(
     }
 
     override fun openPost(id: Post.Id) {
-        dependencies.getPost(id)
-            .filterIsInstance<AsyncResult.Success<Post>>()
-            .onEach {
-                val post = it.data
+        scope.launch {
+            val post = state.posts.firstOrNull { it.id == id } ?: return@launch
 
-                if (post.link == null || !dependencies.urlValidator.validate(post.link)) {
-                    FeedEffect.ShowInvalidLinkMessage.emit()
-                    error("Post link is invalid: ${post.link}")
+            if (post.link == null || !dependencies.urlValidator.validate(post.link)) {
+                FeedEffect.ShowInvalidLinkMessage.emit()
+                error("Post link is invalid: ${post.link}")
+            }
+
+            openPost(link = post.link)
+            val updatedPost = post.copy(isRead = true)
+
+            dependencies.updatePost(updatedPost)
+                .onSuccess {
+                    val newPosts = state.posts.update(it.data)
+                    setState { copy(posts = newPosts) }
                 }
-
-                val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
-                val theme = dependencies.settingsStorage.getTheme()
-
-                when (openPostPreference) {
-                    OpenPostPreference.INTERNAL -> {
-                        FeedEffect.OpenPostInApp(
-                            link = post.link,
-                            theme = theme
-                        )
-                    }
-
-                    OpenPostPreference.DEFAULT_BROWSER -> {
-                        FeedEffect.OpenPostInBrowser(post.link)
-                    }
-                }.emit()
-            }
-            .catch { it.printStackTrace() }
-            .flatMapLatest {
-                val updatedPost = it.data.copy(isRead = true)
-                dependencies.updatePost(updatedPost)
-            }
-            .onSuccess {
-                val newPosts = state.posts.update(it.data)
-                setState { copy(posts = newPosts) }
-            }
-            .launchIn(scope)
+                .launchIn(this)
+        }
     }
 
     override fun savePost(id: Post.Id) {
-        var isSaving = false
-        dependencies.getPost(id)
-            .filterIsInstance<AsyncResult.Success<Post>>()
-            .flatMapLatest {
-                isSaving = !it.data.isSaved
-                val updatedPost = it.data.copy(isSaved = !it.data.isSaved)
-                dependencies.updatePost(updatedPost)
-            }
-            .onError {
-                FeedEffect.ShowPostSavingErrorMessage(isSaving = isSaving).emit()
-            }
+        val post = state.posts.firstOrNull { it.id == id } ?: return
+        val updatedPost = post.copy(isSaved = !post.isSaved)
+
+        dependencies.updatePost(updatedPost)
+            .onError { FeedEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit() }
             .onSuccess {
                 val newPosts = state.posts.update(it.data)
                 setState { copy(posts = newPosts) }
-                FeedEffect.ShowPostSavedMessage(isSaving = isSaving).emit()
+                FeedEffect.ShowPostSavedMessage(isSaving = updatedPost.isSaved).emit()
             }
             .launchIn(scope)
     }
 
-    override fun loadImageIfNeeds(id: Post.Id) {
+    override fun loadPostMetadataIfNeeds(id: Post.Id) {
         val post = state.posts.firstOrNull { it.id == id } ?: return
         if (post.link == null || post.imageUrl != null) return
 
-        dependencies.getImageFromHtmlMeta(post.link)
+        dependencies.getPostMetadataFromHtml(post.link)
             .filterIsInstance<AsyncResult.Success<OgMetadata>>()
             .map {
                 val newPost = post.copy(
@@ -173,25 +145,21 @@ internal class FeedPresentationImpl(
             .launchIn(scope)
     }
 
-    private fun listenToEventBus() {
-        dependencies.eventBus.observe()
-            .filter { it is AppEvent.RefreshFeed }
-            .onEach { loadPosts(isSwipeRefreshing = false) }
-            .launchIn(scope)
-    }
+    private suspend fun openPost(link: String) {
+        val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
+        val theme = dependencies.settingsStorage.getTheme()
 
-    private suspend fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> {
-        return withContext(Dispatchers.Default) {
-            map { posts ->
-                Posts(
-                    posts = posts.map { if (it.id == post.id) post else it }
+        when (openPostPreference) {
+            OpenPostPreference.INTERNAL -> {
+                FeedEffect.OpenPostInApp(
+                    link = link,
+                    theme = theme
                 )
             }
-        }
-    }
 
-    private fun AsyncResult<Posts>.firstOrNull(predicate: (Post) -> Boolean): Post? {
-        val postsResult = this as? AsyncResult.Success ?: return null
-        return postsResult.data.posts.firstOrNull { predicate(it) }
+            OpenPostPreference.DEFAULT_BROWSER -> {
+                FeedEffect.OpenPostInBrowser(link)
+            }
+        }.emit()
     }
 }

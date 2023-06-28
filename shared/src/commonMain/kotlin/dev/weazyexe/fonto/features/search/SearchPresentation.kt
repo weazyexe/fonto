@@ -10,9 +10,11 @@ abstract class SearchPresentation : Presentation<SearchDomainState, SearchEffect
 
     abstract fun applyFilters(updatedFilter: PostsFilter)
 
-    abstract fun onPostRead(id: Post.Id)
+    abstract fun savePost(id: Post.Id)
 
-    abstract fun onPostSave(id: Post.Id)
+    abstract fun openPost(id: Post.Id)
+
+    abstract fun loadPostMetadataIfNeeds(id: Post.Id)
 
     abstract fun emit(effect: SearchEffect)
 }

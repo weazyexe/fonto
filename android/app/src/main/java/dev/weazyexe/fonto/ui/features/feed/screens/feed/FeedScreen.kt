@@ -58,7 +58,7 @@ fun FeedScreen(
             isSearchBarActive = state.isSearchBarActive,
             onPostClick = { viewModel.openPost(it) },
             onPostSaveClick = { viewModel.savePost(it) },
-            onPostLoadImage = { viewModel.loadImageIfNeeds(it) },
+            onPostLoadImage = { viewModel.loadMetadataIfNeeds(it) },
             onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
             onRefreshClick = { viewModel.loadPosts(it) },
             loadMorePosts = { viewModel.loadMorePosts() },
