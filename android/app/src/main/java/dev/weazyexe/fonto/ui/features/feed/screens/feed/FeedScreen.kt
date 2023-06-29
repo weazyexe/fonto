@@ -53,13 +53,16 @@ fun FeedScreen(
             paginationState = state.paginationState,
             isSwipeRefreshing = state.isSwipeRefreshing,
             isSearchBarActive = state.isSearchBarActive,
+            initialFirstVisibleItemIndex = state.firstVisibleItemIndex,
+            initialFirstVisibleItemOffset = state.firstVisibleItemOffset,
             onPostClick = { viewModel.openPost(it) },
             onPostSaveClick = { viewModel.savePost(it) },
             onPostLoadImage = { viewModel.loadMetadataIfNeeds(it) },
             onManageFeedClick = { navController.navigate(ManageFeedScreenDestination()) },
             onRefreshClick = { viewModel.loadPosts(it) },
             loadMorePosts = { viewModel.loadMorePosts() },
-            onSearchBarActiveChange = { viewModel.onSearchBarActiveChange(it) }
+            onSearchBarActiveChange = { viewModel.onSearchBarActiveChange(it) },
+            onScroll = { index, offset -> viewModel.onScroll(index, offset) }
         )
     }
 }

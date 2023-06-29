@@ -145,6 +145,15 @@ internal class FeedPresentationImpl(
             .launchIn(scope)
     }
 
+    override fun onScroll(firstVisibleItemIndex: Int, firstVisibleItemOffset: Int) {
+        setState {
+            copy(
+                firstVisibleItemIndex = firstVisibleItemIndex,
+                firstVisibleItemOffset = firstVisibleItemOffset
+            )
+        }
+    }
+
     private suspend fun openPost(link: String) {
         val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
         val theme = dependencies.settingsStorage.getTheme()

@@ -46,11 +46,17 @@ class FeedViewModel(private val presentation: FeedPresentation) : ViewModel() {
         presentation.loadPostMetadataIfNeeds(id)
     }
 
+    fun onScroll(firstVisibleItemIndex: Int, firstVisibleItemOffset: Int) {
+        presentation.onScroll(firstVisibleItemIndex, firstVisibleItemOffset)
+    }
+
     private fun FeedDomainState.asViewState(): FeedViewState =
         FeedViewState(
             posts = posts.map { it.asViewState() },
             paginationState = paginationState,
             isSwipeRefreshing = isSwipeRefreshing,
-            isSearchBarActive = isSearchBarActive
+            isSearchBarActive = isSearchBarActive,
+            firstVisibleItemIndex = firstVisibleItemIndex,
+            firstVisibleItemOffset = firstVisibleItemOffset,
         )
 }
