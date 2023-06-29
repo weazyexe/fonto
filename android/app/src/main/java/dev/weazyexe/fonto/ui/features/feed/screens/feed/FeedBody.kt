@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +48,7 @@ fun FeedBody(
     onScroll: (firstVisibleItemIndex: Int, firstVisibleItemOffset: Int) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
+    var isScrollStateRestored by remember { mutableStateOf(false) }
 
     val shouldStartPaginate by remember(posts, paginationState) {
         derivedStateOf {
@@ -71,8 +74,12 @@ fun FeedBody(
     }
 
     LaunchedEffect(initialFirstVisibleItemIndex, initialFirstVisibleItemOffset) {
-        if (lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0) {
+        val currentItem = lazyListState.firstVisibleItemIndex
+        val currentOffset = lazyListState.firstVisibleItemScrollOffset
+
+        if (!isScrollStateRestored && currentItem == 0 && currentOffset == 0) {
             lazyListState.scrollToItem(initialFirstVisibleItemIndex, initialFirstVisibleItemOffset)
+            isScrollStateRestored = true
         }
     }
 
