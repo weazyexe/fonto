@@ -60,7 +60,14 @@ fun HomeScreen(
         bottomBar = {
             BottomBar(
                 currentDestination = currentDestination,
-                onTabChanged = { currentDestination = it }
+                onTabChanged = {
+                    if (currentDestination == BottomBarDestination.Feed && currentDestination == it) {
+                        feedViewModel.scrollToTop()
+                    } else {
+                        currentDestination = it
+                    }
+
+                }
             )
         }
     ) { padding ->

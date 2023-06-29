@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 @Composable
 fun BottomBar(
     currentDestination: BottomBarDestination,
-    onTabChanged: (BottomBarDestination) -> Unit
+    onTabChanged: (BottomBarDestination) -> Unit,
 ) {
     NavigationBar {
         BottomBarDestination.values().forEach { destination ->

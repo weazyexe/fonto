@@ -154,6 +154,10 @@ internal class FeedPresentationImpl(
         }
     }
 
+    override fun scrollToTop() {
+        FeedEffect.ScrollToTop.emit()
+    }
+
     private suspend fun openPost(link: String) {
         val openPostPreference = dependencies.settingsStorage.getOpenPostPreference()
         val theme = dependencies.settingsStorage.getTheme()

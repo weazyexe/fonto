@@ -3,6 +3,8 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -37,8 +39,13 @@ fun FeedScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val lazyListState = rememberLazyListState()
 
-    HandleEffects(viewModel.effects, snackbarHostState)
+    HandleEffects(
+        effects = viewModel.effects,
+        snackbarHostState = snackbarHostState,
+        lazyListState = lazyListState
+    )
 
     CompositionLocalProvider(
         LocalNavController provides navController,
@@ -48,6 +55,7 @@ fun FeedScreen(
     ) {
         FeedBody(
             posts = state.posts,
+            lazyListState = lazyListState,
             rootPaddingValues = rootPaddingValues,
             snackbarHostState = snackbarHostState,
             paginationState = state.paginationState,
@@ -70,7 +78,8 @@ fun FeedScreen(
 @Composable
 private fun HandleEffects(
     effects: Flow<FeedEffect>,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    lazyListState: LazyListState,
 ) {
     val context = LocalContext.current
     ReceiveEffect(effects) {
@@ -114,6 +123,10 @@ private fun HandleEffects(
                         StringResources.feed_invalid_link
                     )
                 )
+            }
+
+            is FeedEffect.ScrollToTop -> {
+                lazyListState.animateScrollToItem(0)
             }
         }
     }

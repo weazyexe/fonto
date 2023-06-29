@@ -18,4 +18,6 @@ abstract class FeedPresentation : Presentation<FeedDomainState, FeedEffect>() {
     abstract fun loadPostMetadataIfNeeds(id: Post.Id)
 
     abstract fun onScroll(firstVisibleItemIndex: Int, firstVisibleItemOffset: Int)
+
+    abstract fun scrollToTop()
 }
