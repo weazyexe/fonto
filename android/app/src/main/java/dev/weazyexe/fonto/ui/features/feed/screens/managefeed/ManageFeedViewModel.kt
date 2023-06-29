@@ -7,11 +7,11 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.features.managefeed.ManageFeedDomainState
 import dev.weazyexe.fonto.features.managefeed.ManageFeedPresentation
 import dev.weazyexe.fonto.ui.features.feed.components.feed.asViewState
-import kotlinx.coroutines.flow.map
+import dev.weazyexe.fonto.util.flow.mapState
 
 class ManageFeedViewModel(private val presentation: ManageFeedPresentation) : ViewModel() {
 
-    val state = presentation.domainState.map { it.asViewState() }
+    val state = presentation.domainState.mapState { it.asViewState() }
     val effects = presentation.effects
 
     init {

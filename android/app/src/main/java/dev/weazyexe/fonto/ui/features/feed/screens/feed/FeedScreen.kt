@@ -35,7 +35,7 @@ fun FeedScreen(
     feedPickerResult: FeedPickerResult,
     categoryPickerResults: CategoryPickerResult
 ) {
-    val state by viewModel.state.collectAsState(FeedViewState())
+    val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleEffects(viewModel.effects, snackbarHostState)

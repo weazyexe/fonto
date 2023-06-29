@@ -33,7 +33,7 @@ fun CategoriesScreen(
     deleteResultRecipient: ResultRecipient<CategoryDeleteConfirmationDialogDestination, Long?>
 ) {
     val viewModel = koinViewModel<CategoriesViewModel>()
-    val state by viewModel.state.collectAsState(CategoriesViewState())
+    val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     BackHandler {

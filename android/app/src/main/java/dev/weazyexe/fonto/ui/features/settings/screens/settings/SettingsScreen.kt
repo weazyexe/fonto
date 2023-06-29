@@ -45,7 +45,7 @@ fun SettingsScreen(
     onBack: () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val state by viewModel.state.collectAsState(SettingsViewState())
+    val state by viewModel.state.collectAsState()
 
     BackHandler { onBack() }
 

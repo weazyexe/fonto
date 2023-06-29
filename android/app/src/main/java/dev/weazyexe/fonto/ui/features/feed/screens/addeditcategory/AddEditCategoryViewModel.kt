@@ -7,7 +7,7 @@ import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryArgs
 import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryDomainState
 import dev.weazyexe.fonto.features.addeditcategory.AddEditCategoryPresentation
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
-import kotlinx.coroutines.flow.map
+import dev.weazyexe.fonto.util.flow.mapState
 
 class AddEditCategoryViewModel(
     savedStateHandle: SavedStateHandle,
@@ -16,7 +16,7 @@ class AddEditCategoryViewModel(
 
     private val args = AddEditCategoryDialogDestination.argsFrom(savedStateHandle)
 
-    val state = presentation.domainState.map { it.asViewState() }
+    val state = presentation.domainState.mapState { it.asViewState() }
     val effects = presentation.effects
 
     init {

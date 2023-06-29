@@ -20,7 +20,7 @@ fun AddEditCategoryDialog(
     resultBackNavigator: ResultBackNavigator<Boolean>
 ) {
     val viewModel = koinViewModel<AddEditCategoryViewModel>()
-    val state by viewModel.state.collectAsState(AddEditCategoryViewState())
+    val state by viewModel.state.collectAsState()
 
     HandleEffects(
         effects = viewModel.effects,

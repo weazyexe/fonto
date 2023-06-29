@@ -33,7 +33,7 @@ fun AddEditFeedScreen(
     resultRecipient: ResultRecipient<AddEditCategoryDialogDestination, Boolean>
 ) {
     val viewModel = koinViewModel<AddEditFeedViewModel>()
-    val state by viewModel.state.collectAsState(AddEditFeedViewState())
+    val state by viewModel.state.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
 

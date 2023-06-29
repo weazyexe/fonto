@@ -1,6 +1,5 @@
 package dev.weazyexe.fonto.ui.features.home
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -69,33 +68,7 @@ fun HomeScreen(
             targetState = currentDestination,
             label = "bottom_bar_crossfade"
         ) {
-            AnimatedVisibility(visible = it == BottomBarDestination.Feed) {
-                FeedScreen(
-                    rootPaddingValues = padding,
-                    viewModel = feedViewModel,
-                    navController = navController,
-                    dateRangePickerResult = dateRangePickerResultRecipient,
-                    feedPickerResult = feedPickerResultRecipient,
-                    categoryPickerResults = categoryPickerResultsRecipient
-                )
-            }
-
-            AnimatedVisibility(visible = it == BottomBarDestination.Bookmarks) {
-                BookmarksScreen(onBack = { currentDestination = BottomBarDestination.Feed })
-            }
-
-            AnimatedVisibility(visible = it == BottomBarDestination.Settings) {
-                SettingsScreen(
-                    rootPaddingValues = padding,
-                    viewModel = settingsViewModel,
-                    navController = navController,
-                    themePickerResult = themePickerResultRecipient,
-                    colorPickerResult = colorPickerResultRecipient,
-                    exportStrategyPickerResults = exportStrategyPickerResultsRecipient,
-                    onBack = { currentDestination = BottomBarDestination.Feed }
-                )
-            }
-            /*when (it) {
+            when (it) {
                 BottomBarDestination.Feed -> {
                     FeedScreen(
                         rootPaddingValues = padding,
@@ -122,7 +95,7 @@ fun HomeScreen(
                         onBack = { currentDestination = BottomBarDestination.Feed }
                     )
                 }
-            }*/
+            }
         }
     }
 }

@@ -7,11 +7,11 @@ import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.features.categories.CategoriesDomainState
 import dev.weazyexe.fonto.features.categories.CategoriesPresentation
 import dev.weazyexe.fonto.ui.features.feed.components.category.asViewState
-import kotlinx.coroutines.flow.map
+import dev.weazyexe.fonto.util.flow.mapState
 
 class CategoriesViewModel(private val presentation: CategoriesPresentation) : ViewModel() {
 
-    val state = presentation.domainState.map { it.asViewState() }
+    val state = presentation.domainState.mapState { it.asViewState() }
     val effects = presentation.effects
 
     init {
