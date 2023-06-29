@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Parcelize
-data class FeedPickerResult(
+data class FeedPickerResults(
     val values: @RawValue List<ByFeed.Data>,
     val possibleValues: @RawValue List<ByFeed.Data>
 ) : Parcelable

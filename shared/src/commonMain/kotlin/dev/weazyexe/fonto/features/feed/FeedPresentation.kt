@@ -16,4 +16,6 @@ abstract class FeedPresentation : Presentation<FeedDomainState, FeedEffect>() {
     abstract fun savePost(id: Post.Id)
 
     abstract fun loadPostMetadataIfNeeds(id: Post.Id)
+
+    abstract fun onScroll(firstVisibleItemIndex: Int, firstVisibleItemOffset: Int)
 }

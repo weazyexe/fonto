@@ -11,7 +11,7 @@ import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedArgs
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedDomainState
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedPresentation
 import dev.weazyexe.fonto.ui.features.destinations.AddEditFeedScreenDestination
-import kotlinx.coroutines.flow.map
+import dev.weazyexe.fonto.util.flow.mapState
 
 class AddEditFeedViewModel(
     private val presentation: AddEditFeedPresentation,
@@ -20,7 +20,7 @@ class AddEditFeedViewModel(
 
     private val args = AddEditFeedScreenDestination.argsFrom(savedStateHandle)
 
-    val state = presentation.domainState.map { it.asViewState() }
+    val state = presentation.domainState.mapState { it.asViewState() }
     val effects = presentation.effects
 
     init {

@@ -13,14 +13,14 @@ import dev.weazyexe.fonto.features.settings.SettingsPresentation
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.mapper.asDomainState
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.mapper.asViewState
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.viewstate.PreferenceViewState
-import kotlinx.coroutines.flow.map
+import dev.weazyexe.fonto.util.flow.mapState
 
 class SettingsViewModel(
     private val presentation: SettingsPresentation,
     private val context: App
 ) : ViewModel() {
 
-    val state = presentation.domainState.map { it.asViewState(context) }
+    val state = presentation.domainState.mapState { it.asViewState(context) }
     val effects = presentation.effects
 
     init {

@@ -10,44 +10,41 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.ramcosta.composedestinations.annotation.Destination
+import androidx.navigation.NavController
+import com.ramcosta.composedestinations.navigation.navigate
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.feed.FeedEffect
-import dev.weazyexe.fonto.ui.features.BottomBarNavGraph
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResults
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResults
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResults
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavigateTo
-import dev.weazyexe.fonto.ui.features.home.dependencies.CategoryPickerResults
-import dev.weazyexe.fonto.ui.features.home.dependencies.DateRangePickerResults
-import dev.weazyexe.fonto.ui.features.home.dependencies.FeedPickerResults
-import dev.weazyexe.fonto.ui.features.home.dependencies.NavigateTo
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResult
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResult
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResult
+import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavController
+import dev.weazyexe.fonto.ui.features.home.CategoryPickerResult
+import dev.weazyexe.fonto.ui.features.home.DateRangePickerResult
+import dev.weazyexe.fonto.ui.features.home.FeedPickerResult
 import kotlinx.coroutines.flow.Flow
 
-@BottomBarNavGraph(start = true)
-@Destination
 @Composable
 fun FeedScreen(
     rootPaddingValues: PaddingValues,
     viewModel: FeedViewModel,
-    navigateTo: NavigateTo,
-    dateRangePickerResultRecipientProvider: DateRangePickerResults,
-    feedPickerResults: FeedPickerResults,
-    categoryPickerResults: CategoryPickerResults,
+    navController: NavController,
+    dateRangePickerResult: DateRangePickerResult,
+    feedPickerResult: FeedPickerResult,
+    categoryPickerResults: CategoryPickerResult
 ) {
-    val state by viewModel.state.collectAsState(FeedViewState())
+    val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     HandleEffects(viewModel.effects, snackbarHostState)
 
     CompositionLocalProvider(
-        LocalNavigateTo provides navigateTo,
-        LocalDateRangePickerResults provides dateRangePickerResultRecipientProvider,
-        LocalFeedPickerResults provides feedPickerResults,
-        LocalCategoryPickerResults provides categoryPickerResults
+        LocalNavController provides navController,
+        LocalDateRangePickerResult provides dateRangePickerResult,
+        LocalFeedPickerResult provides feedPickerResult,
+        LocalCategoryPickerResult provides categoryPickerResults
     ) {
         FeedBody(
             posts = state.posts,
@@ -56,13 +53,16 @@ fun FeedScreen(
             paginationState = state.paginationState,
             isSwipeRefreshing = state.isSwipeRefreshing,
             isSearchBarActive = state.isSearchBarActive,
+            initialFirstVisibleItemIndex = state.firstVisibleItemIndex,
+            initialFirstVisibleItemOffset = state.firstVisibleItemOffset,
             onPostClick = { viewModel.openPost(it) },
             onPostSaveClick = { viewModel.savePost(it) },
             onPostLoadImage = { viewModel.loadMetadataIfNeeds(it) },
-            onManageFeedClick = { navigateTo(ManageFeedScreenDestination()) },
+            onManageFeedClick = { navController.navigate(ManageFeedScreenDestination()) },
             onRefreshClick = { viewModel.loadPosts(it) },
             loadMorePosts = { viewModel.loadMorePosts() },
-            onSearchBarActiveChange = { viewModel.onSearchBarActiveChange(it) }
+            onSearchBarActiveChange = { viewModel.onSearchBarActiveChange(it) },
+            onScroll = { index, offset -> viewModel.onScroll(index, offset) }
         )
     }
 }

@@ -13,17 +13,14 @@ import dev.weazyexe.fonto.features.search.SearchEffect
 import dev.weazyexe.fonto.features.search.SearchPresentation
 import dev.weazyexe.fonto.ui.features.feed.components.post.asViewState
 import dev.weazyexe.fonto.ui.features.feed.viewstates.asViewStates
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import dev.weazyexe.fonto.util.flow.mapState
 
 class SearchViewModel(
     private val presentation: SearchPresentation,
     private val context: App,
 ) : ViewModel() {
 
-    val state: Flow<SearchViewState>
-        get() = presentation.domainState.map { it.asViewState() }
-
+    val state = presentation.domainState.mapState { it.asViewState() }
     val effects = presentation.effects
 
     init {

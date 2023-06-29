@@ -30,7 +30,7 @@ fun ManageFeedScreen(
     feedDeleteRecipient: ResultRecipient<FeedDeleteConfirmationDialogDestination, Long?>
 ) {
     val viewModel = koinViewModel<ManageFeedViewModel>()
-    val state by viewModel.state.collectAsState(ManageFeedViewState())
+    val state by viewModel.state.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
 

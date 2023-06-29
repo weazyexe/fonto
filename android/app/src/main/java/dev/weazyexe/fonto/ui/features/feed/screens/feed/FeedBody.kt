@@ -8,7 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.weazyexe.fonto.common.data.AsyncResult
@@ -33,6 +36,8 @@ fun FeedBody(
     paginationState: PaginationState,
     isSwipeRefreshing: Boolean,
     isSearchBarActive: Boolean,
+    initialFirstVisibleItemIndex: Int = 0,
+    initialFirstVisibleItemOffset: Int = 0,
     onPostClick: (Post.Id) -> Unit,
     onPostSaveClick: (Post.Id) -> Unit,
     onPostLoadImage: (Post.Id) -> Unit,
@@ -40,8 +45,10 @@ fun FeedBody(
     onRefreshClick: (isSwipeRefreshed: Boolean) -> Unit,
     loadMorePosts: () -> Unit,
     onSearchBarActiveChange: (Boolean) -> Unit,
+    onScroll: (firstVisibleItemIndex: Int, firstVisibleItemOffset: Int) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
+    var isScrollStateRestored by remember { mutableStateOf(false) }
 
     val shouldStartPaginate by remember(posts, paginationState) {
         derivedStateOf {
@@ -58,6 +65,21 @@ fun FeedBody(
     LaunchedEffect(shouldStartPaginate) {
         if (shouldStartPaginate) {
             loadMorePosts()
+        }
+    }
+
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset }
+            .collect { onScroll(it.first, it.second) }
+    }
+
+    LaunchedEffect(initialFirstVisibleItemIndex, initialFirstVisibleItemOffset) {
+        val currentItem = lazyListState.firstVisibleItemIndex
+        val currentOffset = lazyListState.firstVisibleItemScrollOffset
+
+        if (!isScrollStateRestored && currentItem == 0 && currentOffset == 0) {
+            lazyListState.scrollToItem(initialFirstVisibleItemIndex, initialFirstVisibleItemOffset)
+            isScrollStateRestored = true
         }
     }
 
@@ -131,7 +153,8 @@ private fun FeedBodyPreview() = ThemedPreview {
         onManageFeedClick = {},
         onRefreshClick = {},
         loadMorePosts = {},
-        onSearchBarActiveChange = {}
+        onSearchBarActiveChange = {},
+        onScroll = { _, _ -> }
     )
 }
 
@@ -151,6 +174,7 @@ private fun FeedBodyLoadingPreview() = ThemedPreview {
         onManageFeedClick = {},
         onRefreshClick = {},
         loadMorePosts = {},
-        onSearchBarActiveChange = {}
+        onSearchBarActiveChange = {},
+        onScroll = { _, _ -> }
     )
 }
