@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import dev.weazyexe.fonto.ui.features.feed.viewstates.PostsViewState
 @Composable
 fun FeedBody(
     posts: AsyncResult<PostsViewState>,
+    lazyListState: LazyListState,
     rootPaddingValues: PaddingValues,
     snackbarHostState: SnackbarHostState,
     paginationState: PaginationState,
@@ -47,7 +49,6 @@ fun FeedBody(
     onSearchBarActiveChange: (Boolean) -> Unit,
     onScroll: (firstVisibleItemIndex: Int, firstVisibleItemOffset: Int) -> Unit
 ) {
-    val lazyListState = rememberLazyListState()
     var isScrollStateRestored by remember { mutableStateOf(false) }
 
     val shouldStartPaginate by remember(posts, paginationState) {
@@ -142,6 +143,7 @@ private fun FeedBodyPreview() = ThemedPreview {
                 )
             )
         ),
+        lazyListState = rememberLazyListState(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,
@@ -163,6 +165,7 @@ private fun FeedBodyPreview() = ThemedPreview {
 private fun FeedBodyLoadingPreview() = ThemedPreview {
     FeedBody(
         posts = AsyncResult.Loading(),
+        lazyListState = rememberLazyListState(),
         rootPaddingValues = PaddingValues(),
         snackbarHostState = SnackbarHostState(),
         paginationState = PaginationState.IDLE,

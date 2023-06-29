@@ -49,6 +49,10 @@ class FeedViewModel(private val presentation: FeedPresentation) : ViewModel() {
         presentation.onScroll(firstVisibleItemIndex, firstVisibleItemOffset)
     }
 
+    fun scrollToTop() {
+        presentation.scrollToTop()
+    }
+
     private fun FeedDomainState.asViewState(): FeedViewState =
         FeedViewState(
             posts = posts.map { it.asViewState() },
