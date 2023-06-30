@@ -12,12 +12,16 @@ import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.utils.extensions.asResponseError
-import dev.weazyexe.fonto.utils.extensions.flowIo
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flowOn
 
 internal class GetPostsUseCase(
     private val feedRepository: FeedRepository,
@@ -32,41 +36,71 @@ internal class GetPostsUseCase(
         offset: Int,
         useCache: Boolean,
         shouldShowLoading: Boolean = true
-    ): Flow<AsyncResult<Posts>> = flowIo {
+    ): Flow<AsyncResult<Posts>> = channelFlow {
         if (shouldShowLoading) {
-            emit(AsyncResult.Loading())
+            send(AsyncResult.Loading())
         }
 
-        emit(
-            if (useCache) {
-                loadPostsFromCache(limit, offset)
-            } else {
-                loadPostsFromInternet(limit, offset)
-            }
-        )
+        if (useCache) {
+            send(loadPostsFromCache(limit, offset))
+        } else {
+            loadPostsFromInternet(limit, offset)
+        }
     }
+        .flowOn(Dispatchers.IO)
+        .catch {
+            Napier.e(throwable = it, message = "Error in channelFlow")
+            emit(AsyncResult.Error(it.asResponseError()))
+        }
 
-    private suspend fun loadPostsFromInternet(limit: Int, offset: Int): AsyncResult<Posts> {
+    private suspend fun ProducerScope<AsyncResult<Posts>>.loadPostsFromInternet(
+        limit: Int,
+        offset: Int
+    ) {
         val feeds = feedRepository.getAll()
-        val parsedFeed = getPostsFromFeeds(feeds)
+        var loadedPostsCount = 0
+
+        val parsedFeed = coroutineScope {
+            feeds
+                .map {
+                    async {
+                        when (it.type) {
+                            Feed.Type.RSS -> rssRepository.getRssFeed(it)
+                            Feed.Type.ATOM -> atomRepository.getAtomFeed(it)
+                            Feed.Type.JSON_FEED -> jsonFeedRepository.getJsonFeed(it)
+                        }.also {
+                            send(
+                                AsyncResult.Loading.Progress(
+                                    current = ++loadedPostsCount,
+                                    total = feeds.size
+                                )
+                            )
+                        }
+                    }
+                }
+                .awaitAll()
+        }
 
         val loadedPosts = flattenParsedPosts(parsedFeed)
         loadedPosts.posts.forEach { postRepository.insertOrIgnore(it) }
 
         val areAllFeedsFailed = loadedPosts.loadedWithError.size == feeds.size
-        return when {
-            feeds.isEmpty() -> AsyncResult.Success(Posts.EMPTY)
-            areAllFeedsFailed -> AsyncResult.Error(
-                loadedPosts.loadedWithError.first().throwable.asResponseError()
-            )
-            else -> {
-                val posts = postRepository.getPosts(
-                    limit = limit,
-                    offset = offset
+        send(
+            when {
+                feeds.isEmpty() -> AsyncResult.Success(Posts.EMPTY)
+                areAllFeedsFailed -> AsyncResult.Error(
+                    loadedPosts.loadedWithError.first().throwable.asResponseError()
                 )
-                AsyncResult.Success(Posts(posts = posts))
+
+                else -> {
+                    val posts = postRepository.getPosts(
+                        limit = limit,
+                        offset = offset
+                    )
+                    AsyncResult.Success(Posts(posts = posts))
+                }
             }
-        }
+        )
     }
 
     private suspend fun loadPostsFromCache(limit: Int, offset: Int): AsyncResult<Posts> {
@@ -76,19 +110,6 @@ internal class GetPostsUseCase(
             )
         )
     }
-
-    private suspend fun getPostsFromFeeds(feeds: List<Feed>): List<ParsedFeed> =
-        coroutineScope {
-            feeds.map {
-                async {
-                    when (it.type) {
-                        Feed.Type.RSS -> rssRepository.getRssFeed(it)
-                        Feed.Type.ATOM -> atomRepository.getAtomFeed(it)
-                        Feed.Type.JSON_FEED -> jsonFeedRepository.getJsonFeed(it)
-                    }
-                }
-            }.awaitAll()
-        }
 
     private fun flattenParsedPosts(feeds: List<ParsedFeed>): LoadedPosts {
         val problematicFeedList = mutableListOf<ParsedFeed.Error>()

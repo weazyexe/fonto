@@ -21,6 +21,7 @@ import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingPane
+import dev.weazyexe.fonto.core.ui.components.loadstate.LoadingProgressPane
 import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.StringResources
@@ -28,6 +29,7 @@ import dev.weazyexe.fonto.ui.features.feed.preview.PostViewStatePreview
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.FeedScaffold
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.components.buildPosts
 import dev.weazyexe.fonto.ui.features.feed.viewstates.PostsViewState
+import io.github.aakira.napier.Napier
 
 @Composable
 fun FeedBody(
@@ -93,7 +95,18 @@ fun FeedBody(
         onSearchBarActiveChange = onSearchBarActiveChange,
         contentPadding = rootPaddingValues,
     ) {
+        Napier.d { "KEKEK $posts" }
         when (posts) {
+            is AsyncResult.Loading.Progress -> {
+                item("progress_loading") {
+                    LoadingProgressPane(
+                        current = posts.current,
+                        total = posts.total,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+
             is AsyncResult.Loading -> {
                 item("loading") {
                     LoadingPane(modifier = Modifier.fillMaxSize())

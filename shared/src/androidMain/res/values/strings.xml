@@ -43,6 +43,7 @@
     <string name="home_bottom_label_settings">Settings</string>
 
     <string name="feed_empty_posts">Your feed is empty. You probably want to add feed sources</string>
+    <string name="feed_synchronization">Synchronizing your feed . . .</string>
     <string name="feed_empty_posts_manage_feed">Manage feed</string>
     <string name="feed_post_saved_to_bookmarks">Post has been saved to your bookmarks</string>
     <string name="feed_post_removed_from_bookmarks">Post has been removed from bookmarks</string>

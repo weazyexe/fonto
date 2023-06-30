@@ -5,6 +5,7 @@ import dev.weazyexe.fonto.common.data.PaginationState
 import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onLoading
+import dev.weazyexe.fonto.common.data.onProgress
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.html.OgMetadata
 import dev.weazyexe.fonto.common.model.feed.Post
@@ -44,6 +45,7 @@ internal class FeedPresentationImpl(
             useCache = false
         )
             .onLoading { setState { copy(posts = it) } }
+            .onProgress { setState { copy(posts = it) } }
             .onError { setState { copy(posts = it, isSwipeRefreshing = false) } }
             .onSuccess { setState { copy(posts = it, isSwipeRefreshing = false) } }
             .onStart {
