@@ -33,6 +33,8 @@ kotlinxCoroutines = "1.7.1"
 kotlinxSerialization = "1.5.1"
 kotlinxDatetime = "0.4.0"
 
+workmanager = "2.8.1"
+
 ktor = "2.2.4"
 
 sqlDelight = "2.0.0-rc01"
@@ -66,7 +68,6 @@ androidx-browser = { group = "androidx.browser", name = "browser", version.ref =
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
-
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-material = { module = "androidx.compose.material:material" }
@@ -90,6 +91,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 
 xmlutil-core = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "xmlutil" }
 xmlutil-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }
@@ -103,6 +105,8 @@ espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "esp
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+
+workmanager = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
 
 ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }

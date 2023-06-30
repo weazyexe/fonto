@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.app
+package dev.weazyexe.fonto.common.app.initializer
 
 import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage

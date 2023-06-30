@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.ui.features.feed.screens.feed.components.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.app.App
+import dev.weazyexe.fonto.app.FontoApplication
 import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.feature.posts.ByCategory
 import dev.weazyexe.fonto.common.feature.posts.ByFeed
@@ -17,7 +17,7 @@ import dev.weazyexe.fonto.util.flow.mapState
 
 class SearchViewModel(
     private val presentation: SearchPresentation,
-    private val context: App,
+    private val context: FontoApplication,
 ) : ViewModel() {
 
     val state = presentation.domainState.mapState { it.asViewState() }

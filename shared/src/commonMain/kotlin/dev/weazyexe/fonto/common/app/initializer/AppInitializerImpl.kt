@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.app
+package dev.weazyexe.fonto.common.app.initializer
 
 internal class AppInitializerImpl(
     private val categoriesInitializer: CategoriesInitializer,
@@ -6,7 +6,7 @@ internal class AppInitializerImpl(
 ) : AppInitializer {
 
     override suspend fun initialize(arguments: AppInitializer.Args) {
-        categoriesInitializer.initialize(Unit)
+        categoriesInitializer.initialize()
         mockFeedInitializer.initialize(MockFeedInitializer.Args(arguments.areMockFeedsEnabled))
     }
 }

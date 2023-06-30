@@ -3,7 +3,7 @@ package dev.weazyexe.fonto.ui.features.settings.screens.settings
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.weazyexe.fonto.app.App
+import dev.weazyexe.fonto.app.FontoApplication
 import dev.weazyexe.fonto.common.feature.backup.AndroidFileReader
 import dev.weazyexe.fonto.common.feature.backup.AndroidFileSaver
 import dev.weazyexe.fonto.common.model.backup.ExportStrategy
@@ -17,7 +17,7 @@ import dev.weazyexe.fonto.util.flow.mapState
 
 class SettingsViewModel(
     private val presentation: SettingsPresentation,
-    private val context: App
+    private val context: FontoApplication
 ) : ViewModel() {
 
     val state = presentation.domainState.mapState { it.asViewState(context) }

@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.app
+package dev.weazyexe.fonto.common.app.initializer
 
 import dev.weazyexe.fonto.common.data.usecase.feed.CreateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.DeleteAllFeedsUseCase
