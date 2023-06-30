@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.ui.features.feed.components.post
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +46,7 @@ fun PostItem(
                 onPostClick = onPostClick,
                 onSaveClick = onSaveClick,
                 modifier = modifier
+                    .animateContentSize()
                     .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
                     .clickable(onClick = onPostClick)
             )
