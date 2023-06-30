@@ -156,7 +156,6 @@ private fun BodyLoader() {
 private fun ImageLoader() {
     Box(
         modifier = Modifier
-            .padding(bottom = 4.dp)
             .fillMaxWidth()
             .height(240.dp)
             .fadeLoader(5.dp)
