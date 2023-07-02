@@ -77,6 +77,7 @@
     <string name="add_edit_feed_category_title_not_selected">Not selected</string>
     <string name="add_edit_feed_add_new_category">Add new category</string>
     <string name="add_edit_feed_categories_loading_failure">Failed to load categories</string>
+    <string name="add_edit_feed_notifications">Show notifications</string>
     <string name="add_edit_feed_feed_loading_failure">Failed to load feed</string>
     <string name="add_edit_feed_feed_icon_loading_failure">Failed to load feed icon</string>
     <string name="add_edit_feed_invalid_title">Title can\'t be empty</string>

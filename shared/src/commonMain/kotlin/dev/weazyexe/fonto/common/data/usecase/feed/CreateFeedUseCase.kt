@@ -17,10 +17,11 @@ internal class CreateFeedUseCase(
         link: String,
         image: LocalImage?,
         type: Feed.Type,
-        category: Category?
+        category: Category?,
+        areNotificationsEnabled: Boolean
     ): Flow<AsyncResult<Unit>> = flowIo {
         emit(AsyncResult.Loading())
-        feedRepository.insert(title, link, image, type, category?.id)
+        feedRepository.insert(title, link, image, type, category?.id, areNotificationsEnabled)
         emit(AsyncResult.Success(Unit))
     }
 }

@@ -21,7 +21,6 @@ object FeedViewStatePreview {
                 title = "Rozetked",
                 link = "https://rozetked.me/turbo",
                 icon = icon,
-                type = Feed.Type.RSS,
                 category = Category(Category.Id(0), "News")
             )
         }
@@ -34,7 +33,6 @@ object FeedViewStatePreview {
                 title = "DTF",
                 link = "https://dtf.ru/rss/all",
                 icon = null,
-                type = Feed.Type.RSS,
                 category = Category(Category.Id(1), "Games")
             )
 

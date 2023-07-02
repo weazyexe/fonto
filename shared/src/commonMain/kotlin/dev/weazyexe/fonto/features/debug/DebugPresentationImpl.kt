@@ -44,7 +44,16 @@ internal class DebugPresentationImpl(
         dependencies.deleteAllFeeds()
             .filterIsInstance<AsyncResult.Success<*>>()
             .flatMapLatest { feed.asFlow() }
-            .flatMapMerge { dependencies.createFeed(it.title, it.link, it.icon, it.type, it.category) }
+            .flatMapMerge {
+                dependencies.createFeed(
+                    title = it.title,
+                    link = it.link,
+                    image = it.icon,
+                    type = it.type,
+                    category = it.category,
+                    areNotificationsEnabled = it.areNotificationsEnabled
+                )
+            }
             .filterIsInstance<AsyncResult.Success<*>>()
             .drop(feed.size - 1)
             .onSuccess {

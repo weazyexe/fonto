@@ -11,7 +11,8 @@ internal fun FeedDao.toFeed(category: Category?): Feed = Feed(
     link = link,
     icon = icon?.let { LocalImage(it) },
     type = Feed.Type.byId(type),
-    category = category
+    category = category,
+    areNotificationsEnabled = areNotificationsEnabled.toBooleanStrict()
 )
 
 internal fun Feed.toDao(): FeedDao = FeedDao(
@@ -20,5 +21,6 @@ internal fun Feed.toDao(): FeedDao = FeedDao(
     link = link,
     icon = icon?.bytes,
     type = type.id,
-    categoryId = category?.id?.origin
+    categoryId = category?.id?.origin,
+    areNotificationsEnabled = areNotificationsEnabled.toString()
 )

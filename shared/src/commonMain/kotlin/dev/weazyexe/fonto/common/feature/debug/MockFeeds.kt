@@ -9,7 +9,8 @@ internal val VALID_FEED = listOf(
         link = "https://techcrunch.com/feed/",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(2),
@@ -17,7 +18,8 @@ internal val VALID_FEED = listOf(
         link = "https://habr.ru/rss/all/all?fl=ru",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(3),
@@ -25,7 +27,8 @@ internal val VALID_FEED = listOf(
         link = "https://mashable.com/feed/",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(4),
@@ -33,7 +36,8 @@ internal val VALID_FEED = listOf(
         link = "https://www.engadget.com/rss.xml",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(5),
@@ -41,7 +45,8 @@ internal val VALID_FEED = listOf(
         link = "https://gizmodo.com/rss",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(6),
@@ -49,7 +54,8 @@ internal val VALID_FEED = listOf(
         link = "https://arstechnica.com/feed/",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(7),
@@ -57,7 +63,8 @@ internal val VALID_FEED = listOf(
         link = "https://www.wired.com/feed/rss",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(8),
@@ -65,7 +72,8 @@ internal val VALID_FEED = listOf(
         link = "https://dtf.ru/rss/all",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(9),
@@ -73,7 +81,8 @@ internal val VALID_FEED = listOf(
         link = "https://www.theguardian.com/world/rss",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(10),
@@ -81,7 +90,8 @@ internal val VALID_FEED = listOf(
         link = "https://vc.ru/rss/all",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
 )
 
@@ -92,7 +102,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://techcrunch.com/feed/",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(2),
@@ -100,7 +111,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://habr.ru/rss/all/all?fl=ru",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(3),
@@ -108,7 +120,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://mashable.com/feed/",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(4),
@@ -116,7 +129,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://www.engadget.com/rss.xml",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(5),
@@ -124,7 +138,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://gizmodo.com/rss",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(6),
@@ -132,7 +147,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://www.google.com/",
         icon = null,
         type = Feed.Type.RSS,
-        null
+        null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(7),
@@ -140,7 +156,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://www.wired.com/feed/rss",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(8),
@@ -148,7 +165,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://dtf.ru/rss/all",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(9),
@@ -156,7 +174,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://tjournal.ru/rss/all",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(10),
@@ -164,7 +183,8 @@ internal val PARTIALLY_INVALID_FEED = listOf(
         link = "https://vc.ru/rss/all",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
 )
 
@@ -175,7 +195,8 @@ internal val FULLY_INVALID_FEED = listOf(
         link = "https://ya.ru",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(2),
@@ -183,7 +204,8 @@ internal val FULLY_INVALID_FEED = listOf(
         link = "https://www.google.com/",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     ),
     Feed(
         id = Feed.Id(3),
@@ -191,6 +213,7 @@ internal val FULLY_INVALID_FEED = listOf(
         link = "https://tjournal.ru/rss/all",
         icon = null,
         type = Feed.Type.RSS,
-        category = null
+        category = null,
+        areNotificationsEnabled = false
     )
 )

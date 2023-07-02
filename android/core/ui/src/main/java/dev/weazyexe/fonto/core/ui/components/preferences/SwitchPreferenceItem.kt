@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.core.ui.components.preferences
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,9 +31,9 @@ import dev.weazyexe.fonto.core.ui.vibration.vibrate
 @Composable
 fun SwitchPreferenceItem(
     title: String,
-    description: String,
+    description: String?,
     value: Boolean,
-    @DrawableRes icon: Int,
+    @DrawableRes icon: Int?,
     onValueChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -49,19 +50,22 @@ fun SwitchPreferenceItem(
             .padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(end = 16.dp)
-                .size(24.dp),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-        )
+        if (icon != null) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(24.dp),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+            )
+        }
 
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 16.dp)
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = title,
@@ -69,11 +73,13 @@ fun SwitchPreferenceItem(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            if (!description.isNullOrEmpty()) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
 
         Switch(
@@ -119,6 +125,19 @@ private fun SwitchPreferenceItemDisabledPreview() = ThemedPreview {
         description = "Lorem ipsum dolor set very long text very long text very long text",
         value = false,
         icon = DrawableResources.ic_bookmark_24,
+        onValueChange = {},
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SwitchPreferenceItemNoIconPreview() = ThemedPreview {
+    SwitchPreferenceItem(
+        title = "Something",
+        description = null,
+        value = false,
+        icon = null,
         onValueChange = {},
         modifier = Modifier.fillMaxWidth()
     )

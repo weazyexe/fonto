@@ -30,7 +30,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
@@ -53,7 +52,7 @@ fun PostRegularItem(
             title = post.feed.title,
             categoryTitle = post.feed.category?.title,
             publishedAt = post.publishedAt.formatHumanFriendly(),
-            icon = post.feed.icon?.asBitmap()?.asImageBitmap(),
+            icon = post.feed.icon?.asImageBitmap(),
             isSaved = post.isSaved,
             isRead = post.isRead,
             onSaveClick = onSaveClick,

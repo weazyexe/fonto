@@ -13,8 +13,14 @@ internal class FeedDataSource(database: FontoDatabase) {
 
     fun getById(id: Long): FeedDao = queries.getById(id).executeAsOne()
 
-    fun insert(title: String, link: String, icon: ByteArray?, type: Long, categoryId: Long?) =
-        queries.insert(title, link, icon, type, categoryId)
+    fun insert(
+        title: String,
+        link: String,
+        icon: ByteArray?,
+        type: Long,
+        categoryId: Long?,
+        areNotificationsEnabled: String
+    ) = queries.insert(title, link, icon, type, categoryId, areNotificationsEnabled)
 
     fun insertOrIgnore(feed: FeedDao) = queries.insertOrIgnore(feed)
 

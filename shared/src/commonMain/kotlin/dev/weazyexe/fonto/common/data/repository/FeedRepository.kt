@@ -32,8 +32,22 @@ internal class FeedRepository(
         return feedDao.toFeed(categoryDao?.toCategory())
     }
 
-    fun insert(title: String, link: String, icon: LocalImage?, type: Feed.Type, categoryId: Category.Id?) {
-        feedDataSource.insert(title, link, icon?.bytes, type.id, categoryId?.origin)
+    fun insert(
+        title: String,
+        link: String,
+        icon: LocalImage?,
+        type: Feed.Type,
+        categoryId: Category.Id?,
+        areNotificationsEnabled: Boolean
+    ) {
+        feedDataSource.insert(
+            title,
+            link,
+            icon?.bytes,
+            type.id,
+            categoryId?.origin,
+            areNotificationsEnabled.toString()
+        )
     }
 
     fun insertOrIgnore(feed: Feed) {

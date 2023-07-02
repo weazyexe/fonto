@@ -14,7 +14,8 @@ internal class IsAtomValidUseCase(private val atomRepository: AtomRepository) {
             link = url,
             icon = null,
             type = Feed.Type.ATOM,
-            category = Category(Category.Id(0), "")
+            category = Category(Category.Id(0), ""),
+            areNotificationsEnabled = false
         )
         val parsedFeed = atomRepository.getAtomFeed(feed) as? ParsedFeed.Success ?: return false
         return parsedFeed.posts.isNotEmpty()

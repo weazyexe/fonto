@@ -15,6 +15,7 @@ data class AddEditFeedDomainState(
     val type: Feed.Type = Feed.Type.RSS,
     val category: Category? = null,
     val categories: List<Category> = emptyList(),
+    val areNotificationsEnabled: Boolean = false,
     val icon: AsyncResult<LocalImage?> = AsyncResult.Success(null),
     val finishResult: AsyncResult<Unit> = AsyncResult.Success(Unit)
 ) : DomainState

@@ -4,7 +4,8 @@ CREATE TABLE FeedDao (
     link TEXT NOT NULL,
     icon BLOB,
     type INTEGER NOT NULL,
-    categoryId INTEGER
+    categoryId INTEGER,
+    areNotificationsEnabled TEXT NOT NULL
 );
 
 getAll:
@@ -14,8 +15,8 @@ getById:
 SELECT * FROM FeedDao WHERE id = :id;
 
 insert:
-INSERT INTO FeedDao(title, link, icon, type, categoryId)
-VALUES (?, ?, ?, ?, ?);
+INSERT INTO FeedDao(title, link, icon, type, categoryId, areNotificationsEnabled)
+VALUES (?, ?, ?, ?, ?, ?);
 
 update:
 INSERT OR REPLACE INTO FeedDao

@@ -34,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import dev.weazyexe.fonto.common.core.asBitmap
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.formatHumanFriendly
@@ -70,7 +69,7 @@ fun PostCompactItem(
             Spacer(modifier = Modifier.size(8.dp))
 
             PostFooter(
-                icon = post.feed.icon?.asBitmap()?.asImageBitmap(),
+                icon = post.feed.icon?.asImageBitmap(),
                 feedTitle = post.feed.title,
                 publishedAt = post.publishedAt.formatHumanFriendly(),
                 isRead = post.isRead
