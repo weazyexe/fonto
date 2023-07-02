@@ -21,6 +21,13 @@ fun <T, R> AsyncResult<T>.map(transform: (T) -> R): AsyncResult<R> =
         is AsyncResult.Error -> AsyncResult.Error(error)
     }
 
+fun <T> AsyncResult<List<T>>.isNotEmpty(): Boolean =
+    when (this) {
+        is AsyncResult.Loading -> false
+        is AsyncResult.Error -> false
+        is AsyncResult.Success -> data.isNotEmpty()
+    }
+
 fun <T> Flow<AsyncResult<T>>.onSuccess(block: suspend (AsyncResult.Success<T>) -> Unit): Flow<AsyncResult<T>> =
     onEach {
         if (it is AsyncResult.Success) {
@@ -28,14 +35,14 @@ fun <T> Flow<AsyncResult<T>>.onSuccess(block: suspend (AsyncResult.Success<T>) -
         }
     }
 
-fun <T> Flow<AsyncResult<T>>.onError(block: (AsyncResult.Error<T>) -> Unit): Flow<AsyncResult<T>> =
+fun <T> Flow<AsyncResult<T>>.onError(block: suspend (AsyncResult.Error<T>) -> Unit): Flow<AsyncResult<T>> =
     onEach {
         if (it is AsyncResult.Error) {
             block(it)
         }
     }
 
-fun <T> Flow<AsyncResult<T>>.onLoading(block: (AsyncResult.Loading<T>) -> Unit): Flow<AsyncResult<T>> =
+fun <T> Flow<AsyncResult<T>>.onLoading(block: suspend (AsyncResult.Loading<T>) -> Unit): Flow<AsyncResult<T>> =
     onEach {
         if (it is AsyncResult.Loading) {
             block(it)

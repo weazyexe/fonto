@@ -2,7 +2,7 @@ package dev.weazyexe.fonto.app
 
 import android.app.Application
 import dev.weazyexe.fonto.BuildConfig
-import dev.weazyexe.fonto.common.app.AppInitializer
+import dev.weazyexe.fonto.common.app.initializer.AppInitializer
 import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.di.dataModules
 import dev.weazyexe.fonto.di.screenModules
@@ -11,17 +11,15 @@ import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-class App : Application() {
+class FontoApplication : Application() {
 
-    private val appScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val appInitializer by inject<AppInitializer>()
+    private val appScope by inject<CoroutineScope>()
 
     override fun onCreate() {
         super.onCreate()
@@ -29,7 +27,7 @@ class App : Application() {
         Napier.base(DebugAntilog())
 
         startKoin {
-            androidContext(this@App)
+            androidContext(this@FontoApplication)
 
             modules(dataModules())
             modules(screenModules())

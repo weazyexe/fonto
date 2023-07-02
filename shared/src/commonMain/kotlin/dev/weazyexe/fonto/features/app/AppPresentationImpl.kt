@@ -16,7 +16,7 @@ internal class AppPresentationImpl(
     override fun onCreate(scope: CoroutineScope) {
         super.onCreate(scope)
         fetchSettings()
-        listenToTheme()
+        listenToEventBus()
     }
 
     private fun fetchSettings() = scope.launch {
@@ -33,13 +33,16 @@ internal class AppPresentationImpl(
         }
     }
 
-    private fun listenToTheme() = scope.launch {
+    private fun listenToEventBus() = scope.launch {
         dependencies.eventBus.observe()
             .onEach {
                 when (it) {
                     is AppEvent.ThemeChanged -> setState { copy(theme = it.theme) }
+
                     is AppEvent.DynamicColorsChanged -> setState { copy(isDynamicColorsEnabled = it.isEnabled) }
+
                     is AppEvent.ColorSchemeChanged -> setState { copy(accentColor = it.color) }
+
                     else -> {
                         // Do nothing
                     }

@@ -2,10 +2,13 @@
 
 package dev.weazyexe.fonto.di
 
-import dev.weazyexe.fonto.common.app.AppInitializer
-import dev.weazyexe.fonto.common.app.AppInitializerImpl
-import dev.weazyexe.fonto.common.app.CategoriesInitializer
-import dev.weazyexe.fonto.common.app.MockFeedInitializer
+import dev.weazyexe.fonto.common.app.background.createPlatformWorkManager
+import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorker
+import dev.weazyexe.fonto.common.app.initializer.AppInitializer
+import dev.weazyexe.fonto.common.app.initializer.AppInitializerImpl
+import dev.weazyexe.fonto.common.app.initializer.CategoriesInitializer
+import dev.weazyexe.fonto.common.app.initializer.MockFeedInitializer
+import dev.weazyexe.fonto.common.app.initializer.SyncPostsInitializer
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
 import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
@@ -63,6 +66,9 @@ import dev.weazyexe.fonto.common.resources.createStringsProvider
 import dev.weazyexe.fonto.common.serialization.createJson
 import dev.weazyexe.fonto.common.serialization.createXml
 import dev.weazyexe.fonto.utils.feature.FeatureAvailabilityChecker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -70,16 +76,17 @@ expect fun platformModule(): Module
 
 fun dataModules(): List<Module> =
     listOf(
-        initializerDataModule,
-        feedDataModule,
-        iconDataModule,
-        rssDataModule,
-        atomDataModule,
-        jsonFeedDataModule,
-        postDataModule,
-        categoryDataModule,
-        backupDataModule,
-        settingsDataModule
+        initializerSharedModule,
+        backgroundTasksSharedModule,
+        feedSharedModule,
+        iconSharedModule,
+        rssSharedModule,
+        atomSharedModule,
+        jsonFeedSharedModule,
+        postSharedModule,
+        categorySharedModule,
+        backupSharedModule,
+        settingsSharedModule,
     )
 
 internal val coreModule = module {
@@ -90,6 +97,7 @@ internal val coreModule = module {
     single { createSettingsStorage(get()) }
     single { createStringsProvider(get()) }
     single { createOgImageExtractor(get()) }
+    single { createPlatformWorkManager(get()) }
 
     single { createXml() }
     single { createJson() }
@@ -97,9 +105,11 @@ internal val coreModule = module {
     single { FeatureAvailabilityChecker() }
 
     single { EventBus() }
+
+    single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
 }
 
-internal val rssDataModule = module {
+internal val rssSharedModule = module {
     includes(coreModule)
 
     single { RssParser(get(), get()) }
@@ -108,7 +118,7 @@ internal val rssDataModule = module {
     single { IsRssValidUseCase(get()) }
 }
 
-internal val atomDataModule = module {
+internal val atomSharedModule = module {
     includes(coreModule)
 
     single { AtomParser(get(), get()) }
@@ -117,7 +127,7 @@ internal val atomDataModule = module {
     single { IsAtomValidUseCase(get()) }
 }
 
-internal val jsonFeedDataModule = module {
+internal val jsonFeedSharedModule = module {
     includes(coreModule)
 
     single { JsonFeedParser(get(), get()) }
@@ -126,7 +136,7 @@ internal val jsonFeedDataModule = module {
     single { IsJsonFeedValidUseCase(get()) }
 }
 
-internal val iconDataModule = module {
+internal val iconSharedModule = module {
     includes(coreModule)
 
     single { IconDataSource(get()) }
@@ -134,7 +144,7 @@ internal val iconDataModule = module {
     single { GetFaviconByUrlUseCase(get()) }
 }
 
-internal val categoryDataModule = module {
+internal val categorySharedModule = module {
     includes(coreModule)
 
     single { CategoryDataSource(get()) }
@@ -147,12 +157,12 @@ internal val categoryDataModule = module {
     single { ChangeFeedCategoryUseCase(get()) }
 }
 
-internal val feedDataModule = module {
+internal val feedSharedModule = module {
     includes(coreModule)
-    includes(rssDataModule)
-    includes(atomDataModule)
-    includes(jsonFeedDataModule)
-    includes(categoryDataModule)
+    includes(rssSharedModule)
+    includes(atomSharedModule)
+    includes(jsonFeedSharedModule)
+    includes(categorySharedModule)
 
     single { FeedDataSource(get()) }
     single { FeedRepository(get(), get()) }
@@ -166,12 +176,12 @@ internal val feedDataModule = module {
     single { GetFeedTypeUseCase(get(), get(), get()) }
 }
 
-internal val postDataModule = module {
+internal val postSharedModule = module {
     includes(coreModule)
-    includes(rssDataModule)
-    includes(atomDataModule)
-    includes(jsonFeedDataModule)
-    includes(feedDataModule)
+    includes(rssSharedModule)
+    includes(atomSharedModule)
+    includes(jsonFeedSharedModule)
+    includes(feedSharedModule)
 
     single { PostDataSource(get()) }
     single { PostRepository(get(), get(), get()) }
@@ -184,27 +194,35 @@ internal val postDataModule = module {
     single { GetPostMetadataFromHtmlUseCase(get(), get()) }
 }
 
-internal val backupDataModule = module {
-    includes(coreModule, feedDataModule, categoryDataModule, postDataModule, iconDataModule)
+internal val backupSharedModule = module {
+    includes(coreModule, feedSharedModule, categorySharedModule, postSharedModule, iconSharedModule)
     single { GetExportDataUseCase(get(), get(), get(), get()) }
     single { ParseBackupDataUseCase(get()) }
     single { ImportDataUseCase(get(), get(), get(), get(), get()) }
     single { ExportDataUseCase(get()) }
 }
 
-internal val settingsDataModule = module {
+internal val settingsSharedModule = module {
     includes(coreModule)
     single { GetDefaultSettingsUseCase() }
     single { GetSettingsUseCase(get(), get()) }
     single { SavePreferenceUseCase(get()) }
 }
 
-internal val initializerDataModule = module {
+internal val initializerSharedModule = module {
     includes(coreModule)
-    includes(categoryDataModule)
-    includes(feedDataModule)
+    includes(categorySharedModule)
+    includes(feedSharedModule)
 
     single { CategoriesInitializer(get(), get(), get()) }
     single { MockFeedInitializer(get(), get()) }
-    single<AppInitializer> { AppInitializerImpl(get(), get()) }
+    single { SyncPostsInitializer(get(), get(), get()) }
+    single<AppInitializer> { AppInitializerImpl(get(), get(), get()) }
+}
+
+internal val backgroundTasksSharedModule = module {
+    includes(coreModule)
+    includes(postSharedModule)
+
+    single<SyncPostsWorker> { SyncPostsWorker(get()) }
 }

@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.ui.features.feed.di
 
-import dev.weazyexe.fonto.app.App
+import dev.weazyexe.fonto.app.FontoApplication
 import dev.weazyexe.fonto.ui.features.feed.screens.addeditcategory.AddEditCategoryViewModel
 import dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed.AddEditFeedViewModel
 import dev.weazyexe.fonto.ui.features.feed.screens.categories.CategoriesViewModel
@@ -13,7 +13,7 @@ import org.koin.dsl.module
 
 val feedModule = module {
     viewModel { FeedViewModel(get()) }
-    viewModel { SearchViewModel(get(), androidContext() as App) }
+    viewModel { SearchViewModel(get(), androidContext() as FontoApplication) }
     viewModel { ManageFeedViewModel(get()) }
     viewModel { AddEditFeedViewModel(get(), get()) }
     viewModel { CategoriesViewModel(get()) }

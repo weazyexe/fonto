@@ -1,4 +1,4 @@
-package dev.weazyexe.fonto.common.app
+package dev.weazyexe.fonto.common.app.initializer
 
 interface AppInitializer : Initializer<AppInitializer.Args> {
 

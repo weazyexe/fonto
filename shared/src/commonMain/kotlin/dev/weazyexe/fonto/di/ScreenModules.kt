@@ -60,7 +60,8 @@ val appScreenModule = module {
         AppDependencies(
             initialState = get(),
             settingsStorage = get(),
-            eventBus = get()
+            eventBus = get(),
+            platformWorkManager = get()
         )
     }
 
@@ -114,6 +115,7 @@ val manageFeedScreenModule = module {
             initialState = get(),
             getAllFeeds = get(),
             deleteFeed = get(),
+            platformWorkManager = get(),
             eventBus = get()
         )
     }

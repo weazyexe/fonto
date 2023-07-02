@@ -1,6 +1,8 @@
 package dev.weazyexe.fonto.features.managefeed
 
+import dev.weazyexe.fonto.common.app.background.WorkerId
 import dev.weazyexe.fonto.common.data.bus.AppEvent
+import dev.weazyexe.fonto.common.data.isNotEmpty
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -46,5 +48,11 @@ internal class ManageFeedPresentationImpl(
 
     override fun updateChangesStatus() {
         setState { copy(hasChanges = true) }
+
+        if (state.feeds.isNotEmpty()) {
+            dependencies.platformWorkManager.enqueue(WorkerId.SYNC_POSTS)
+        } else {
+            dependencies.platformWorkManager.cancel(WorkerId.SYNC_POSTS)
+        }
     }
 }
