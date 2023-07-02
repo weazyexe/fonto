@@ -7,7 +7,7 @@ import dev.weazyexe.fonto.utils.asAndroidWorkerResult
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SyncPostsAndroidWorker(
+internal class SyncPostsAndroidWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {

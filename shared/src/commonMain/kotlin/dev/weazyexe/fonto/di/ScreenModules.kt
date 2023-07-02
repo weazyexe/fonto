@@ -115,6 +115,7 @@ val manageFeedScreenModule = module {
             initialState = get(),
             getAllFeeds = get(),
             deleteFeed = get(),
+            platformWorkManager = get(),
             eventBus = get()
         )
     }
