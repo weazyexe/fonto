@@ -6,6 +6,7 @@ import dev.weazyexe.fonto.common.feature.backup.FileSaver
 import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Preference
+import dev.weazyexe.fonto.common.model.preference.SyncPostsInterval
 import dev.weazyexe.fonto.common.model.preference.Theme
 
 abstract class SettingsPresentation : Presentation<SettingsDomainState, SettingsEffect>() {
@@ -15,6 +16,8 @@ abstract class SettingsPresentation : Presentation<SettingsDomainState, Settings
     abstract fun onThemePicked(theme: Theme)
 
     abstract fun onColorSchemePicked(colorScheme: ColorScheme)
+
+    abstract fun onSyncIntervalPicked(interval: SyncPostsInterval)
 
     abstract fun chooseExportFileDestination(strategy: ExportStrategy)
 

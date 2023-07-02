@@ -12,6 +12,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
+import dev.weazyexe.fonto.common.model.preference.SyncPostsInterval
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.ui.features.bookmarks.BookmarksScreen
 import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestination
@@ -19,6 +20,7 @@ import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
+import dev.weazyexe.fonto.ui.features.destinations.SyncIntervalPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerResults
 import dev.weazyexe.fonto.ui.features.feed.screens.daterangepicker.DateRangeResults
@@ -37,6 +39,7 @@ typealias FeedPickerResult = ResultRecipient<FeedPickerDialogDestination, FeedPi
 typealias CategoryPickerResult = ResultRecipient<CategoryPickerDialogDestination, CategoryPickerResults?>
 typealias ThemePickerResult = ResultRecipient<ThemePickerDialogDestination, Theme?>
 typealias ColorPickerResult = ResultRecipient<ColorPickerDialogDestination, ColorScheme>
+typealias SyncIntervalPickerResult = ResultRecipient<SyncIntervalPickerDialogDestination, SyncPostsInterval?>
 typealias ExportStrategyPickerResult = ResultRecipient<ExportStrategyPickerDialogDestination, ExportStrategyResults?>
 
 @RootNavGraph(start = true)
@@ -46,6 +49,7 @@ fun HomeScreen(
     navController: NavController,
     themePickerResultRecipient: ResultRecipient<ThemePickerDialogDestination, Theme?>,
     colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, ColorScheme>,
+    syncIntervalPickerResultRecipient: ResultRecipient<SyncIntervalPickerDialogDestination, SyncPostsInterval?>,
     dateRangePickerResultRecipient: ResultRecipient<DateRangePickerDialogDestination, DateRangeResults?>,
     feedPickerResultRecipient: ResultRecipient<FeedPickerDialogDestination, FeedPickerResults?>,
     categoryPickerResultsRecipient: ResultRecipient<CategoryPickerDialogDestination, CategoryPickerResults?>,
@@ -98,6 +102,7 @@ fun HomeScreen(
                         navController = navController,
                         themePickerResult = themePickerResultRecipient,
                         colorPickerResult = colorPickerResultRecipient,
+                        syncIntervalPickerResult = syncIntervalPickerResultRecipient,
                         exportStrategyPickerResults = exportStrategyPickerResultsRecipient,
                         onBack = { currentDestination = BottomBarDestination.Feed }
                     )

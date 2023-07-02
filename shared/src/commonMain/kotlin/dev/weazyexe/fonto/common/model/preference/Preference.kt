@@ -34,6 +34,12 @@ sealed interface Preference {
         DYNAMIC_COLORS,
         COLOR_SCHEME,
 
+        // Sync
+        SYNC_POSTS,
+        SYNC_POSTS_INTERVAL,
+        SYNC_POSTS_IF_METERED_CONNECTION,
+        SYNC_POSTS_IF_BATTERY_IS_LOW,
+
         // Backup
         EXPORT_FONTO,
         IMPORT_FONTO,

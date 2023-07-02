@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.features.settings
 
+import dev.weazyexe.fonto.common.app.background.PlatformWorkManager
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.usecase.backup.ExportDataUseCase
 import dev.weazyexe.fonto.common.data.usecase.backup.ImportDataUseCase
@@ -16,5 +17,6 @@ internal data class SettingsDependencies(
     val savePreference: SavePreferenceUseCase,
 
     val eventBus: EventBus,
+    val platformWorkManager: PlatformWorkManager,
     val featureAvailabilityChecker: FeatureAvailabilityChecker
 )

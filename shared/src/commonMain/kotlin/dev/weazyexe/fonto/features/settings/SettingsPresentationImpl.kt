@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.features.settings
 
+import dev.weazyexe.fonto.common.app.background.WorkerId
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onLoading
@@ -10,12 +11,12 @@ import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Group
 import dev.weazyexe.fonto.common.model.preference.Preference
+import dev.weazyexe.fonto.common.model.preference.SyncPostsInterval
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.utils.feature.Feature
 import dev.weazyexe.fonto.utils.isReleaseBuild
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -35,22 +36,43 @@ internal class SettingsPresentationImpl(
     override fun onPreferenceClick(preference: Preference) {
         when (preference.key) {
             Preference.Key.MANAGE_FEED -> SettingsEffect.OpenManageFeedScreen.emit()
+
             Preference.Key.MANAGE_CATEGORIES -> SettingsEffect.OpenManageCategoriesScreen.emit()
+
             Preference.Key.OPEN_POST -> updatePreference(preference)
 
-            Preference.Key.THEME -> SettingsEffect.OpenThemePicker(
-                currentTheme = (preference as Preference.Value<*>).value as Theme
-            ).emit()
+            Preference.Key.THEME ->
+                SettingsEffect.OpenThemePicker(
+                    currentTheme = (preference as Preference.Value<*>).value as Theme
+                ).emit()
+
             Preference.Key.DYNAMIC_COLORS -> dynamicColorChanged(preference)
-            Preference.Key.COLOR_SCHEME -> SettingsEffect.OpenColorSchemePicker(
-                currentColorScheme = (preference as Preference.Value<*>).value as ColorScheme
-            ).emit()
+
+            Preference.Key.COLOR_SCHEME ->
+                SettingsEffect.OpenColorSchemePicker(
+                    currentColorScheme = (preference as Preference.Value<*>).value as ColorScheme
+                ).emit()
+
+            Preference.Key.SYNC_POSTS -> syncPostsChanged(preference)
+
+            Preference.Key.SYNC_POSTS_INTERVAL ->
+                SettingsEffect.OpenSyncIntervalPicker(
+                    currentInterval = (preference as Preference.Value<*>).value as SyncPostsInterval
+                ).emit()
+
+            Preference.Key.SYNC_POSTS_IF_METERED_CONNECTION -> updatePreference(preference)
+                .also { dependencies.platformWorkManager.enqueue(WorkerId.SYNC_POSTS) }
+
+            Preference.Key.SYNC_POSTS_IF_BATTERY_IS_LOW -> updatePreference(preference)
+                .also { dependencies.platformWorkManager.enqueue(WorkerId.SYNC_POSTS) }
 
             Preference.Key.EXPORT_FONTO -> SettingsEffect.OpenExportStrategyPicker.emit()
-            Preference.Key.IMPORT_FONTO -> SettingsEffect.OpenImportFilePicker(
-                fileName = getBackupFileName(),
-                fileMimeType = "application/json"
-            ).emit()
+
+            Preference.Key.IMPORT_FONTO ->
+                SettingsEffect.OpenImportFilePicker(
+                    fileName = getBackupFileName(),
+                    fileMimeType = "application/json"
+                ).emit()
 
             Preference.Key.DEBUG_MENU -> SettingsEffect.OpenDebugScreen.emit()
         }
@@ -61,7 +83,7 @@ internal class SettingsPresentationImpl(
             .findPreference<Preference.Value<Theme>>(Preference.Key.THEME)
             ?: return
 
-        scope.launch { dependencies.eventBus.emit(AppEvent.ThemeChanged(theme)) }
+        dependencies.eventBus.emit(AppEvent.ThemeChanged(theme))
         updatePreference(preference.copy(value = theme))
     }
 
@@ -70,8 +92,17 @@ internal class SettingsPresentationImpl(
             .findPreference<Preference.Value<ColorScheme>>(Preference.Key.COLOR_SCHEME)
             ?: return
 
-        scope.launch { dependencies.eventBus.emit(AppEvent.ColorSchemeChanged(colorScheme)) }
+        dependencies.eventBus.emit(AppEvent.ColorSchemeChanged(colorScheme))
         updatePreference(preference.copy(value = colorScheme))
+    }
+
+    override fun onSyncIntervalPicked(interval: SyncPostsInterval) {
+        val preference = state.preferences
+            .findPreference<Preference.Value<SyncPostsInterval>>(Preference.Key.SYNC_POSTS_INTERVAL)
+            ?: return
+
+        dependencies.platformWorkManager.enqueue(WorkerId.SYNC_POSTS)
+        updatePreference(preference.copy(value = interval))
     }
 
     override fun chooseExportFileDestination(strategy: ExportStrategy) {
@@ -108,9 +139,21 @@ internal class SettingsPresentationImpl(
             .launchIn(scope)
     }
 
-    private fun dynamicColorChanged(preference: Preference) = scope.launch {
+    private fun dynamicColorChanged(preference: Preference) {
         val isEnabled = (preference as Preference.Switch).value
         dependencies.eventBus.emit(AppEvent.DynamicColorsChanged(isEnabled = isEnabled))
+        updatePreference(preference)
+    }
+
+    private fun syncPostsChanged(preference: Preference) {
+        val isEnabled = (preference as Preference.Switch).value
+
+        if (isEnabled) {
+            dependencies.platformWorkManager.enqueue(WorkerId.SYNC_POSTS)
+        } else {
+            dependencies.platformWorkManager.cancel(WorkerId.SYNC_POSTS)
+        }
+
         updatePreference(preference)
     }
 
@@ -148,11 +191,24 @@ internal class SettingsPresentationImpl(
         val shouldShowColorScheme =
             !isDynamicColorsFeatureAvailable || dynamicColorPreference?.value == false
 
+        val isSyncEnabledPreference =
+            this.firstOrNull { it.key == Preference.Key.SYNC_POSTS } as? Preference.Switch
+        val shouldShowSyncSettings = isSyncEnabledPreference?.value == true
+
         return map {
             when (it.key) {
                 Preference.Key.DYNAMIC_COLORS -> (it as Preference.Switch).copy(isVisible = isDynamicColorsFeatureAvailable)
                 Preference.Key.COLOR_SCHEME -> (it as Preference.Value<*>).copy(isVisible = shouldShowColorScheme)
                 Preference.Key.DEBUG_MENU -> (it as Preference.Text).copy(isVisible = !isReleaseBuild())
+                Preference.Key.SYNC_POSTS_INTERVAL -> (it as Preference.Value<*>).copy(isVisible = shouldShowSyncSettings)
+                Preference.Key.SYNC_POSTS_IF_METERED_CONNECTION -> (it as Preference.Switch).copy(
+                    isVisible = shouldShowSyncSettings
+                )
+
+                Preference.Key.SYNC_POSTS_IF_BATTERY_IS_LOW -> (it as Preference.Switch).copy(
+                    isVisible = shouldShowSyncSettings
+                )
+
                 else -> it
             }
         }

@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.common.feature.settings
 
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.common.model.preference.SyncPostsInterval
 import dev.weazyexe.fonto.common.model.preference.Theme
 
 internal interface SettingsStorage {
@@ -25,4 +26,20 @@ internal interface SettingsStorage {
     suspend fun isAppInitialized(): Boolean
 
     suspend fun saveAppInitialized(isInitialized: Boolean)
+
+    suspend fun isSyncPostsEnabled() : Boolean
+
+    suspend fun saveSyncPostsEnabled(value: Boolean)
+
+    suspend fun getSyncPostsInterval(): SyncPostsInterval
+
+    suspend fun saveSyncPostsInterval(interval: SyncPostsInterval)
+
+    suspend fun shouldSyncIfMeteredConnection() : Boolean
+
+    suspend fun saveSyncIfMeteredConnection(value: Boolean)
+
+    suspend fun shouldSyncIfBatteryIsLow() : Boolean
+
+    suspend fun saveSyncIfBatteryIsLow(value: Boolean)
 }
