@@ -8,6 +8,7 @@ data class Group(
     enum class Key {
         FEED,
         APPEARANCE,
+        SYNC,
         BACKUP,
         DEBUG
     }

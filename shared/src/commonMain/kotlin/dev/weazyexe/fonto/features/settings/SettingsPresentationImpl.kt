@@ -41,10 +41,18 @@ internal class SettingsPresentationImpl(
             Preference.Key.THEME -> SettingsEffect.OpenThemePicker(
                 currentTheme = (preference as Preference.Value<*>).value as Theme
             ).emit()
+
             Preference.Key.DYNAMIC_COLORS -> dynamicColorChanged(preference)
             Preference.Key.COLOR_SCHEME -> SettingsEffect.OpenColorSchemePicker(
                 currentColorScheme = (preference as Preference.Value<*>).value as ColorScheme
             ).emit()
+
+            Preference.Key.SYNC_POSTS,
+            Preference.Key.SYNC_POSTS_INTERVAL,
+            Preference.Key.SYNC_POSTS_IF_METERED_CONNECTION,
+            Preference.Key.SYNC_POSTS_IF_BATTERY_IS_LOW -> {
+                // TODO to be implemented
+            }
 
             Preference.Key.EXPORT_FONTO -> SettingsEffect.OpenExportStrategyPicker.emit()
             Preference.Key.IMPORT_FONTO -> SettingsEffect.OpenImportFilePicker(

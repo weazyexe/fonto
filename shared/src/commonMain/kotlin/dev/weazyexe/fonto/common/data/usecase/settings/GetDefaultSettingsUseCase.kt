@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.common.data.usecase.settings
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Group
 import dev.weazyexe.fonto.common.model.preference.Preference
+import dev.weazyexe.fonto.common.model.preference.SyncPostsInterval
 import dev.weazyexe.fonto.common.model.preference.Theme
 
 internal class GetDefaultSettingsUseCase {
@@ -36,6 +37,28 @@ internal class GetDefaultSettingsUseCase {
                     value = ColorScheme.BLUE,
                     possibleValues = ColorScheme.values().toList()
                 ),
+            )
+        ),
+        Group(
+            key = Group.Key.SYNC,
+            preferences = listOf(
+                Preference.Switch(
+                    key = Preference.Key.SYNC_POSTS,
+                    value = true
+                ),
+                Preference.Value(
+                    key = Preference.Key.SYNC_POSTS_INTERVAL,
+                    value = SyncPostsInterval.TWO_HOURS,
+                    possibleValues = SyncPostsInterval.values().toList()
+                ),
+                Preference.Switch(
+                    key = Preference.Key.SYNC_POSTS_IF_METERED_CONNECTION,
+                    value = false,
+                ),
+                Preference.Switch(
+                    key = Preference.Key.SYNC_POSTS_IF_BATTERY_IS_LOW,
+                    value = false
+                )
             )
         ),
         Group(

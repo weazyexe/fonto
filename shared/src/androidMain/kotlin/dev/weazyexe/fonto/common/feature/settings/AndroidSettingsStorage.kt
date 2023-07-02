@@ -5,11 +5,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
+import dev.weazyexe.fonto.common.model.preference.SyncPostsInterval
 import dev.weazyexe.fonto.common.model.preference.Theme
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -19,11 +21,16 @@ internal class AndroidSettingsStorage(
 ) : SettingsStorage {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
     private val openPostPreferenceKey = stringPreferencesKey(OPEN_POST_PREFERENCE)
     private val themePreferenceKey = stringPreferencesKey(THEME_PREFERENCE)
     private val dynamicColorsPreferenceKey = booleanPreferencesKey(DYNAMIC_COLORS_PREFERENCE)
     private val accentColorPreferenceKey = longPreferencesKey(ACCENT_COLOR_PREFERENCE)
     private val appInitializedPreferenceKey = booleanPreferencesKey(APP_INITIALIZED_PREFERENCE)
+    private val syncPostsPreferenceKey = booleanPreferencesKey(SYNC_POSTS_PREFERENCE)
+    private val syncPostsIntervalPreferenceKey = intPreferencesKey(SYNC_POSTS_INTERVAL_PREFERENCE)
+    private val syncPostsMeteredConnectionPreferenceKey = booleanPreferencesKey(SYNC_POSTS_METERED_CONNECTION)
+    private val syncPostsBatteryIsLowPreferenceKey = booleanPreferencesKey(SYNC_POSTS_BATTERY_IS_LOW)
 
     override suspend fun getOpenPostPreference(): OpenPostPreference {
         val key = get(key = openPostPreferenceKey, default = OpenPostPreference.INTERNAL.key)
@@ -68,6 +75,39 @@ internal class AndroidSettingsStorage(
         save(appInitializedPreferenceKey, isInitialized)
     }
 
+    override suspend fun isSyncPostsEnabled(): Boolean {
+        return get(syncPostsPreferenceKey, default = true)
+    }
+
+    override suspend fun saveSyncPostsEnabled(value: Boolean) {
+        save(syncPostsPreferenceKey, value)
+    }
+
+    override suspend fun getSyncPostsInterval(): SyncPostsInterval {
+        val value = get(syncPostsIntervalPreferenceKey, default = SyncPostsInterval.TWO_HOURS.hours)
+        return SyncPostsInterval.byHours(value)
+    }
+
+    override suspend fun saveSyncPostsInterval(interval: SyncPostsInterval) {
+        save(syncPostsIntervalPreferenceKey, interval.hours)
+    }
+
+    override suspend fun shouldSyncIfMeteredConnection(): Boolean {
+        return get(syncPostsMeteredConnectionPreferenceKey, default = false)
+    }
+
+    override suspend fun saveSyncIfMeteredConnection(value: Boolean) {
+        save(syncPostsMeteredConnectionPreferenceKey, value)
+    }
+
+    override suspend fun shouldSyncIfBatteryIsLow(): Boolean {
+        return get(syncPostsBatteryIsLowPreferenceKey, default = false)
+    }
+
+    override suspend fun saveSyncIfBatteryIsLow(value: Boolean) {
+        save(syncPostsBatteryIsLowPreferenceKey, value)
+    }
+
     private suspend fun <T> get(key: Preferences.Key<T>, default: T): T =
         context.dataStore.data
             .map { it[key] }
@@ -87,5 +127,9 @@ internal class AndroidSettingsStorage(
         const val DYNAMIC_COLORS_PREFERENCE = "DYNAMIC_COLORS_PREFERENCE"
         const val ACCENT_COLOR_PREFERENCE = "ACCENT_COLOR_PREFERENCE"
         const val APP_INITIALIZED_PREFERENCE = "APP_INITIALIZED_PREFERENCE"
+        const val SYNC_POSTS_PREFERENCE = "SYNC_POSTS_PREFERENCE"
+        const val SYNC_POSTS_INTERVAL_PREFERENCE = "SYNC_POSTS_INTERVAL_PREFERENCE"
+        const val SYNC_POSTS_METERED_CONNECTION = "SYNC_POSTS_METERED_CONNECTION"
+        const val SYNC_POSTS_BATTERY_IS_LOW = "SYNC_POSTS_BATTERY_IS_LOW"
     }
 }

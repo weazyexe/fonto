@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.model.preference
 
-enum class SyncPostsInterval(val hours: Int) {
+enum class SyncPostsInterval(val hours: Int) : ValuePreference {
     ONE_HOUR(1),
     TWO_HOURS(2),
     FOUR_HOURS(4),
