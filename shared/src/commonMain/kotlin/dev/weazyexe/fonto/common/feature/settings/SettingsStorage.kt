@@ -25,4 +25,10 @@ internal interface SettingsStorage {
     suspend fun isAppInitialized(): Boolean
 
     suspend fun saveAppInitialized(isInitialized: Boolean)
+
+    suspend fun isSyncPostsEnabled() : Boolean
+
+    suspend fun saveSyncPostsEnabled(value: Boolean)
+
+
 }

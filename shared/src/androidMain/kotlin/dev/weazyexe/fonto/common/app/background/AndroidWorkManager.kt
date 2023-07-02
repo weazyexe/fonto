@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.common.app.background
 
+import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -26,7 +27,13 @@ internal class AndroidWorkManager(
 
     private fun enqueueSyncPostsWorker() {
         val duration = Duration.ofHours(1) // TODO add custom duration from settings
+
+        val constraints = Constraints.Builder()
+            .setRequiresStorageNotLow(true)
+            .build()
+
         val workRequest = PeriodicWorkRequestBuilder<SyncPostsAndroidWorker>(duration)
+            .setConstraints(constraints)
             .setInitialDelay(duration)
             .build()
 
