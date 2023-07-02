@@ -118,7 +118,6 @@ dependencies {
 
     implementation(libs.koin.android)
     implementation(libs.koin.android.compose)
-    implementation(libs.koin.workmanager)
 
     implementation(libs.workmanager)
 
