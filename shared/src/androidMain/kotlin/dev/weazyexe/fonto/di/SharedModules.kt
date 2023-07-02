@@ -15,5 +15,5 @@ actual fun platformModule() = module {
     single { StringsProviderFactory(androidContext()) }
     single { OgMetadataExtractorFactory() }
     single { WorkManager.getInstance(androidContext()) }
-    single { PlatformWorkManagerFactory(get()) }
+    single { PlatformWorkManagerFactory(get(), get(), get()) }
 }

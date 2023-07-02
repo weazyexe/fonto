@@ -60,8 +60,7 @@ val appScreenModule = module {
         AppDependencies(
             initialState = get(),
             settingsStorage = get(),
-            eventBus = get(),
-            platformWorkManager = get()
+            eventBus = get()
         )
     }
 
@@ -189,6 +188,7 @@ val settingsScreenModule = module {
             savePreference = get(),
             getSettings = get(),
             eventBus = get(),
+            platformWorkManager = get(),
             featureAvailabilityChecker = get()
         )
     }
