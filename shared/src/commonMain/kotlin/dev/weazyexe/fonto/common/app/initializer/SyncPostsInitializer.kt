@@ -1,7 +1,7 @@
 package dev.weazyexe.fonto.common.app.initializer
 
 import dev.weazyexe.fonto.common.app.background.PlatformWorkManager
-import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorker
+import dev.weazyexe.fonto.common.app.background.WorkerId
 import dev.weazyexe.fonto.common.data.isNotEmpty
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
@@ -18,7 +18,7 @@ internal class SyncPostsInitializer(
         getFeedsUseCase()
             .onSuccess {
                 if (it.isNotEmpty()) {
-                    platformWorkManager.enqueue(SyncPostsWorker::class)
+                    platformWorkManager.enqueue(WorkerId.SYNC_POSTS)
                 }
             }
             .launchIn(scope)

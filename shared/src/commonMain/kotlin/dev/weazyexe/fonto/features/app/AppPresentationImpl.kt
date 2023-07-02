@@ -1,7 +1,5 @@
 package dev.weazyexe.fonto.features.app
 
-import dev.weazyexe.fonto.common.app.background.WorkerId
-import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorker
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -44,12 +42,6 @@ internal class AppPresentationImpl(
                     is AppEvent.DynamicColorsChanged -> setState { copy(isDynamicColorsEnabled = it.isEnabled) }
 
                     is AppEvent.ColorSchemeChanged -> setState { copy(accentColor = it.color) }
-
-                    is AppEvent.StartSyncPostsBackgroundTask ->
-                        dependencies.platformWorkManager.enqueue(SyncPostsWorker::class)
-
-                    is AppEvent.StopSyncPostsBackgroundTask ->
-                        dependencies.platformWorkManager.cancel(WorkerId.SYNC_POSTS)
 
                     else -> {
                         // Do nothing

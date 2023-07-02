@@ -1,5 +1,6 @@
 package dev.weazyexe.fonto.features.managefeed
 
+import dev.weazyexe.fonto.common.app.background.WorkerId
 import dev.weazyexe.fonto.common.data.bus.AppEvent
 import dev.weazyexe.fonto.common.data.isNotEmpty
 import dev.weazyexe.fonto.common.data.onError
@@ -49,9 +50,9 @@ internal class ManageFeedPresentationImpl(
         setState { copy(hasChanges = true) }
 
         if (state.feeds.isNotEmpty()) {
-            dependencies.eventBus.emit(AppEvent.StartSyncPostsBackgroundTask)
+            dependencies.platformWorkManager.enqueue(WorkerId.SYNC_POSTS)
         } else {
-            dependencies.eventBus.emit(AppEvent.StopSyncPostsBackgroundTask)
+            dependencies.platformWorkManager.cancel(WorkerId.SYNC_POSTS)
         }
     }
 }

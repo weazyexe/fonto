@@ -5,24 +5,21 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dev.weazyexe.fonto.common.app.background.sync.SyncPostsAndroidWorker
-import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorker
 import io.github.aakira.napier.Napier
 import java.time.Duration
-import kotlin.reflect.KClass
 
 internal class AndroidWorkManager(
     private val workManager: WorkManager
 ) : PlatformWorkManager {
 
-    override fun <T : Worker> enqueue(workerClass: KClass<T>) {
-        when (workerClass) {
-            SyncPostsWorker::class -> enqueueSyncPostsWorker()
-            else -> Napier.e(IllegalArgumentException("Unknown workerClass $workerClass")) { "" }
+    override fun enqueue(id: WorkerId) {
+        when (id) {
+            WorkerId.SYNC_POSTS -> enqueueSyncPostsWorker()
         }
     }
 
     override fun cancel(id: WorkerId) {
-        workManager.cancelUniqueWork(id.name)
+        workManager.cancelUniqueWork(id.value)
     }
 
     private fun enqueueSyncPostsWorker() {
@@ -38,7 +35,7 @@ internal class AndroidWorkManager(
             .build()
 
         workManager.enqueueUniquePeriodicWork(
-            WorkerId.SYNC_POSTS.name,
+            WorkerId.SYNC_POSTS.value,
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )

@@ -4,7 +4,6 @@ package dev.weazyexe.fonto.di
 
 import dev.weazyexe.fonto.common.app.background.createPlatformWorkManager
 import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorker
-import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorkerImpl
 import dev.weazyexe.fonto.common.app.initializer.AppInitializer
 import dev.weazyexe.fonto.common.app.initializer.AppInitializerImpl
 import dev.weazyexe.fonto.common.app.initializer.CategoriesInitializer
@@ -225,5 +224,5 @@ internal val backgroundTasksSharedModule = module {
     includes(coreModule)
     includes(postSharedModule)
 
-    single<SyncPostsWorker> { SyncPostsWorkerImpl(get()) }
+    single<SyncPostsWorker> { SyncPostsWorker(get()) }
 }

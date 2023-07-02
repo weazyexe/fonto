@@ -1,5 +1,5 @@
 package dev.weazyexe.fonto.common.app.background
 
-enum class WorkerId {
-    SYNC_POSTS
+internal enum class WorkerId(val value: String) {
+    SYNC_POSTS("SYNC_POSTS")
 }
