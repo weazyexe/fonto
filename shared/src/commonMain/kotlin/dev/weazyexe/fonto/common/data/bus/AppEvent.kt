@@ -12,4 +12,8 @@ internal sealed interface AppEvent {
     data class DynamicColorsChanged(val isEnabled: Boolean) : AppEvent
 
     data class ColorSchemeChanged(val color: ColorScheme) : AppEvent
+
+    object StartSyncPostsBackgroundTask : AppEvent
+
+    object StopSyncPostsBackgroundTask : AppEvent
 }

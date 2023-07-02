@@ -2,12 +2,14 @@
 
 package dev.weazyexe.fonto.di
 
-import dev.weazyexe.fonto.common.app.background.sync.SyncPostsBackgroundTask
-import dev.weazyexe.fonto.common.app.background.sync.SyncPostsBackgroundTaskImpl
+import dev.weazyexe.fonto.common.app.background.createPlatformWorkManager
+import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorker
+import dev.weazyexe.fonto.common.app.background.sync.SyncPostsWorkerImpl
 import dev.weazyexe.fonto.common.app.initializer.AppInitializer
 import dev.weazyexe.fonto.common.app.initializer.AppInitializerImpl
 import dev.weazyexe.fonto.common.app.initializer.CategoriesInitializer
 import dev.weazyexe.fonto.common.app.initializer.MockFeedInitializer
+import dev.weazyexe.fonto.common.app.initializer.SyncPostsInitializer
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
 import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
@@ -96,6 +98,7 @@ internal val coreModule = module {
     single { createSettingsStorage(get()) }
     single { createStringsProvider(get()) }
     single { createOgImageExtractor(get()) }
+    single { createPlatformWorkManager(get()) }
 
     single { createXml() }
     single { createJson() }
@@ -214,12 +217,13 @@ internal val initializerSharedModule = module {
 
     single { CategoriesInitializer(get(), get(), get()) }
     single { MockFeedInitializer(get(), get()) }
-    single<AppInitializer> { AppInitializerImpl(get(), get()) }
+    single { SyncPostsInitializer(get(), get(), get()) }
+    single<AppInitializer> { AppInitializerImpl(get(), get(), get()) }
 }
 
 internal val backgroundTasksSharedModule = module {
     includes(coreModule)
     includes(postSharedModule)
 
-    single<SyncPostsBackgroundTask> { SyncPostsBackgroundTaskImpl(get(), get()) }
+    single<SyncPostsWorker> { SyncPostsWorkerImpl(get()) }
 }

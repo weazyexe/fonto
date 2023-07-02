@@ -35,6 +35,7 @@ kotlin {
                 implementation(libs.koin.android)
                 implementation(libs.androidx.datastore)
                 implementation(libs.jsoup)
+                implementation(libs.workmanager)
             }
         }
         /*val iosMain by creating {

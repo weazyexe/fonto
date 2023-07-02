@@ -21,6 +21,13 @@ fun <T, R> AsyncResult<T>.map(transform: (T) -> R): AsyncResult<R> =
         is AsyncResult.Error -> AsyncResult.Error(error)
     }
 
+fun <T> AsyncResult<List<T>>.isNotEmpty(): Boolean =
+    when (this) {
+        is AsyncResult.Loading -> false
+        is AsyncResult.Error -> false
+        is AsyncResult.Success -> data.isNotEmpty()
+    }
+
 fun <T> Flow<AsyncResult<T>>.onSuccess(block: suspend (AsyncResult.Success<T>) -> Unit): Flow<AsyncResult<T>> =
     onEach {
         if (it is AsyncResult.Success) {

@@ -1,6 +1,7 @@
 package dev.weazyexe.fonto.features.managefeed
 
 import dev.weazyexe.fonto.common.data.bus.AppEvent
+import dev.weazyexe.fonto.common.data.isNotEmpty
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.model.feed.Feed
@@ -46,5 +47,11 @@ internal class ManageFeedPresentationImpl(
 
     override fun updateChangesStatus() {
         setState { copy(hasChanges = true) }
+
+        if (state.feeds.isNotEmpty()) {
+            dependencies.eventBus.emit(AppEvent.StartSyncPostsBackgroundTask)
+        } else {
+            dependencies.eventBus.emit(AppEvent.StopSyncPostsBackgroundTask)
+        }
     }
 }

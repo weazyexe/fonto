@@ -1,6 +1,6 @@
 package dev.weazyexe.fonto.common.app.background
 
-enum class BackgroundTaskResult {
+enum class WorkerResult {
     SUCCESS,
     FAILURE,
     RETRY

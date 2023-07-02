@@ -2,7 +2,6 @@ package dev.weazyexe.fonto.app
 
 import android.app.Application
 import dev.weazyexe.fonto.BuildConfig
-import dev.weazyexe.fonto.app.background.SyncPostsWorker
 import dev.weazyexe.fonto.common.app.initializer.AppInitializer
 import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.di.dataModules
@@ -15,14 +14,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 
 class FontoApplication : Application() {
 
     private val appInitializer by inject<AppInitializer>()
     private val appScope by inject<CoroutineScope>()
-    private val syncPostsWorker by inject<SyncPostsWorker>()
 
     override fun onCreate() {
         super.onCreate()
@@ -31,7 +28,6 @@ class FontoApplication : Application() {
 
         startKoin {
             androidContext(this@FontoApplication)
-            workManagerFactory()
 
             modules(dataModules())
             modules(screenModules())
@@ -49,8 +45,6 @@ class FontoApplication : Application() {
                     areMockFeedsEnabled = BuildConfig.BUILD_TYPE == "benchmark"
                 )
             )
-
-
         }
     }
 }
