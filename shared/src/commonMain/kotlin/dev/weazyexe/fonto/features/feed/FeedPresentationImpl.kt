@@ -41,7 +41,7 @@ internal class FeedPresentationImpl(
             limit = state.limit,
             offset = state.offset,
             shouldShowLoading = !isSwipeRefreshing,
-            useCache = true
+            useCache = false
         )
             .onLoading { setState { copy(posts = it) } }
             .onError { setState { copy(posts = it, isSwipeRefreshing = false) } }

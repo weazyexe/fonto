@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
+import dev.weazyexe.fonto.common.model.preference.SyncPostsInterval
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
@@ -24,12 +25,15 @@ import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.destinations.SyncIntervalPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.home.ColorPickerResult
 import dev.weazyexe.fonto.ui.features.home.ExportStrategyPickerResult
+import dev.weazyexe.fonto.ui.features.home.SyncIntervalPickerResult
 import dev.weazyexe.fonto.ui.features.home.ThemePickerResult
 import dev.weazyexe.fonto.ui.features.settings.screens.colorpicker.ColorPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.exportstrategypicker.toExportStrategy
+import dev.weazyexe.fonto.ui.features.settings.screens.syncintervalpicker.SyncIntervalPickerArgs
 import dev.weazyexe.fonto.ui.features.settings.screens.themepicker.ThemePickerArgs
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +45,7 @@ fun SettingsScreen(
     navController: NavController,
     themePickerResult: ThemePickerResult,
     colorPickerResult: ColorPickerResult,
+    syncIntervalPickerResult: SyncIntervalPickerResult,
     exportStrategyPickerResults: ExportStrategyPickerResult,
     onBack: () -> Unit
 ) {
@@ -52,6 +57,7 @@ fun SettingsScreen(
     HandleNavigationResults(
         themePickerResults = themePickerResult,
         colorPickerResults = colorPickerResult,
+        syncIntervalPickerResult = syncIntervalPickerResult,
         exportStrategyPickerResults = exportStrategyPickerResults,
         viewModel = viewModel
     )
@@ -126,6 +132,18 @@ private fun HandleEffects(
                     )
                 )
 
+            is SettingsEffect.OpenSyncIntervalPicker ->
+                navController.navigate(
+                    SyncIntervalPickerDialogDestination(
+                        args = SyncIntervalPickerArgs(
+                            value = currentInterval,
+                            possibleValues = SyncPostsInterval.values().toList(),
+                            icon = DrawableResources.ic_pace_24,
+                            title = StringResources.settings_sync_interval_title,
+                        )
+                    )
+                )
+
             is SettingsEffect.OpenExportFilePicker ->
                 exportFontoSaver.launch(fileName)
 
@@ -154,6 +172,7 @@ private fun HandleEffects(
 private fun HandleNavigationResults(
     themePickerResults: ThemePickerResult,
     colorPickerResults: ColorPickerResult,
+    syncIntervalPickerResult: SyncIntervalPickerResult,
     exportStrategyPickerResults: ExportStrategyPickerResult,
     viewModel: SettingsViewModel
 ) {
@@ -163,6 +182,10 @@ private fun HandleNavigationResults(
 
     colorPickerResults.handleResults { result ->
         viewModel.onColorSchemePicked(result)
+    }
+
+    syncIntervalPickerResult.handleResults { result ->
+        result?.let { viewModel.onSyncIntervalPicked(result) }
     }
 
     exportStrategyPickerResults.handleResults { result ->
