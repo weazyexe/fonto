@@ -85,6 +85,11 @@
     <string name="add_edit_feed_feed_link_is_invalid">Feed link is invalid. Supported feed types: RSS, Atom, JSON Feed</string>
     <string name="add_edit_feed_feed_saving_error">Error while saving the feed</string>
 
+    <string name="permission_rationale_notification_title">Permission denied</string>
+    <string name="permission_rationale_notification_description">If you want to get your feed updates notifications, grant the notifications permission in system settings</string>
+    <string name="permission_rationale_notification_open_settings">Open Settings</string>
+    <string name="permission_rationale_notification_ok">OK</string>
+
     <string name="feed_delete_confirmation_title">Delete the feed?</string>
     <string name="feed_delete_confirmation_description_first">You are about to delete</string>
     <string name="feed_delete_confirmation_description_second">feed. Are you sure about it? You can\'t revert this operation</string>
