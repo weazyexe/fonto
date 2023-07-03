@@ -12,7 +12,8 @@ data class FeedViewState(
     val title: String,
     val link: String,
     val icon: Bitmap?,
-    val category: Category?
+    val category: Category?,
+    val areNotificationsEnabled: Boolean
 )
 
 fun Feed.asViewState() = FeedViewState(
@@ -20,5 +21,6 @@ fun Feed.asViewState() = FeedViewState(
     title = title,
     link = link,
     icon = icon?.asBitmap(),
-    category = category
+    category = category,
+    areNotificationsEnabled = areNotificationsEnabled
 )

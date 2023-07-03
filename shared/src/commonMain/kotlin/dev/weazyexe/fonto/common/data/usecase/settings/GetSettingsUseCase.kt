@@ -92,6 +92,7 @@ internal class GetSettingsUseCase(
 
                     Preference.Key.MANAGE_FEED,
                     Preference.Key.MANAGE_CATEGORIES,
+                    Preference.Key.NOTIFICATIONS,
                     Preference.Key.EXPORT_FONTO,
                     Preference.Key.IMPORT_FONTO,
                     Preference.Key.DEBUG_MENU -> preference

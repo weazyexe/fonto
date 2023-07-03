@@ -29,7 +29,8 @@ object PostViewStatePreview {
                     LocalContext.current,
                     DrawableResources.preview_favicon
                 )?.toBitmap(),
-                category = Category(Category.Id(0), "News")
+                category = Category(Category.Id(0), "News"),
+                areNotificationsEnabled = false
             ),
             isSaved = false,
             isRead = false,
@@ -50,7 +51,8 @@ object PostViewStatePreview {
                 title = "Rozetked",
                 link = "",
                 icon = null,
-                category = Category(Category.Id(1), "Technologies")
+                category = Category(Category.Id(1), "Technologies"),
+                areNotificationsEnabled = false
             ),
             isSaved = false,
             isRead = true,
@@ -74,7 +76,8 @@ object PostViewStatePreview {
                     LocalContext.current,
                     DrawableResources.preview_favicon
                 )?.toBitmap(),
-                category = Category(Category.Id(2), "Technologies")
+                category = Category(Category.Id(2), "Technologies"),
+                areNotificationsEnabled = false
             ),
             isSaved = true,
             isRead = true,

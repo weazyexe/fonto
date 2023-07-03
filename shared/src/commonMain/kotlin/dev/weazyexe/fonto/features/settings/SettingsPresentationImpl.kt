@@ -39,6 +39,8 @@ internal class SettingsPresentationImpl(
 
             Preference.Key.MANAGE_CATEGORIES -> SettingsEffect.OpenManageCategoriesScreen.emit()
 
+            Preference.Key.NOTIFICATIONS -> SettingsEffect.OpenNotificationsScreen.emit()
+
             Preference.Key.OPEN_POST -> updatePreference(preference)
 
             Preference.Key.THEME ->

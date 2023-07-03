@@ -11,6 +11,8 @@ sealed interface SettingsEffect : Effect {
 
     object OpenManageCategoriesScreen : SettingsEffect
 
+    object OpenNotificationsScreen : SettingsEffect
+
     data class OpenThemePicker(val currentTheme: Theme) : SettingsEffect
 
     data class OpenColorSchemePicker(val currentColorScheme: ColorScheme) : SettingsEffect

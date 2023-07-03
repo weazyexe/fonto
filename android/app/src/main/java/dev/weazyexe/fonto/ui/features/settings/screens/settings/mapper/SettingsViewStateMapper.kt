@@ -140,6 +140,12 @@ private fun Preference.Key.visuals(context: Context): PreferenceVisuals =
             icon = DrawableResources.ic_category_24
         )
 
+        Preference.Key.NOTIFICATIONS -> PreferenceVisuals(
+            title = context.getString(StringResources.settings_notifications_title),
+            description = context.getString(StringResources.settings_notifications_description),
+            icon = DrawableResources.ic_notification_24
+        )
+
         Preference.Key.SYNC_POSTS -> PreferenceVisuals(
             title = context.getString(StringResources.settings_sync_enabled_title),
             description = context.getString(StringResources.settings_sync_enabled_description),
