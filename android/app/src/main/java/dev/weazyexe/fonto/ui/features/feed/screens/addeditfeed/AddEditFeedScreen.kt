@@ -1,5 +1,9 @@
 package dev.weazyexe.fonto.ui.features.feed.screens.addeditfeed
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,6 +21,7 @@ import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.addeditfeed.AddEditFeedEffect
 import dev.weazyexe.fonto.ui.features.destinations.AddEditCategoryDialogDestination
+import dev.weazyexe.fonto.ui.features.destinations.NotificationsPermissionRationaleDialogDestination
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -34,6 +39,17 @@ fun AddEditFeedScreen(
 ) {
     val viewModel = koinViewModel<AddEditFeedViewModel>()
     val state by viewModel.state.collectAsState()
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isPermissionGranted ->
+            if (isPermissionGranted) {
+                viewModel.finish()
+            } else {
+                navController.navigate(NotificationsPermissionRationaleDialogDestination)
+            }
+        }
+    )
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -55,13 +71,21 @@ fun AddEditFeedScreen(
         isEditMode = state.isEditMode,
         category = state.category,
         categories = state.categories,
+        areNotificationsEnabled = state.areNotificationsEnabled,
         snackbarHostState = snackbarHostState,
         icon = state.icon,
         finishResult = state.finishResult,
         onTitleChange = viewModel::updateTitle,
         onLinkChange = viewModel::updateLink,
         onCategoryChange = viewModel::updateCategory,
-        onFinishClick = viewModel::finish,
+        onNotificationsEnabledChange = viewModel::updateNotificationEnabled,
+        onFinishClick = {
+            if (state.areNotificationsEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                viewModel.finish()
+            }
+        },
         onBackClick = { resultBackNavigator.navigateBack(result = false) },
         onAddCategoryClick = { navController.navigate(AddEditCategoryDialogDestination()) }
     )

@@ -14,7 +14,8 @@ internal class IsJsonFeedValidUseCase(private val jsonFeedRepository: JsonFeedRe
             link = url,
             icon = null,
             type = Feed.Type.JSON_FEED,
-            category = Category(Category.Id(0), "")
+            category = Category(Category.Id(0), ""),
+            areNotificationsEnabled = false
         )
         val parsedFeed = jsonFeedRepository.getJsonFeed(feed) as? ParsedFeed.Success ?: return false
         return parsedFeed.posts.isNotEmpty()

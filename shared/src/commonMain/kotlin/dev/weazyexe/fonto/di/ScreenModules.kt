@@ -28,6 +28,10 @@ import dev.weazyexe.fonto.features.managefeed.ManageFeedDependencies
 import dev.weazyexe.fonto.features.managefeed.ManageFeedDomainState
 import dev.weazyexe.fonto.features.managefeed.ManageFeedPresentation
 import dev.weazyexe.fonto.features.managefeed.ManageFeedPresentationImpl
+import dev.weazyexe.fonto.features.notifications.NotificationsDependencies
+import dev.weazyexe.fonto.features.notifications.NotificationsDomainState
+import dev.weazyexe.fonto.features.notifications.NotificationsPresentation
+import dev.weazyexe.fonto.features.notifications.NotificationsPresentationImpl
 import dev.weazyexe.fonto.features.search.SearchDependencies
 import dev.weazyexe.fonto.features.search.SearchDomainState
 import dev.weazyexe.fonto.features.search.SearchPresentation
@@ -46,6 +50,7 @@ fun screenModules(): List<Module> = listOf(
     feedScreenModule,
     searchScreenModule,
     manageFeedScreenModule,
+    notificationsScreenModule,
     addEditFeedScreenModule,
     categoriesScreenModule,
     addEditCategoryScreenModule,
@@ -120,6 +125,20 @@ val manageFeedScreenModule = module {
     }
 
     factory<ManageFeedPresentation> { ManageFeedPresentationImpl(dependencies = get()) }
+}
+
+val notificationsScreenModule = module {
+    factory { NotificationsDomainState() }
+
+    factory {
+        NotificationsDependencies(
+            initialState = get(),
+            getAllFeeds = get(),
+            updateFeed = get()
+        )
+    }
+
+    factory<NotificationsPresentation> { NotificationsPresentationImpl(dependencies = get()) }
 }
 
 val addEditFeedScreenModule = module {

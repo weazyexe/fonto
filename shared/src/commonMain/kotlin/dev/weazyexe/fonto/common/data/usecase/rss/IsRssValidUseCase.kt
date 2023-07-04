@@ -14,7 +14,8 @@ internal class IsRssValidUseCase(private val rssRepository: RssRepository) {
             link = url,
             icon = null,
             type = Feed.Type.RSS,
-            category = Category(Category.Id(0), "")
+            category = Category(Category.Id(0), ""),
+            areNotificationsEnabled = false
         )
         val parsedFeed = rssRepository.getRssFeed(feed) as? ParsedFeed.Success ?: return false
         return parsedFeed.posts.isNotEmpty()

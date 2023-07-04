@@ -17,7 +17,16 @@ internal class MockFeedInitializer(
         if (arguments.areMockFeedsEnabled) {
             deleteAllFeeds()
                 .flatMapLatest { VALID_FEED.asFlow() }
-                .flatMapMerge { createFeed(it.title, it.link, it.icon, it.type, it.category) }
+                .flatMapMerge {
+                    createFeed(
+                        title = it.title,
+                        link = it.link,
+                        image = it.icon,
+                        type = it.type,
+                        category = it.category,
+                        areNotificationsEnabled = it.areNotificationsEnabled
+                    )
+                }
                 .collect()
         }
     }

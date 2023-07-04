@@ -14,6 +14,7 @@ internal class GetDefaultSettingsUseCase {
             preferences = listOf(
                 Preference.Text(Preference.Key.MANAGE_FEED),
                 Preference.Text(Preference.Key.MANAGE_CATEGORIES),
+                Preference.Text(Preference.Key.NOTIFICATIONS),
                 Preference.Switch(
                     key = Preference.Key.OPEN_POST,
                     value = true

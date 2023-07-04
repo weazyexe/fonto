@@ -77,12 +77,20 @@
     <string name="add_edit_feed_category_title_not_selected">Not selected</string>
     <string name="add_edit_feed_add_new_category">Add new category</string>
     <string name="add_edit_feed_categories_loading_failure">Failed to load categories</string>
+    <string name="add_edit_feed_notifications">Show notifications</string>
     <string name="add_edit_feed_feed_loading_failure">Failed to load feed</string>
     <string name="add_edit_feed_feed_icon_loading_failure">Failed to load feed icon</string>
     <string name="add_edit_feed_invalid_title">Title can\'t be empty</string>
     <string name="add_edit_feed_invalid_link">This link is invalid</string>
     <string name="add_edit_feed_feed_link_is_invalid">Feed link is invalid. Supported feed types: RSS, Atom, JSON Feed</string>
     <string name="add_edit_feed_feed_saving_error">Error while saving the feed</string>
+
+    <string name="notifications_title">Notifications</string>
+
+    <string name="permission_rationale_notification_title">Permission denied</string>
+    <string name="permission_rationale_notification_description">If you want to get your feed updates notifications, grant the notifications permission in system settings</string>
+    <string name="permission_rationale_notification_open_settings">Open Settings</string>
+    <string name="permission_rationale_notification_ok">OK</string>
 
     <string name="feed_delete_confirmation_title">Delete the feed?</string>
     <string name="feed_delete_confirmation_description_first">You are about to delete</string>
@@ -130,6 +138,8 @@
     <string name="settings_feed_manage_description">Edit the sources you read</string>
     <string name="settings_category_manage_title">Manage categories</string>
     <string name="settings_category_manage_description">Edit the feed categories</string>
+    <string name="settings_notifications_title">Notifications</string>
+    <string name="settings_notifications_description">Feed updates push settings</string>
     <string name="settings_feed_open_post_title">Open posts with in-app browser</string>
     <string name="settings_feed_open_post_description">If unchecked, use system default browser</string>
     <string name="settings_appearance_group">Appearance</string>

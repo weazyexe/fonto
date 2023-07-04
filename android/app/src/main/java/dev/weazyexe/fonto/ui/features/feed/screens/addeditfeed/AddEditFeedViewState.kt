@@ -12,6 +12,7 @@ data class AddEditFeedViewState(
     val category: Category? = null,
     val isEditMode: Boolean = false,
     val categories: List<Category> = emptyList(),
+    val areNotificationsEnabled: Boolean = false,
     val icon: AsyncResult<ImageBitmap?> = AsyncResult.Success(null),
     val finishResult: AsyncResult<Unit> = AsyncResult.Success(Unit)
 )

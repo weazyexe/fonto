@@ -12,7 +12,8 @@ internal data class FeedBackupModel(
     @SerialName("title") val title: String,
     @SerialName("link") val link: String,
     @SerialName("type") val type: Long,
-    @SerialName("categoryId") val category: Category.Id?
+    @SerialName("categoryId") val category: Category.Id? = null,
+    @SerialName("areNotificationsEnabled") val areNotificationsEnabled: Boolean? = null,
 )
 
 internal fun Feed.asBackupModel(): FeedBackupModel =
@@ -21,7 +22,8 @@ internal fun Feed.asBackupModel(): FeedBackupModel =
         title = title,
         link = link,
         type = type.id,
-        category = category?.id
+        category = category?.id,
+        areNotificationsEnabled = areNotificationsEnabled
     )
 
 internal fun FeedBackupModel.asFeed(
@@ -34,5 +36,6 @@ internal fun FeedBackupModel.asFeed(
         link = link,
         type = Feed.Type.byId(type),
         category = category,
-        icon = icon
+        icon = icon,
+        areNotificationsEnabled = areNotificationsEnabled ?: false
     )

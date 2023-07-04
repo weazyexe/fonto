@@ -39,6 +39,8 @@ internal class SettingsPresentationImpl(
 
             Preference.Key.MANAGE_CATEGORIES -> SettingsEffect.OpenManageCategoriesScreen.emit()
 
+            Preference.Key.NOTIFICATIONS -> SettingsEffect.OpenNotificationsScreen.emit()
+
             Preference.Key.OPEN_POST -> updatePreference(preference)
 
             Preference.Key.THEME ->
@@ -165,7 +167,7 @@ internal class SettingsPresentationImpl(
 
     private fun loadSettings() {
         dependencies.getSettings()
-            .onSuccess { setState { copy(preferences = it.data.updateGroupVisibility()) } }
+            .onSuccess { setState { copy(preferences = it.data.updateVisibility()) } }
             .launchIn(scope)
     }
 
@@ -177,42 +179,47 @@ internal class SettingsPresentationImpl(
         return "fonto_backup_$currentTime.json"
     }
 
-    private fun List<Group>.updateGroupVisibility() = map { group ->
-        group.copy(preferences = group.preferences.updatePreferenceVisibility())
-    }.filter { it.preferences.isNotEmpty() }
+    private fun List<Group>.updateVisibility(): List<Group> =
+        map { group ->
+            val allPreferences = this.flatMap { it.preferences }
 
-    private fun List<Preference>.updatePreferenceVisibility(): List<Preference> {
-        val isDynamicColorsFeatureAvailable = dependencies
-            .featureAvailabilityChecker
-            .isFeatureAvailable(Feature.DYNAMIC_COLOR)
+            val isDynamicColorsFeatureAvailable = dependencies
+                .featureAvailabilityChecker
+                .isFeatureAvailable(Feature.DYNAMIC_COLOR)
 
-        val dynamicColorPreference =
-            this.firstOrNull { it.key == Preference.Key.DYNAMIC_COLORS } as? Preference.Switch
-        val shouldShowColorScheme =
-            !isDynamicColorsFeatureAvailable || dynamicColorPreference?.value == false
+            val dynamicColorPreference =
+                allPreferences.firstOrNull { it.key == Preference.Key.DYNAMIC_COLORS } as? Preference.Switch
+            val shouldShowColorScheme =
+                !isDynamicColorsFeatureAvailable || dynamicColorPreference?.value == false
 
-        val isSyncEnabledPreference =
-            this.firstOrNull { it.key == Preference.Key.SYNC_POSTS } as? Preference.Switch
-        val shouldShowSyncSettings = isSyncEnabledPreference?.value == true
+            val isSyncEnabledPreference =
+                allPreferences.firstOrNull { it.key == Preference.Key.SYNC_POSTS } as? Preference.Switch
+            val shouldShowSyncSettings = isSyncEnabledPreference?.value == true
 
-        return map {
-            when (it.key) {
-                Preference.Key.DYNAMIC_COLORS -> (it as Preference.Switch).copy(isVisible = isDynamicColorsFeatureAvailable)
-                Preference.Key.COLOR_SCHEME -> (it as Preference.Value<*>).copy(isVisible = shouldShowColorScheme)
-                Preference.Key.DEBUG_MENU -> (it as Preference.Text).copy(isVisible = !isReleaseBuild())
-                Preference.Key.SYNC_POSTS_INTERVAL -> (it as Preference.Value<*>).copy(isVisible = shouldShowSyncSettings)
-                Preference.Key.SYNC_POSTS_IF_METERED_CONNECTION -> (it as Preference.Switch).copy(
-                    isVisible = shouldShowSyncSettings
-                )
+            group.copy(
+                preferences = group.preferences.map {
+                    when (it.key) {
+                        Preference.Key.DYNAMIC_COLORS -> (it as Preference.Switch).copy(isVisible = isDynamicColorsFeatureAvailable)
+                        Preference.Key.COLOR_SCHEME -> (it as Preference.Value<*>).copy(isVisible = shouldShowColorScheme)
+                        Preference.Key.DEBUG_MENU -> (it as Preference.Text).copy(isVisible = !isReleaseBuild())
+                        Preference.Key.NOTIFICATIONS -> (it as Preference.Text).copy(isVisible = shouldShowSyncSettings)
+                        Preference.Key.SYNC_POSTS_INTERVAL -> (it as Preference.Value<*>).copy(
+                            isVisible = shouldShowSyncSettings
+                        )
 
-                Preference.Key.SYNC_POSTS_IF_BATTERY_IS_LOW -> (it as Preference.Switch).copy(
-                    isVisible = shouldShowSyncSettings
-                )
+                        Preference.Key.SYNC_POSTS_IF_METERED_CONNECTION -> (it as Preference.Switch).copy(
+                            isVisible = shouldShowSyncSettings
+                        )
 
-                else -> it
-            }
-        }
-    }
+                        Preference.Key.SYNC_POSTS_IF_BATTERY_IS_LOW -> (it as Preference.Switch).copy(
+                            isVisible = shouldShowSyncSettings
+                        )
+
+                        else -> it
+                    }
+                }
+            )
+        }.filterGroupsWithoutPreferences()
 
     private fun List<Group>.update(preference: Preference) =
         map { group ->
@@ -225,10 +232,13 @@ internal class SettingsPresentationImpl(
                             pref
                         }
                     }
-                    .updatePreferenceVisibility()
             )
-        }.filter { it.preferences.isNotEmpty() }
+        }
+            .updateVisibility()
+            .filterGroupsWithoutPreferences()
 
     private inline fun <reified T : Preference> List<Group>.findPreference(key: Preference.Key): T? =
         flatMap { it.preferences }.firstOrNull { it.key == key } as? T
+
+    private fun List<Group>.filterGroupsWithoutPreferences() = filter { group -> group.preferences.any { it.isVisible } }
 }

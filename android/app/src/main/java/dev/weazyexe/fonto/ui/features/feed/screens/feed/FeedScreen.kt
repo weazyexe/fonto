@@ -18,7 +18,6 @@ import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.features.feed.FeedEffect
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResult
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResult
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResult
@@ -26,6 +25,7 @@ import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavCont
 import dev.weazyexe.fonto.ui.features.home.CategoryPickerResult
 import dev.weazyexe.fonto.ui.features.home.DateRangePickerResult
 import dev.weazyexe.fonto.ui.features.home.FeedPickerResult
+import dev.weazyexe.fonto.ui.navigation.ExternalRouter
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -85,7 +85,7 @@ private fun HandleEffects(
     ReceiveEffect(effects) {
         when (this) {
             is FeedEffect.OpenPostInApp -> {
-                InAppBrowser.openPost(context, link, theme)
+                ExternalRouter.openInAppBrowser(context, link, theme)
             }
 
             is FeedEffect.OpenPostInBrowser -> {

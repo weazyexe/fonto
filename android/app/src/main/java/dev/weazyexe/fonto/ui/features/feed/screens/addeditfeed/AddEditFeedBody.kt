@@ -49,6 +49,7 @@ import androidx.core.graphics.drawable.toBitmap
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.model.feed.Category
 import dev.weazyexe.fonto.core.ui.components.Rotatable
+import dev.weazyexe.fonto.core.ui.components.preferences.SwitchPreferenceItem
 import dev.weazyexe.fonto.core.ui.components.toolbar.FullScreenDialogToolbar
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
@@ -60,6 +61,7 @@ fun AddEditFeedBody(
     link: String,
     category: Category?,
     categories: List<Category>,
+    areNotificationsEnabled: Boolean,
     isEditMode: Boolean = false,
     snackbarHostState: SnackbarHostState,
     icon: AsyncResult<ImageBitmap?>,
@@ -68,6 +70,7 @@ fun AddEditFeedBody(
     onLinkChange: (String) -> Unit,
     onCategoryChange: (Category?) -> Unit,
     onAddCategoryClick: () -> Unit,
+    onNotificationsEnabledChange: (Boolean) -> Unit,
     onBackClick: () -> Unit,
     onFinishClick: () -> Unit
 ) {
@@ -212,6 +215,16 @@ fun AddEditFeedBody(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.size(8.dp))
+
+            SwitchPreferenceItem(
+                title = stringResource(id = StringResources.add_edit_feed_notifications),
+                description = null,
+                value = areNotificationsEnabled,
+                onValueChange = onNotificationsEnabledChange,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
@@ -304,6 +317,7 @@ private fun AddEditFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPr
         isEditMode = true,
         category = null,
         categories = listOf(),
+        areNotificationsEnabled = true,
         snackbarHostState = SnackbarHostState(),
         icon = AsyncResult.Success(icon),
         finishResult = AsyncResult.Success(Unit),
@@ -311,6 +325,7 @@ private fun AddEditFeedBodyPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPr
         onCategoryChange = {},
         onLinkChange = {},
         onAddCategoryClick = {},
+        onNotificationsEnabledChange = {},
         onFinishClick = {},
         onBackClick = {}
     )

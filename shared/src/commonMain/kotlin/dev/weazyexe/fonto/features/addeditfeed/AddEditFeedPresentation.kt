@@ -14,6 +14,8 @@ abstract class AddEditFeedPresentation :
 
     abstract fun updateLink(link: String)
 
+    abstract fun updateNotificationEnabled(enabled: Boolean)
+
     abstract fun finish()
 
 }

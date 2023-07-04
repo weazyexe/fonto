@@ -25,6 +25,7 @@ import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
+import dev.weazyexe.fonto.ui.features.destinations.NotificationsScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.SyncIntervalPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.home.ColorPickerResult
@@ -106,6 +107,9 @@ private fun HandleEffects(
 
             is SettingsEffect.OpenManageCategoriesScreen ->
                 navController.navigate(CategoriesScreenDestination())
+
+            is SettingsEffect.OpenNotificationsScreen ->
+                navController.navigate(NotificationsScreenDestination())
 
             is SettingsEffect.OpenDebugScreen ->
                 navController.navigate(DebugScreenDestination())

@@ -43,6 +43,10 @@ class AddEditFeedViewModel(
         presentation.updateLink(link)
     }
 
+    fun updateNotificationEnabled(enabled: Boolean) {
+        presentation.updateNotificationEnabled(enabled)
+    }
+
     fun finish() {
         presentation.finish()
     }
@@ -54,6 +58,7 @@ class AddEditFeedViewModel(
             isEditMode = id != null,
             category = category,
             categories = categories,
+            areNotificationsEnabled = areNotificationsEnabled,
             icon = icon.map { it?.asBitmap()?.asImageBitmap() },
             finishResult = finishResult
         )

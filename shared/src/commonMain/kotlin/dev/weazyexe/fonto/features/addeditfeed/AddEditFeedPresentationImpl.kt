@@ -49,6 +49,10 @@ internal class AddEditFeedPresentationImpl(
         state.debouncedLink.value = link
     }
 
+    override fun updateNotificationEnabled(enabled: Boolean) {
+        setState { copy(areNotificationsEnabled = enabled) }
+    }
+
     override fun finish() {
         if (!dependencies.titleValidator.validate(state.title)) {
             AddEditFeedEffect.ShowTitleInvalidMessage.emit()
@@ -68,7 +72,8 @@ internal class AddEditFeedPresentationImpl(
                 link = state.link.trim(),
                 icon = (state.icon as? AsyncResult.Success)?.data,
                 type = state.type,
-                category = state.category
+                category = state.category,
+                areNotificationsEnabled = state.areNotificationsEnabled
             )
 
             saveFeed(feed)
@@ -77,7 +82,8 @@ internal class AddEditFeedPresentationImpl(
                 title = state.title.trim(),
                 link = state.link.trim(),
                 category = state.category,
-                icon = (state.icon as? AsyncResult.Success)?.data
+                icon = (state.icon as? AsyncResult.Success)?.data,
+                areNotificationsEnabled = state.areNotificationsEnabled
             )
         }
     }
@@ -113,7 +119,8 @@ internal class AddEditFeedPresentationImpl(
         title: String,
         link: String,
         category: Category?,
-        icon: LocalImage?
+        icon: LocalImage?,
+        areNotificationsEnabled: Boolean
     ) {
         dependencies.getFeedType(link)
             .onLoading { setState { copy(finishResult = AsyncResult.Loading()) } }
@@ -122,7 +129,7 @@ internal class AddEditFeedPresentationImpl(
                 AddEditFeedEffect.ShowFeedValidationError.emit()
             }
             .filterIsInstance<AsyncResult.Success<Feed.Type>>()
-            .flatMapLatest { dependencies.createFeed(title, link, icon, it.data, category) }
+            .flatMapLatest { dependencies.createFeed(title, link, icon, it.data, category, areNotificationsEnabled) }
             .onEach { setState { copy(finishResult = it) } }
             .onError {
                 setState { copy(finishResult = it) }
@@ -145,7 +152,8 @@ internal class AddEditFeedPresentationImpl(
                         link = it.data.link,
                         category = it.data.category,
                         type = it.data.type,
-                        icon = AsyncResult.Success(it.data.icon)
+                        icon = AsyncResult.Success(it.data.icon),
+                        areNotificationsEnabled = it.data.areNotificationsEnabled
                     )
                 }
             }

@@ -25,12 +25,12 @@ import dev.weazyexe.fonto.ui.features.destinations.CategoryPickerDialogDestinati
 import dev.weazyexe.fonto.ui.features.destinations.DateRangePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.FeedPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.feed.screens.categorypicker.CategoryPickerArgs
-import dev.weazyexe.fonto.ui.features.feed.screens.feed.browser.InAppBrowser
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalCategoryPickerResult
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalDateRangePickerResult
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalFeedPickerResult
 import dev.weazyexe.fonto.ui.features.feed.screens.feed.composition.LocalNavController
 import dev.weazyexe.fonto.ui.features.feed.screens.feedpicker.FeedPickerArgs
+import dev.weazyexe.fonto.ui.navigation.ExternalRouter
 import dev.weazyexe.fonto.util.handleResults
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
@@ -117,7 +117,7 @@ private fun HandleEffects(
             }
 
             is SearchEffect.OpenPostInApp -> {
-                InAppBrowser.openPost(context, link, theme)
+                ExternalRouter.openInAppBrowser(context, link, theme)
             }
 
             is SearchEffect.OpenPostInBrowser -> {

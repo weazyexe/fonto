@@ -27,6 +27,7 @@ sealed interface Preference {
         // Feed group
         MANAGE_FEED,
         MANAGE_CATEGORIES,
+        NOTIFICATIONS,
         OPEN_POST,
 
         // Appearance

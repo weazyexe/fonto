@@ -10,7 +10,8 @@ data class Feed(
     val link: String,
     val icon: LocalImage?,
     val type: Type,
-    val category: Category?
+    val category: Category?,
+    val areNotificationsEnabled: Boolean
 ) {
 
     @Serializable
