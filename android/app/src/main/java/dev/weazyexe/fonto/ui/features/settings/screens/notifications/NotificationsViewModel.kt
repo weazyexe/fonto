@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.ui.features.settings.screens.notifications
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.weazyexe.fonto.common.data.map
+import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.features.notifications.NotificationsDomainState
 import dev.weazyexe.fonto.features.notifications.NotificationsPresentation
 import dev.weazyexe.fonto.ui.features.feed.components.feed.asViewState
@@ -17,6 +18,10 @@ class NotificationsViewModel(
 
     init {
         presentation.onCreate(viewModelScope)
+    }
+
+    fun toggleNotificationsEnabled(id: Feed.Id) {
+        presentation.toggleNotificationsEnabled(id)
     }
 
     private fun NotificationsDomainState.asViewState() : NotificationsViewState =

@@ -133,7 +133,8 @@ val notificationsScreenModule = module {
     factory {
         NotificationsDependencies(
             initialState = get(),
-            getAllFeeds = get()
+            getAllFeeds = get(),
+            updateFeed = get()
         )
     }
 
