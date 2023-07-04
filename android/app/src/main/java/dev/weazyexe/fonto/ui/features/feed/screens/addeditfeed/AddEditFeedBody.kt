@@ -222,7 +222,6 @@ fun AddEditFeedBody(
                 title = stringResource(id = StringResources.add_edit_feed_notifications),
                 description = null,
                 value = areNotificationsEnabled,
-                icon = null,
                 onValueChange = onNotificationsEnabledChange,
                 modifier = Modifier.fillMaxWidth()
             )

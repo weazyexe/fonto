@@ -1,12 +1,15 @@
 package dev.weazyexe.fonto.ui.features.settings.screens.settings
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -15,7 +18,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.core.ui.components.SmallProgressIndicator
@@ -73,8 +78,17 @@ fun SettingsBody(
                                         title = pref.title,
                                         description = pref.description,
                                         value = pref.value,
-                                        icon = pref.icon,
-                                        onValueChange = { onPreferenceClick(pref.copy(value = it)) }
+                                        onValueChange = { onPreferenceClick(pref.copy(value = it)) },
+                                        icon = {
+                                            Image(
+                                                painter = painterResource(id = pref.icon),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .padding(end = 16.dp)
+                                                    .size(24.dp),
+                                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                                            )
+                                        }
                                     )
                                 }
 

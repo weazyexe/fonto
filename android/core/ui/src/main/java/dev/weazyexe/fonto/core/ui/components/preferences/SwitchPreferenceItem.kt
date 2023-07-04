@@ -1,6 +1,5 @@
 package dev.weazyexe.fonto.core.ui.components.preferences
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,9 +32,9 @@ fun SwitchPreferenceItem(
     title: String,
     description: String?,
     value: Boolean,
-    @DrawableRes icon: Int?,
     onValueChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit = {},
 ) {
     val context = LocalContext.current
     Row(
@@ -50,16 +49,7 @@ fun SwitchPreferenceItem(
             .padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (icon != null) {
-            Image(
-                painter = painterResource(id = icon),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(24.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-            )
-        }
+        icon()
 
         Column(
             modifier = Modifier
@@ -111,7 +101,16 @@ private fun SwitchPreferenceItemPreview() = ThemedPreview {
         title = "Something",
         description = "Enabled or disabled",
         value = true,
-        icon = DrawableResources.ic_bookmark_24,
+        icon = {
+            Image(
+                painter = painterResource(id = DrawableResources.ic_bookmark_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(24.dp),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+            )
+        },
         onValueChange = {},
         modifier = Modifier.fillMaxWidth()
     )
@@ -124,7 +123,16 @@ private fun SwitchPreferenceItemDisabledPreview() = ThemedPreview {
         title = "Something",
         description = "Lorem ipsum dolor set very long text very long text very long text",
         value = false,
-        icon = DrawableResources.ic_bookmark_24,
+        icon = {
+            Image(
+                painter = painterResource(id = DrawableResources.ic_bookmark_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(24.dp),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+            )
+        },
         onValueChange = {},
         modifier = Modifier.fillMaxWidth()
     )
@@ -137,7 +145,6 @@ private fun SwitchPreferenceItemNoIconPreview() = ThemedPreview {
         title = "Something",
         description = null,
         value = false,
-        icon = null,
         onValueChange = {},
         modifier = Modifier.fillMaxWidth()
     )

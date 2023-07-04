@@ -15,9 +15,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
@@ -28,6 +30,7 @@ import dev.weazyexe.fonto.core.ui.components.loadstate.asErrorPaneParams
 import dev.weazyexe.fonto.core.ui.components.preferences.SwitchPreferenceItem
 import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.StringResources
+import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedIcon
 import dev.weazyexe.fonto.ui.features.feed.components.feed.FeedViewState
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
 
@@ -96,8 +99,13 @@ private fun FeedList(
                     title = item.title,
                     description = null,
                     value = item.areNotificationsEnabled,
-                    icon = null,
-                    onValueChange = { onClick(item.id) }
+                    onValueChange = { onClick(item.id) },
+                    icon = {
+                        FeedIcon(
+                            icon = item.icon?.asImageBitmap(),
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                    }
                 )
 
                 if (index != list.size - 1) {
