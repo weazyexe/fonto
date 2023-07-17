@@ -4,8 +4,8 @@ import android.app.Application
 import dev.weazyexe.fonto.BuildConfig
 import dev.weazyexe.fonto.common.app.initializer.AppInitializer
 import dev.weazyexe.fonto.di.appModule
-import dev.weazyexe.fonto.di.dataModules
 import dev.weazyexe.fonto.di.screenModules
+import dev.weazyexe.fonto.di.sharedModules
 import dev.weazyexe.fonto.ui.features.feed.di.feedModule
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
 import io.github.aakira.napier.DebugAntilog
@@ -29,7 +29,7 @@ class FontoApplication : Application() {
         startKoin {
             androidContext(this@FontoApplication)
 
-            modules(dataModules())
+            modules(sharedModules())
             modules(screenModules())
 
             modules(

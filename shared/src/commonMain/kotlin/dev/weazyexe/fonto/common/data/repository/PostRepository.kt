@@ -43,6 +43,10 @@ internal class PostRepository(
         return postDataSource.getPostById(id.origin).toPost(feed)
     }
 
+    fun getPostsByIds(ids: List<Post.Id>): List<Post> {
+        return ids.map { getPostById(it) }
+    }
+
     fun insert(post: Post) = postDataSource.insertOrUpdate(post.toDao())
 
     fun insertOrUpdate(post: Post) = postDataSource.insertOrUpdate(post.toDao())

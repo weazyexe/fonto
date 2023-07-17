@@ -15,6 +15,7 @@ import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
 import dev.weazyexe.fonto.common.data.datasource.FeedDataSource
 import dev.weazyexe.fonto.common.data.datasource.IconDataSource
 import dev.weazyexe.fonto.common.data.datasource.JsonFeedDataSource
+import dev.weazyexe.fonto.common.data.datasource.NotificationDataSource
 import dev.weazyexe.fonto.common.data.datasource.PostDataSource
 import dev.weazyexe.fonto.common.data.datasource.RssDataSource
 import dev.weazyexe.fonto.common.data.repository.AtomRepository
@@ -22,6 +23,7 @@ import dev.weazyexe.fonto.common.data.repository.CategoryRepository
 import dev.weazyexe.fonto.common.data.repository.FeedRepository
 import dev.weazyexe.fonto.common.data.repository.IconRepository
 import dev.weazyexe.fonto.common.data.repository.JsonFeedRepository
+import dev.weazyexe.fonto.common.data.repository.NotificationRepository
 import dev.weazyexe.fonto.common.data.repository.PostRepository
 import dev.weazyexe.fonto.common.data.repository.RssRepository
 import dev.weazyexe.fonto.common.data.usecase.atom.IsAtomValidUseCase
@@ -74,7 +76,7 @@ import org.koin.dsl.module
 
 expect fun platformModule(): Module
 
-fun dataModules(): List<Module> =
+fun sharedModules(): List<Module> =
     listOf(
         initializerSharedModule,
         backgroundTasksSharedModule,
@@ -84,6 +86,7 @@ fun dataModules(): List<Module> =
         atomSharedModule,
         jsonFeedSharedModule,
         postSharedModule,
+        notificationSharedModule,
         categorySharedModule,
         backupSharedModule,
         settingsSharedModule,
@@ -192,6 +195,13 @@ internal val postSharedModule = module {
     single { UpdatePostUseCase(get()) }
     single { DeleteAllPostsUseCase(get()) }
     single { GetPostMetadataFromHtmlUseCase(get(), get()) }
+}
+
+internal val notificationSharedModule = module {
+    includes(coreModule, postSharedModule)
+
+    single { NotificationDataSource(get()) }
+    single { NotificationRepository(get(), get(), get()) }
 }
 
 internal val backupSharedModule = module {
