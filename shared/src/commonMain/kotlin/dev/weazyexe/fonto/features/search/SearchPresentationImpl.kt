@@ -2,13 +2,11 @@ package dev.weazyexe.fonto.features.search
 
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.bus.AppEvent
-import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.data.onError
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.feature.posts.PostsFilter
 import dev.weazyexe.fonto.common.html.OgMetadata
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.utils.extensions.firstOrNull
 import dev.weazyexe.fonto.utils.extensions.update
@@ -77,7 +75,9 @@ internal class SearchPresentationImpl(private val dependencies: SearchDependenci
         val updatedPost = post.copy(isSaved = !post.isSaved)
 
         dependencies.updatePost(updatedPost)
-            .onError { SearchEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit() }
+            .onError {
+                SearchEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit()
+            }
             .onSuccess {
                 val newPosts = state.posts.update(it.data)
                 setState { copy(posts = newPosts) }
@@ -126,8 +126,8 @@ internal class SearchPresentationImpl(private val dependencies: SearchDependenci
     }
 
     private fun loadFilteredPosts() {
-        dependencies.getFilteredPosts(state.query, state.filters)
-            .onEach { postsResult -> setState { copy(posts = postsResult.map { Posts(it) }) } }
+        dependencies.getAllPosts(state.query, state.filters)
+            .onEach { postsResult -> setState { copy(posts = postsResult) } }
             .launchIn(scope)
     }
 

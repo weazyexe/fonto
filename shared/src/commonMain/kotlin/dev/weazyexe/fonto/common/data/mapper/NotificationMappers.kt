@@ -1,35 +1,32 @@
 package dev.weazyexe.fonto.common.data.mapper
 
 import dev.weazyexe.fonto.common.db.NotificationDao
-import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.notification.Notification
-import kotlinx.serialization.builtins.ListSerializer
+import dev.weazyexe.fonto.common.model.notification.NotificationMeta
+import dev.weazyexe.fonto.common.model.notification.decode
+import dev.weazyexe.fonto.common.model.notification.encode
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 
 internal fun Notification.toDao(json: Json): NotificationDao =
     NotificationDao(
         id = id.origin,
-        newPostIdentifiers = newPosts.map { it.id }.toJson(json),
-        isRead = isRead.toString()
+        type = type.origin,
+        isRead = isRead.toString(),
+        createdAt = createdAt.epochSeconds,
+        meta = meta.encode(json)
     )
 
-internal fun NotificationDao.toNotification(newPosts: List<Post>): Notification =
-    Notification(
+internal fun NotificationDao.toNotification(json: Json): Notification {
+    val type = Notification.Type.valueOf(type)
+
+    return Notification(
         id = Notification.Id(id),
-        newPosts = newPosts,
-        isRead = isRead.toBooleanStrict()
-    )
-
-internal fun List<Post.Id>.toJson(json: Json): String {
-    return json.encodeToString(
-        serializer = ListSerializer(Post.Id.serializer()),
-        value = this
-    )
-}
-
-internal fun String.toPostIdList(json: Json): List<Post.Id> {
-    return json.decodeFromString(
-        deserializer = ListSerializer(Post.Id.serializer()),
-        string = this
+        type = type,
+        isRead = isRead.toBooleanStrict(),
+        createdAt = Instant.fromEpochSeconds(createdAt),
+        meta = when (type) {
+            Notification.Type.NEW_POSTS -> meta.decode<NotificationMeta.NewPosts>(json)
+        }
     )
 }

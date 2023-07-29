@@ -3,21 +3,18 @@ package dev.weazyexe.fonto.utils.extensions
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.map
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.common.model.feed.Posts
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend fun AsyncResult<Posts>.update(post: Post): AsyncResult<Posts> {
+suspend fun AsyncResult<List<Post>>.update(post: Post): AsyncResult<List<Post>> {
     return withContext(Dispatchers.Default) {
         map { posts ->
-            Posts(
-                posts = posts.map { if (it.id == post.id) post else it }
-            )
+            posts.map { if (it.id == post.id) post else it }
         }
     }
 }
 
-fun AsyncResult<Posts>.firstOrNull(predicate: (Post) -> Boolean): Post? {
+fun AsyncResult<List<Post>>.firstOrNull(predicate: (Post) -> Boolean): Post? {
     val postsResult = this as? AsyncResult.Success ?: return null
-    return postsResult.data.posts.firstOrNull { predicate(it) }
+    return postsResult.data.firstOrNull { predicate(it) }
 }

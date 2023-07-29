@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.common.model.backup
 
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -16,7 +17,8 @@ internal data class PostBackupModel(
     @SerialName("publishedAt") val publishedAt: Long,
     @SerialName("isRead") val isRead: Boolean,
     @SerialName("isSaved") val isSaved: Boolean,
-    @SerialName("imageUrl") val imageUrl: String?
+    @SerialName("imageUrl") val imageUrl: String?,
+    @SerialName("addedAt") val addedAt: Long?
 )
 
 internal fun Post.asBackupModel(): PostBackupModel =
@@ -29,7 +31,8 @@ internal fun Post.asBackupModel(): PostBackupModel =
         feedId = feed.id,
         publishedAt = publishedAt.epochSeconds,
         isRead = isRead,
-        isSaved = isSaved
+        isSaved = isSaved,
+        addedAt = addedAt.epochSeconds
     )
 
 internal fun PostBackupModel.asPost(feed: Feed): Post =
@@ -43,5 +46,6 @@ internal fun PostBackupModel.asPost(feed: Feed): Post =
         publishedAt = Instant.fromEpochSeconds(publishedAt),
         isRead = isRead,
         isSaved = isSaved,
-        hasTriedToLoadMetadata = imageUrl != null && description.isNotBlank()
+        hasTriedToLoadMetadata = imageUrl != null && description.isNotBlank(),
+        addedAt = addedAt?.let { Instant.fromEpochSeconds(it) } ?: Clock.System.now() // TODO fix, make it required param
     )

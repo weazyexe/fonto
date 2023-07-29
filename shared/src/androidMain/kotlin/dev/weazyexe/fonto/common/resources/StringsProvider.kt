@@ -8,19 +8,13 @@ internal class AndroidStringsProvider(
     private val context: Context
 ) : StringsProvider {
 
-    override fun get(id: String, quantity: Int): String {
+    override fun plural(id: String, quantity: Int, vararg args: Any): String {
         val resourceId = context.resources.getIdentifier(id, "plurals", context.packageName)
         if (resourceId == 0) return id
-        return context.resources.getQuantityString(resourceId, quantity, quantity)
+        return context.resources.getQuantityString(resourceId, quantity, quantity, args)
     }
 
-    override fun get(id: String): String {
-        val resourceId = context.resources.getIdentifier(id, "string", context.packageName)
-        if (resourceId == 0) return id
-        return context.getString(resourceId)
-    }
-
-    override fun format(id: String, vararg formatArgs: Any): String {
+    override fun string(id: String, vararg formatArgs: Any): String {
         val resourceId = context.resources.getIdentifier(id, "string", context.packageName)
         if (resourceId == 0) return id
         return context.resources.getString(resourceId, *formatArgs)

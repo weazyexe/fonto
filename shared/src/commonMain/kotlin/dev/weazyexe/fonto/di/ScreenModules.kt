@@ -98,7 +98,7 @@ val searchScreenModule = module {
             initialState = get(),
 
             getFilters = get(),
-            getFilteredPosts = get(),
+            getAllPosts = get(),
             updatePost = get(),
             getPostMetadataFromHtml = get(),
 

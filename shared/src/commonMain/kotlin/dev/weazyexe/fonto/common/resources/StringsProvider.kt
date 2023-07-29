@@ -2,7 +2,6 @@
 package dev.weazyexe.fonto.common.resources
 
 internal interface StringsProvider {
-    fun get(id: String, quantity: Int): String
-    fun get(id: String): String
-    fun format(id: String, vararg formatArgs: Any): String
+    fun plural(id: String, quantity: Int, vararg args: Any): String
+    fun string(id: String, vararg formatArgs: Any): String
 }

@@ -18,6 +18,16 @@
 
         <profileable android:shell="true" />
 
+        <receiver
+            android:name=".common.app.broadcast.MarkAsReadBroadcastReceiver"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="dev.weazyexe.fonto.actions.ACTION_MARK_AS_READ" />
+            </intent-filter>
+
+        </receiver>
+
         <activity
             android:name=".ui.AppActivity"
             android:exported="true">

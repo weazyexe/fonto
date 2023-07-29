@@ -14,7 +14,8 @@ data class Post(
     val isSaved: Boolean,
     val link: String?,
     val isRead: Boolean,
-    val hasTriedToLoadMetadata: Boolean
+    val hasTriedToLoadMetadata: Boolean,
+    val addedAt: Instant,
 ) {
 
     @Serializable

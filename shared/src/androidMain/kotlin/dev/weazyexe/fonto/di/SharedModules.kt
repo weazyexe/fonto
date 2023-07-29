@@ -2,6 +2,7 @@ package dev.weazyexe.fonto.di
 
 import androidx.work.WorkManager
 import dev.weazyexe.fonto.common.app.background.PlatformWorkManagerFactory
+import dev.weazyexe.fonto.common.app.notifications.NotifierFactory
 import dev.weazyexe.fonto.common.db.DriverFactory
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorageFactory
 import dev.weazyexe.fonto.common.html.OgMetadataExtractorFactory
@@ -16,4 +17,5 @@ actual fun platformModule() = module {
     single { OgMetadataExtractorFactory() }
     single { WorkManager.getInstance(androidContext()) }
     single { PlatformWorkManagerFactory(get(), get(), get()) }
+    single { NotifierFactory(androidContext()) }
 }

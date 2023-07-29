@@ -1,7 +1,7 @@
 package dev.weazyexe.fonto.features.search
 
 import dev.weazyexe.fonto.common.data.bus.EventBus
-import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetAllPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostMetadataFromHtmlUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCase
@@ -13,7 +13,7 @@ internal data class SearchDependencies(
 
     val updatePost: UpdatePostUseCase,
     val getFilters: GetFiltersUseCase,
-    val getFilteredPosts: GetFilteredPostsUseCase,
+    val getAllPosts: GetAllPostsUseCase,
     val getPostMetadataFromHtml: GetPostMetadataFromHtmlUseCase,
 
     val urlValidator: UrlValidator,

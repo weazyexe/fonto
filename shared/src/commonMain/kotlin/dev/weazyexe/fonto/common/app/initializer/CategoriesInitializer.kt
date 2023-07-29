@@ -21,13 +21,13 @@ internal class CategoriesInitializer(
     }
 
     private fun buildDefaultCategories(): List<String> = listOf(
-        stringsProvider.get("category_default_news"),
-        stringsProvider.get("category_default_technologies"),
-        stringsProvider.get("category_default_business"),
-        stringsProvider.get("category_default_marketing"),
-        stringsProvider.get("category_default_design"),
-        stringsProvider.get("category_default_cyber_security"),
-        stringsProvider.get("category_default_politics"),
-        stringsProvider.get("category_default_science")
+        stringsProvider.string("category_default_news"),
+        stringsProvider.string("category_default_technologies"),
+        stringsProvider.string("category_default_business"),
+        stringsProvider.string("category_default_marketing"),
+        stringsProvider.string("category_default_design"),
+        stringsProvider.string("category_default_cyber_security"),
+        stringsProvider.string("category_default_politics"),
+        stringsProvider.string("category_default_science")
     )
 }

@@ -2,12 +2,12 @@ package dev.weazyexe.fonto.common.data.repository
 
 import dev.weazyexe.fonto.common.data.datasource.NotificationDataSource
 import dev.weazyexe.fonto.common.data.mapper.toDao
-import dev.weazyexe.fonto.common.data.mapper.toJson
 import dev.weazyexe.fonto.common.data.mapper.toNotification
-import dev.weazyexe.fonto.common.data.mapper.toPostIdList
-import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.notification.Notification
+import dev.weazyexe.fonto.common.model.notification.NotificationMeta
+import dev.weazyexe.fonto.common.model.notification.encode
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 
 internal class NotificationRepository(
@@ -18,20 +18,27 @@ internal class NotificationRepository(
 
     suspend fun getAll(): List<Notification> {
         val notificationDaos = notificationDataSource.getAll().first()
-        return notificationDaos.map { dao ->
-            val postIds = dao.newPostIdentifiers.toPostIdList(json)
-            val posts = postRepository.getPostsByIds(postIds)
-            dao.toNotification(posts)
-        }
+        return notificationDaos.map { it.toNotification(json) }
+    }
+
+    fun getById(id: Notification.Id): Notification? {
+        val dao = notificationDataSource.getById(id) ?: return null
+        return dao.toNotification(json)
     }
 
     fun insert(
-        newPostIdentifiers: List<Post.Id>,
-        isRead: Boolean
+        id: Notification.Id,
+        type: Notification.Type,
+        isRead: Boolean,
+        createdAt: Instant,
+        meta: NotificationMeta
     ) {
         notificationDataSource.insert(
-            newPostIdentifiersJson = newPostIdentifiers.toJson(json),
-            isRead = isRead
+            id = id,
+            type = type,
+            isRead = isRead,
+            createdAt = createdAt,
+            meta = meta.encode(json)
         )
     }
 

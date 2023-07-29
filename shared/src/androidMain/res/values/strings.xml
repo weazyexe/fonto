@@ -23,6 +23,21 @@
     </plurals>
     <string name="datetime_yesterday">yesterday at %s</string>
 
+    <string name="notification_channel_feed_updates_id" translatable="false">FEED_UPDATES</string>
+    <string name="notification_channel_feed_updates_title">Feed updates</string>
+    <string name="notification_new_posts_new_publication_single_title">New publication from %s</string>
+    <plurals name="notification_new_posts_new_publications_title">
+        <item quantity="zero">%d new publications</item>
+        <item quantity="one">%d new publication</item>
+        <item quantity="many">%d new publications</item>
+        <item quantity="other">%d new publications</item>
+    </plurals>
+    <string name="notification_new_posts_mark_as_read">Mark as read</string>
+    <string name="notification_new_posts_new_publications_zero_description">New publications</string>
+    <string name="notification_new_posts_new_publications_single_description">New publications from %s</string>
+    <string name="notification_new_posts_new_publications_two_description">New publications from %s and %s</string>
+    <string name="notification_new_posts_new_publications_multiple_description">New publications from %s, %s and %d more</string>
+
     <string name="error_no_internet_title">No Internet</string>
     <string name="error_no_internet_message">There is no Internet connection, please try again</string>
     <string name="error_unknown_title">Something went wrong</string>

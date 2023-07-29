@@ -4,6 +4,7 @@ import dev.weazyexe.fonto.common.db.PostDao
 import dev.weazyexe.fonto.common.feature.parser.ParsedFeed
 import dev.weazyexe.fonto.common.model.feed.Feed
 import dev.weazyexe.fonto.common.model.feed.Post
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 internal fun ParsedFeed.Success.toPosts(): List<Post> =
@@ -18,7 +19,8 @@ internal fun ParsedFeed.Success.toPosts(): List<Post> =
             isSaved = false,
             link = it.link,
             isRead = false,
-            hasTriedToLoadMetadata = it.imageUrl != null
+            hasTriedToLoadMetadata = it.imageUrl != null,
+            addedAt = Clock.System.now()
         )
     }
 
@@ -33,7 +35,8 @@ internal fun Post.toDao(): PostDao =
         isSaved = isSaved.toString(),
         link = link,
         isRead = isRead.toString(),
-        hasTriedToLoadMetadata = hasTriedToLoadMetadata.toString()
+        hasTriedToLoadMetadata = hasTriedToLoadMetadata.toString(),
+        addedAt = addedAt.epochSeconds
     )
 
 internal fun PostDao.toPost(feed: Feed): Post =
@@ -47,5 +50,6 @@ internal fun PostDao.toPost(feed: Feed): Post =
         isSaved = isSaved.toBooleanStrict(),
         link = link,
         isRead = isRead.toBooleanStrict(),
-        hasTriedToLoadMetadata = hasTriedToLoadMetadata.toBooleanStrict()
+        hasTriedToLoadMetadata = hasTriedToLoadMetadata.toBooleanStrict(),
+        addedAt = Instant.fromEpochSeconds(addedAt)
     )

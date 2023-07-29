@@ -16,13 +16,13 @@ import dev.weazyexe.fonto.utils.extensions.flowIo
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Duration.Companion.days
 
-internal class GetFilteredPostsUseCase(
+internal class GetAllPostsUseCase(
     private val postRepository: PostRepository
 ) {
 
     operator fun invoke(
-        query: String,
-        filters: List<PostsFilter>
+        query: String = "",
+        filters: List<PostsFilter> = emptyList()
     ): Flow<AsyncResult<List<Post>>> = flowIo {
         emit(AsyncResult.Loading())
 

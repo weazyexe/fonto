@@ -1,16 +1,23 @@
 CREATE TABLE NotificationDao (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    newPostIdentifiers TEXT NOT NULL,
-    isRead TEXT NOT NULL
+    id TEXT NOT NULL PRIMARY KEY,
+    type TEXT NOT NULL,
+    meta TEXT NOT NULL,
+    isRead TEXT NOT NULL,
+    createdAt INTEGER NOT NULL
 );
 
 getAll:
-SELECT * FROM NotificationDao;
+SELECT * FROM NotificationDao
+ORDER BY createdAt DESC;
+
+getById:
+SELECT * FROM NotificationDao
+WHERE id = :id;
 
 update:
 INSERT OR REPLACE INTO NotificationDao
 VALUES ?;
 
 insert:
-INSERT INTO NotificationDao(newPostIdentifiers, isRead)
-VALUES (?, ?);
+INSERT INTO NotificationDao(id, type, isRead, createdAt, meta)
+VALUES (?, ?, ?, ?, ?);

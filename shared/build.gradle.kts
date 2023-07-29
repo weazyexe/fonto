@@ -30,6 +30,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(libs.androidx.core)
                 implementation(libs.ktor.okhttp)
                 implementation(libs.sqldelight.android)
                 implementation(libs.koin.android)

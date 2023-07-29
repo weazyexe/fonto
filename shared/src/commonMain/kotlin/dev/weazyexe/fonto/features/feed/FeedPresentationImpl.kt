@@ -8,7 +8,6 @@ import dev.weazyexe.fonto.common.data.onLoading
 import dev.weazyexe.fonto.common.data.onSuccess
 import dev.weazyexe.fonto.common.html.OgMetadata
 import dev.weazyexe.fonto.common.model.feed.Post
-import dev.weazyexe.fonto.common.model.feed.Posts
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.utils.extensions.firstOrNull
 import dev.weazyexe.fonto.utils.extensions.update
@@ -71,11 +70,7 @@ internal class FeedPresentationImpl(
             .onSuccess { result ->
                 setState {
                     copy(
-                        posts = result.map {
-                            Posts(
-                                posts = state.postsList?.posts.orEmpty() + it.posts
-                            )
-                        },
+                        posts = result.map { state.postsList.orEmpty() + it },
                         paginationState = if (result.data.isNotEmpty()) {
                             PaginationState.IDLE
                         } else {
@@ -114,7 +109,9 @@ internal class FeedPresentationImpl(
         val updatedPost = post.copy(isSaved = !post.isSaved)
 
         dependencies.updatePost(updatedPost)
-            .onError { FeedEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit() }
+            .onError {
+                FeedEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit()
+            }
             .onSuccess {
                 val newPosts = state.posts.update(it.data)
                 setState { copy(posts = newPosts) }

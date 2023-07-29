@@ -9,6 +9,9 @@ import dev.weazyexe.fonto.common.app.initializer.AppInitializerImpl
 import dev.weazyexe.fonto.common.app.initializer.CategoriesInitializer
 import dev.weazyexe.fonto.common.app.initializer.MockFeedInitializer
 import dev.weazyexe.fonto.common.app.initializer.SyncPostsInitializer
+import dev.weazyexe.fonto.common.app.notifications.createNotifier
+import dev.weazyexe.fonto.common.app.notifications.markasread.MarkAsReadActionHandler
+import dev.weazyexe.fonto.common.app.notifications.markasread.MarkAsReadActionHandlerImpl
 import dev.weazyexe.fonto.common.data.bus.EventBus
 import dev.weazyexe.fonto.common.data.datasource.AtomDataSource
 import dev.weazyexe.fonto.common.data.datasource.CategoryDataSource
@@ -43,15 +46,24 @@ import dev.weazyexe.fonto.common.data.usecase.feed.DeleteFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetAllFeedsUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedTypeUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedUseCase
+import dev.weazyexe.fonto.common.data.usecase.feed.GetFeedsWithNotificationsUseCase
 import dev.weazyexe.fonto.common.data.usecase.feed.UpdateFeedUseCase
 import dev.weazyexe.fonto.common.data.usecase.icon.GetFaviconByUrlUseCase
 import dev.weazyexe.fonto.common.data.usecase.jsonfeed.IsJsonFeedValidUseCase
+import dev.weazyexe.fonto.common.data.usecase.notification.CreateNewPostsNotificationVisualsUseCase
+import dev.weazyexe.fonto.common.data.usecase.notification.CreateNotificationUseCase
+import dev.weazyexe.fonto.common.data.usecase.notification.GetLastNotificationUseCase
+import dev.weazyexe.fonto.common.data.usecase.notification.MarkNotificationAsReadUseCase
+import dev.weazyexe.fonto.common.data.usecase.notification.ShowNotificationUseCase
+import dev.weazyexe.fonto.common.data.usecase.notification.UpdateNotificationUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.DeleteAllPostsUseCase
-import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetAllPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostMetadataFromHtmlUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.SyncAndGetNewPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.SyncPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCase
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.settings.GetDefaultSettingsUseCase
@@ -101,6 +113,7 @@ internal val coreModule = module {
     single { createStringsProvider(get()) }
     single { createOgImageExtractor(get()) }
     single { createPlatformWorkManager(get()) }
+    single { createNotifier(get()) }
 
     single { createXml() }
     single { createJson() }
@@ -177,6 +190,7 @@ internal val feedSharedModule = module {
     single { DeleteFeedUseCase(get(), get()) }
     single { DeleteAllFeedsUseCase(get(), get()) }
     single { GetFeedTypeUseCase(get(), get(), get()) }
+    single { GetFeedsWithNotificationsUseCase(get()) }
 }
 
 internal val postSharedModule = module {
@@ -188,8 +202,10 @@ internal val postSharedModule = module {
 
     single { PostDataSource(get()) }
     single { PostRepository(get(), get(), get()) }
-    single { GetPostsUseCase(get(), get(), get(), get(), get()) }
-    single { GetFilteredPostsUseCase(get()) }
+    single { SyncPostsUseCase(get(), get(), get(), get(), get()) }
+    single { SyncAndGetNewPostsUseCase(get(), get(), get()) }
+    single { GetPostsUseCase(get(), get()) }
+    single { GetAllPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
     single { GetPostUseCase(get()) }
     single { UpdatePostUseCase(get()) }
@@ -202,6 +218,15 @@ internal val notificationSharedModule = module {
 
     single { NotificationDataSource(get()) }
     single { NotificationRepository(get(), get(), get()) }
+
+    single { CreateNewPostsNotificationVisualsUseCase(get(), get()) }
+    single { CreateNotificationUseCase(get()) }
+    single { GetLastNotificationUseCase(get()) }
+    single { ShowNotificationUseCase(get(), get()) }
+    single { UpdateNotificationUseCase(get()) }
+    single { MarkNotificationAsReadUseCase(get(), get()) }
+
+    single<MarkAsReadActionHandler> { MarkAsReadActionHandlerImpl(get()) }
 }
 
 internal val backupSharedModule = module {
@@ -231,8 +256,7 @@ internal val initializerSharedModule = module {
 }
 
 internal val backgroundTasksSharedModule = module {
-    includes(coreModule)
-    includes(postSharedModule)
+    includes(coreModule, postSharedModule, notificationSharedModule)
 
-    single<SyncPostsWorker> { SyncPostsWorker(get()) }
+    single { SyncPostsWorker(get(), get(), get(), get(), get()) }
 }

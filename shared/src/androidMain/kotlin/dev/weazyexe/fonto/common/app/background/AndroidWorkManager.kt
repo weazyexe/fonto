@@ -39,7 +39,7 @@ internal class AndroidWorkManager(
         }
         val shouldSyncIfBatteryIsLow = settingsStorage.shouldSyncIfBatteryIsLow()
 
-        val duration = Duration.ofHours(syncInterval.toLong())
+        val duration = Duration.ofMillis(15) // FIXME hardcoded
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(networkType)
             .setRequiresBatteryNotLow(!shouldSyncIfBatteryIsLow)

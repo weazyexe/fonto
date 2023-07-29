@@ -5,5 +5,5 @@ import dev.weazyexe.fonto.core.ui.R as CoreUiR
 
 typealias PluralResources = CommonR.plurals
 typealias StringResources = CommonR.string
-typealias DrawableResources = CoreUiR.drawable
+typealias DrawableResources = CommonR.drawable
 typealias FontResources = CoreUiR.font
