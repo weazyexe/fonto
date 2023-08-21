@@ -38,4 +38,16 @@ object FeedViewStatePreview {
                 category = Category(Category.Id(1), "Games")
             )
 
+    val longLink: FeedViewState
+        @Composable
+        get() =
+            FeedViewState(
+                id = Feed.Id(2L),
+                title = "Android",
+                link = "https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary",
+                icon = null,
+                type = Feed.Type.RSS,
+                category = Category(Category.Id(1), "Programming")
+            )
+
 }
