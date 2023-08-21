@@ -3,7 +3,6 @@ package dev.weazyexe.fonto.ui.features.feed.components.feed
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,8 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.weazyexe.fonto.core.ui.theme.ThemedPreview
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.ui.features.feed.preview.FeedViewStatePreview
@@ -54,7 +55,7 @@ fun FeedItem(
             modifier = Modifier.padding(end = 16.dp)
         )
 
-        Column {
+        Column(modifier = Modifier.weight(weight = 1f)) {
             Text(
                 text = feed.title,
                 style = MaterialTheme.typography.bodyLarge,
@@ -64,11 +65,11 @@ fun FeedItem(
             Text(
                 text = feed.link,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
-
-        Spacer(modifier = Modifier.weight(weight = 1f))
         
         IconButton(onClick = { isActionsDropdownExpanded = true }) {
             DropdownMenu(
@@ -98,7 +99,7 @@ fun FeedItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun FeedItemPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
+private fun FeedItemPreview() = ThemedPreview {
     FeedItem(
         feed = FeedViewStatePreview.default,
         onClick = { },
@@ -109,9 +110,20 @@ private fun FeedItemPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
 
 @Preview(showBackground = true)
 @Composable
-private fun FeedItemNoIconPreview() = dev.weazyexe.fonto.core.ui.theme.ThemedPreview {
+private fun FeedItemNoIconPreview() = ThemedPreview {
     FeedItem(
         feed = FeedViewStatePreview.noIcon,
+        onClick = { },
+        onDeleteClick = { },
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FeedItemLongLinkPreview() = ThemedPreview {
+    FeedItem(
+        feed = FeedViewStatePreview.longLink,
         onClick = { },
         onDeleteClick = { },
         modifier = Modifier.fillMaxWidth()
