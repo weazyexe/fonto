@@ -91,6 +91,7 @@ fun FeedBody(
         snackbarHostState = snackbarHostState,
         isSwipeRefreshing = isSwipeRefreshing,
         isSearchBarActive = isSearchBarActive,
+        userScrollEnabled = posts !is AsyncResult.Loading,
         onRefresh = { onRefreshClick(true) },
         onSearchBarActiveChange = onSearchBarActiveChange,
         contentPadding = rootPaddingValues,
