@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 internal class FeedPresentationImpl(
@@ -37,6 +36,17 @@ internal class FeedPresentationImpl(
     }
 
     override fun loadPosts(isSwipeRefreshing: Boolean) {
+        setState {
+            if (isSwipeRefreshing) {
+                dependencies.initialState.copy(
+                    isSwipeRefreshing = true,
+                    posts = state.posts
+                )
+            } else {
+                dependencies.initialState
+            }
+        }
+
         dependencies.getPosts(
             limit = state.limit,
             offset = state.offset,
@@ -46,18 +56,6 @@ internal class FeedPresentationImpl(
             .onLoading { setState { copy(posts = it) } }
             .onError { setState { copy(posts = it, isSwipeRefreshing = false) } }
             .onSuccess { setState { copy(posts = it, isSwipeRefreshing = false) } }
-            .onStart {
-                setState {
-                    if (isSwipeRefreshing) {
-                        dependencies.initialState.copy(
-                            isSwipeRefreshing = true,
-                            posts = state.posts
-                        )
-                    } else {
-                        dependencies.initialState
-                    }
-                }
-            }
             .launchIn(scope)
     }
 
@@ -114,7 +112,9 @@ internal class FeedPresentationImpl(
         val updatedPost = post.copy(isSaved = !post.isSaved)
 
         dependencies.updatePost(updatedPost)
-            .onError { FeedEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit() }
+            .onError {
+                FeedEffect.ShowPostSavingErrorMessage(isSaving = updatedPost.isSaved).emit()
+            }
             .onSuccess {
                 val newPosts = state.posts.update(it.data)
                 setState { copy(posts = newPosts) }

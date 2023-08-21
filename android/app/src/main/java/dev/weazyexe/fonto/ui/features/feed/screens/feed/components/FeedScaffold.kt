@@ -39,6 +39,7 @@ fun FeedScaffold(
     snackbarHostState: SnackbarHostState,
     isSwipeRefreshing: Boolean,
     isSearchBarActive: Boolean,
+    userScrollEnabled: Boolean,
     onRefresh: () -> Unit,
     onSearchBarActiveChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -89,7 +90,8 @@ fun FeedScaffold(
 
             LazyColumn(
                 state = lazyListState,
-                modifier = Modifier.testTag("posts_list")
+                modifier = Modifier.testTag("posts_list"),
+                userScrollEnabled = userScrollEnabled
             ) {
                 item {
                     Spacer(modifier = Modifier.height(searchBarPadding))
