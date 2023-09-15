@@ -18,7 +18,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
@@ -65,7 +65,7 @@ class AppActivity : ComponentActivity() {
                 dynamicColor = state.isDynamicColorsEnabled
             ) {
                 val bottomSheetNavigator = rememberBottomSheetNavigator()
-                val homeNavController = rememberAnimatedNavController(bottomSheetNavigator)
+                val homeNavController = rememberNavController(bottomSheetNavigator)
                 val animatedNavHostEngine = rememberAnimatedNavHostEngine(
                     rootDefaultAnimations = RootNavGraphDefaultAnimations(
                         enterTransition = { SlideAnimations.enter },
