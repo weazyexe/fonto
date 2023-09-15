@@ -12,6 +12,7 @@ internal class GetAllCategoriesUseCase(
 
     operator fun invoke(): Flow<AsyncResult<List<Category>>> = flowIo {
         emit(AsyncResult.Loading())
-        emit(AsyncResult.Success(categoryRepository.getAll()))
+        val categories = categoryRepository.getAll()
+        emit(AsyncResult.Success(categories))
     }
 }

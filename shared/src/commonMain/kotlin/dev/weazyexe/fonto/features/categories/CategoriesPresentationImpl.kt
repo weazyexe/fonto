@@ -49,7 +49,8 @@ internal class CategoriesPresentationImpl(
             .filterIsInstance<AsyncResult.Success<List<Feed>>>()
 
     private fun loadCategories() =
-        dependencies.getAllCategories().onEach { setState { copy(categories = it) } }
+        dependencies.getAllCategories()
+            .onEach { setState { copy(categories = it) } }
 
     private infix fun <T, R> Flow<T>.and(other: Flow<R>): Flow<R> = flatMapLatest { other }
 }

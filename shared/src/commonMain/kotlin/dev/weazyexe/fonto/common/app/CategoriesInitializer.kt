@@ -3,6 +3,7 @@ package dev.weazyexe.fonto.common.app
 import dev.weazyexe.fonto.common.data.usecase.category.CreateCategoryUseCase
 import dev.weazyexe.fonto.common.feature.settings.SettingsStorage
 import dev.weazyexe.fonto.common.resources.StringsProvider
+import kotlinx.coroutines.flow.collect
 
 internal class CategoriesInitializer(
     private val settings: SettingsStorage,
@@ -14,7 +15,7 @@ internal class CategoriesInitializer(
     override suspend fun initialize(arguments: Unit) {
         if (!settings.isAppInitialized()) {
             buildDefaultCategories().forEach {
-                createCategory(it)
+                createCategory(it).collect()
             }
             settings.saveAppInitialized(isInitialized = true)
         }
