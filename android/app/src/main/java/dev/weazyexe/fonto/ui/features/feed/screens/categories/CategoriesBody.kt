@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.weazyexe.fonto.common.data.AsyncResult
+import dev.weazyexe.fonto.common.data.ResponseError
 import dev.weazyexe.fonto.core.ui.components.AnimatedAppearing
 import dev.weazyexe.fonto.core.ui.components.ArrowBack
 import dev.weazyexe.fonto.core.ui.components.loadstate.ErrorPane
@@ -86,9 +87,14 @@ fun CategoriesBody(
                     onDeleteClick = onDeleteClick
                 )
             }
+
             is AsyncResult.Error -> {
-                ErrorPane(categories.error.asErrorPaneParams())
+                ErrorPane(
+                    params = categories.error.asErrorPaneParams(),
+                    modifier = Modifier.fillMaxSize()
+                )
             }
+
             is AsyncResult.Loading -> {
                 LoadingPane(modifier = Modifier.fillMaxSize())
             }
@@ -130,7 +136,10 @@ private fun CategoriesList(
             }
         }
     } else {
-        ErrorPane(params = ErrorPaneParams.empty())
+        ErrorPane(
+            params = ErrorPaneParams.empty(),
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -144,6 +153,32 @@ private fun CategoriesBodyPreview() = ThemedPreview {
                 CategoryViewStatePreview.noFeeds,
             )
         ),
+        snackbarHostState = SnackbarHostState(),
+        onAddClick = {},
+        onBackClick = {},
+        onCategoryClick = {},
+        onDeleteClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun CategoriesBodyEmptyPreview() = ThemedPreview {
+    CategoriesBody(
+        categories = AsyncResult.Success(listOf()),
+        snackbarHostState = SnackbarHostState(),
+        onAddClick = {},
+        onBackClick = {},
+        onCategoryClick = {},
+        onDeleteClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun CategoriesBodyLoadingPreview() = ThemedPreview {
+    CategoriesBody(
+        categories = AsyncResult.Error(ResponseError.NoInternetError),
         snackbarHostState = SnackbarHostState(),
         onAddClick = {},
         onBackClick = {},
