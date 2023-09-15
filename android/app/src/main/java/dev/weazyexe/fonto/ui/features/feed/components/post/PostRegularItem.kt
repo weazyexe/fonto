@@ -17,6 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -162,6 +166,7 @@ private fun ColumnScope.PostBody(
 @Composable
 fun ColumnScope.PostImage(imageUrl: String?) {
     if (imageUrl != null) {
+        var isLoading by rememberSaveable { mutableStateOf(false) }
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
@@ -169,11 +174,20 @@ fun ColumnScope.PostImage(imageUrl: String?) {
                 .build(),
             contentDescription = null,
             modifier = Modifier
-                .aspectRatio(ratio = 1200f / 630f) // og:image recommended aspect ratio
-                .heightIn(max = 384.dp)
+                .let {
+                    if (!isLoading) {
+                        it.heightIn(max = 384.dp)
+                    } else {
+                        // og:image recommended aspect ratio
+                        it.aspectRatio(1200f / 650)
+                    }
+                }
                 .fillMaxWidth()
                 .padding(top = 12.dp),
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
+            onLoading = { isLoading = true },
+            onError = { isLoading = false },
+            onSuccess = { isLoading = false }
         )
     } else {
         Spacer(modifier = Modifier.size(16.dp))
