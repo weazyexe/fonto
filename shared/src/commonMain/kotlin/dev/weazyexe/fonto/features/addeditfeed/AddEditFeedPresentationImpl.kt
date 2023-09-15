@@ -45,8 +45,8 @@ internal class AddEditFeedPresentationImpl(
     }
 
     override fun updateLink(link: String) {
-        setState { copy(link = link) }
-        state.debouncedLink.value = link
+        setState { copy(link = link.trim()) }
+        state.debouncedLink.value = link.trim()
     }
 
     override fun finish() {
