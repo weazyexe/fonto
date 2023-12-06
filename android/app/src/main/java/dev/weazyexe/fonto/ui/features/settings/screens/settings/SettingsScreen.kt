@@ -19,11 +19,11 @@ import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
+import dev.weazyexe.fonto.feature.feed.screens.destinations.CategoriesScreenDestination
+import dev.weazyexe.fonto.feature.feed.screens.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.features.settings.SettingsEffect
-import dev.weazyexe.fonto.ui.features.destinations.CategoriesScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
-import dev.weazyexe.fonto.ui.features.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.ui.features.destinations.ThemePickerDialogDestination
 import dev.weazyexe.fonto.ui.features.home.ColorPickerResult
 import dev.weazyexe.fonto.ui.features.home.ExportStrategyPickerResult

@@ -13,7 +13,7 @@ minSdk = "29"
 compose = "2023.10.01"
 composeCompiler = "1.5.3"
 
-composeDestinations = "1.9.53"
+composeDestinations = "1.9.55"
 
 accompanist = "0.32.0"
 

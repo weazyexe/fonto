@@ -8,6 +8,7 @@ interface ComposeDestinationsExtensions {
 
     enum class Mode(val origin: String) {
         SingleModule("singlemodule"),
-        NavGraphs("navgraphs")
+        NavGraphs("navgraphs"),
+        Destinations("destinations")
     }
 }

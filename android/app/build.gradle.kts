@@ -18,7 +18,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
-            resValue("string", "app_name", "@string/app_name_debug")
+            resValue("string", "app_name", "Fonto Debug")
         }
 
         create("qa") {
@@ -26,7 +26,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            resValue("string", "app_name", "@string/app_name_qa")
+            resValue("string", "app_name", "Fonto QA")
         }
 
         release {
@@ -40,7 +40,7 @@ android {
             matchingFallbacks += listOf("release")
             isDebuggable = false
             proguardFiles("benchmark-rules.pro")
-            resValue("string", "app_name", "@string/app_name_benchmark")
+            resValue("string", "app_name", "Fonto Benchmark")
         }
     }
 }
@@ -52,6 +52,8 @@ dependencies {
     }
     implementation(project(":android:core:ui"))
     implementation(project(":android:debug")) // FIXME use debugImplementation
+
+    implementation(project(":android:feature:feed"))
 
     implementation(libs.material)
 

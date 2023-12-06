@@ -6,7 +6,7 @@ import dev.weazyexe.fonto.common.app.AppInitializer
 import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.di.dataModules
 import dev.weazyexe.fonto.di.screenModules
-import dev.weazyexe.fonto.ui.features.feed.di.feedModule
+import dev.weazyexe.fonto.feature.feed.di.feedModule
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier

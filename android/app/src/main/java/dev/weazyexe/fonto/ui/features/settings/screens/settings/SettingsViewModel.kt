@@ -9,11 +9,11 @@ import dev.weazyexe.fonto.common.feature.backup.AndroidFileSaver
 import dev.weazyexe.fonto.common.model.backup.ExportStrategy
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
+import dev.weazyexe.fonto.core.ui.mapState
 import dev.weazyexe.fonto.features.settings.SettingsPresentation
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.mapper.asDomainState
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.mapper.asViewState
 import dev.weazyexe.fonto.ui.features.settings.screens.settings.viewstate.PreferenceViewState
-import dev.weazyexe.fonto.util.flow.mapState
 
 class SettingsViewModel(
     private val presentation: SettingsPresentation,

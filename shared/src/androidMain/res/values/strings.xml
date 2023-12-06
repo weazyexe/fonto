@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fonto</string>
-    <string name="app_name_qa">Fonto QA</string>
-    <string name="app_name_debug">Fonto Debug</string>
-    <string name="app_name_benchmark">Fonto Benchmark</string>
 
     <string name="accessibility_go_back">Go to previous screen</string>
     <string name="accessibility_close_dialog">Close dialog</string>
