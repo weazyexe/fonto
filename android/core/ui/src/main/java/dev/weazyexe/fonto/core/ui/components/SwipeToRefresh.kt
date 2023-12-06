@@ -25,6 +25,7 @@ fun SwipeToRefresh(
     isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    // TODO migrate to material3 swipe refresh from material3 1.2.0
     val state = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = onRefresh,

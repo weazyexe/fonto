@@ -1,12 +1,8 @@
 rootProject.name = "fonto"
 
-include(":shared")
-include(":android:app")
-include(":android:debug")
-include(":android:core:ui")
-include(":android:baselineprofile")
-
 pluginManagement {
+    includeBuild("build-logic")
+
     repositories {
         google()
         gradlePluginPortal()
@@ -15,8 +11,16 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
     }
 }
+
+include(":shared")
+include(":android:app")
+include(":android:debug")
+include(":android:core:ui")
+include(":android:feature:feed")
+include(":android:baselineprofile")

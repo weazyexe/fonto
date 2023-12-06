@@ -1,46 +1,18 @@
+import dev.weazyexe.fonto.ComposeDestinationsExtensions
+
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.fonto.android.library)
+    alias(libs.plugins.fonto.android.library.compose)
+    alias(libs.plugins.fonto.android.library.compose.destinations)
+}
+
+configure<ComposeDestinationsExtensions> {
+    mode = ComposeDestinationsExtensions.Mode.NavGraphs
+    moduleName = "debug"
 }
 
 android {
     namespace = libs.versions.applicationId.get() + ".debug"
-    compileSdk = libs.versions.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-    }
-
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    libraryVariants.all {
-        kotlin.sourceSets {
-            getByName(name) {
-                kotlin.srcDir("build/generated/ksp/$name/kotlin")
-            }
-        }
-    }
-    ksp {
-        arg("compose-destinations.mode", "navgraphs")
-        arg("compose-destinations.moduleName", "debug")
-    }
 }
 
 dependencies {

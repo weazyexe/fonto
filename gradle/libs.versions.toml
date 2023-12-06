@@ -2,14 +2,15 @@
 applicationId = "dev.weazyexe.fonto"
 
 kotlin = "1.9.10"
-gradlePlugin = "8.1.0"
+gradlePlugin = "8.2.0"
 ksp = "1.9.10-1.0.13"
+androidTools = "31.2.0"
 
 compileSdk = "34"
 targetSdk = "34"
 minSdk = "29"
 
-compose = "2023.09.00"
+compose = "2023.10.01"
 composeCompiler = "1.5.3"
 
 composeDestinations = "1.9.53"
@@ -18,16 +19,16 @@ accompanist = "0.32.0"
 
 androidxCore = "1.12.0"
 androidxLifecycleRuntime = "2.6.2"
-androidxActivityCompose = "1.7.2"
+androidxActivityCompose = "1.8.1"
 androidxAppcompat = "1.6.1"
-androidxWebkit = "1.8.0"
+androidxWebkit = "1.9.0"
 androidxDatastore = "1.0.0"
 androidxSplashscreen = "1.0.1"
 androidxUiAautomator = "2.2.0"
-androidxBenchmark = "1.1.1"
-androidxBrowser = "1.6.0"
+androidxBenchmark = "1.2.2"
+androidxBrowser = "1.7.0"
 
-material = "1.9.0"
+material = "1.10.0"
 
 kotlinxCoroutines = "1.7.3"
 kotlinxSerialization = "1.6.0"
@@ -65,7 +66,6 @@ androidx-benchmark = { group = "androidx.benchmark", name = "benchmark-macro-jun
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
-
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
@@ -113,6 +113,12 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "gradlePlugin" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
@@ -124,3 +130,19 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+
+fonto-android-app = { id = "dev.weazyexe.fonto.android.app", version = "unspecified" }
+fonto-android-app-compose = { id = "dev.weazyexe.fonto.android.app.compose", version = "unspecified" }
+fonto-android-app-compose-destinations = { id = "dev.weazyexe.fonto.android.app.compose.destinations", version = "unspecified" }
+
+fonto-android-library = { id = "dev.weazyexe.fonto.android.library", version = "unspecified" }
+fonto-android-library-compose = { id = "dev.weazyexe.fonto.android.library.compose", version = "unspecified" }
+fonto-android-library-compose-destinations = { id = "dev.weazyexe.fonto.android.library.compose.destinations", version = "unspecified" }
+
+fonto-android-test = { id = "dev.weazyexe.fonto.android.test", version = "unspecified" }
+
+[bundles]
+compose-destinations = [
+    "compose-destinations-core",
+    "compose-destinations-animations"
+]
