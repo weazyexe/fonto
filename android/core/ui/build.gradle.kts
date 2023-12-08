@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.webkit)
+    implementation(libs.androidx.browser)
 
     implementation(libs.napier)
 

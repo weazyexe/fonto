@@ -19,8 +19,14 @@ dependencyResolutionManagement {
 }
 
 include(":shared")
+include(":shared:elm")
+include(":shared:navigation")
+include(":shared:messenger")
+
+include(":android:feature:feed")
+include(":shared:feature:feed")
+
 include(":android:app")
 include(":android:debug")
 include(":android:core:ui")
-include(":android:feature:feed")
 include(":android:baselineprofile")

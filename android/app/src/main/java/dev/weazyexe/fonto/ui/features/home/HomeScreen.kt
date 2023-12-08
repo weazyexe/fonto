@@ -13,10 +13,10 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.result.ResultRecipient
+import dev.weazyexe.fonto.android.feature.feed.screens.FeedNavGraph
+import dev.weazyexe.fonto.android.feature.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
-import dev.weazyexe.fonto.feature.feed.screens.FeedNavGraph
-import dev.weazyexe.fonto.feature.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.ui.features.bookmarks.BookmarksScreen
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination
@@ -51,11 +51,8 @@ fun HomeScreen(
             BottomBar(
                 currentDestination = currentDestination,
                 onTabChanged = {
-                    if (currentDestination == BottomBarDestination.Feed && currentDestination == it) {
-                        feedViewModel.scrollToTop()
-                    } else {
-                        currentDestination = it
-                    }
+                    // TODO restore scroll on top behaviour
+                    currentDestination = it
 
                 }
             )
@@ -70,6 +67,7 @@ fun HomeScreen(
                     DestinationsNavHost(
                         navGraph = FeedNavGraph,
                         dependenciesContainerBuilder = {
+                            dependency(feedViewModel)
                             dependency(padding)
                         }
                     )

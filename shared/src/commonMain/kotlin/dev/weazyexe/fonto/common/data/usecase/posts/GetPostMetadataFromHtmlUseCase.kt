@@ -10,12 +10,17 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.flow.Flow
 
-internal class GetPostMetadataFromHtmlUseCase(
+interface GetPostMetadataFromHtmlUseCase {
+
+    operator fun invoke(link: String): Flow<AsyncResult<OgMetadata>>
+}
+
+internal class GetPostMetadataFromHtmlUseCaseImpl(
     private val httpClient: HttpClient,
     private val ogMetadataExtractor: OgMetadataExtractor
-) {
+) : GetPostMetadataFromHtmlUseCase {
 
-    operator fun invoke(link: String): Flow<AsyncResult<OgMetadata>> = flowIo {
+    override operator fun invoke(link: String): Flow<AsyncResult<OgMetadata>> = flowIo {
         emit(AsyncResult.Loading())
         val html = httpClient.get(link).bodyAsText()
         val metadata = ogMetadataExtractor.extract(html)

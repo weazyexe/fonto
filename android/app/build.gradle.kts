@@ -55,6 +55,10 @@ dependencies {
 
     implementation(project(":android:feature:feed"))
 
+    implementation(project(":shared:elm"))
+    implementation(project(":shared:navigation"))
+    implementation(project(":shared:messenger"))
+
     implementation(libs.material)
 
     implementation(libs.kotlinx.serialization)

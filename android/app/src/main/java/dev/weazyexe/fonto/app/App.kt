@@ -1,12 +1,11 @@
 package dev.weazyexe.fonto.app
 
 import android.app.Application
-import dev.weazyexe.fonto.BuildConfig
+import dev.weazyexe.fonto.android.feature.feed.di.feedModule
 import dev.weazyexe.fonto.common.app.AppInitializer
 import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.di.dataModules
 import dev.weazyexe.fonto.di.screenModules
-import dev.weazyexe.fonto.feature.feed.di.feedModule
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -44,7 +43,7 @@ class App : Application() {
         appScope.launch {
             appInitializer.initialize(
                 arguments = AppInitializer.Args(
-                    areMockFeedsEnabled = BuildConfig.BUILD_TYPE == "benchmark"
+                    areMockFeedsEnabled = false // TODO fixme
                 )
             )
         }

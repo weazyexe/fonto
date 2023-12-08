@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-internal class EventBus {
+class EventBus {
 
     private val _events = MutableSharedFlow<AppEvent>(
         onBufferOverflow = BufferOverflow.DROP_OLDEST,

@@ -17,6 +17,11 @@ android {
 
 dependencies {
     implementation(project(":shared"))
+    implementation(project(":shared:elm"))
+    implementation(project(":shared:navigation"))
+
+    implementation(project(":shared:feature:feed"))
+
     implementation(project(":android:core:ui"))
 
     implementation(libs.kotlinx.serialization)

@@ -15,6 +15,8 @@ kotlin {
         /* Main source sets */
         val commonMain by getting {
             dependencies {
+                implementation(project(":shared:elm"))
+
                 implementation(libs.kotlinx.coroutines)
                 implementation(libs.kermit)
                 implementation(libs.kotlinx.datetime)

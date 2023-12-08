@@ -13,14 +13,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
+import dev.weazyexe.fonto.android.feature.feed.screens.destinations.CategoriesScreenDestination
+import dev.weazyexe.fonto.android.feature.feed.screens.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.utils.DrawableResources
 import dev.weazyexe.fonto.core.ui.utils.ReceiveEffect
 import dev.weazyexe.fonto.core.ui.utils.StringResources
 import dev.weazyexe.fonto.debug.destinations.DebugScreenDestination
-import dev.weazyexe.fonto.feature.feed.screens.destinations.CategoriesScreenDestination
-import dev.weazyexe.fonto.feature.feed.screens.destinations.ManageFeedScreenDestination
 import dev.weazyexe.fonto.features.settings.SettingsEffect
 import dev.weazyexe.fonto.ui.features.destinations.ColorPickerDialogDestination
 import dev.weazyexe.fonto.ui.features.destinations.ExportStrategyPickerDialogDestination

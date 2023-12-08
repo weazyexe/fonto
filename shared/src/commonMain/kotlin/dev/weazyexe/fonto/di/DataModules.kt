@@ -45,9 +45,12 @@ import dev.weazyexe.fonto.common.data.usecase.posts.DeleteAllPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFilteredPostsUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetFiltersUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostMetadataFromHtmlUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostMetadataFromHtmlUseCaseImpl
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostUseCase
 import dev.weazyexe.fonto.common.data.usecase.posts.GetPostsUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.GetPostsUseCaseImpl
 import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCase
+import dev.weazyexe.fonto.common.data.usecase.posts.UpdatePostUseCaseImpl
 import dev.weazyexe.fonto.common.data.usecase.rss.IsRssValidUseCase
 import dev.weazyexe.fonto.common.data.usecase.settings.GetDefaultSettingsUseCase
 import dev.weazyexe.fonto.common.data.usecase.settings.GetSettingsUseCase
@@ -175,13 +178,13 @@ internal val postDataModule = module {
 
     single { PostDataSource(get()) }
     single { PostRepository(get(), get(), get()) }
-    single { GetPostsUseCase(get(), get(), get(), get(), get()) }
+    single<GetPostsUseCase> { GetPostsUseCaseImpl(get(), get(), get(), get(), get()) }
     single { GetFilteredPostsUseCase(get()) }
     single { GetFiltersUseCase(get()) }
     single { GetPostUseCase(get()) }
-    single { UpdatePostUseCase(get()) }
+    single<UpdatePostUseCase> { UpdatePostUseCaseImpl(get()) }
     single { DeleteAllPostsUseCase(get()) }
-    single { GetPostMetadataFromHtmlUseCase(get(), get()) }
+    single<GetPostMetadataFromHtmlUseCase> { GetPostMetadataFromHtmlUseCaseImpl(get(), get()) }
 }
 
 internal val backupDataModule = module {

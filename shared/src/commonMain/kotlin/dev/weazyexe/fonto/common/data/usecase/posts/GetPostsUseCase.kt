@@ -19,19 +19,29 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 
-internal class GetPostsUseCase(
-    private val feedRepository: FeedRepository,
-    private val postRepository: PostRepository,
-    private val rssRepository: RssRepository,
-    private val atomRepository: AtomRepository,
-    private val jsonFeedRepository: JsonFeedRepository
-) {
+interface GetPostsUseCase {
 
     operator fun invoke(
         limit: Int,
         offset: Int,
         useCache: Boolean,
         shouldShowLoading: Boolean = true
+    ): Flow<AsyncResult<Posts>>
+}
+
+internal class GetPostsUseCaseImpl(
+    private val feedRepository: FeedRepository,
+    private val postRepository: PostRepository,
+    private val rssRepository: RssRepository,
+    private val atomRepository: AtomRepository,
+    private val jsonFeedRepository: JsonFeedRepository
+) : GetPostsUseCase {
+
+    override operator fun invoke(
+        limit: Int,
+        offset: Int,
+        useCache: Boolean,
+        shouldShowLoading: Boolean
     ): Flow<AsyncResult<Posts>> = flowIo {
         if (shouldShowLoading) {
             emit(AsyncResult.Loading())
@@ -59,6 +69,7 @@ internal class GetPostsUseCase(
             areAllFeedsFailed -> AsyncResult.Error(
                 loadedPosts.loadedWithError.first().throwable.asResponseError()
             )
+
             else -> {
                 val posts = postRepository.getPosts(
                     limit = limit,

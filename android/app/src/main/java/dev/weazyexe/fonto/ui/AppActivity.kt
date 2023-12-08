@@ -8,9 +8,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
@@ -25,27 +27,30 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
-import dev.weazyexe.fonto.BuildConfig
+import com.ramcosta.composedestinations.navigation.dependency
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.animation.SlideAnimations
 import dev.weazyexe.fonto.core.ui.theme.FontoTheme
 import dev.weazyexe.fonto.ui.navigation.AppNavGraph
+import dev.weazyexe.messenger.Messenger
+import dev.weazyexe.navigation.Navigator
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class AppActivity : ComponentActivity() {
 
     private val viewModel by viewModel<AppViewModel>()
 
-    @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class,
+    @OptIn(
+        ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class,
         ExperimentalComposeUiApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
 
-        if (BuildConfig.BUILD_TYPE != "benchmark") {
-            splashScreen.setKeepOnScreenCondition {
-                !viewModel.state.value.isInitialized
-            }
+        splashScreen.setKeepOnScreenCondition {
+            !viewModel.state.value.isInitialized
         }
 
         super.onCreate(savedInstanceState)
@@ -64,6 +69,7 @@ class AppActivity : ComponentActivity() {
                 },
                 dynamicColor = state.isDynamicColorsEnabled
             ) {
+                val snackbarHostState = remember { SnackbarHostState() }
                 val bottomSheetNavigator = rememberBottomSheetNavigator()
                 val homeNavController = rememberNavController(bottomSheetNavigator)
                 val animatedNavHostEngine = rememberAnimatedNavHostEngine(
@@ -75,10 +81,11 @@ class AppActivity : ComponentActivity() {
                     )
                 )
 
+                get<Navigator> { parametersOf(homeNavController, activityResultRegistry) }
+                get<Messenger> { parametersOf(snackbarHostState) }
+
                 Surface(
-                    modifier = Modifier.semantics {
-                        testTagsAsResourceId = true
-                    }
+                    modifier = Modifier.semantics { testTagsAsResourceId = true }
                 ) {
                     ModalBottomSheetLayout(
                         bottomSheetNavigator = bottomSheetNavigator,
@@ -89,7 +96,10 @@ class AppActivity : ComponentActivity() {
                             navGraph = AppNavGraph,
                             modifier = Modifier.fillMaxSize(),
                             navController = homeNavController,
-                            engine = animatedNavHostEngine
+                            engine = animatedNavHostEngine,
+                            dependenciesContainerBuilder = {
+                                dependency(snackbarHostState)
+                            }
                         )
                     }
                 }
