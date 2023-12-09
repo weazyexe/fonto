@@ -75,6 +75,7 @@ class AndroidNavigator(
             .setShowTitle(true)
             .build()
 
+        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         customTabsIntent.launchUrl(context, Uri.parse(url))
 
         Napier.i(
@@ -85,6 +86,7 @@ class AndroidNavigator(
 
     override fun openExternalBrowser(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
 
         Napier.i(

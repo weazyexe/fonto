@@ -2,18 +2,17 @@ package dev.weazyexe.fonto.ui.features.home
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.result.ResultRecipient
-import dev.weazyexe.fonto.android.feature.feed.screens.FeedNavGraph
+import dev.weazyexe.fonto.android.feature.feed.screens.feed.FeedScreen
 import dev.weazyexe.fonto.android.feature.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.common.model.preference.ColorScheme
 import dev.weazyexe.fonto.common.model.preference.Theme
@@ -37,6 +36,7 @@ typealias ExportStrategyPickerResult = ResultRecipient<ExportStrategyPickerDialo
 @Composable
 fun HomeScreen(
     navController: NavController,
+    snackbarHostState: SnackbarHostState,
     themePickerResultRecipient: ResultRecipient<ThemePickerDialogDestination, Theme?>,
     colorPickerResultRecipient: ResultRecipient<ColorPickerDialogDestination, ColorScheme>,
     exportStrategyPickerResultsRecipient: ResultRecipient<ExportStrategyPickerDialogDestination, ExportStrategyResults?>
@@ -64,12 +64,11 @@ fun HomeScreen(
         ) {
             when (it) {
                 BottomBarDestination.Feed -> {
-                    DestinationsNavHost(
-                        navGraph = FeedNavGraph,
-                        dependenciesContainerBuilder = {
-                            dependency(feedViewModel)
-                            dependency(padding)
-                        }
+                    FeedScreen(
+                        viewModel = feedViewModel,
+                        rootPaddingValues = padding,
+                        snackbarHostState = snackbarHostState,
+                        navController = navController
                     )
                 }
 

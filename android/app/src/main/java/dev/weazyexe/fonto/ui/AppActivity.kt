@@ -1,7 +1,6 @@
 package dev.weazyexe.fonto.ui
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -34,11 +33,11 @@ import dev.weazyexe.fonto.core.ui.theme.FontoTheme
 import dev.weazyexe.fonto.ui.navigation.AppNavGraph
 import dev.weazyexe.messenger.Messenger
 import dev.weazyexe.navigation.Navigator
-import org.koin.android.ext.android.get
+import org.koin.androidx.scope.ScopeActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class AppActivity : ComponentActivity() {
+class AppActivity : ScopeActivity() {
 
     private val viewModel by viewModel<AppViewModel>()
 
@@ -81,8 +80,19 @@ class AppActivity : ComponentActivity() {
                     )
                 )
 
-                get<Navigator> { parametersOf(homeNavController, activityResultRegistry) }
-                get<Messenger> { parametersOf(snackbarHostState) }
+                /*val navigator = remember {
+                    AndroidNavigator(
+                        context = applicationContext,
+                        navController = homeNavController,
+                        activityResultRegistry = activityResultRegistry,
+                        routeMapper = { it.asDirection() }
+                    )
+                }
+                val messenger = remember {
+                    AndroidMessenger(snackbarHostState)
+                }*/
+                scope.get<Navigator> { parametersOf(homeNavController, activityResultRegistry) }
+                scope.get<Messenger> { parametersOf(snackbarHostState) }
 
                 Surface(
                     modifier = Modifier.semantics { testTagsAsResourceId = true }

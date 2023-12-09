@@ -10,7 +10,5 @@ data class FeedViewState(
     val posts: AsyncResult<PostsViewState> = AsyncResult.Loading(),
     val paginationState: PaginationState = PaginationState.IDLE,
     val isSwipeRefreshing: Boolean = false,
-    val isSearchBarActive: Boolean = false,
-    val firstVisibleItemIndex: Int = 0,
-    val firstVisibleItemOffset: Int = 0
+    val isSearchBarActive: Boolean = false
 )

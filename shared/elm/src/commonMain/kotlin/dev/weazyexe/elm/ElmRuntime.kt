@@ -1,5 +1,6 @@
 package dev.weazyexe.elm
 
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,8 @@ class ElmRuntime<State : Any, Message : Any, Dependencies : Any>(
     exceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, throwable -> throw throwable }
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = runtimeContext + SupervisorJob() + exceptionHandler
+    override val coroutineContext: CoroutineContext =
+        runtimeContext + SupervisorJob() + exceptionHandler
 
     private val stateListeners = mutableListOf<((State) -> Unit)>()
 
@@ -41,6 +43,12 @@ class ElmRuntime<State : Any, Message : Any, Dependencies : Any>(
         if (isActive) {
             launch(runtimeContext) {
                 if (isMessageThrottled(message, lastMessage)) return@launch
+
+                Napier.i(
+                    tag = LOG_TAG,
+                    message = "Dispatch message ${message::class.simpleName}"
+                )
+
                 lastMessage = message
                 val next = update(message, currentState, dependencies)
                 step(next, currentState !== next.state)
@@ -58,19 +66,32 @@ class ElmRuntime<State : Any, Message : Any, Dependencies : Any>(
             }
         }
 
-        next.effects.forEach { effect ->
-            launch(effectContext) {
-                effect.run(this, dependencies)?.collect {
-                    dispatch(it)
+        next.effects
+            .onEach {
+                Napier.i(
+                    tag = LOG_TAG,
+                    message = "Send effect ${it::class.simpleName}"
+                )
+            }
+            .forEach { effect ->
+                launch(effectContext) {
+                    effect.run(this, dependencies)?.collect {
+                        dispatch(it)
+                    }
                 }
             }
-        }
     }
 
-    private fun <T> List<(T) -> Unit>.notifyAll(value: T) = forEach { listener -> listener.invoke(value) }
+    private fun <T> List<(T) -> Unit>.notifyAll(value: T) =
+        forEach { listener -> listener.invoke(value) }
 
     private fun isMessageThrottled(newMessage: Message, lastMessage: Message?): Boolean {
         if (newMessage !is CanBeThrottled || lastMessage !is CanBeThrottled) return false
         return newMessage.isThrottled(lastMessage)
+    }
+
+    private companion object {
+
+        const val LOG_TAG = "ElmRuntime"
     }
 }

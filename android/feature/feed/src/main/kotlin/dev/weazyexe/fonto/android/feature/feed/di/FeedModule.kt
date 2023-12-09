@@ -7,13 +7,15 @@ import dev.weazyexe.fonto.android.feature.feed.screens.categories.CategoriesView
 import dev.weazyexe.fonto.android.feature.feed.screens.feed.FeedViewModel
 import dev.weazyexe.fonto.android.feature.feed.screens.feed.components.search.SearchViewModel
 import dev.weazyexe.fonto.android.feature.feed.screens.managefeed.ManageFeedViewModel
-import dev.weazyexe.fonto.utils.extensions.get
+import dev.weazyexe.fonto.feature.feed.di.FeedFeatureModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val feedModule = module {
-    viewModel { params -> FeedViewModel(get(params)) }
+    includes(FeedFeatureModules)
+
+    viewModel { FeedViewModel(get()) }
     viewModel { SearchViewModel(get(), androidContext() as Application) }
     viewModel { ManageFeedViewModel(get()) }
     viewModel { AddEditFeedViewModel(get(), get()) }

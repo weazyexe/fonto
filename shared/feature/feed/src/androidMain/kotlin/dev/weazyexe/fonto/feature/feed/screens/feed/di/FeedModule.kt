@@ -1,5 +1,7 @@
-package dev.weazyexe.fonto.feature.feed.screens.feed
+@file:JvmName("AndroidFeedPlatformModule")
+package dev.weazyexe.fonto.feature.feed.screens.feed.di
 
+import dev.weazyexe.fonto.feature.feed.screens.feed.FeedUiMessages
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

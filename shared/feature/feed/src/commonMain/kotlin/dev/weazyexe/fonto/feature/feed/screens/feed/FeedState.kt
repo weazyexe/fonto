@@ -5,6 +5,7 @@ import dev.weazyexe.elm.effects.Effect
 import dev.weazyexe.fonto.common.DEFAULT_LIMIT
 import dev.weazyexe.fonto.common.data.AsyncResult
 import dev.weazyexe.fonto.common.data.PaginationState
+import dev.weazyexe.fonto.common.html.OgMetadata
 import dev.weazyexe.fonto.common.model.feed.Post
 import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.common.model.preference.Theme
@@ -16,9 +17,7 @@ data class FeedState(
     val isSwipeRefreshing: Boolean = false,
     val limit: Int = DEFAULT_LIMIT,
     val offset: Int = 0,
-    val isSearchBarActive: Boolean = false,
-    val firstVisibleItemIndex: Int = 0,
-    val firstVisibleItemOffset: Int = 0
+    val isSearchBarActive: Boolean = false
 ) {
 
     val postsList: PostsModel?
@@ -37,16 +36,37 @@ sealed interface FeedMessage {
 
         data class OnPostClick(val id: Post.Id) : View
 
+        data class OnPostSaveClick(val id: Post.Id) : View
+
         data object OnRefresh : View
 
         data object OnLoadMore : View
+
+        data class OnLoadPostMeta(val id: Post.Id): View
+
+        data class OnSearchBarActiveChange(val isActive: Boolean) : View
+
+        data object OnManageFeedClick : View
     }
 
     sealed interface Request : FeedMessage {
 
-        data class UpdatingPost(val post: AsyncResult<Post>) : Request
+        data class UpdatingPost(
+            val post: AsyncResult<Post>,
+            val difference: Difference
+        ) : Request {
+
+            enum class Difference {
+                Save, RemoveFromSaved, Read, Meta
+            }
+        }
 
         data class GettingPosts(val posts: AsyncResult<PostsModel>) : Request
+
+        data class GettingPostMeta(
+            val post: Post,
+            val meta: AsyncResult<OgMetadata>
+        ) : Request
     }
 }
 

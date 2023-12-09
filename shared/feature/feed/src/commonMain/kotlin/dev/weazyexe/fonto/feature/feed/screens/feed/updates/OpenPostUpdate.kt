@@ -5,6 +5,7 @@ import dev.weazyexe.fonto.common.model.preference.OpenPostPreference
 import dev.weazyexe.fonto.feature.feed.screens.feed.FeedDependencies
 import dev.weazyexe.fonto.feature.feed.screens.feed.FeedEffects
 import dev.weazyexe.fonto.feature.feed.screens.feed.FeedMessage
+import dev.weazyexe.fonto.feature.feed.screens.feed.FeedMessage.Request.UpdatingPost.Difference
 import dev.weazyexe.fonto.feature.feed.screens.feed.FeedState
 import dev.weazyexe.fonto.feature.feed.screens.feed.FeedUpdate
 
@@ -30,7 +31,7 @@ internal fun openPostUpdate(
                     theme = message.theme
                 )
             )
-    } + FeedEffects.UpdatePost(newPost)
+    } + FeedEffects.UpdatePost(newPost, Difference.Read)
 
     return state with effects
 }

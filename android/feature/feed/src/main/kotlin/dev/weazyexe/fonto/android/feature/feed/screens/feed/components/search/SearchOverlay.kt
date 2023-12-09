@@ -56,11 +56,12 @@ fun SearchOverlay(
         snackbarHostState = snackbarHostState
     )
 
-    HandleNavigationResults(
+    // TODO fix
+    /*HandleNavigationResults(
         onDateRangeReceived = viewModel::applyFilters,
         onFeedReceived = viewModel::applyFilters,
         onCategoryReceived = viewModel::applyFilters
-    )
+    )*/
 
     SearchBody(
         query = state.query,

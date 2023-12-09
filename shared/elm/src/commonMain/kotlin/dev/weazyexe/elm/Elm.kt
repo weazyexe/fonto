@@ -19,11 +19,7 @@ open class Elm<State : Any, Message : Any, Dependencies : Any>(
 
     private val runtime by lazy {
         val result = ElmRuntime(
-            init = {
-                val currentState = _state.value
-                if (currentState == null) init
-                else restore(currentState)
-            },
+            init = { init },
             update = update,
             dependencies = dependencies,
             exceptionHandler = CoroutineExceptionHandler { _, throwable ->

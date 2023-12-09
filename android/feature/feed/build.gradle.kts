@@ -7,7 +7,7 @@ plugins {
 }
 
 configure<ComposeDestinationsExtensions> {
-    mode = ComposeDestinationsExtensions.Mode.NavGraphs
+    mode = ComposeDestinationsExtensions.Mode.Destinations
     moduleName = "Feed"
 }
 

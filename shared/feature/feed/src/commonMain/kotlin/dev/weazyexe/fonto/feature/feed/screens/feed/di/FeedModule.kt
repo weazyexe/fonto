@@ -9,7 +9,7 @@ import org.koin.dsl.module
 expect val FeedPlatformModule: Module
 
 val FeedModule = module {
-    includes(dev.weazyexe.fonto.feature.feed.screens.feed.FeedPlatformModule)
+    includes(FeedPlatformModule)
 
     factory { FeedRouter(navigator = get()) }
 

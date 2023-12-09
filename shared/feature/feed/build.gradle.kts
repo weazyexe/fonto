@@ -20,6 +20,7 @@ kotlin {
                 implementation(project(":shared:messenger"))
 
                 implementation(libs.kotlinx.coroutines)
+                implementation(libs.kotlinx.datetime)
                 implementation(libs.koin.core)
             }
         }

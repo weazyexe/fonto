@@ -7,7 +7,8 @@ import dev.weazyexe.fonto.feature.feed.screens.feed.FeedUpdate
 internal fun requestUpdate(
     message: FeedMessage.Request,
     state: FeedState
-): FeedUpdate = when(message) {
+): FeedUpdate = when (message) {
     is FeedMessage.Request.GettingPosts -> gettingPostsUpdate(message, state)
     is FeedMessage.Request.UpdatingPost -> updatingPostUpdate(message, state)
+    is FeedMessage.Request.GettingPostMeta -> gettingPostMetaUpdate(message, state)
 }

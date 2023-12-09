@@ -19,7 +19,5 @@ class FeedViewModel(elm: FeedElm) :
             paginationState = paginationState,
             isSwipeRefreshing = isSwipeRefreshing,
             isSearchBarActive = isSearchBarActive,
-            firstVisibleItemIndex = firstVisibleItemIndex,
-            firstVisibleItemOffset = firstVisibleItemOffset,
         )
 }

@@ -23,8 +23,6 @@ val appModule = module {
     }
 
     single<Messenger> { params ->
-        AndroidMessenger(
-            snackbarHostState = params.get()
-        )
+        AndroidMessenger(snackbarHostState = params.get())
     }
 }
