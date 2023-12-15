@@ -1,12 +1,12 @@
 package dev.weazyexe.messenger
 
-import androidx.compose.material3.SnackbarHostState
+import dev.weazyexe.messenger.provider.SnackbarHostStateProvider
 
 class AndroidMessenger(
-    private val snackbarHostState: SnackbarHostState
+    private val snackbarHostStateProvider: SnackbarHostStateProvider
 ) : Messenger {
 
     override suspend fun message(message: String) {
-        snackbarHostState.showSnackbar(message = message)
+        snackbarHostStateProvider.get().showSnackbar(message = message)
     }
 }

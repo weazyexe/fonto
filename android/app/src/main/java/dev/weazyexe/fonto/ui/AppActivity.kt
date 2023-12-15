@@ -27,19 +27,23 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.navigation.dependency
+import dev.weazyexe.fonto.app.App
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.ui.animation.SlideAnimations
 import dev.weazyexe.fonto.core.ui.theme.FontoTheme
 import dev.weazyexe.fonto.ui.navigation.AppNavGraph
-import dev.weazyexe.messenger.Messenger
-import dev.weazyexe.navigation.Navigator
+import dev.weazyexe.messenger.provider.SnackbarHostStateProvider
+import dev.weazyexe.navigation.provider.NavControllerProvider
+import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 class AppActivity : ScopeActivity() {
 
     private val viewModel by viewModel<AppViewModel>()
+    private val app by lazy { applicationContext as App }
+    private val navControllerProvider by inject<NavControllerProvider>()
+    private val snackbarHostStateProvider by inject<SnackbarHostStateProvider>()
 
     @OptIn(
         ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class,
@@ -53,6 +57,7 @@ class AppActivity : ScopeActivity() {
         }
 
         super.onCreate(savedInstanceState)
+        app.activityProvider.set(this)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -80,19 +85,8 @@ class AppActivity : ScopeActivity() {
                     )
                 )
 
-                /*val navigator = remember {
-                    AndroidNavigator(
-                        context = applicationContext,
-                        navController = homeNavController,
-                        activityResultRegistry = activityResultRegistry,
-                        routeMapper = { it.asDirection() }
-                    )
-                }
-                val messenger = remember {
-                    AndroidMessenger(snackbarHostState)
-                }*/
-                scope.get<Navigator> { parametersOf(homeNavController, activityResultRegistry) }
-                scope.get<Messenger> { parametersOf(snackbarHostState) }
+                navControllerProvider.set(homeNavController)
+                snackbarHostStateProvider.set(snackbarHostState)
 
                 Surface(
                     modifier = Modifier.semantics { testTagsAsResourceId = true }
@@ -115,5 +109,10 @@ class AppActivity : ScopeActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        app.activityProvider.set(null)
     }
 }

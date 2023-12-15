@@ -21,6 +21,7 @@ kotlin {
             dependencies {
                 implementation(libs.compose.destinations.core)
                 implementation(libs.androidx.browser)
+                implementation(libs.androidx.appcompat)
             }
         }
 

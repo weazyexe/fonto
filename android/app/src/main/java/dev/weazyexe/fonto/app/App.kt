@@ -7,6 +7,7 @@ import dev.weazyexe.fonto.di.appModule
 import dev.weazyexe.fonto.di.dataModules
 import dev.weazyexe.fonto.di.screenModules
 import dev.weazyexe.fonto.ui.features.settings.di.settingsModule
+import dev.weazyexe.navigation.provider.ActivityProvider
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +22,7 @@ class App : Application() {
 
     private val appScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val appInitializer by inject<AppInitializer>()
+    val activityProvider by lazy { ActivityProvider() }
 
     override fun onCreate() {
         super.onCreate()

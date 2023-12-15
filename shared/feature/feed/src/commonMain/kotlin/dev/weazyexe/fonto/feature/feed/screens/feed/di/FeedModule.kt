@@ -22,9 +22,9 @@ val FeedModule = module {
                 urlValidator = get(),
                 settingsStorage = get(),
                 eventBus = get(),
-                navigator = get(),
+                router = get(),
                 messenger = get(),
-                uiMessages = get()
+                uiStrings = get()
             )
         )
     }

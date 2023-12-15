@@ -17,36 +17,36 @@ internal object FeedEffects {
     sealed interface Messenger {
 
         data object ShowInvalidLinkMessage : FeedEffect by MessageEffect()
-            .adaptIdle({ it.messenger to it.uiMessages.invalidLinkMessage })
+            .adaptIdle({ it.messenger to it.uiStrings.invalidLink })
 
         data object ShowPostSavedMessage : FeedEffect by MessageEffect()
-            .adaptIdle({ it.messenger to it.uiMessages.postSavedMessage })
+            .adaptIdle({ it.messenger to it.uiStrings.postSaved })
 
         data object ShowPostSavingErrorMessage : FeedEffect by MessageEffect()
-            .adaptIdle({ it.messenger to it.uiMessages.failedToSavePostMessage })
+            .adaptIdle({ it.messenger to it.uiStrings.failedToSavePost })
 
         data object ShowPostRemovedFromSavedMessage : FeedEffect by MessageEffect()
-            .adaptIdle({ it.messenger to it.uiMessages.postRemovedFromSavedMessage })
+            .adaptIdle({ it.messenger to it.uiStrings.postRemovedFromSaved })
 
         data object ShowPostRemovingFromSavedErrorMessage : FeedEffect by MessageEffect()
-            .adaptIdle({ it.messenger to it.uiMessages.failedToRemovePostFromSavedMessage })
+            .adaptIdle({ it.messenger to it.uiStrings.failedToRemovePostFromSavedMessage })
     }
 
     sealed interface Navigation {
 
         data object OpenManageFeed :
             FeedEffect by Effect.onMain.idle({ deps ->
-                deps.navigator.openManageFeed()
+                deps.router.openManageFeed()
             })
 
         data class OpenLinkInApp(val url: String, val theme: Theme) :
             FeedEffect by Effect.onMain.idle({ deps ->
-                deps.navigator.openLinkInApp(url, theme)
+                deps.router.openLinkInApp(url, theme)
             })
 
         data class OpenLinkInBrowser(val url: String) :
             FeedEffect by Effect.onMain.idle({ deps ->
-                deps.navigator.openLinkInBrowser(url)
+                deps.router.openLinkInBrowser(url)
             })
     }
 

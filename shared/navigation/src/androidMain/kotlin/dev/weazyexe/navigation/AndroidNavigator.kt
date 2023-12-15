@@ -13,6 +13,8 @@ import com.ramcosta.composedestinations.spec.Direction
 import dev.weazyexe.fonto.common.model.preference.Theme
 import dev.weazyexe.fonto.core.AndroidFile
 import dev.weazyexe.fonto.core.File
+import dev.weazyexe.navigation.provider.ActivityResultRegistryProvider
+import dev.weazyexe.navigation.provider.NavControllerProvider
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -23,10 +25,16 @@ import kotlinx.coroutines.launch
 
 class AndroidNavigator(
     private val context: Context,
-    private val navController: NavController,
-    private val activityResultRegistry: ActivityResultRegistry,
+    private val navControllerProvider: NavControllerProvider,
+    private val activityResultRegistryProvider: ActivityResultRegistryProvider,
     private val routeMapper: (Route) -> Direction
 ) : Navigator {
+
+    private val navController: NavController
+        get() = navControllerProvider.get()
+
+    private val activityResultRegistry: ActivityResultRegistry
+        get() = activityResultRegistryProvider.get()
 
     override fun open(route: Route) {
         navController.navigate(routeMapper(route))
@@ -144,7 +152,7 @@ class AndroidNavigator(
         awaitClose { launcher.unregister() }
     }
 
-    private val Theme.customTabsColorScheme : Int
+    private val Theme.customTabsColorScheme: Int
         @StringRes
         get() = when (this) {
             Theme.LIGHT -> CustomTabsIntent.COLOR_SCHEME_LIGHT

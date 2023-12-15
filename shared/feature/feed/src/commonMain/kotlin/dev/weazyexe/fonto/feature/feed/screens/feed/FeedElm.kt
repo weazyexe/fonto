@@ -28,8 +28,8 @@ data class FeedDependencies(
     val urlValidator: UrlValidator,
     val eventBus: EventBus,
 
-    val navigator: FeedRouter,
+    val router: FeedRouter,
     val messenger: Messenger,
-    val uiMessages: FeedUiMessages
+    val uiStrings: FeedUiStrings
 )
 
